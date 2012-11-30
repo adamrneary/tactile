@@ -1,6 +1,6 @@
 /*global module:false*/
 module.exports = function(grunt) {
-
+  grunt.loadNpmTasks('grunt-coffee'); // http://github.com/avalade/grunt-coffee
   // Project configuration.
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -11,17 +11,26 @@ module.exports = function(grunt) {
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
+    coffee:{
+        coffee:{
+            src: ["src/*"],
+            dest: 'build/',
+            options: {
+                bare: true
+            }
+        }       
+    },
+    concat: {
+        dist: {
+            src: ['<banner:meta.banner>', 'build/*'],
+            dest: 'dist/<%= pkg.name %>.js'
+        }
+    },
     lint: {
       files: ['grunt.js', 'lib/**/*.js', 'test/**/*.js']
     },
     qunit: {
       files: ['test/**/*.html']
-    },
-    concat: {
-      dist: {
-        src: ['<banner:meta.banner>', '<file_strip_banner:lib/<%= pkg.name %>.js>'],
-        dest: 'dist/<%= pkg.name %>.js'
-      }
     },
     min: {
       dist: {
@@ -54,5 +63,6 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'lint qunit concat min');
+  grunt.registerTask('build', 'coffee concat min');
 
 };
