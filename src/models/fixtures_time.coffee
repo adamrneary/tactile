@@ -1,4 +1,4 @@
-module.exports = class FixturesTime
+Tactile.FixturesTime = class FixturesTime
 
   constructor: -> 
     @tzOffset = new Date().getTimezoneOffset() * 60

@@ -1,4 +1,4 @@
-module.exports = class RendererBase
+Tactile.RendererBase = class RendererBase
 
   defaults:
     cartesian: true

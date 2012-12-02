@@ -1,4 +1,4 @@
-module.exports = class AxisY
+Tactile.AxisY = class AxisY
   berthRate: 0.10
   
   constructor: (options) ->

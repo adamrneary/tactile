@@ -1,6 +1,4 @@
-FixturesTime = require('./fixtures_time')
-
-module.exports = class AxisTime
+Tactile.AxisTime = class AxisTime
 
   constructor: (args) ->
     @graph = args.graph

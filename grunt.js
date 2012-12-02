@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     },
     coffee:{
         coffee:{
-            src: ["src/*"],
+            src: ['src/models/*'],
             dest: 'build/',
             options: {
                 bare: true
@@ -22,7 +22,14 @@ module.exports = function(grunt) {
     },
     concat: {
         dist: {
-            src: ['<banner:meta.banner>', 'build/*'],
+            src: ['<banner:meta.banner>', 
+                  'src/intro.js',
+                  'src/core.js',
+                  'build/fixtures_time.js',
+                  'build/axis_y.js',
+                  'build/axis_time.js',
+                  'build/renderer_base.js',
+                  'src/outro.js'],
             dest: 'dist/<%= pkg.name %>.js'
         }
     },
@@ -62,7 +69,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint qunit concat min');
+  grunt.registerTask('default', 'lint qunit coffee concat min');
   grunt.registerTask('build', 'coffee concat min');
 
 };
