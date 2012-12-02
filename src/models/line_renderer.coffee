@@ -1,6 +1,4 @@
-ChartRendererBase = require('./renderer_base')
-
-module.exports = class LineRenderer extends ChartRendererBase
+Tactile.LineRendere = class LineRenderer extends RendererBase
   name: "line"
   
   specificDefaults:

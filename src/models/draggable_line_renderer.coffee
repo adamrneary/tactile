@@ -1,6 +1,4 @@
-ChartRendererBase = require('./renderer_base')
-
-module.exports = class DraggableLineRenderer extends ChartRendererBase
+Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
   name: "draggableLine"
   
   specificDefaults:

@@ -1,6 +1,4 @@
-ChartRendererBase = require('./renderer_base')
-
-module.exports = class GaugeRenderer extends ChartRendererBase
+Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
   name: "gauge"
 
   specificDefaults: 

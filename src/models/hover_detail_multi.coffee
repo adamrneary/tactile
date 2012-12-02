@@ -1,4 +1,4 @@
-module.exports = class HoverDetailMulti
+Tactile.HoverDetailMulti = class HoverDetailMulti
 
   constructor: (args) ->
     graph = @graph = args.graph

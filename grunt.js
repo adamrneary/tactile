@@ -25,10 +25,22 @@ module.exports = function(grunt) {
             src: ['<banner:meta.banner>', 
                   'src/intro.js',
                   'src/core.js',
+
                   'build/fixtures_time.js',
                   'build/axis_y.js',
                   'build/axis_time.js',
+                  'build/hover_detail.js',
+                  'build/hover_detail_multi.js',
+
                   'build/renderer_base.js',
+                  'build/gauge_renderer.js',
+                  'build/bar_renderer.js',
+                  'build/line_renderer.js',
+                  'build/draggable_line_renderer.js',
+
+
+//                  'build/range_slider.js',
+                  'build/chart.js',
                   'src/outro.js'],
             dest: 'dist/<%= pkg.name %>.js'
         }

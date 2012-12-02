@@ -1,4 +1,4 @@
-module.exports = class HoverDetail
+Tactile.HoverDetail = class HoverDetail
   defaults: 
     showXlabel: true
 

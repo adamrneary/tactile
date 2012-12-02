@@ -1,6 +1,4 @@
-ChartRendererBase = require('./renderer_base')
-
-module.exports = class BarRenderer extends ChartRendererBase
+Tactile.BarRenderer = class BarRenderer extends RendererBase
   name: "bar"
 
   specificDefaults:

@@ -1,9 +1,4 @@
-GaugeRenderer = require('./gauge_renderer')
-BarRenderer = require('./bar_renderer')
-LineRenderer = require('./line_renderer')
-DraggableLineRenderer = require('./draggable_line_renderer')
-
-module.exports = class Chart
+Tactile.Chart = class Chart
   # Add your renderer here. Key should be equal to the renderer `name` property
   _renderers:
     'gauge': GaugeRenderer
