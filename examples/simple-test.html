@@ -1,7 +1,25 @@
 <html>
   <head>
     <script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="d3.js"></script>
     <script type="text/javascript" src="../dist/tactile.js"></script>
+    <link rel="stylesheet" type="text/css" href="test.css"></link>
   </head>
+  <body>
+    <div id="test">
+    </div>
+    <script type="text/javascript" >
+      var chart = new Tactile.Chart({
+      data: [-10,1,10],
+      series: [
+        {
+         data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
+         renderer: "line"
+        }],
+      element: $("#test")[0]      
+      });
+      chart.render()
+    </script>   
+  </body>
 </html>
