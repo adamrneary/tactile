@@ -2,7 +2,12 @@ use Rack::Static,
   :urls => ["/javascript","/css"],
   :root => "examples"
 
+use Rack::Auth::Basic, "Restricted Area" do |username, password|
+  [username, password] == ['admin', 'turkeyLeg01']
+end
+
 run lambda { |env|
+
   [
     200, 
     {
