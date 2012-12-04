@@ -20,7 +20,7 @@ Tactile.Chart = class Chart
     args = _.extend({}, @defaults, args)
     _.each args, (val, key) =>
       @[key] = val
-      
+
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
