@@ -87,7 +87,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'sass coffee concat min');
-  grunt.registerTask('build', 'sass coffee concat min');
+  grunt.registerTask('default', 'coffee concat min');
+  grunt.registerTask('build', 'coffee concat min');
 
 };
