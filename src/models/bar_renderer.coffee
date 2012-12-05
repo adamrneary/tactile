@@ -2,7 +2,7 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
   name: "bar"
 
   specificDefaults:
-    gapSize: 0.1
+    gapSize: 0.15
     tension: null
     round: true
 
@@ -19,7 +19,7 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
   
     return if (@series.disabled)
 
-    edgeRatio = if @round then Math.round(0.05783 * seriesBarWidth + 1) else 0
+    edgeRatio = if @series.round then Math.round(0.05783 * seriesBarWidth + 1) else 0
       
     # if we want to display stacked bars y should be added y0 value  
     yValue = (d) =>
@@ -29,7 +29,7 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
         (@graph.y(d.y0 + Math.abs(d.y))) * ((if d.y < 0 then -1 else 1))
         
     # center the bar if we have more than one type of renderers
-    if _.uniq(_.map(@graph.series, (s) -> s.renderer)).length > 1
+    if @graph._hasDifferentRenderers()
       barXOffset -= seriesBarWidth / 2    
     
     nodes = @graph.vis.selectAll("path").data(@series.stack).enter()
@@ -59,6 +59,15 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
     
   domain: ->
     domain = super()
+    # Domain is overriden by the bar_renderer to make all of the bars visible 
+    # in the chart container. This is however, undesired when we render stuff 
+    # of different types in one chart. We need all rendered charts to be drawn 
+    # with same domain.
+    # TODO: if it's possible, move this logic to the bar_renderer render method
+    return domain if @graph._hasDifferentRenderers()
+    
+    frequentInterval = @_frequentInterval()
+    domain.x[1] += parseInt(frequentInterval.magnitude)
     domain
   
   
@@ -90,4 +99,3 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
       frequentInterval
 
     frequentInterval
-  

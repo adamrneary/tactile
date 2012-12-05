@@ -1,4 +1,4 @@
-Tactile.LineRendere = class LineRenderer extends RendererBase
+Tactile.LineRenderer = class LineRenderer extends RendererBase
   name: "line"
   
   specificDefaults:

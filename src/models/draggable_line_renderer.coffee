@@ -8,6 +8,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     dotSize: 5
 
   initialize: ->
+    @afterDrag = @series.afterDrag || ->
     @dragged = @selected = null
     @_bindMouseEvents()
 
@@ -48,8 +49,6 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .on("touchend.drag", @_mouseUp)
       
   _datapointDrag: (d) =>
-     # TODO: is this needed ??
-    document.onselectstart = -> false
     @selected = @dragged = d
     @update()
 
@@ -61,9 +60,8 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       @update()
 
   _mouseUp: =>
-    document.onselectstart = -> true
-        
-    $(@graph).find('.selected').attr('class','')
+    @afterDrag(@dragged, @series.name) if @dragged
+    $(@graph).find('.selected').attr('class', '')
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
     @dragged = null if @dragged
