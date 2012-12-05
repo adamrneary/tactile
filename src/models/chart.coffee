@@ -1,12 +1,11 @@
 Tactile.Chart = class Chart
-  # Add your renderer here. Key should be equal to the renderer `name` property
+# Add your renderer here. Key should be equal to the renderer `name` property
   _renderers:
     'gauge': GaugeRenderer
     'bar': BarRenderer
     'line': LineRenderer
     'draggableLine': DraggableLineRenderer
   
-  window: {}  
   renderers: []
   
   defaults: 
@@ -17,10 +16,11 @@ Tactile.Chart = class Chart
     order: [] # multi renderer support
     
   constructor: (args) ->
+    @window = {}
     args = _.extend({}, @defaults, args)
     _.each args, (val, key) =>
       @[key] = val
-
+      
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
@@ -79,6 +79,7 @@ Tactile.Chart = class Chart
     data = @series.active()
       .map((d) -> d.data)
         .map((d) ->
+          # filter out data out of the currently viewed scope
           d.filter ((d) ->
             @_slice d
           ), @
@@ -116,6 +117,8 @@ Tactile.Chart = class Chart
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
+  # this trims data down to the range that is currently viewed. 
+  # See range_slider for a clue how it's used
   _slice: (d) ->
     if @window.xMin or @window.xMax
       isInRange = true
@@ -126,3 +129,6 @@ Tactile.Chart = class Chart
     
   _deg2rad: (deg) ->
     deg * Math.PI / 180
+
+  _hasDifferentRenderers: ->
+    _.uniq(_.map(@series, (s) -> s.renderer)).length > 1

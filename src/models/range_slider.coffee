@@ -1,7 +1,4 @@
-BaseView = require('views/shared/base_view')
-TimeSliderView  = require('views/shared/time_slider_view')
-
-module.exports = class RangeSlider extends BaseView
+Tactile.RangeSlider = class RangeSlider extends BaseView
   constructor: (options) ->
     @element = options.element
     @graph = options.graph
