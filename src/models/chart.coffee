@@ -6,8 +6,6 @@ Tactile.Chart = class Chart
     'line': LineRenderer
     'draggableLine': DraggableLineRenderer
   
-  renderers: []
-  
   defaults: 
     interpolation: 'monotone'
     offset: 'zero'
@@ -16,7 +14,9 @@ Tactile.Chart = class Chart
     order: [] # multi renderer support
     
   constructor: (args) ->
+    @renderers = []
     @window = {}
+    
     args = _.extend({}, @defaults, args)
     _.each args, (val, key) =>
       @[key] = val
