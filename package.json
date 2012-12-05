@@ -21,7 +21,8 @@
   "noAnalyze": true,
   "devDependencies": {
     "grunt"    :  "0.3.11",
-    "grunt-coffee"    :  "0.0.2"
+    "grunt-coffee"    :  "0.0.2",
+    "grunt-sass" :  "0.2.5"
   },
   "license": "NONE"
 }

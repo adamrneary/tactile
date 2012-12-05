@@ -1,6 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-coffee'); // http://github.com/avalade/grunt-coffee
+  grunt.loadNpmTasks('grunt-sass'); // https://github.com/sindresorhus/grunt-sass
   // Project configuration.
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -13,18 +14,29 @@ module.exports = function(grunt) {
     },
     coffee:{
         coffee:{
-            src: ['src/models/*'],
+            src: ['src/js/models/*'],
             dest: 'build/',
             options: {
                 bare: true
             }
         }       
     },
+    sass:{
+        dist:{
+            files:{
+                "dist/tactile.css":[
+                    "src/scss/mixins.scss",
+                    "src/scss/colors.scss",
+                    "src/scss/charts.scss"
+                ]              
+            }
+      }  
+    },
     concat: {
         dist: {
             src: ['<banner:meta.banner>', 
-                  'src/intro.js',
-                  'src/core.js',
+                  'src/js/intro.js',
+                  'src/js/score.js',
 
                   'build/fixtures_time.js',
                   'build/axis_y.js',
@@ -38,18 +50,11 @@ module.exports = function(grunt) {
                   'build/line_renderer.js',
                   'build/draggable_line_renderer.js',
 
-
 //                  'build/range_slider.js',
                   'build/chart.js',
-                  'src/outro.js'],
+                  'src/js/outro.js'],
             dest: 'dist/<%= pkg.name %>.js'
         }
-    },
-    lint: {
-      files: ['grunt.js', 'lib/**/*.js', 'test/**/*.js']
-    },
-    qunit: {
-      files: ['test/**/*.html']
     },
     min: {
       dist: {
@@ -81,7 +86,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint qunit coffee concat min');
-  grunt.registerTask('build', 'coffee concat min');
+  grunt.registerTask('default', 'sass coffee concat min');
+  grunt.registerTask('build', 'sass coffee concat min');
 
 };
