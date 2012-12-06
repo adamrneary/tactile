@@ -8,18 +8,16 @@
     <title>Test the tactile!</title>
   </head>
   <body>
-    <div id="test">
-    </div>
+    <div id="test"></div>
 
     <script type="text/javascript" >
       var chart = new Tactile.Chart({
-      data: [-10,1,10],
-      series: [
-        {
-         data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
-         renderer: "line"
-        }],
-      element: $("#test")[0]      
+        series: [
+          {
+            data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
+            renderer: "line"
+          }],
+        element: "#test"
       });
       chart.render()
     </script>   

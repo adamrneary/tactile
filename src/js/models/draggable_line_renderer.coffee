@@ -60,7 +60,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       @update()
 
   _mouseUp: =>
-    @afterDrag(@dragged, @series.name) if @dragged
+    @afterDrag(@dragged, @series) if @dragged
     $(@graph).find('.selected').attr('class', '')
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
