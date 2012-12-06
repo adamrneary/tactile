@@ -2,13 +2,16 @@
   <head>
     <script type="text/javascript" src="javascript/underscore.js"></script>
     <script type="text/javascript" src="javascript/jquery.js"></script>
+    <script type="text/javascript" src="javascript/jquery-ui.js"></script>
     <script type="text/javascript" src="javascript/d3.js"></script>
     <script type="text/javascript" src="../dist/tactile.js"></script>
     <link rel="stylesheet" type="text/css" href="css/test.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"/>
     <title>Test the tactile!</title>
   </head>
   <body>
     <div id="test"></div>
+    <div id="time-slider-container"></div>
 
     <script type="text/javascript" >
       var chart = new Tactile.Chart({
@@ -34,9 +37,21 @@
           }
 
         ],
-        element: "#test"
+        element: $("#test")[0]
       });
+      
+      new Tactile.AxisY({graph: chart});
+      new Tactile.AxisTime({graph: chart});
+      
       chart.render()
+      /*
+      new Tactile.RangeSlider({
+        graph: chart,
+        element: $('#time-slider-container'),
+        updateCallback: function(){},
+        initCallback: function(){}
+      });
+      */
     </script>   
   </body>
 </html>

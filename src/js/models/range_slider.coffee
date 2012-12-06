@@ -67,6 +67,5 @@ Tactile.RangeSlider = class RangeSlider
     @graph.window.xMin = values[0]
     @graph.window.xMax = values[1]
     @updateCallback(values, @element) 
-    window.mediator.trigger('timeframe:change', values)
     @graph.update()
     
