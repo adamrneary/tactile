@@ -48,7 +48,7 @@ module.exports = function(grunt) {
                   'build/line_renderer.js',
                   'build/draggable_line_renderer.js',
 
-//                  'build/range_slider.js',
+                  'build/range_slider.js',
                   'build/chart.js',
                   'src/js/outro.js'],
             dest: 'dist/<%= pkg.name %>.js'
