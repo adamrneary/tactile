@@ -1,4 +1,563 @@
-.graph-container path {
+/* Copied from the activecell repo. Lot's of useless stuff here, but don't worry. */
+
+#chart {
+  width: 938px;
+  height: 300px;
+  overflow: hidden;
+}
+
+/* line 14, ../../../app/assets/stylesheets/common/charts.scss */
+.graph-container {
+  margin-top: 20px;
+  position: relative;
+}
+/* line 18, ../../../app/assets/stylesheets/common/charts.scss */
+.graph-container .uncategorized {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px;
+  z-index: 1;
+  border-left: 1px solid #E6E6E6;
+  border-bottom: 1px solid #E6E6E6;
+  background: #fff;
+}
+/* line 28, ../../../app/assets/stylesheets/common/charts.scss */
+.graph-container .empty {
+  background: #F2F2F3;
+  color: #9B9DA1;
+  font-weight: bold;
+  height: 150px;
+  font-size: 18px;
+  line-height: 18px;
+  padding-top: 132px;
+  text-align: center;
+  width: 938px;
+}
+
+
+/* line 46, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-widget {
+  padding-left: 0;
+}
+
+/* line 51, ../../../app/assets/stylesheets/common/charts.scss */
+.main-d3-chart.graph-container {
+  left: 15px;
+}
+/* line 79, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container {
+  height: 225px;
+}
+/* line 82, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .bar {
+  fill: #30878f;
+}
+
+/* line 87, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container, .graph-container {
+  position: relative;
+}
+/* line 90, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container svg, .graph-container svg {
+  display: block;
+  overflow: hidden;
+}
+
+/* axes */
+/* line 104, ../../../app/assets/stylesheets/common/charts.scss */
+.y-ticks path {
+  fill: none;
+  stroke: #808080;
+}
+/* line 109, ../../../app/assets/stylesheets/common/charts.scss */
+.y-ticks .tick {
+  stroke: rgba(0, 0, 0, 0.16);
+  stroke-width: 2px;
+  shape-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+/* line 118, ../../../app/assets/stylesheets/common/charts.scss */
+.y-grid .tick {
+  z-index: -1;
+  stroke: rgba(0, 0, 0, 0.2);
+  stroke-width: 1px;
+  stroke-dasharray: 1 1;
+}
+/* line 124, ../../../app/assets/stylesheets/common/charts.scss */
+.y-grid path {
+  fill: none;
+  stroke: none;
+}
+
+/* line 130, ../../../app/assets/stylesheets/common/charts.scss */
+.y-ticks text {
+  opacity: 0.5;
+  font-size: 10px;
+  pointer-events: none;
+  fill: black;
+}
+
+/* line 137, ../../../app/assets/stylesheets/common/charts.scss */
+.x-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0px;
+  pointer-events: none;
+}
+/* line 138, ../../../app/assets/stylesheets/common/charts.scss */
+.x-tick.grid {
+  border-left: 1px dotted rgba(0, 0, 0, 0.2);
+}
+/* line 146, ../../../app/assets/stylesheets/common/charts.scss */
+.x-tick .title {
+  position: absolute;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  opacity: 0.5;
+  white-space: nowrap;
+  margin-left: 3px;
+  bottom: -10px;
+  left: -12px;
+}
+
+/* line 159, ../../../app/assets/stylesheets/common/charts.scss */
+.x-tick.glow .title, .y-ticks.glow text {
+  fill: black;
+  color: black;
+  text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* line 172, ../../../app/assets/stylesheets/common/charts.scss */
+.x-tick.inverse .title, .y-ticks.inverse text {
+  fill: white;
+  color: white;
+  text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* line 185, ../../../app/assets/stylesheets/common/charts.scss */
+#y-axis {
+  position: absolute;
+  bottom: 0;
+  width: 20px;
+  left: 5px;
+}
+
+/* line 192, ../../../app/assets/stylesheets/common/charts.scss */
+.y-axis {
+  fill: none;
+}
+
+/* line 197, ../../../app/assets/stylesheets/common/charts.scss */
+.axis.yAxis, .axis.xAxis {
+  text-transform: uppercase !important;
+  font-size: 11px;
+  font-weight: bold;
+  fill: #a69b9e;
+}
+/* line 202, ../../../app/assets/stylesheets/common/charts.scss */
+.axis.yAxis line, .axis.yAxis path {
+  stroke: #a69b9e;
+  stroke-width: 2px;
+}
+/* line 207, ../../../app/assets/stylesheets/common/charts.scss */
+.axis.yAxis .domain {
+  stroke: none;
+}
+
+/* line 213, ../../../app/assets/stylesheets/common/charts.scss */
+.axis {
+  shape-rendering: crispEdges;
+}
+
+/* line 218, ../../../app/assets/stylesheets/common/charts.scss */
+.xAxis.axis line {
+  stroke: #fff;
+}
+/* line 222, ../../../app/assets/stylesheets/common/charts.scss */
+.xAxis.axis .minor {
+  stroke-opacity: .5;
+}
+/* line 226, ../../../app/assets/stylesheets/common/charts.scss */
+.xAxis.axis path {
+  display: none;
+}
+
+/* line 231, ../../../app/assets/stylesheets/common/charts.scss */
+.yAxis.axis line, .yAxis.axis path {
+  fill: none;
+  stroke: #000;
+}
+
+/* legend */
+/* line 239, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .well {
+  display: inline-block;
+  padding: 5px;
+}
+/* line 244, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend {
+  margin: 1px 0 0 15px;
+  padding: 5px 0 0 0;
+  list-style: none;
+}
+/* line 260, ../../../app/assets/stylesheets/common/mixins.scss */
+#main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
+  display: table;
+  content: "";
+}
+/* line 264, ../../../app/assets/stylesheets/common/mixins.scss */
+#main-chart-legend .chart-legend:after {
+  clear: both;
+}
+/* line 251, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li {
+  float: left;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+  margin: 0 15px 5px 0;
+}
+/* line 256, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li span {
+  display: inline-block;
+  position: relative;
+  top: -2px;
+  margin: 0 6px 0 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 1em;
+  box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+/* line 266, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li span.point-noise {
+  background-color: #a69b9e;
+}
+/* line 267, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li span.point-dogs {
+  background-color: #dc6e59;
+}
+/* line 268, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li span.point-sprouts {
+  background-color: #19affe;
+}
+/* line 269, ../../../app/assets/stylesheets/common/charts.scss */
+#main-chart-legend .chart-legend li span.point-stars {
+  background-color: #8ac16f;
+}
+
+/* line 275, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-legend {
+  margin: 0 0 10px 10px;
+  color: #404040;
+  overflow: hidden;
+}
+/* line 280, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-legend .legend-item {
+  float: left;
+  overflow: hidden;
+  margin-right: 10px;
+}
+/* line 284, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-legend .legend-item .color, .chart-legend .legend-item .text {
+  float: left;
+}
+/* line 287, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-legend .legend-item .color {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #E6E6E6;
+  margin-right: 8px;
+}
+/* line 293, ../../../app/assets/stylesheets/common/charts.scss */
+.chart-legend .legend-item .text {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+/* hover detail */
+/* line 303, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail, .graph-container .detail {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  width: 1px;
+  -webkit-transition: opacity 0.25s linear;
+  -moz-transition: opacity 0.25s linear;
+  -ms-transition: opacity 0.25s linear;
+  -o-transition: opacity 0.25s linear;
+  transition: opacity 0.25s linear;
+}
+/* line 312, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail.inactive, .graph-container .detail.inactive {
+  opacity: 0;
+}
+/* line 316, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail.no-line, .graph-container .detail.no-line {
+  background: none;
+}
+/* line 320, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .item.active, .graph-container .detail .item.active {
+  opacity: 1;
+}
+/* line 324, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .x_label, .graph-container .detail .x_label {
+  font-family: Arial, sans-serif;
+  border-radius: 3px;
+  padding: 6px;
+  opacity: 0.5;
+  border: 1px solid #e0e0e0;
+  font-size: 12px;
+  position: absolute;
+  background: white;
+  white-space: nowrap;
+}
+/* line 335, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .item, .graph-container .detail .item {
+  text-transform: none;
+  position: absolute;
+  z-index: 2;
+  border-radius: 3px;
+  padding: 0.25em;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  margin-left: 1em;
+  margin-top: -1em;
+  white-space: nowrap;
+}
+/* line 350, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .item.active, .graph-container .detail .item.active {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.8);
+}
+/* line 354, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .item:before, .graph-container .detail .item:before {
+  content: "\25c2";
+  position: absolute;
+  left: -0.5em;
+  color: rgba(0, 0, 0, 0.7);
+  width: 0;
+}
+/* line 362, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .dot, .graph-container .detail .dot {
+  width: 4px;
+  height: 4px;
+  margin-left: -3px;
+  margin-top: -4px;
+  border-radius: 5px;
+  position: absolute;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  background: white;
+  border-width: 2px;
+  border-style: solid;
+  display: none;
+  background-clip: padding-box;
+}
+/* line 375, ../../../app/assets/stylesheets/common/charts.scss */
+.metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
+  display: block;
+}
+
+/* sankey */
+/* line 388, ../../../app/assets/stylesheets/common/charts.scss */
+.sankey-chart .node {
+  stroke: #fff;
+  stroke-width: 2px;
+}
+/* line 393, ../../../app/assets/stylesheets/common/charts.scss */
+.sankey-chart .link {
+  fill: none;
+  stroke: #000;
+  opacity: .3;
+}
+/* line 398, ../../../app/assets/stylesheets/common/charts.scss */
+.sankey-chart .link.on {
+  stroke: #F00;
+  opacity: .7;
+}
+/* line 403, ../../../app/assets/stylesheets/common/charts.scss */
+.sankey-chart .node {
+  stroke: none;
+}
+
+/* ScatterChart stylings */
+/* Designers: I used an SVG viewbox to dynamically resize the chart  */
+/* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
+/* You may find a better way to resize dynamically. */
+/* Please don't hesitate to contact me for any info: esbullington on github */
+/* line 416, ../../../app/assets/stylesheets/common/charts.scss */
+#scatter {
+  width: 65%;
+}
+
+/* line 420, ../../../app/assets/stylesheets/common/charts.scss */
+.scatter.xaxis path,
+.scatter.xaxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+/* line 427, ../../../app/assets/stylesheets/common/charts.scss */
+.scatter.yaxis path,
+.scatter.yaxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+/* line 434, ../../../app/assets/stylesheets/common/charts.scss */
+.scatter.xaxis text,
+.scatter.xaxis text {
+  fill: black;
+  font-size: 12px;
+}
+
+/* line 439, ../../../app/assets/stylesheets/common/charts.scss */
+.point {
+  stroke-width: 2px;
+  z-index: 100;
+}
+/* line 443, ../../../app/assets/stylesheets/common/charts.scss */
+.point.point-noise {
+  fill: #a69b9e;
+}
+/* line 444, ../../../app/assets/stylesheets/common/charts.scss */
+.point.point-dogs {
+  fill: #dc6e59;
+}
+/* line 445, ../../../app/assets/stylesheets/common/charts.scss */
+.point.point-sprouts {
+  fill: #19affe;
+}
+/* line 446, ../../../app/assets/stylesheets/common/charts.scss */
+.point.point-stars {
+  fill: #8ac16f;
+}
+
+/* line 450, ../../../app/assets/stylesheets/common/charts.scss */
+.draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
+  fill: #f1d8a6;
+}
+
+/* line 459, ../../../app/assets/stylesheets/common/charts.scss */
+.ui-button {
+  border: 1px solid #a69b9e;
+  padding: 5px;
+}
+
+/* line 466, ../../../app/assets/stylesheets/common/charts.scss */
+path.sparkline {
+  stroke: #30878f;
+  stroke-width: 1px;
+  fill: none;
+}
+/* line 471, ../../../app/assets/stylesheets/common/charts.scss */
+path.line {
+  fill: none;
+  stroke-width: 2px;
+}
+/* line 475, ../../../app/assets/stylesheets/common/charts.scss */
+path.area {
+  fill: #e7e7e7;
+}
+
+/* line 481, ../../../app/assets/stylesheets/common/charts.scss */
+div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
+  padding: 6px;
+}
+
+/* Leaderboard */
+/* line 488, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard.label {
+  fill: #a69b9e;
+  font-size: 20px;
+  font-weight: bold;
+}
+/* line 494, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard.value {
+  font-size: 27px;
+  fill: #3e3739;
+  text-anchor: end;
+  font-family: 'ProximaNova', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+/* line 502, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard.change {
+  fill: #a69b9e;
+  font-size: 12px;
+  font-family: 'ProximaNova', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+/* line 509, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard .triangle-down {
+  fill: #dc6e59;
+  stroke: none;
+}
+/* line 514, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard .triangle-up {
+  fill: #8ac16f;
+  stroke: none;
+}
+/* line 519, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard.track {
+  fill: #e2dedf;
+  stroke: none;
+}
+/* line 524, ../../../app/assets/stylesheets/common/charts.scss */
+.leaderboard.bar {
+  fill: #30878f;
+  stroke: none;
+}
+
+/* Gauge */
+/* line 533, ../../../app/assets/stylesheets/common/charts.scss */
+.gauge.arc {
+  fill: #e2dedf;
+}
+/* line 537, ../../../app/assets/stylesheets/common/charts.scss */
+.gauge.arc-value {
+  fill: #30878f;
+}
+/* line 541, ../../../app/assets/stylesheets/common/charts.scss */
+.gauge.pointer-circle {
+  fill: #faf9fa;
+  stroke: #bfbfbf;
+}
+/* line 546, ../../../app/assets/stylesheets/common/charts.scss */
+.gauge.pointer, .gauge.pointer-nail {
+  stroke: none;
+  fill: #4c4345;
+}
+/* line 551, ../../../app/assets/stylesheets/common/charts.scss */
+.gauge.label {
+  font-size: 27px;
+  fill: #3e3739;
+  text-anchor: middle;
+  font-family: 'ProximaNova', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+
+rect {
+  fill: #405192;
+}
+
+path {
   stroke: #30878F;
-  stroke-width: 2;
+  stroke-width: 3;
+}
+
+circle {
+  fill: #DE5A55;
 }
