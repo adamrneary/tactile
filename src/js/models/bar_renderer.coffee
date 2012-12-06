@@ -39,7 +39,7 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
       .attr("width", seriesBarWidth)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("transform", transform)
-      .attr("class", 'bar')
+      .attr("class", "bar #{if @series.color then '' else 'colorless'}")
       .attr("fill", @series.color)
       .attr("rx", edgeRatio)
       .attr("ry", edgeRatio)

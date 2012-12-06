@@ -56,19 +56,46 @@
 
 
         <div class="span9">
-          <h2 id="line_chart_with_view_finder">Bars and line</h2>
+          <h2 id="line_chart_with_view_finder">Stacked bars, y-axis with grid</h2>
 
           <div id="test"></div>
+          <div id="time-slider-container"></div>
+          
           <script type="text/javascript" >
             var chart = new Tactile.Chart({
+              width: 800,
+              unstack: false,
               series: [
                 {
-                  data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
-                  renderer: "line"
-                }],
+                  data: [ {x:0, y:5}, {x:1, y:1}, {x:2,y:5}, {x:3, y:7} ],
+                  renderer: "bar"
+                },
+                {
+                  // passing color this way is subject to change, obviously
+                  color: "#cedefa",
+                  data: [ {x:0, y:1}, {x:1, y:5}, {x:2,y:10}, {x:3, y:1} ],
+                  renderer: "bar"
+                },
+                {
+                  color: "indianred",
+                  data: [ {x:0, y:2}, {x:1, y:0}, {x:2,y:2}, {x:3, y:2} ],
+                  renderer: "bar"
+                }
+              ],
               element: $("#test")[0]
             });
+      
+            new Tactile.AxisY({graph: chart, grid: true});
+      
             chart.render()
+            /*
+      new Tactile.RangeSlider({
+        graph: chart,
+        element: $('#time-slider-container'),
+        updateCallback: function(){},
+        initCallback: function(){}
+      });
+             */
           </script>   
 
 
@@ -85,3 +112,5 @@
     </div>
   </body>
 </html>
+
+
