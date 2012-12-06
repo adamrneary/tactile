@@ -17,7 +17,12 @@ var barSeries = {
     color: 'blue',
     renderer: 'bar',
     wide: true,
-    data: barData,
+    dataTransform: function(d){
+        return {
+            x: d.x,
+            y: (10- d.y)
+        };
+    },
     xValue: get("x"),
     yValue: get("y"),
     tooltip: function(d){
@@ -32,7 +37,10 @@ var lineSeries = {
     name: 'example',
     color: 'red',
     renderer: 'line',
-    data: dataSeries,
+    dataTransform: function(d){
+        d.x += 10; //CAREFUL
+        return d
+    },
     xValue: get("x"),
     yValue: get("y"),
     tooltip: function(d){
