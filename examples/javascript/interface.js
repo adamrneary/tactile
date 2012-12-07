@@ -1,9 +1,11 @@
 //TODO: Figuring out what data comes from where. 
 
+
 var data = [];
-for (var i=0; i<20; i++){
-    var y = Math.random()*10;
-    data.push({x:i, yup: y , ydown: (10 -y) });
+var max = 100;
+for (var i=0; i<10; i++){
+    var y = Math.random()*max;
+    data.push({x:i, y:y});
 }
 
 function get(prop){
@@ -20,7 +22,7 @@ var barSeries = {
     dataTransform: function(d){
         return {
             x: d.x,
-            y: (10- d.y)
+            y: (max - d.y)
         };
     },
     xValue: get("x"),
@@ -38,8 +40,10 @@ var lineSeries = {
     color: 'red',
     renderer: 'line',
     dataTransform: function(d){
-        d.x += 10; //CAREFUL
-        return d
+        return {
+            x: d.x,
+            y: (2+d.y)
+        };
     },
     xValue: get("x"),
     yValue: get("y"),
@@ -58,6 +62,8 @@ var chart = new Tactile.Chart({
       },
       series:[barSeries,lineSeries],
       timeFrame: [-5, 6],
-      data: [0]                            
+      data: data,
+      element:$("#test")[0]                                  
       });
+
 chart.render();

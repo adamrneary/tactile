@@ -20,7 +20,7 @@ Tactile.Chart = class Chart
     args = _.extend({}, @defaults, args)
     _.each args, (val, key) =>
       @[key] = val
-      
+
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
@@ -42,8 +42,9 @@ Tactile.Chart = class Chart
     stackedData = @stackData()
     
     # clear everything
-    @vis.selectAll("*").remove()
-    
+    @vis.selectAll("*").remove() #WOAH! WHAT. NO, NOT COOL GUYS. -ZACK
+    axes = [@findAxis(@axes.x),@findAxis(@axes.y)]
+
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
@@ -66,7 +67,15 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height])
 
-
+  findAxis: (axisString)->
+    switch axisString
+      when "linear"
+        new Tactile.AxisY({graph: this})
+      when "time"
+        new Tactile.AxisTime({graph: this})
+      else
+        console.log("ERROR:#{axisString} is not currently implemented")
+                        
   # used in range slider
   dataDomain: ->
     # take from the first series
@@ -76,18 +85,14 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here: 
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-    data = @series.active()
-      .map((d) -> d.data)
-        .map((d) ->
-          # filter out data out of the currently viewed scope
-          d.filter ((d) ->
-            @_slice d
-          ), @
-        , @)
-  
+
+        
+    seriesData = @series.active().map((d) =>
+        @data.map(d.dataTransform).filter(@_slice))
+
     layout = d3.layout.stack()
     layout.offset(@offset)
-    stackedData = layout(data)
+    stackedData = layout(seriesData)
     
     i = 0
     @series.forEach (series) ->
