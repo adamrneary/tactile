@@ -8,7 +8,7 @@ _.map(examples,function(route){
           showcaseObject[route] = function(){
               $.get("javascript/"+route+".js",function(data){
                         $("#example_js").html(data);                        
-//                        eval(data);//TODO Find a better way to do this
+                        eval(data);//TODO Find a better way to do this
                         });
           };          
 });
