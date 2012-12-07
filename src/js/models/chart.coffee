@@ -6,21 +6,32 @@ Tactile.Chart = class Chart
     'line': LineRenderer
     'draggableLine': DraggableLineRenderer
   
-  defaults: 
+  mainDefaults: 
     interpolation: 'monotone'
     offset: 'zero'
     min: undefined
     max: undefined
     order: [] # multi renderer support
-    
+    axes:
+        x: "linear"
+        y: "linear"
+
+
+  seriesDefaults:
+    xValue: (d)-> d.x
+    yValue: (d)-> d.y
+    dataTransform: (d)->d
+
   constructor: (args) ->
     @renderers = []
     @window = {}
     
-    args = _.extend({}, @defaults, args)
+    args = _.extend({}, @mainDefaults, args)
+    args.series = _.map(args.series,(d)=> _.extend({},@seriesDefaults,d))
+    console.log(args)
     _.each args, (val, key) =>
       @[key] = val
-
+        
     @series.active = =>
       @series.filter (s) ->
         not s.disabled

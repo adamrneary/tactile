@@ -2,9 +2,11 @@
   <head>
     <script type="text/javascript" src="javascript/underscore.js"></script>
     <script type="text/javascript" src="javascript/jquery.js"></script>
+    <script type="text/javascript" src="javascript/backbone.js"></script>
     <script type="text/javascript" src="javascript/jquery-ui.js"></script>
     <script type="text/javascript" src="javascript/d3.js"></script>
-    <script type="text/javascript" src="../dist/tactile.js"></script>
+    <script type="text/javascript" src="javascript/tactile.js"></script>
+    <script type="text/javascript" src="javascript/index.js"></script>
     <link rel="stylesheet" type="text/css" href="css/test.css"/>
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
@@ -20,14 +22,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="http://nvd3.org">Tactile</a>
+          <a class="brand" href="http://www.activecell.com">Tactile</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="/examples"><i class="icon-white icon-home"></i> Home</a></li>
+              <li class="active"><a href="/"><i class="icon-white icon-home"></i> Home</a></li>
             </ul>
           </div><!--/.nav-collapse -->
-
-
         </div>
       </div>
     </div>
@@ -39,16 +39,16 @@
           <div class="well">
             <ul class="nav nav-list">
               <li class="nav-header">
-                Complete Charts
+                Example Charts
               </li>
               <li>
-                <a href="/examples">Simple Line</a>
+                <a href="/#simple-line">Simple Line</a>
               </li>
               <li>
-                <a href="/examples/bars-and-line-test.html">Bars and line</a>
+                <a href="/#bars-and-line">Bars and line</a>
               </li>
               <li>
-                <a href="/examples/stacked-bars-test.html">Stacked bars</a>
+                <a href="/#stacked-bars">Stacked bars</a>
               </li>
             </ul>
           </div>
@@ -56,32 +56,12 @@
 
 
         <div class="span9">
-          <h2 id="line_chart_with_view_finder">Bars and line</h2>
-
-          <div id="test"></div>
-          <script type="text/javascript" >
-            var chart = new Tactile.Chart({
-              series: [
-                {
-                  data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
-                  renderer: "line"
-                }],
-              element: $("#test")[0]
-            });
-            chart.render()
-          </script>   
-
-
+          <h2 id="example_header"></h2>
+          <div id="example_view"></div>
+          <pre id="example_js"></pre>
         </div>
-
-
-
       </div>
-
-
       <hr>
-
-
     </div>
   </body>
 </html>

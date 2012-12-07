@@ -1007,19 +1007,39 @@ Tactile.Chart = Chart = (function() {
     'draggableLine': DraggableLineRenderer
   };
 
-  Chart.prototype.defaults = {
+  Chart.prototype.mainDefaults = {
     interpolation: 'monotone',
     offset: 'zero',
     min: void 0,
     max: void 0,
-    order: []
+    order: [],
+    axes: {
+      x: "linear",
+      y: "linear"
+    }
+  };
+
+  Chart.prototype.seriesDefaults = {
+    xValue: function(d) {
+      return d.x;
+    },
+    yValue: function(d) {
+      return d.y;
+    },
+    dataTransform: function(d) {
+      return d;
+    }
   };
 
   function Chart(args) {
     var _this = this;
     this.renderers = [];
     this.window = {};
-    args = _.extend({}, this.defaults, args);
+    args = _.extend({}, this.mainDefaults, args);
+    args.series = _.map(args.series, function(d) {
+      return _.extend({}, _this.seriesDefaults, d);
+    });
+    console.log(args);
     _.each(args, function(val, key) {
       return _this[key] = val;
     });
