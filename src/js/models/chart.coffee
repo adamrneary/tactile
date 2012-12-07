@@ -42,7 +42,8 @@ Tactile.Chart = class Chart
     stackedData = @stackData()
     
     # clear everything
-    @vis.selectAll("*").remove() #WOAH! WHAT. NO, NOT COOL GUYS. -ZACK
+    #TODO: Change this to enter(), transition(), and exit() ASAP.
+    @vis.selectAll("*").remove() #
     axes = [@findAxis(@axes.x),@findAxis(@axes.y)]
 
     _.each @renderers, (renderer) =>
