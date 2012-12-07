@@ -548,8 +548,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   text-transform: uppercase;
 }
 
-
-rect {
+rect.colorless {
   fill: #405192;
 }
 

@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <script type="text/javascript" src="javascript/underscore.js"></script>
+    <script type="text/javascript" src="javascript/jquery.js"></script>
+    <script type="text/javascript" src="javascript/jquery-ui.js"></script>
+    <script type="text/javascript" src="javascript/d3.js"></script>
+    <script type="text/javascript" src="../dist/tactile.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/test.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+    <title>Test the tactile!</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://nvd3.org">Tactile</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="/examples"><i class="icon-white icon-home"></i> Home</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+
+
+        </div>
+      </div>
+    </div>
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="row">
+        <div class="span3">
+          <div class="well">
+            <ul class="nav nav-list">
+              <li class="nav-header">
+                Complete Charts
+              </li>
+              <li>
+                <a href="/examples">Simple Line</a>
+              </li>
+              <li>
+                <a href="/examples/bars-and-line-test.html">Bars and line</a>
+              </li>
+              <li>
+                <a href="/examples/stacked-bars-test.html">Stacked bars</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="span9">
+          <h2 id="line_chart_with_view_finder">Stacked bars, y-axis with grid</h2>
+
+          <div id="test"></div>
+          <div id="time-slider-container"></div>
+          
+          <script type="text/javascript" >
+            var chart = new Tactile.Chart({
+              width: 800,
+              unstack: false,
+              series: [
+                {
+                  data: [ {x:0, y:5}, {x:1, y:1}, {x:2,y:5}, {x:3, y:7} ],
+                  renderer: "bar"
+                },
+                {
+                  // passing color this way is subject to change, obviously
+                  color: "#cedefa",
+                  data: [ {x:0, y:1}, {x:1, y:5}, {x:2,y:10}, {x:3, y:1} ],
+                  renderer: "bar"
+                },
+                {
+                  color: "indianred",
+                  data: [ {x:0, y:2}, {x:1, y:0}, {x:2,y:2}, {x:3, y:2} ],
+                  renderer: "bar"
+                }
+              ],
+              element: $("#test")[0]
+            });
+      
+            new Tactile.AxisY({graph: chart, grid: true});
+      
+            chart.render()
+            /*
+      new Tactile.RangeSlider({
+        graph: chart,
+        element: $('#time-slider-container'),
+        updateCallback: function(){},
+        initCallback: function(){}
+      });
+             */
+          </script>   
+
+
+        </div>
+
+
+
+      </div>
+
+
+      <hr>
+
+
+    </div>
+  </body>
+</html>
+
+
