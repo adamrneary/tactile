@@ -43,6 +43,12 @@ Tactile.Chart = class Chart
     
     # clear everything
     @vis.selectAll("*").remove() #WOAH! WHAT. NO, NOT COOL GUYS. -ZACK
+    
+    # TODO: 
+    # it should be possible to pass options to the axes
+    # so far they were 
+    # for x: unit, ticksTreatment, grid 
+    # for y: orientation, pixelsPerTick, ticks and few more.
     axes = [@findAxis(@axes.x),@findAxis(@axes.y)]
 
     _.each @renderers, (renderer) =>
@@ -103,10 +109,13 @@ Tactile.Chart = class Chart
   setSize: (args) ->
     args = args || {}
     
-    @width = args.width || 400
-    @height = args.height || 400
+    elWidth = $(@element).width()
+    elHeight = $(@element).height()
     
-    @vis?.attr('width', @width).attr('height', @height)
+    @width = args.width || elWidth
+    @height = args.height || elHeight
+    
+    @vis?.attr('width', @width || elWidth).attr('height', @height || elHeight)
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
