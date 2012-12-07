@@ -1128,11 +1128,13 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.setSize = function(args) {
-    var _ref;
+    var elHeight, elWidth, _ref;
     args = args || {};
-    this.width = args.width || 400;
-    this.height = args.height || 400;
-    return (_ref = this.vis) != null ? _ref.attr('width', this.width).attr('height', this.height) : void 0;
+    elWidth = $(this.element).width();
+    elHeight = $(this.element).height();
+    this.width = args.width || elWidth;
+    this.height = args.height || elHeight;
+    return (_ref = this.vis) != null ? _ref.attr('width', this.width || elWidth).attr('height', this.height || elHeight) : void 0;
   };
 
   Chart.prototype.onUpdate = function(callback) {

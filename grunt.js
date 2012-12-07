@@ -89,7 +89,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'coffee concat min copy');
-  grunt.registerTask('build', 'coffee concat min copy');
+  grunt.registerTask('default', 'coffee compass concat min copy');
+  grunt.registerTask('build', 'coffee compass concat min copy');
 
 };
