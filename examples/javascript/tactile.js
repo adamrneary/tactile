@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-03
+/*! tactile - v0.0.1 - 2012-12-07
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -489,360 +489,6 @@ Tactile.HoverDetail = HoverDetail = (function() {
 
 })();
 
-var HoverDetailMulti,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-Tactile.HoverDetailMulti = HoverDetailMulti = (function() {
-
-  function HoverDetailMulti(args) {
-    this.update = __bind(this.update, this);
-
-    var element, graph, position;
-    graph = this.graph = args.graph;
-    this.option = args.option;
-    this.xFormatter = function(x) {
-      return new Date(x * 1000).toUTCString();
-    };
-    this.yFormatter = function(y) {
-      return y.toFixed(2);
-    };
-    element = this.element = document.createElement("div");
-    element.className = "detail";
-    this.visible = true;
-    graph.element.appendChild(element);
-    this.lastEvent = null;
-    this._addListeners();
-    this.onShow = args.onShow;
-    this.onHide = args.onHide;
-    this.onRender = args.onRender;
-    this.formatter = this.formatter;
-    position = $(graph.element).find('g:first').position();
-  }
-
-  HoverDetailMulti.prototype.formatter = function(series, x, y, formattedX, formattedY) {
-    return series.name + ":&nbsp;" + formattedY;
-  };
-
-  HoverDetailMulti.prototype.update = function(e) {
-    var dataIndex, defaultRenderer, element, eventX, eventY, graph, hoverDetail, option, origin, rendererOrder, seriesGroup, target;
-    hoverDetail = this;
-    graph = hoverDetail.graph;
-    e = e || hoverDetail.lastEvent;
-    if (!e) {
-      return;
-    }
-    hoverDetail.lastEvent = e;
-    if (!e.target.nodeName.match(/^(path|svg|rect)$/)) {
-      return;
-    }
-    eventX = e.offsetX || e.layerX;
-    eventY = e.offsetY || e.layerY;
-    origin = hoverDetail.getStatus();
-    target = hoverDetail.targetIndex(e);
-    dataIndex = target.index;
-    defaultRenderer = graph.defaultRenderer || "stack";
-    seriesGroup = {};
-    rendererOrder = ["stack", "area", "line", "draggableLine", "scatterplot", "bar"];
-    graph.order.forEach(function(order) {
-      var index;
-      index = rendererOrder.indexOf(order);
-      if (index >= 0) {
-        rendererOrder.splice(index, 1);
-        return rendererOrder.push(order);
-      }
-    });
-    graph.series.forEach(function(series) {
-      var rendererName;
-      rendererName = defaultRenderer;
-      if (series.disabled) {
-        return;
-      }
-      if (series.hasOwnProperty("renderer")) {
-        rendererName = series.renderer;
-      }
-      if (!seriesGroup.hasOwnProperty(rendererName)) {
-        seriesGroup[rendererName] = {
-          series: [],
-          element: null
-        };
-      }
-      return seriesGroup[rendererName].series.push(series);
-    });
-    element = hoverDetail.element;
-    option = hoverDetail.option;
-    element.innerHTML = "";
-    rendererOrder.forEach(function(rendererName) {
-      var activeItem, detail, domainMouseY, domainX, formattedXValue, graphX, left, order, position, series, sortFn, stackedData;
-      if (!seriesGroup.hasOwnProperty(rendererName)) {
-        return;
-      }
-      if (target.renderer !== rendererName) {
-        return;
-      }
-      series = seriesGroup[rendererName];
-      graph.series = series.series;
-      graph.series.active = function() {
-        return graph.series.filter(function(s) {
-          return !s.disabled;
-        });
-      };
-      stackedData = graph.stackData();
-      graph.discoverRange();
-      position = $(graph.element).find("g." + rendererName).position();
-      hoverDetail.setParam(option[rendererName]);
-      if (!stackedData[0][dataIndex]) {
-        return;
-      }
-      domainX = stackedData[0][dataIndex].x;
-      formattedXValue = hoverDetail.xFormatter(domainX);
-      graphX = graph.x(domainX);
-      order = 0;
-      detail = graph.series.active().map(function(s) {
-        return {
-          order: order++,
-          series: s,
-          name: s.name,
-          value: s.stack[dataIndex]
-        };
-      });
-      activeItem = void 0;
-      sortFn = function(a, b) {
-        return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
-      };
-      domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - eventY);
-      detail.sort(sortFn).forEach((function(d) {
-        d.formattedYValue = (hoverDetail.yFormatter.constructor === Array ? hoverDetail.yFormatter[detail.indexOf(d)](d.value.y) : hoverDetail.yFormatter(d.value.y));
-        d.graphX = graphX;
-        d.graphY = graph.y(d.value.y0 + d.value.y);
-        if (domainMouseY > d.value.y0 && domainMouseY.toFixed() - 1 < d.value.y0 + d.value.y && !activeItem) {
-          activeItem = d;
-          return d.active = true;
-        }
-      }), hoverDetail);
-      left = graph.x(domainX);
-      element.style.left = left + "px";
-      if (hoverDetail.visible) {
-        return hoverDetail.render({
-          detail: detail,
-          domainX: domainX,
-          formattedXValue: formattedXValue,
-          mouseX: eventX,
-          mouseY: eventY
-        });
-      }
-    });
-    return hoverDetail.putStatus(origin);
-  };
-
-  HoverDetailMulti.prototype.targetIndex = function(e) {
-    var activeItem, approximateIndex, dataIndex, detail, domainIndexScale, domainMouseY, domainX, eventX, eventY, formattedXValue, graph, graphX, hoverDetail, i, leftOffset, order, sortFn, stackedData, target, topSeriesData;
-    target = {};
-    e = e || this.lastEvent;
-    if (!e) {
-      return;
-    }
-    this.lastEvent = e;
-    if (!e.target.nodeName.match(/^(path|svg|rect)$/)) {
-      return;
-    }
-    hoverDetail = this;
-    graph = hoverDetail.graph;
-    eventX = e.offsetX || e.layerX;
-    eventY = e.offsetY || e.layerY;
-    leftOffset = eventX;
-    leftOffset = leftOffset > 0 ? leftOffset : 0;
-    domainX = graph.x.invert(leftOffset);
-    stackedData = graph.stackedData;
-    topSeriesData = stackedData.slice(-1).shift();
-    domainIndexScale = d3.scale.linear().domain([topSeriesData[0].x, topSeriesData.slice(-1).shift().x + 1]).range([0, topSeriesData.length]);
-    approximateIndex = Math.floor(domainIndexScale(domainX));
-    dataIndex = approximateIndex || 0;
-    i = approximateIndex;
-    while (i < stackedData[0].length - 1) {
-      if (!stackedData[0][i] || !stackedData[0][i + 1]) {
-        break;
-      }
-      if (stackedData[0][i].x <= domainX && stackedData[0][i + 1].x > domainX) {
-        stackedData[0][i].x;
-        dataIndex = i;
-        break;
-      }
-      if (stackedData[0][i + 1].x <= domainX) {
-        i++;
-      } else {
-        i--;
-      }
-    }
-    target.index = dataIndex;
-    if (!stackedData[0][dataIndex]) {
-      return target;
-    }
-    domainX = stackedData[0][dataIndex].x;
-    formattedXValue = this.xFormatter(domainX);
-    graphX = graph.x(domainX);
-    order = 0;
-    detail = graph.series.active().map(function(s) {
-      return {
-        order: order++,
-        series: s,
-        name: s.name,
-        value: s.stack[dataIndex]
-      };
-    });
-    activeItem = void 0;
-    sortFn = function(a, b) {
-      return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
-    };
-    domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - eventY);
-    detail.sort(sortFn).forEach((function(d) {
-      d.formattedYValue = (this.yFormatter.constructor === Array ? this.yFormatter[detail.indexOf(d)](d.value.y) : this.yFormatter(d.value.y));
-      d.graphX = graphX;
-      d.graphY = graph.y(d.value.y0 + d.value.y);
-      activeItem = d;
-      return d.active = true;
-    }), this);
-    if (activeItem) {
-      target.renderer = activeItem.series.renderer;
-    }
-    return target;
-  };
-
-  HoverDetailMulti.prototype.hide = function() {
-    this.visible = false;
-    this.element.classList.add("inactive");
-    if (typeof this.onHide === "function") {
-      return this.onHide();
-    }
-  };
-
-  HoverDetailMulti.prototype.show = function() {
-    this.visible = true;
-    this.element.classList.remove("inactive");
-    if (typeof this.onShow === "function") {
-      return this.onShow();
-    }
-  };
-
-  HoverDetailMulti.prototype.render = function(args) {
-    var detail, domainX, element, formattedXValue, mouseX, mouseY, xLabel;
-    element = this.element;
-    detail = args.detail;
-    domainX = args.domainX;
-    mouseX = args.mouseX;
-    mouseY = args.mouseY;
-    formattedXValue = args.formattedXValue;
-    xLabel = document.createElement("div");
-    xLabel.className = "x_label";
-    xLabel.innerHTML = formattedXValue;
-    element.appendChild(xLabel);
-    detail.forEach((function(d) {
-      var dot, item;
-      item = document.createElement("div");
-      item.className = "item";
-      item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue);
-      item.style.top = this.graph.y(d.value.y0 + d.value.y) + "px";
-      element.appendChild(item);
-      dot = document.createElement("div");
-      dot.className = "dot";
-      dot.style.top = item.style.top;
-      dot.style.borderColor = d.series.color;
-      element.appendChild(dot);
-      if (d.active) {
-        item.className = "item active";
-        return dot.className = "dot active";
-      }
-    }), this);
-    this.show();
-    if (typeof this.onRender === "function") {
-      return this.onRender(args);
-    }
-  };
-
-  HoverDetailMulti.prototype._addListeners = function() {
-    this.graph.element.addEventListener("mousemove", (function(e) {
-      this.visible = true;
-      return this.update(e);
-    }).bind(this), false);
-    this.graph.onUpdate((function() {
-      return this.update();
-    }).bind(this));
-    return this.graph.element.addEventListener("mouseout", (function(e) {
-      if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(this.graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
-        return this.hide();
-      }
-    }).bind(this), false);
-  };
-
-  HoverDetailMulti.prototype.getStatus = function() {
-    var graph, origin_renderer, origin_series, origin_stackedData, origin_vis, origin_x, origin_y;
-    graph = this.graph;
-    origin_renderer = graph.renderer;
-    origin_series = graph.series;
-    origin_vis = graph.vis;
-    origin_stackedData = graph.stackedData;
-    origin_x = graph.x;
-    origin_y = graph.y;
-    return {
-      renderer: origin_renderer,
-      series: origin_series,
-      vis: origin_vis,
-      stackedData: origin_stackedData,
-      x: origin_x,
-      y: origin_y
-    };
-  };
-
-  HoverDetailMulti.prototype.putStatus = function(status) {
-    var graph;
-    graph = this.graph;
-    if (status.hasOwnProperty("renderer")) {
-      graph.renderer = status["renderer"];
-    }
-    if (status.hasOwnProperty("series")) {
-      graph.series = status["series"];
-    }
-    if (status.hasOwnProperty("vis")) {
-      graph.vis = status["vis"];
-    }
-    if (status.hasOwnProperty("stackedData")) {
-      graph.stackedData = status["stackedData"];
-    }
-    if (status.hasOwnProperty("x")) {
-      graph.x = status["x"];
-    }
-    if (status.hasOwnProperty("y")) {
-      return graph.y = status["y"];
-    }
-  };
-
-  HoverDetailMulti.prototype.setParam = function(param) {
-    if (param) {
-      this.onShow = param.onShow;
-      this.onHide = param.onHide;
-      this.onRender = param.onRender;
-      this.xFormatter = param.xFormatter || function(x) {
-        return new Date(x * 1000).toUTCString();
-      };
-      this.yFormatter = param.yFormatter || function(y) {
-        return y.toFixed(2);
-      };
-      return this.formatter = param.formatter || this.formatter;
-    } else {
-      this.onShow = this.onHide = this.onRender = null;
-      this.xFormatter = function(x) {
-        return new Date(x * 1000).toUTCString();
-      };
-      this.yFormatter = function(y) {
-        return y.toFixed(2);
-      };
-      return this.formatter = this.formatter;
-    }
-  };
-
-  return HoverDetailMulti;
-
-})();
-
 var RendererBase;
 
 Tactile.RendererBase = RendererBase = (function() {
@@ -853,7 +499,7 @@ Tactile.RendererBase = RendererBase = (function() {
     strokeWidth: 3,
     unstack: true,
     padding: {
-      top: 0.01,
+      top: 0.03,
       right: 0,
       bottom: 0.02,
       left: 0
@@ -969,9 +615,9 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     maxAngle = 85;
     angleRange = maxAngle - minAngle;
     plotValue = this.value;
-    r = Math.round(this.height / totalSizeDivide);
-    translateWidth = (this.width - this.padding.right) / 2;
-    translateHeight = this.height * this.bottomOffset;
+    r = Math.round(this.graph.height / totalSizeDivide);
+    translateWidth = (this.graph.width - this.padding.right) / 2;
+    translateHeight = this.graph.height * this.bottomOffset;
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
     arcs = this.graph.vis.append("g").attr("class", "gauge arc").attr("transform", originTranslate);
@@ -985,26 +631,23 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     pg = this.graph.vis.append("g").data([lineData]).attr("class", "gauge pointer").attr("transform", originTranslate);
     pointer = pg.append("path").attr("d", pointerLine);
     pointer.transition().duration(250).attr("transform", "rotate(" + plotAngle + ")");
-    this.graph.vis.append("svg:circle").attr("r", this.width / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
-    this.graph.vis.append("svg:circle").attr("r", this.width / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
-    if (this.labels) {
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
+    if (this.series.labels) {
       return this.renderLabels();
     }
   };
 
   GaugeRenderer.prototype.renderLabels = function() {
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.width) + ", " + (1.15 * this.height * this.bottomOffset) + ")");
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.width - this.margin.right) / 1.95) + ", " + (1.20 * this.height * this.bottomOffset) + ")");
-    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.width) + ", " + (1.15 * this.height * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width - this.margin.right) / 1.95) + ", " + (1.20 * this.graph.height * this.bottomOffset) + ")");
+    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
   };
 
   GaugeRenderer.prototype.domain = function() {
-    var stackedData, values;
-    values = [];
-    stackedData = this.graph.stackedData || this.graph.stackData();
-    this.value = stackedData[0][0].value;
-    this.min = stackedData[0][0].min;
-    this.max = stackedData[0][0].max;
+    this.value = this.series.data[0].value;
+    this.min = this.series.data[0].min;
+    this.max = this.series.data[0].max;
     return [this.min, this.max];
   };
 
@@ -1027,7 +670,7 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
   BarRenderer.prototype.name = "bar";
 
   BarRenderer.prototype.specificDefaults = {
-    gapSize: 0.1,
+    gapSize: 0.15,
     tension: null,
     round: true
   };
@@ -1049,7 +692,7 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
-    edgeRatio = this.round ? Math.round(0.05783 * seriesBarWidth + 1) : 0;
+    edgeRatio = this.series.round ? Math.round(0.05783 * seriesBarWidth + 1) : 0;
     yValue = function(d) {
       if (_this.unstack) {
         return (_this.graph.y(Math.abs(d.y))) * (d.y < 0 ? -1 : 1);
@@ -1057,16 +700,14 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
         return (_this.graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1);
       }
     };
-    if (_.uniq(_.map(this.graph.series, function(s) {
-      return s.renderer;
-    })).length > 1) {
+    if (this.graph._hasDifferentRenderers()) {
       barXOffset -= seriesBarWidth / 2;
     }
     nodes = this.graph.vis.selectAll("path").data(this.series.stack).enter().append("svg:rect").attr("x", function(d) {
       return _this.graph.x(d.x) + barXOffset;
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("transform", transform).attr("class", 'bar').attr("fill", this.series.color).attr("rx", edgeRatio).attr("ry", edgeRatio);
+    }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("rx", edgeRatio).attr("ry", edgeRatio);
     if (this.unstack) {
       return barXOffset += seriesBarWidth;
     }
@@ -1089,8 +730,13 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
   };
 
   BarRenderer.prototype.domain = function() {
-    var domain;
+    var domain, frequentInterval;
     domain = BarRenderer.__super__.domain.call(this);
+    if (this.graph._hasDifferentRenderers()) {
+      return domain;
+    }
+    frequentInterval = this._frequentInterval();
+    domain.x[1] += parseInt(frequentInterval.magnitude);
     return domain;
   };
 
@@ -1131,7 +777,7 @@ var LineRenderer,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Tactile.LineRendere = LineRenderer = (function(_super) {
+Tactile.LineRenderer = LineRenderer = (function(_super) {
 
   __extends(LineRenderer, _super);
 
@@ -1192,6 +838,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype.initialize = function() {
+    this.afterDrag = this.series.afterDrag || function() {};
     this.dragged = this.selected = null;
     return this._bindMouseEvents();
   };
@@ -1249,9 +896,6 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._datapointDrag = function(d) {
-    document.onselectstart = function() {
-      return false;
-    };
     this.selected = this.dragged = d;
     return this.update();
   };
@@ -1267,9 +911,9 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._mouseUp = function() {
-    document.onselectstart = function() {
-      return true;
-    };
+    if (this.dragged) {
+      this.afterDrag(this.dragged, this.series);
+    }
     $(this.graph).find('.selected').attr('class', '');
     d3.select("body").style("cursor", "auto");
     d3.select("body").style("cursor", "auto");
@@ -1286,6 +930,72 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
 
 })(RendererBase);
 
+var RangeSlider,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Tactile.RangeSlider = RangeSlider = (function() {
+
+  function RangeSlider(options) {
+    this.updateGraph = __bind(this.updateGraph, this);
+
+    var _this = this;
+    this.element = options.element;
+    this.graph = options.graph;
+    this.timeSliderClass = options.sliderClass;
+    this.updateCallback = options.updateCallback || function() {};
+    this.initCallback = options.updateCallback || function() {};
+    $(function() {
+      var sliderContainer, values;
+      values = options.values || [_this.graph.dataDomain()[0], _this.graph.dataDomain()[1]];
+      _this.initCallback(values, _this.element);
+      _this.updateGraph(values);
+      if (_this.timeSliderClass) {
+        sliderContainer = _this.element.find(_this.timeSliderClass);
+      } else {
+        sliderContainer = _this.element;
+      }
+      return sliderContainer.slider({
+        range: true,
+        min: _this.graph.dataDomain()[0],
+        max: _this.graph.dataDomain()[1],
+        values: values,
+        slide: function(event, ui) {
+          _this.updateGraph(ui.values);
+          if (_this.graph.dataDomain()[0] === ui.values[0]) {
+            _this.graph.window.xMin = void 0;
+          }
+          if (_this.graph.dataDomain()[1] === ui.values[1]) {
+            return _this.graph.window.xMax = void 0;
+          }
+        }
+      });
+    });
+    this.graph.onUpdate(function() {
+      var values;
+      values = $(_this.element).slider("option", "values");
+      $(_this.element).slider("option", "min", _this.graph.dataDomain()[0]);
+      $(_this.element).slider("option", "max", _this.graph.dataDomain()[1]);
+      if (_this.graph.window.xMin === void 0) {
+        values[0] = _this.graph.dataDomain()[0];
+      }
+      if (_this.graph.window.xMax === void 0) {
+        values[1] = _this.graph.dataDomain()[1];
+      }
+      return $(_this.element).slider("option", "values", values);
+    });
+  }
+
+  RangeSlider.prototype.updateGraph = function(values) {
+    this.graph.window.xMin = values[0];
+    this.graph.window.xMax = values[1];
+    this.updateCallback(values, this.element);
+    return this.graph.update();
+  };
+
+  return RangeSlider;
+
+})();
+
 var Chart;
 
 Tactile.Chart = Chart = (function() {
@@ -1297,10 +1007,6 @@ Tactile.Chart = Chart = (function() {
     'draggableLine': DraggableLineRenderer
   };
 
-  Chart.prototype.window = {};
-
-  Chart.prototype.renderers = [];
-
   Chart.prototype.defaults = {
     interpolation: 'monotone',
     offset: 'zero',
@@ -1311,7 +1017,8 @@ Tactile.Chart = Chart = (function() {
 
   function Chart(args) {
     var _this = this;
-    console.log(args);
+    this.renderers = [];
+    this.window = {};
     args = _.extend({}, this.defaults, args);
     _.each(args, function(val, key) {
       return _this[key] = val;
@@ -1332,13 +1039,14 @@ Tactile.Chart = Chart = (function() {
   }
 
   Chart.prototype.render = function() {
-    var stackedData,
+    var axes, stackedData,
       _this = this;
     if (this.renderers === void 0 || _.isEmpty(this.renderers)) {
       return;
     }
     stackedData = this.stackData();
     this.vis.selectAll("*").remove();
+    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
     _.each(this.renderers, function(renderer) {
       _this.discoverRange(renderer);
       return renderer.render();
@@ -1362,6 +1070,21 @@ Tactile.Chart = Chart = (function() {
     }
   };
 
+  Chart.prototype.findAxis = function(axisString) {
+    switch (axisString) {
+      case "linear":
+        return new Tactile.AxisY({
+          graph: this
+        });
+      case "time":
+        return new Tactile.AxisTime({
+          graph: this
+        });
+      default:
+        return console.log("ERROR:" + axisString + " is not currently implemented");
+    }
+  };
+
   Chart.prototype.dataDomain = function() {
     var data;
     data = this.series[0].data;
@@ -1369,17 +1092,14 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.stackData = function() {
-    var data, i, layout, stackedData;
-    data = this.series.active().map(function(d) {
-      return d.data;
-    }).map(function(d) {
-      return d.filter((function(d) {
-        return this._slice(d);
-      }), this);
-    }, this);
+    var i, layout, seriesData, stackedData,
+      _this = this;
+    seriesData = this.series.active().map(function(d) {
+      return _this.data.map(d.dataTransform).filter(_this._slice);
+    });
     layout = d3.layout.stack();
     layout.offset(this.offset);
-    stackedData = layout(data);
+    stackedData = layout(seriesData);
     i = 0;
     this.series.forEach(function(series) {
       return series.stack = stackedData[i++];
@@ -1434,6 +1154,12 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype._deg2rad = function(deg) {
     return deg * Math.PI / 180;
+  };
+
+  Chart.prototype._hasDifferentRenderers = function() {
+    return _.uniq(_.map(this.series, function(s) {
+      return s.renderer;
+    })).length > 1;
   };
 
   return Chart;

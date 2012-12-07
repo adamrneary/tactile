@@ -1,7 +1,8 @@
 /*global module:false*/
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-coffee'); // http://github.com/avalade/grunt-coffee
-  grunt.loadNpmTasks('grunt-sass'); // https://github.com/sindresorhus/grunt-sass
+  grunt.loadNpmTasks('grunt-compass'); // https://github.com/sindresorhus/grunt-sass
+  grunt.loadNpmTasks('grunt-contrib-copy'); // https://github.com/sindresorhus/grunt-sass
   // Project configuration.
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -18,16 +19,20 @@ module.exports = function(grunt) {
             dest: 'build/'
         }       
     },
-    sass:{
+    compass:{
+        dev:{
+            src: 'src/scss',
+            specify: 'src/scss/charts.scss',
+            dest: 'dist'            
+      }  
+    },
+    copy:{
         dist:{
             files:{
-                "dist/tactile.css":[
-                    "src/scss/mixins.scss",
-                    "src/scss/colors.scss",
-                    "src/scss/charts.scss"
-                ]              
+                "examples/javascript/":"dist/tactile.js",
+                "examples/css/":"dist/charts.css"
             }
-      }  
+        }        
     },
     concat: {
         dist: {
@@ -84,7 +89,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'coffee concat min');
-  grunt.registerTask('build', 'coffee concat min');
+  grunt.registerTask('default', 'coffee concat min copy');
+  grunt.registerTask('build', 'coffee concat min copy');
 
 };
