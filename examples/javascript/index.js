@@ -32,7 +32,11 @@ $(document).ready(function(){
                                     var url = "javascript/"+route.shortLink+".js";
                                     var script = $("<script>").attr("src",url);
                                     $("#example_view").empty().append(script);
-                                    $("#example_js").load(url);
+                                    $("#example_js").load(url,function(){
+                                                              $(this).removeClass("rainbow");
+                                                              Rainbow.color();
+                                                              });
+                                    Rainbow.color();
                                 };          
                             });
 
