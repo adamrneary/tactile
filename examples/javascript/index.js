@@ -31,5 +31,5 @@ $(document).ready(function(){
                       var showcase = new Showcase();
 
                       Backbone.history.start();
-                      showcase.navigate("/#bars-and-line"); // TODO: should be switch iff no provided hashlinks.
+                      showcase.navigate("/#simple-line"); // TODO: should be switch iff no provided hashlinks.
                   });
