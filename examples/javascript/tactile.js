@@ -839,6 +839,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
 
   DraggableLineRenderer.prototype.initialize = function() {
     this.afterDrag = this.series.afterDrag || function() {};
+    this.onDrag = this.series.onDrag || function() {};
     this.dragged = this.selected = null;
     return this._bindMouseEvents();
   };
@@ -906,6 +907,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     t = d3.event.changedTouches;
     if (this.dragged) {
       this.dragged.y = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
     }
   };
