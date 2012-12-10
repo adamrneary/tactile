@@ -101,6 +101,16 @@
 /* axes */
 
 .y-ticks {
+  &.plain {
+    path {
+      fill: none;
+      stroke: none;
+    }
+    
+    .tick {
+      stroke: none;
+    }
+  }
   path {
     fill: none;
     stroke: #808080;
@@ -316,11 +326,11 @@
   &.no-line {
     background: none;
   }
-
+  
   .item.active {
     opacity: 1;
   }
-
+  
   .x_label {
     font-family: Arial, sans-serif;
     border-radius: 3px;
@@ -452,6 +462,10 @@
   }
 }
 
+rect.colorless {
+  fill: $blue-40;
+}
+
 
 
 // LINE
@@ -463,6 +477,10 @@
 
 
 path {
+  &.colorless {
+    stroke: $blue-30;
+  }
+  
   &.sparkline {
     stroke: $primary;
     stroke-width: 1px;
