@@ -13,17 +13,14 @@ $(document).ready(function(){
                                 var link = $("<a>")
                                     .attr("href","/#"+route.shortLink)
                                     .text(route.title);
-                                linkList.append( $("<li>").append(link));
+                                linkList.append($("<li>").append(link));
 
                                 showcaseObject.routes[route.shortLink] = route.shortLink;
                                 showcaseObject[route.shortLink] = function(){
                                     $("#example_view").html("");
                                     $("#example_header").text(route.title);
-                                    console.log("yo",route.shortLink);
-                                    $.get("javascript/"+route.shortLink+".js",function(data){
-                                              console.log("yo",data);
-                                              $("#example_js").html(data);
-                                          });
+                                    $.get("javascript/"+route.shortLink+".js",
+                                          $("#example_js").html);  
                                 };          
                             });
 
@@ -31,5 +28,8 @@ $(document).ready(function(){
                       var showcase = new Showcase();
 
                       Backbone.history.start();
-                      showcase.navigate("/#simple-line"); // TODO: should be switch iff no provided hashlinks.
+                      if(!window.location.hash) {
+                          showcase.navigate("/#simple-line");
+                      }
+
                   });
