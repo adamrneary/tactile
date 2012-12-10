@@ -28,12 +28,11 @@ $(document).ready(function(){
 
                                 showcaseObject.routes[route.shortLink] = route.shortLink;
                                 showcaseObject[route.shortLink] = function(){
-                                    $("#example_view").html("");
                                     $("#example_header").text(route.title);
-                                    $.get("javascript/"+route.shortLink+".js",function(data){
-                                          $("#example_js").html(data);
-                                          });
-
+                                    var url = "javascript/"+route.shortLink+".js";
+                                    var script = $("<script>").attr("src",url);
+                                    $("#example_view").empty().append(script);
+                                    $("#example_js").load(url);
                                 };          
                             });
 
