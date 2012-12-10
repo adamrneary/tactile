@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-07
+/*! tactile - v0.0.1 - 2012-12-09
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -1039,7 +1039,6 @@ Tactile.Chart = Chart = (function() {
     args.series = _.map(args.series, function(d) {
       return _.extend({}, _this.seriesDefaults, d);
     });
-    console.log(args);
     _.each(args, function(val, key) {
       return _this[key] = val;
     });

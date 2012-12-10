@@ -28,7 +28,6 @@ Tactile.Chart = class Chart
     
     args = _.extend({}, @mainDefaults, args)
     args.series = _.map(args.series,(d)=> _.extend({},@seriesDefaults,d))
-    console.log(args)
     _.each args, (val, key) =>
       @[key] = val
         

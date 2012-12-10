@@ -1,26 +1,27 @@
+var examples = [
+    {shortLink:"simple-line", title: "Simple Line"},
+    {shortLink:"bars-and-line", title: "Bars and Line"},
+    {shortLink:"stacked-bars", title: "Stacked Bars"}
+];
+
+var showcaseObject = {routes:{}};
+
+
 $(document).ready(function(){
-                      var examples = [
-                          {shortLink:"simple-line", title: "Simple Line"},
-                          {shortLink:"bars-and-line", title: "Bars and Line"},
-                          {shortLink:"stacked-bars", title: "Stacked Bars"}
-                      ];
-
-
-
-                      var showcaseObject = {routes:{}};
                       var linkList = $("#linkList");
-
                       _.map(examples,function(route){
-                                console.log(route.shortLink,route.title);
-                                var link = $("<a>").attr("href","/#"+route.shortLink).text(route.title);
-                                var li = $("<li>").append(link);
-                                linkList.append(li);
-                                console.log(link,li);
+                                var link = $("<a>")
+                                    .attr("href","/#"+route.shortLink)
+                                    .text(route.title);
+                                linkList.append( $("<li>").append(link));
 
                                 showcaseObject.routes[route.shortLink] = route.shortLink;
                                 showcaseObject[route.shortLink] = function(){
                                     $("#example_view").html("");
+                                    $("#example_header").text(route.title);
+                                    console.log("yo",route.shortLink);
                                     $.get("javascript/"+route.shortLink+".js",function(data){
+                                              console.log("yo",data);
                                               $("#example_js").html(data);
                                           });
                                 };          
@@ -28,6 +29,7 @@ $(document).ready(function(){
 
                       var Showcase = Backbone.Router.extend(showcaseObject);
                       var showcase = new Showcase();
+
                       Backbone.history.start();
-                      showcase.navigate("/#simple-line");
+                      showcase.navigate("/#bars-and-line"); // TODO: should be switch iff no provided hashlinks.
                   });
