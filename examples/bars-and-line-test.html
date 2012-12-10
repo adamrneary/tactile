@@ -58,10 +58,42 @@
         <div class="span9">
           <h2 id="line_chart_with_view_finder">Just a Line</h2>
 
-          <div id="test"></div>
+          <div id="example_view"></div>
           <div id="time-slider-container"></div>
-          
+
           <script type="text/javascript" >
+            
+//            var chart = new Tactile.Chart({
+//                series: [{renderer: "line"}],
+//                data: [{x:0, y:0},{x:1, y:1},{x:2,y:2}],
+//                element: $("#example_view")[0],
+//                height: 400,
+//                width: 500
+//            });
+            
+            var chart = new Tactile.Chart({
+
+              // How to use 2 renderers now?
+              series: [
+                {
+                  data: [ {x:0, y:8}, {x:1, y:1}, {x:2,y:10}, {x:3, y:5} ],
+                  renderer: "draggableLine",
+                  afterDrag: function(d, draggedSeries){
+                    console.log("Dragged:");
+                    console.log(d);
+                    console.log(draggedSeries);
+                  }
+                }
+              ],
+              height: 400,
+              width: 500,
+              element: $("#example_view")[0]
+            });
+            //new Tactile.AxisY({graph: chart});
+            //new Tactile.AxisTime({graph: chart});
+
+            chart.render()
+
           </script>   
 
 
