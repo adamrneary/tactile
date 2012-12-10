@@ -66,7 +66,7 @@ Tactile.RendererBase = class RendererBase
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
-      .attr("class", @series.className)
+      .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
       .attr("d", @seriesPathFactory())
     
   configure: (options) ->

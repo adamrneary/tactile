@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-09
+/*! tactile - v0.0.1 - 2012-12-10
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -558,7 +558,7 @@ Tactile.RendererBase = RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function() {
-    return this.graph.vis.selectAll("path").data([this.series.stack]).enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", this.series.className).attr("d", this.seriesPathFactory());
+    return this.graph.vis.selectAll("path").data([this.series.stack]).enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless')).attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.configure = function(options) {
@@ -839,6 +839,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
 
   DraggableLineRenderer.prototype.initialize = function() {
     this.afterDrag = this.series.afterDrag || function() {};
+    this.onDrag = this.series.onDrag || function() {};
     this.dragged = this.selected = null;
     return this._bindMouseEvents();
   };
@@ -906,6 +907,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     t = d3.event.changedTouches;
     if (this.dragged) {
       this.dragged.y = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
     }
   };

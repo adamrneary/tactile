@@ -9,6 +9,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
 
   initialize: ->
     @afterDrag = @series.afterDrag || ->
+    @onDrag = @series.onDrag || ->
     @dragged = @selected = null
     @_bindMouseEvents()
 
@@ -57,6 +58,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     t = d3.event.changedTouches
     if @dragged
       @dragged.y = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
+      @onDrag(@dragged, @series, @graph);
       @update()
 
   _mouseUp: =>

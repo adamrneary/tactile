@@ -99,12 +99,21 @@
 }
 
 /* axes */
-/* line 104, ../src/scss/charts.scss */
+/* line 105, ../src/scss/charts.scss */
+.y-ticks.plain path {
+  fill: none;
+  stroke: none;
+}
+/* line 110, ../src/scss/charts.scss */
+.y-ticks.plain .tick {
+  stroke: none;
+}
+/* line 114, ../src/scss/charts.scss */
 .y-ticks path {
   fill: none;
   stroke: #808080;
 }
-/* line 109, ../src/scss/charts.scss */
+/* line 119, ../src/scss/charts.scss */
 .y-ticks .tick {
   stroke: rgba(0, 0, 0, 0.16);
   stroke-width: 2px;
@@ -112,20 +121,20 @@
   pointer-events: none;
 }
 
-/* line 118, ../src/scss/charts.scss */
+/* line 128, ../src/scss/charts.scss */
 .y-grid .tick {
   z-index: -1;
   stroke: rgba(0, 0, 0, 0.2);
   stroke-width: 1px;
   stroke-dasharray: 1 1;
 }
-/* line 124, ../src/scss/charts.scss */
+/* line 134, ../src/scss/charts.scss */
 .y-grid path {
   fill: none;
   stroke: none;
 }
 
-/* line 130, ../src/scss/charts.scss */
+/* line 140, ../src/scss/charts.scss */
 .y-ticks text {
   opacity: 0.5;
   font-size: 10px;
@@ -133,7 +142,7 @@
   fill: black;
 }
 
-/* line 137, ../src/scss/charts.scss */
+/* line 147, ../src/scss/charts.scss */
 .x-tick {
   position: absolute;
   top: 0;
@@ -141,11 +150,11 @@
   width: 0px;
   pointer-events: none;
 }
-/* line 138, ../src/scss/charts.scss */
+/* line 148, ../src/scss/charts.scss */
 .x-tick.grid {
   border-left: 1px dotted rgba(0, 0, 0, 0.2);
 }
-/* line 146, ../src/scss/charts.scss */
+/* line 156, ../src/scss/charts.scss */
 .x-tick .title {
   position: absolute;
   font-size: 12px;
@@ -157,21 +166,21 @@
   left: -12px;
 }
 
-/* line 159, ../src/scss/charts.scss */
+/* line 169, ../src/scss/charts.scss */
 .x-tick.glow .title, .y-ticks.glow text {
   fill: black;
   color: black;
   text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* line 172, ../src/scss/charts.scss */
+/* line 182, ../src/scss/charts.scss */
 .x-tick.inverse .title, .y-ticks.inverse text {
   fill: white;
   color: white;
   text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8);
 }
 
-/* line 185, ../src/scss/charts.scss */
+/* line 195, ../src/scss/charts.scss */
 #y-axis {
   position: absolute;
   bottom: 0;
@@ -179,59 +188,59 @@
   left: 5px;
 }
 
-/* line 192, ../src/scss/charts.scss */
+/* line 202, ../src/scss/charts.scss */
 .y-axis {
   fill: none;
 }
 
-/* line 197, ../src/scss/charts.scss */
+/* line 207, ../src/scss/charts.scss */
 .axis.yAxis, .axis.xAxis {
   text-transform: uppercase !important;
   font-size: 11px;
   font-weight: bold;
   fill: #a69b9e;
 }
-/* line 202, ../src/scss/charts.scss */
+/* line 212, ../src/scss/charts.scss */
 .axis.yAxis line, .axis.yAxis path {
   stroke: #a69b9e;
   stroke-width: 2px;
 }
-/* line 207, ../src/scss/charts.scss */
+/* line 217, ../src/scss/charts.scss */
 .axis.yAxis .domain {
   stroke: none;
 }
 
-/* line 213, ../src/scss/charts.scss */
+/* line 223, ../src/scss/charts.scss */
 .axis {
   shape-rendering: crispEdges;
 }
 
-/* line 218, ../src/scss/charts.scss */
+/* line 228, ../src/scss/charts.scss */
 .xAxis.axis line {
   stroke: #fff;
 }
-/* line 222, ../src/scss/charts.scss */
+/* line 232, ../src/scss/charts.scss */
 .xAxis.axis .minor {
   stroke-opacity: .5;
 }
-/* line 226, ../src/scss/charts.scss */
+/* line 236, ../src/scss/charts.scss */
 .xAxis.axis path {
   display: none;
 }
 
-/* line 231, ../src/scss/charts.scss */
+/* line 241, ../src/scss/charts.scss */
 .yAxis.axis line, .yAxis.axis path {
   fill: none;
   stroke: #000;
 }
 
 /* legend */
-/* line 239, ../src/scss/charts.scss */
+/* line 249, ../src/scss/charts.scss */
 #main-chart-legend .well {
   display: inline-block;
   padding: 5px;
 }
-/* line 244, ../src/scss/charts.scss */
+/* line 254, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend {
   margin: 1px 0 0 15px;
   padding: 5px 0 0 0;
@@ -247,13 +256,13 @@
 #main-chart-legend .chart-legend:after {
   clear: both;
 }
-/* line 251, ../src/scss/charts.scss */
+/* line 261, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li {
   float: left;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
   margin: 0 15px 5px 0;
 }
-/* line 256, ../src/scss/charts.scss */
+/* line 266, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li span {
   display: inline-block;
   position: relative;
@@ -264,54 +273,54 @@
   border-radius: 1em;
   box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
-/* line 266, ../src/scss/charts.scss */
+/* line 276, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li span.point-noise {
   background-color: #a69b9e;
 }
-/* line 267, ../src/scss/charts.scss */
+/* line 277, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li span.point-dogs {
   background-color: #dc6e59;
 }
-/* line 268, ../src/scss/charts.scss */
+/* line 278, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li span.point-sprouts {
   background-color: #19affe;
 }
-/* line 269, ../src/scss/charts.scss */
+/* line 279, ../src/scss/charts.scss */
 #main-chart-legend .chart-legend li span.point-stars {
   background-color: #8ac16f;
 }
 
-/* line 275, ../src/scss/charts.scss */
+/* line 285, ../src/scss/charts.scss */
 .chart-legend {
   margin: 0 0 10px 10px;
   color: #404040;
   overflow: hidden;
 }
-/* line 280, ../src/scss/charts.scss */
+/* line 290, ../src/scss/charts.scss */
 .chart-legend .legend-item {
   float: left;
   overflow: hidden;
   margin-right: 10px;
 }
-/* line 284, ../src/scss/charts.scss */
+/* line 294, ../src/scss/charts.scss */
 .chart-legend .legend-item .color, .chart-legend .legend-item .text {
   float: left;
 }
-/* line 287, ../src/scss/charts.scss */
+/* line 297, ../src/scss/charts.scss */
 .chart-legend .legend-item .color {
   width: 14px;
   height: 14px;
   border: 1px solid #E6E6E6;
   margin-right: 8px;
 }
-/* line 293, ../src/scss/charts.scss */
+/* line 303, ../src/scss/charts.scss */
 .chart-legend .legend-item .text {
   font-size: 14px;
   line-height: 16px;
 }
 
 /* hover detail */
-/* line 303, ../src/scss/charts.scss */
+/* line 313, ../src/scss/charts.scss */
 .metric-inner-container .detail, .graph-container .detail {
   pointer-events: none;
   position: absolute;
@@ -326,19 +335,19 @@
   -o-transition: opacity 0.25s linear;
   transition: opacity 0.25s linear;
 }
-/* line 312, ../src/scss/charts.scss */
+/* line 322, ../src/scss/charts.scss */
 .metric-inner-container .detail.inactive, .graph-container .detail.inactive {
   opacity: 0;
 }
-/* line 316, ../src/scss/charts.scss */
+/* line 326, ../src/scss/charts.scss */
 .metric-inner-container .detail.no-line, .graph-container .detail.no-line {
   background: none;
 }
-/* line 320, ../src/scss/charts.scss */
+/* line 330, ../src/scss/charts.scss */
 .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
   opacity: 1;
 }
-/* line 324, ../src/scss/charts.scss */
+/* line 334, ../src/scss/charts.scss */
 .metric-inner-container .detail .x_label, .graph-container .detail .x_label {
   font-family: Arial, sans-serif;
   border-radius: 3px;
@@ -350,7 +359,7 @@
   background: white;
   white-space: nowrap;
 }
-/* line 335, ../src/scss/charts.scss */
+/* line 345, ../src/scss/charts.scss */
 .metric-inner-container .detail .item, .graph-container .detail .item {
   text-transform: none;
   position: absolute;
@@ -367,12 +376,12 @@
   margin-top: -1em;
   white-space: nowrap;
 }
-/* line 350, ../src/scss/charts.scss */
+/* line 360, ../src/scss/charts.scss */
 .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
   opacity: 1;
   background: rgba(0, 0, 0, 0.8);
 }
-/* line 354, ../src/scss/charts.scss */
+/* line 364, ../src/scss/charts.scss */
 .metric-inner-container .detail .item:before, .graph-container .detail .item:before {
   content: "\25c2";
   position: absolute;
@@ -380,7 +389,7 @@
   color: rgba(0, 0, 0, 0.7);
   width: 0;
 }
-/* line 362, ../src/scss/charts.scss */
+/* line 372, ../src/scss/charts.scss */
 .metric-inner-container .detail .dot, .graph-container .detail .dot {
   width: 4px;
   height: 4px;
@@ -395,29 +404,29 @@
   display: none;
   background-clip: padding-box;
 }
-/* line 375, ../src/scss/charts.scss */
+/* line 385, ../src/scss/charts.scss */
 .metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
   display: block;
 }
 
 /* sankey */
-/* line 388, ../src/scss/charts.scss */
+/* line 398, ../src/scss/charts.scss */
 .sankey-chart .node {
   stroke: #fff;
   stroke-width: 2px;
 }
-/* line 393, ../src/scss/charts.scss */
+/* line 403, ../src/scss/charts.scss */
 .sankey-chart .link {
   fill: none;
   stroke: #000;
   opacity: .3;
 }
-/* line 398, ../src/scss/charts.scss */
+/* line 408, ../src/scss/charts.scss */
 .sankey-chart .link.on {
   stroke: #F00;
   opacity: .7;
 }
-/* line 403, ../src/scss/charts.scss */
+/* line 413, ../src/scss/charts.scss */
 .sankey-chart .node {
   stroke: none;
 }
@@ -427,12 +436,12 @@
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-/* line 416, ../src/scss/charts.scss */
+/* line 426, ../src/scss/charts.scss */
 #scatter {
   width: 65%;
 }
 
-/* line 420, ../src/scss/charts.scss */
+/* line 430, ../src/scss/charts.scss */
 .scatter.xaxis path,
 .scatter.xaxis line {
   fill: none;
@@ -440,7 +449,7 @@
   shape-rendering: crispEdges;
 }
 
-/* line 427, ../src/scss/charts.scss */
+/* line 437, ../src/scss/charts.scss */
 .scatter.yaxis path,
 .scatter.yaxis line {
   fill: none;
@@ -448,75 +457,84 @@
   shape-rendering: crispEdges;
 }
 
-/* line 434, ../src/scss/charts.scss */
+/* line 444, ../src/scss/charts.scss */
 .scatter.xaxis text,
 .scatter.xaxis text {
   fill: black;
   font-size: 12px;
 }
 
-/* line 439, ../src/scss/charts.scss */
+/* line 449, ../src/scss/charts.scss */
 .point {
   stroke-width: 2px;
   z-index: 100;
 }
-/* line 443, ../src/scss/charts.scss */
+/* line 453, ../src/scss/charts.scss */
 .point.point-noise {
   fill: #a69b9e;
 }
-/* line 444, ../src/scss/charts.scss */
+/* line 454, ../src/scss/charts.scss */
 .point.point-dogs {
   fill: #dc6e59;
 }
-/* line 445, ../src/scss/charts.scss */
+/* line 455, ../src/scss/charts.scss */
 .point.point-sprouts {
   fill: #19affe;
 }
-/* line 446, ../src/scss/charts.scss */
+/* line 456, ../src/scss/charts.scss */
 .point.point-stars {
   fill: #8ac16f;
 }
 
-/* line 450, ../src/scss/charts.scss */
+/* line 460, ../src/scss/charts.scss */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6;
 }
 
-/* line 459, ../src/scss/charts.scss */
+/* line 465, ../src/scss/charts.scss */
+rect.colorless {
+  fill: #5a6ca1;
+}
+
+/* line 473, ../src/scss/charts.scss */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px;
 }
 
-/* line 466, ../src/scss/charts.scss */
+/* line 480, ../src/scss/charts.scss */
+path.colorless {
+  stroke: #405192;
+}
+/* line 484, ../src/scss/charts.scss */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none;
 }
-/* line 471, ../src/scss/charts.scss */
+/* line 489, ../src/scss/charts.scss */
 path.line {
   fill: none;
   stroke-width: 2px;
 }
-/* line 475, ../src/scss/charts.scss */
+/* line 493, ../src/scss/charts.scss */
 path.area {
   fill: #e7e7e7;
 }
 
-/* line 481, ../src/scss/charts.scss */
+/* line 499, ../src/scss/charts.scss */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px;
 }
 
 /* Leaderboard */
-/* line 488, ../src/scss/charts.scss */
+/* line 506, ../src/scss/charts.scss */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold;
 }
-/* line 494, ../src/scss/charts.scss */
+/* line 512, ../src/scss/charts.scss */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -525,7 +543,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-weight: 800;
   text-transform: uppercase;
 }
-/* line 502, ../src/scss/charts.scss */
+/* line 520, ../src/scss/charts.scss */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
@@ -533,47 +551,47 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 509, ../src/scss/charts.scss */
+/* line 527, ../src/scss/charts.scss */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none;
 }
-/* line 514, ../src/scss/charts.scss */
+/* line 532, ../src/scss/charts.scss */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none;
 }
-/* line 519, ../src/scss/charts.scss */
+/* line 537, ../src/scss/charts.scss */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none;
 }
-/* line 524, ../src/scss/charts.scss */
+/* line 542, ../src/scss/charts.scss */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none;
 }
 
 /* Gauge */
-/* line 533, ../src/scss/charts.scss */
+/* line 551, ../src/scss/charts.scss */
 .gauge.arc {
   fill: #e2dedf;
 }
-/* line 537, ../src/scss/charts.scss */
+/* line 555, ../src/scss/charts.scss */
 .gauge.arc-value {
   fill: #30878f;
 }
-/* line 541, ../src/scss/charts.scss */
+/* line 559, ../src/scss/charts.scss */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf;
 }
-/* line 546, ../src/scss/charts.scss */
+/* line 564, ../src/scss/charts.scss */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345;
 }
-/* line 551, ../src/scss/charts.scss */
+/* line 569, ../src/scss/charts.scss */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;

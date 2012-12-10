@@ -1,10 +1,21 @@
 var examples = [
-    {shortLink:"simple-line", title: "Simple Line"},
-    {shortLink:"bars-and-line", title: "Bars and Line"},
-    {shortLink:"stacked-bars", title: "Stacked Bars"}
+    {
+        shortLink:"simple-line", 
+        title: "Simple Line"
+    },
+    {
+        shortLink:"bars-and-line", 
+        title: "Bars and Line"
+    },
+    {
+        shortLink:"stacked-bars", 
+        title: "Stacked Bars"
+    }
 ];
 
-var showcaseObject = {routes:{}};
+var showcaseObject = {
+    routes:{}
+};
 
 
 $(document).ready(function(){
@@ -27,9 +38,9 @@ $(document).ready(function(){
                       var Showcase = Backbone.Router.extend(showcaseObject);
                       var showcase = new Showcase();
 
+
                       Backbone.history.start();
                       if(!window.location.hash) {
                           showcase.navigate("/#simple-line");
                       }
-
                   });
