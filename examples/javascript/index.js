@@ -30,8 +30,10 @@ $(document).ready(function(){
                                 showcaseObject[route.shortLink] = function(){
                                     $("#example_view").html("");
                                     $("#example_header").text(route.title);
-                                    $.get("javascript/"+route.shortLink+".js",
-                                          $("#example_js").html);  
+                                    $.get("javascript/"+route.shortLink+".js",function(data){
+                                          $("#example_js").html(data);
+                                          });
+
                                 };          
                             });
 
