@@ -67,7 +67,7 @@ module.exports = function(grunt) {
     },
     watch: {
       files: '<config:lint.files>',
-      tasks: 'lint qunit'
+      tasks: 'build'
     },
     jshint: {
       options: {
@@ -85,7 +85,10 @@ module.exports = function(grunt) {
       },
       globals: {}
     },
-    uglify: {}
+    uglify: {},
+    lint:{
+        files: ["src/**/*"]
+    }
   });
 
   // Default task.
