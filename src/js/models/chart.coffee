@@ -13,7 +13,7 @@ Tactile.Chart = class Chart
     max: undefined
     order: [] # multi renderer support
     axes:
-        x: "linear"
+        x: "time"
         y: "linear"
 
 

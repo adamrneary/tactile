@@ -4,7 +4,7 @@ Tactile.AxisY = class AxisY
   constructor: (options) ->
     @options = options
     @graph = options.graph
-    @orientation = options.orientation or "right"
+    @orientation = options.orientation or "left"
     pixelsPerTick = options.pixelsPerTick or 75
     @ticks = options.ticks or Math.floor(@graph.height / pixelsPerTick)
     @tickSize = options.tickSize or 4
@@ -51,9 +51,11 @@ Tactile.AxisY = class AxisY
       transform = "translate(" + @width + ", " + berth + ")"
     @vis.selectAll("*").remove() if @element
     
-    @vis.append("svg:g")
-    .attr("class", ["y-ticks", @ticksTreatment].join(" "))
-    .attr("transform", transform).call axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)
+    console.log @graph.element
+    @vis.append("g")
+      .attr("class", ["y-ticks", @ticksTreatment].join(" "))
+      .attr("transform", "translate(20, 0)")
+      .call axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)
     
     if @grid
       gridSize = ((if @orientation is "right" then 1 else -1)) * @graph.width

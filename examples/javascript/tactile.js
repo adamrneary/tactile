@@ -142,7 +142,7 @@ Tactile.AxisY = AxisY = (function() {
       _this = this;
     this.options = options;
     this.graph = options.graph;
-    this.orientation = options.orientation || "right";
+    this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
     this.ticks = options.ticks || Math.floor(this.graph.height / pixelsPerTick);
     this.tickSize = options.tickSize || 4;
@@ -206,7 +206,8 @@ Tactile.AxisY = AxisY = (function() {
     if (this.element) {
       this.vis.selectAll("*").remove();
     }
-    this.vis.append("svg:g").attr("class", ["y-ticks", this.ticksTreatment].join(" ")).attr("transform", transform).call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+    console.log(this.graph.element);
+    this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" ")).attr("transform", "translate(20, 0)").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
     if (this.grid) {
       gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
       this.graph.vis.append("svg:g").attr("class", "y-grid").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
@@ -1016,7 +1017,7 @@ Tactile.Chart = Chart = (function() {
     max: void 0,
     order: [],
     axes: {
-      x: "linear",
+      x: "time",
       y: "linear"
     }
   };
