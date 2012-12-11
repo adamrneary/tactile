@@ -46,13 +46,12 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
 
     barXOffset += seriesBarWidth if @unstack
         
-        
   barWidth: ->
-    stackedData = @graph.stackedData or @graph.stackData()
-    data = stackedData.slice(-1).shift()
-    frequentInterval = @_frequentInterval()
-    barWidth = @graph.x(data[0].x + frequentInterval.magnitude * (1 - @gapSize))
-    barWidth
+    @graph.stackData()
+    data = @series.stack
+    
+    count = data.length
+    barWidth = @graph.width / count * (1 - @gapSize)
 
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
@@ -70,32 +69,3 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
     domain.x[1] += parseInt(frequentInterval.magnitude)
     domain
   
-  
-  # iterates trough the current data and computes most frequent interval between each data entry
-  # so if x's are 1,2,3,4,5 the most frequent interval will be equal to 1
-  # used to evaluate the bar width
-  _frequentInterval: ->
-    stackedData = @graph.stackedData or @graph.stackData()
-    data = stackedData.slice(-1).shift()
-    intervalCounts = {}
-    i = 0
-
-    while i < data.length - 1
-      interval = data[i + 1].x - data[i].x
-      intervalCounts[interval] = intervalCounts[interval] or 0
-      intervalCounts[interval]++
-      i++
-      
-    frequentInterval = count: 0
-    
-    _.keys(intervalCounts).forEach (i) ->
-      if frequentInterval.count < intervalCounts[i]
-        frequentInterval =
-          count: intervalCounts[i]
-          magnitude: i
-
-    # no need to compute this again
-    @_frequentInterval = ->
-      frequentInterval
-
-    frequentInterval
