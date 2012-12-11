@@ -6,14 +6,6 @@ Tactile.RendererBase = class RendererBase
     strokeWidth: 3
     unstack: true
     
-    # An object containing any of top, right, bottom, and left properties specifying padding 
-    # around the extrema of the data in the graph. Defaults to 0.01 on top for 1% padding, 2% on bottom and 0 on other sides.
-    padding:
-      top: 0.03
-      right: 0
-      bottom: 0.02
-      left: 0
-
     stroke: false
     fill: false
 
@@ -46,14 +38,8 @@ Tactile.RendererBase = class RendererBase
           
     xMin = stackedData[0][0].x
     xMax = stackedData[0][stackedData[0].length - 1].x
-    xMin -= (xMax - xMin) * @padding.left
-    xMax += (xMax - xMin) * @padding.right
-    
     yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
     yMax = @graph.max or d3.max(values)
-    yMin -= (yMax - yMin) * @padding.bottom if @graph.min is "auto" or yMin <= 0
-    yMax += (yMax - yMin) * @padding.top if _.isUndefined(@graph.max)
-
     { x: [xMin, xMax], y: [yMin, yMax] }
     
     

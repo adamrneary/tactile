@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-10
+/*! tactile - v0.0.1 - 2012-12-11
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -135,79 +135,31 @@ var AxisY;
 
 Tactile.AxisY = AxisY = (function() {
 
-  AxisY.prototype.berthRate = 0.10;
-
   function AxisY(options) {
     var pixelsPerTick,
       _this = this;
     this.options = options;
     this.graph = options.graph;
+    this.vis = this.graph.vis;
     this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
     this.ticks = options.ticks || Math.floor(this.graph.height / pixelsPerTick);
     this.tickSize = options.tickSize || 4;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.grid = options.grid;
-    if (options.element) {
-      this.element = options.element;
-      this.vis = d3.select(options.element).append("svg:svg").attr("class", "graph y-axis");
-      this.element = this.vis[0][0];
-      this.element.style.position = "relative";
-      this.setSize({
-        width: options.width,
-        height: options.height
-      });
-    } else {
-      this.vis = this.graph.vis;
-    }
     this.graph.onUpdate(function() {
       return _this.render();
     });
   }
 
-  AxisY.prototype.setSize = function(options) {
-    var berth, elementHeight, elementWidth, style;
-    if (options == null) {
-      options = {};
-    }
-    if (!this.element) {
-      return;
-    }
-    if (typeof window !== "undefined") {
-      style = window.getComputedStyle(this.element.parentNode, null);
-      elementWidth = parseInt(style.getPropertyValue("width"));
-      if (!options.auto) {
-        elementHeight = parseInt(style.getPropertyValue("height"));
-      }
-    }
-    this.width = options.width || elementWidth || this.graph.width * berthRate;
-    this.height = options.height || elementHeight || this.graph.height;
-    this.vis.attr("width", this.width).attr("height", this.height * (1 + this.berthRate));
-    berth = this.height * this.berthRate;
-    return this.element.style.top = -1 * berth + "px";
-  };
-
   AxisY.prototype.render = function() {
-    var axis, berth, gridSize, transform;
+    var axis, gridSize;
     this.vis.selectAll('.y-ticks, .y-grid').remove();
-    if (this.graph.height !== this._renderHeight) {
-      this.setSize({
-        auto: true
-      });
-    }
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
-    if (this.orientation === "left") {
-      berth = this.height * this.berthRate;
-      transform = "translate(" + this.width + ", " + berth + ")";
-    }
-    if (this.element) {
-      this.vis.selectAll("*").remove();
-    }
-    console.log(this.graph.element);
-    this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" ")).attr("transform", "translate(20, 0)").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+    this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" ")).call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
     if (this.grid) {
       gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
       this.graph.vis.append("svg:g").attr("class", "y-grid").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
@@ -226,9 +178,9 @@ Tactile.AxisTime = AxisTime = (function() {
   function AxisTime(args) {
     var _this = this;
     this.graph = args.graph;
-    this.elements = [];
     this.ticksTreatment = args.ticksTreatment || "plain";
     this.fixedTimeUnit = args.timeUnit;
+    this.marginTop = args.paddingBottom || 5;
     this.time = new FixturesTime();
     this.grid = args.grid;
     this.graph.onUpdate(function() {
@@ -274,29 +226,13 @@ Tactile.AxisTime = AxisTime = (function() {
     var offsets,
       _this = this;
     this.graph.vis.selectAll('.x-tick').remove();
-    this.elements.forEach(function(e) {
-      return e.parentNode.removeChild(e);
-    });
-    this.elements = [];
     offsets = this.tickOffsets();
+    console.log(offsets);
     return offsets.forEach(function(o) {
-      var element, title;
       if (_this.graph.x(o.value) > _this.graph.x.range()[1]) {
         return;
       }
-      element = document.createElement("div");
-      element.style.left = _this.graph.x(o.value) + "px";
-      element.classList.add("x-tick");
-      if (_this.grid) {
-        element.classList.add("grid");
-      }
-      element.classList.add(_this.ticksTreatment);
-      title = document.createElement("div");
-      title.classList.add("title");
-      title.innerHTML = o.unit.formatter(new Date(o.value * 1000));
-      element.appendChild(title);
-      _this.graph.element.appendChild(element);
-      return _this.elements.push(element);
+      return _this.graph.vis.append('g').attr("transform", "translate(" + (_this.graph.x(o.value)) + ", " + _this.graph.innerHeight + ")").attr("class", ["x-tick", _this.ticksTreatment].join(' ')).append('text').attr("y", _this.marginTop).text(o.unit.formatter(new Date(o.value * 1000))).attr("class", 'title');
     });
   };
 
@@ -499,12 +435,6 @@ Tactile.RendererBase = RendererBase = (function() {
     tension: 0.95,
     strokeWidth: 3,
     unstack: true,
-    padding: {
-      top: 0.03,
-      right: 0,
-      bottom: 0.02,
-      left: 0
-    },
     stroke: false,
     fill: false
   };
@@ -542,16 +472,8 @@ Tactile.RendererBase = RendererBase = (function() {
     });
     xMin = stackedData[0][0].x;
     xMax = stackedData[0][stackedData[0].length - 1].x;
-    xMin -= (xMax - xMin) * this.padding.left;
-    xMax += (xMax - xMin) * this.padding.right;
     yMin = (this.graph.min === "auto" ? d3.min(values) : this.graph.min || 0);
     yMax = this.graph.max || d3.max(values);
-    if (this.graph.min === "auto" || yMin <= 0) {
-      yMin -= (yMax - yMin) * this.padding.bottom;
-    }
-    if (_.isUndefined(this.graph.max)) {
-      yMax += (yMax - yMin) * this.padding.top;
-    }
     return {
       x: [xMin, xMax],
       y: [yMin, yMax]
@@ -1011,6 +933,18 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.mainDefaults = {
+    margin: {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 20
+    },
+    padding: {
+      top: 10,
+      right: 10,
+      bottom: 10,
+      left: 10
+    },
     interpolation: 'monotone',
     offset: 'zero',
     min: void 0,
@@ -1038,6 +972,7 @@ Tactile.Chart = Chart = (function() {
     var _this = this;
     this.renderers = [];
     this.window = {};
+    this.updateCallbacks = [];
     args = _.extend({}, this.mainDefaults, args);
     args.series = _.map(args.series, function(d) {
       return _.extend({}, _this.seriesDefaults, d);
@@ -1050,12 +985,11 @@ Tactile.Chart = Chart = (function() {
         return !s.disabled;
       });
     };
-    this.updateCallbacks = [];
     this.setSize({
       width: args.width,
       height: args.height
     });
-    this.vis = args.vis || d3.select(this.element).append("svg:svg").attr('width', this.width).attr('height', this.height);
+    this._setupCanvas();
     $(this.element).addClass('graph-container');
     this.initRenderers(args);
   }
@@ -1134,9 +1068,13 @@ Tactile.Chart = Chart = (function() {
     args = args || {};
     elWidth = $(this.element).width();
     elHeight = $(this.element).height();
-    this.width = args.width || elWidth;
-    this.height = args.height || elHeight;
-    return (_ref = this.vis) != null ? _ref.attr('width', this.width || elWidth).attr('height', this.height || elHeight) : void 0;
+    this.outerWidth = args.width || elWidth;
+    this.outerHeight = args.height || elHeight;
+    this.innerWidth = this.outerWidth - this.margin.left - this.margin.right;
+    this.innerHeight = this.outerHeight - this.margin.top - this.margin.bottom;
+    this.width = this.innerWidth - this.padding.left - this.padding.right;
+    this.height = this.innerHeight - this.padding.top - this.padding.bottom;
+    return (_ref = this.vis) != null ? _ref.attr('width', this.width).attr('height', this.height) : void 0;
   };
 
   Chart.prototype.onUpdate = function(callback) {
@@ -1159,6 +1097,12 @@ Tactile.Chart = Chart = (function() {
       r = new rendererClass(rendererOptions);
       return _this.renderers.push(r);
     });
+  };
+
+  Chart.prototype._setupCanvas = function() {
+    this.vis = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight).append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
+    return this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
   };
 
   Chart.prototype._slice = function(d) {

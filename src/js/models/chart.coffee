@@ -7,14 +7,16 @@ Tactile.Chart = class Chart
     'draggableLine': DraggableLineRenderer
   
   mainDefaults: 
+    margin: {top: 20, right: 20, bottom: 20, left: 20}
+    padding: {top: 10, right: 10, bottom: 10, left: 10}
     interpolation: 'monotone'
     offset: 'zero'
     min: undefined
     max: undefined
     order: [] # multi renderer support
     axes:
-        x: "time"
-        y: "linear"
+      x: "time"
+      y: "linear"
 
 
   seriesDefaults:
@@ -25,9 +27,10 @@ Tactile.Chart = class Chart
   constructor: (args) ->
     @renderers = []
     @window = {}
+    @updateCallbacks = []
     
     args = _.extend({}, @mainDefaults, args)
-    args.series = _.map(args.series,(d)=> _.extend({},@seriesDefaults,d))
+    args.series = _.map(args.series,(d)=> _.extend({}, @seriesDefaults,d))
     _.each args, (val, key) =>
       @[key] = val
         
@@ -35,13 +38,8 @@ Tactile.Chart = class Chart
       @series.filter (s) ->
         not s.disabled
         
-    @updateCallbacks = []
     @setSize( width: args.width, height: args.height )
-    
-    @vis = args.vis || d3.select(@element)
-      .append("svg:svg")
-      .attr('width', @width)
-      .attr('height', @height)
+    @_setupCanvas()
     
     # need a constant class name for a containing div
     $(@element).addClass('graph-container')
@@ -67,7 +65,7 @@ Tactile.Chart = class Chart
       @discoverRange(renderer)
       
       renderer.render()
-      
+
     @updateCallbacks.forEach (callback) ->
       callback()
 
@@ -105,7 +103,7 @@ Tactile.Chart = class Chart
 
         
     seriesData = @series.active().map((d) =>
-        @data.map(d.dataTransform).filter(@_slice))
+      @data.map(d.dataTransform).filter(@_slice))
 
     layout = d3.layout.stack()
     layout.offset(@offset)
@@ -123,10 +121,15 @@ Tactile.Chart = class Chart
     elWidth = $(@element).width()
     elHeight = $(@element).height()
     
-    @width = args.width || elWidth
-    @height = args.height || elHeight
+    @outerWidth = args.width || elWidth
+    @outerHeight = args.height || elHeight
     
-    @vis?.attr('width', @width || elWidth).attr('height', @height || elHeight)
+    @innerWidth = @outerWidth - @margin.left - @margin.right
+    @innerHeight = @outerHeight - @margin.top - @margin.bottom
+    @width = @innerWidth - @padding.left - @padding.right
+    @height = @innerHeight - @padding.top - @padding.bottom
+
+    @vis?.attr('width', @width).attr('height', @height)
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
@@ -141,6 +144,29 @@ Tactile.Chart = class Chart
       rendererOptions = _.extend {}, args, {graph: @, series: s}
       r = new rendererClass(rendererOptions)
       @renderers.push r
+      
+  
+  # appends all the chart canvas elements so it respects the margins and paddings
+  # done by following this example: http://bl.ocks.org/3019563
+  _setupCanvas: ->
+    @vis = d3.select(@element)
+      .append("svg")
+        .attr('width', @outerWidth)
+        .attr('height', @outerHeight)
+      .append("g")
+        .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+        
+    @vis.append("g")
+      .attr("class", "outer-canvas")
+      .attr("width", @innerWidth)
+      .attr("height", @innerHeight)  
+      
+    # this is the canvas on which all data should be drawn  
+    @vis = @vis.append("g")
+      .attr("transform", "translate(#{@padding.left},#{@padding.right})")
+      .attr("class", "inner-canvas")
+          
+      
 
   # this trims data down to the range that is currently viewed. 
   # See range_slider for a clue how it's used

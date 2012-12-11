@@ -2,9 +2,9 @@ Tactile.AxisTime = class AxisTime
 
   constructor: (args) ->
     @graph = args.graph
-    @elements = []
     @ticksTreatment = args.ticksTreatment or "plain"
     @fixedTimeUnit = args.timeUnit
+    @marginTop = args.paddingBottom or 5
     @time = new FixturesTime()
     @grid = args.grid
     @graph.onUpdate =>
@@ -40,25 +40,17 @@ Tactile.AxisTime = class AxisTime
 
   render: ->
     @graph.vis.selectAll('.x-tick').remove()
-    @elements.forEach (e) ->
-      e.parentNode.removeChild e
-
-    @elements = []
     offsets = @tickOffsets()
-    
+    console.log(offsets)
     offsets.forEach (o) =>
       return if @graph.x(o.value) > @graph.x.range()[1]
-      element = document.createElement("div")
-      element.style.left = @graph.x(o.value) + "px"
-      element.classList.add "x-tick"
-      element.classList.add "grid" if @grid
-      element.classList.add @ticksTreatment
-      title = document.createElement("div")
-      title.classList.add "title"
-      title.innerHTML = o.unit.formatter(new Date(o.value * 1000))
-      element.appendChild title
-      @graph.element.appendChild element
-      @elements.push element
+      @graph.vis.append('g')
+        .attr("transform", "translate(#{@graph.x(o.value)}, #{@graph.innerHeight})")
+        .attr("class", ["x-tick", @ticksTreatment].join(' '))
+      .append('text')
+        .attr("y", @marginTop)
+        .text(o.unit.formatter(new Date(o.value * 1000)))
+        .attr("class", 'title')
 
 
   
