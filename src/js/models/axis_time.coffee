@@ -28,7 +28,7 @@ Tactile.AxisTime = class AxisTime
     offsets = []
     i = 0
 
-    while i < count
+    while i <= count
       tickValue = @time.ceil(runningTick, unit)
       runningTick = tickValue + unit.seconds / 2
       offsets.push
@@ -39,7 +39,7 @@ Tactile.AxisTime = class AxisTime
     offsets
 
   render: ->
-    @graph.vis.selectAll('.x-tick').remove()
+    @graph.vis.selectAll('.x-ticks').remove()
     offsets = @tickOffsets()
     g = @graph.vis.append('g')
       .attr('class', 'x-ticks')

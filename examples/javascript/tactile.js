@@ -215,7 +215,7 @@ Tactile.AxisTime = AxisTime = (function() {
     runningTick = domain[0];
     offsets = [];
     i = 0;
-    while (i < count) {
+    while (i <= count) {
       tickValue = this.time.ceil(runningTick, unit);
       runningTick = tickValue + unit.seconds / 2;
       offsets.push({
@@ -230,7 +230,7 @@ Tactile.AxisTime = AxisTime = (function() {
   AxisTime.prototype.render = function() {
     var g, offsets,
       _this = this;
-    this.graph.vis.selectAll('.x-tick').remove();
+    this.graph.vis.selectAll('.x-ticks').remove();
     offsets = this.tickOffsets();
     g = this.graph.vis.append('g').attr('class', 'x-ticks');
     return offsets.forEach(function(o) {
