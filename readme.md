@@ -18,5 +18,5 @@ Key tenets of Tactile
 * A chart can display as many series as needed. 
 * Each series takes the chart data and transforms it as needed via dataTransform. Must
   return objects that are of the form `{x: NUMBER, y: NUMBER}`.
-* The chart determines the axes to use and timeframe with which to display
+* Only the chart is passed both the axes to use and the timeframe with which to display
   the data of the series. 

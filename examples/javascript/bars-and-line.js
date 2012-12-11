@@ -29,25 +29,26 @@ var chart = new Tactile.Chart({
           x: d.period,
           y: d.actual
         };
-      },
-      afterDrag: function(d){
-        console.log("Dragged actual:");
-        console.log(d);
       }
     }
     ,
     {
       name: 'reach, plan',
       renderer: "draggableLine", // TODO: rename draggableLine to line
+      sigfigs: 0,
       dataTransform: function(d){
         return {
           x: d.period,
           y: d.plan
         };
       },
-      afterDrag: function(d, draggedSeries){
-        console.log("Dragged plan:");
-        console.log(d);
+      onDrag: function(d,series,graph){
+      },
+      afterDrag: function(d,y,i,draggedSeries,graph){
+          console.log("Before",graph.data[i],d,y,i);
+          graph.data[i].plan = y;
+          graph.data[i].actual = Math.round(y/2);
+          console.log("After",graph.data[i],d,y,i);
       }
     }
   ]

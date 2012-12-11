@@ -769,7 +769,8 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     this.afterDrag = this.series.afterDrag || function() {};
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = this.selected = null;
-    return this._bindMouseEvents();
+    this._bindMouseEvents();
+    return this.power = Math.pow(10, this.series.sigfigs);
   };
 
   DraggableLineRenderer.prototype.seriesPathFactory = function() {
@@ -788,7 +789,9 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
-    nodes = this.graph.vis.selectAll("path").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+    nodes = this.graph.vis.selectAll("circle").data(this.series.stack);
+    nodes.enter().append("svg:circle").attr("stroke-width", '2').style("cursor", "ns-resize").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
+    nodes.attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -814,27 +817,39 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       } else {
         return 'white';
       }
-    }).attr("stroke-width", '2').style("cursor", "ns-resize").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
-    return _.each(nodes[0], function(n) {
+    });
+    _.each(nodes[0], function(n) {
       return n != null ? n.setAttribute("fill", _this.series.color) : void 0;
     });
+    if (this.dragged && this.dragged.y) {
+      return nodes.filter(function(d, i) {
+        return i === _this.dragged.i;
+      }).each(function(d) {
+        console.log(d);
+        return d.y = _this.dragged.y;
+      });
+    }
   };
 
   DraggableLineRenderer.prototype._bindMouseEvents = function() {
     return d3.select(this.graph.element).on("mousemove.drag", this._mouseMove).on("touchmove.drag", this._mouseMove).on("mouseup.drag", this._mouseUp).on("touchend.drag", this._mouseUp);
   };
 
-  DraggableLineRenderer.prototype._datapointDrag = function(d) {
-    this.selected = this.dragged = d;
+  DraggableLineRenderer.prototype._datapointDrag = function(d, i) {
+    this.selected = this.dragged = {
+      d: d,
+      i: i
+    };
     return this.update();
   };
 
   DraggableLineRenderer.prototype._mouseMove = function() {
-    var p, t;
+    var inverted, p, t;
     p = d3.svg.mouse(this.graph.vis[0][0]);
     t = d3.event.changedTouches;
     if (this.dragged) {
-      this.dragged.y = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      this.dragged.y = Math.round(inverted * this.power) / this.power;
       this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
     }
@@ -842,18 +857,20 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
 
   DraggableLineRenderer.prototype._mouseUp = function() {
     if (this.dragged) {
-      this.afterDrag(this.dragged, this.series);
+      this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
     }
     $(this.graph).find('.selected').attr('class', '');
     d3.select("body").style("cursor", "auto");
     d3.select("body").style("cursor", "auto");
     if (this.dragged) {
-      return this.dragged = null;
+      this.dragged = null;
     }
+    return this.update();
   };
 
   DraggableLineRenderer.prototype.update = function() {
-    return this.graph.update();
+    this.graph.update();
+    return this.render();
   };
 
   return DraggableLineRenderer;
