@@ -30,7 +30,7 @@ Tactile.Chart = class Chart
     @updateCallbacks = []
     
     args = _.extend({}, @mainDefaults, args)
-    args.series = _.map(args.series,(d)=> _.extend({}, @seriesDefaults,d))
+    args.series = _.map(args.series, (d) => _.extend({}, @seriesDefaults, d))
     _.each args, (val, key) =>
       @[key] = val
         
@@ -50,8 +50,8 @@ Tactile.Chart = class Chart
     stackedData = @stackData()
     
     # clear everything
-    #TODO: Change this to enter(), transition(), and exit() ASAP.
-    @vis.selectAll("*").remove() #
+    # TODO: Change this to enter(), transition(), and exit() ASAP.
+    @vis.selectAll("*").remove()
     
     # TODO: 
     # it should be possible to pass options to the axes
@@ -63,7 +63,6 @@ Tactile.Chart = class Chart
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
-      
       renderer.render()
 
     @updateCallbacks.forEach (callback) ->
@@ -101,7 +100,6 @@ Tactile.Chart = class Chart
     # Read more about stacking data here: 
     # https://github.com/mbostock/d3/wiki/Stack-Layout
 
-        
     seriesData = @series.active().map((d) =>
       @data.map(d.dataTransform).filter(@_slice))
 

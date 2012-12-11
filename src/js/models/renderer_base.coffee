@@ -40,6 +40,7 @@ Tactile.RendererBase = class RendererBase
     xMax = stackedData[0][stackedData[0].length - 1].x
     yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
     yMax = @graph.max or d3.max(values)
+    
     { x: [xMin, xMax], y: [yMin, yMax] }
     
     
