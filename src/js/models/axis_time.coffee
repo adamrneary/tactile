@@ -41,7 +41,6 @@ Tactile.AxisTime = class AxisTime
   render: ->
     @graph.vis.selectAll('.x-tick').remove()
     offsets = @tickOffsets()
-    console.log(offsets)
     offsets.forEach (o) =>
       return if @graph.x(o.value) > @graph.x.range()[1]
       @graph.vis.append('g')

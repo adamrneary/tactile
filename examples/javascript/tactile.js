@@ -232,7 +232,6 @@ Tactile.AxisTime = AxisTime = (function() {
       _this = this;
     this.graph.vis.selectAll('.x-tick').remove();
     offsets = this.tickOffsets();
-    console.log(offsets);
     return offsets.forEach(function(o) {
       if (_this.graph.x(o.value) > _this.graph.x.range()[1]) {
         return;

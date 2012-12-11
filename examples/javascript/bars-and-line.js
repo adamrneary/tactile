@@ -40,7 +40,6 @@ var chart = new Tactile.Chart({
       name: 'reach, plan',
       renderer: "draggableLine", // TODO: rename draggableLine to line
       dataTransform: function(d){
-        console.log(d);
         return {
           x: d.period,
           y: d.plan

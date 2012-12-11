@@ -21,7 +21,7 @@ Tactile.AxisY = class AxisY
     
     
     # A workaround to hide any elements that are drawn outside of the inner canvas
-    # which happens if we draw bars are drawned on the center of a point
+    # which happens if bars are drawned on the center of a point
     if @orientation is "left"
       @vis.append('rect')
         .attr('height', @graph.outerHeight)
