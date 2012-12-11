@@ -24,7 +24,7 @@ Tactile.AxisY = class AxisY
     # which happens if bars are drawned on the center of a point
     if @orientation is "left"
       @vis.append('rect')
-        .attr('height', @graph.outerHeight)
+        .attr('height', @graph.height)
         .attr('width', 100)
         .attr('class', 'clipping-mask')
         .attr("transform", "translate(-100, 0)")

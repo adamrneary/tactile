@@ -160,7 +160,7 @@ Tactile.AxisY = AxisY = (function() {
       return y;
     });
     if (this.orientation === "left") {
-      this.vis.append('rect').attr('height', this.graph.outerHeight).attr('width', 100).attr('class', 'clipping-mask').attr("transform", "translate(-100, 0)").attr('fill', 'white');
+      this.vis.append('rect').attr('height', this.graph.height).attr('width', 100).attr('class', 'clipping-mask').attr("transform", "translate(-100, 0)").attr('fill', 'white');
     }
     g = this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
@@ -228,15 +228,16 @@ Tactile.AxisTime = AxisTime = (function() {
   };
 
   AxisTime.prototype.render = function() {
-    var offsets,
+    var g, offsets,
       _this = this;
     this.graph.vis.selectAll('.x-tick').remove();
     offsets = this.tickOffsets();
+    g = this.graph.vis.append('g').attr('class', 'x-ticks');
     return offsets.forEach(function(o) {
       if (_this.graph.x(o.value) > _this.graph.x.range()[1]) {
         return;
       }
-      return _this.graph.vis.append('g').attr("transform", "translate(" + (_this.graph.x(o.value)) + ", " + _this.graph.innerHeight + ")").attr("class", ["x-tick", _this.ticksTreatment].join(' ')).append('text').attr("y", _this.marginTop).text(o.unit.formatter(new Date(o.value * 1000))).attr("class", 'title');
+      return g.append('g').attr("transform", "translate(" + (_this.graph.x(o.value)) + ", " + _this.graph.innerHeight + ")").attr("class", ["x-tick", _this.ticksTreatment].join(' ')).append('text').attr("y", _this.marginTop).text(o.unit.formatter(new Date(o.value * 1000))).attr("class", 'title');
     });
   };
 

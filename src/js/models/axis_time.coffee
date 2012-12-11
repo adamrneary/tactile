@@ -41,9 +41,11 @@ Tactile.AxisTime = class AxisTime
   render: ->
     @graph.vis.selectAll('.x-tick').remove()
     offsets = @tickOffsets()
+    g = @graph.vis.append('g')
+      .attr('class', 'x-ticks')
     offsets.forEach (o) =>
       return if @graph.x(o.value) > @graph.x.range()[1]
-      @graph.vis.append('g')
+      g.append('g')
         .attr("transform", "translate(#{@graph.x(o.value)}, #{@graph.innerHeight})")
         .attr("class", ["x-tick", @ticksTreatment].join(' '))
       .append('text')
