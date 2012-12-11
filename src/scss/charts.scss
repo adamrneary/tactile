@@ -101,6 +101,11 @@
 /* axes */
 
 .y-ticks {
+  /* Don't display first tick of Y-axis */
+  g:first-child {
+    opacity: 0 !important;
+  }
+  
   &.plain {
     path {
       fill: none;
@@ -139,7 +144,6 @@
 
 .y-ticks text {
   opacity: 0.5;
-  font-size: 10px;
   pointer-events: none;
   fill: black;
   font-size: 11px;
@@ -151,6 +155,7 @@
   &.grid {
     border-left: 1px dotted rgba(0, 0, 0, 0.2);
   }
+  fill: black;
   position: absolute;
   top: 0;
   bottom: 0;
