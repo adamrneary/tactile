@@ -153,13 +153,18 @@ Tactile.AxisY = AxisY = (function() {
   }
 
   AxisY.prototype.render = function() {
-    var axis, gridSize;
+    var axis, g, gridSize, yAxis;
     this.vis.selectAll('.y-ticks, .y-grid').remove();
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
-    this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" ")).call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+    if (this.orientation === "left") {
+      this.vis.append('rect').attr('height', this.graph.outerHeight).attr('width', 100).attr('class', 'clipping-mask').attr("transform", "translate(-100, 0)").attr('fill', 'white');
+    }
+    g = this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
+    yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
+    g.call(yAxis);
     if (this.grid) {
       gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
       this.graph.vis.append("svg:g").attr("class", "y-grid").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));

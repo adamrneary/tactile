@@ -18,10 +18,22 @@ Tactile.AxisY = class AxisY
     axis = d3.svg.axis().scale(@graph.y).orient(@orientation)
     
     axis.tickFormat @options.tickFormat or (y) -> y
-
-    @vis.append("g")
+    
+    
+    # A workaround to hide any elements that are drawn outside of the inner canvas
+    # which happens if we draw bars are drawned on the center of a point
+    if @orientation is "left"
+      @vis.append('rect')
+        .attr('height', @graph.outerHeight)
+        .attr('width', 100)
+        .attr('class', 'clipping-mask')
+        .attr("transform", "translate(-100, 0)")
+        .attr('fill', 'white')
+    
+    g = @vis.append("g")
       .attr("class", ["y-ticks", @ticksTreatment].join(" "))
-      .call axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)
+    yAxis = axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)
+    g.call yAxis
     
     if @grid
       gridSize = ((if @orientation is "right" then 1 else -1)) * @graph.width
