@@ -45,10 +45,8 @@ var chart = new Tactile.Chart({
       onDrag: function(d,series,graph){
       },
       afterDrag: function(d,y,i,draggedSeries,graph){
-          console.log("Before",graph.data[i],d,y,i);
           graph.data[i].plan = y;
           graph.data[i].actual = Math.round(y/2);
-          console.log("After",graph.data[i],d,y,i);
       }
     }
   ]

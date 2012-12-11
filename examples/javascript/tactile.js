@@ -825,7 +825,6 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       return nodes.filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
-        console.log(d);
         return d.y = _this.dragged.y;
       });
     }

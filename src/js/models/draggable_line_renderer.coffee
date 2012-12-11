@@ -47,7 +47,6 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     if @dragged and @dragged.y
       nodes.filter((d,i)=> i is @dragged.i)
         .each((d)=>
-          console.log(d)
           d.y = @dragged.y)
 
         
