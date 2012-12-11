@@ -789,6 +789,33 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
+    nodes = this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        if (d === _this.selected) {
+          return _this.dotSize + 1;
+        } else {
+          return _this.dotSize;
+        }
+      }
+    }).attr("class", function(d) {
+      if (d === _this.selected) {
+        return "selected";
+      } else {
+        return null;
+      }
+    }).attr("stroke", function(d) {
+      if (d === _this.selected) {
+        return 'orange';
+      } else {
+        return 'white';
+      }
+    }).attr("stroke-width", '2').style("cursor", "ns-resize").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     nodes = this.graph.vis.selectAll("circle").data(this.series.stack);
     nodes.enter().append("svg:circle").attr("stroke-width", '2').style("cursor", "ns-resize").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     nodes.attr("cx", function(d) {
