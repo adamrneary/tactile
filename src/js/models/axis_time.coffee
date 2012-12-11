@@ -43,6 +43,7 @@ Tactile.AxisTime = class AxisTime
     offsets = @tickOffsets()
     g = @graph.vis.append('g')
       .attr('class', 'x-ticks')
+      
     offsets.forEach (o) =>
       return if @graph.x(o.value) > @graph.x.range()[1]
       g.append('g')

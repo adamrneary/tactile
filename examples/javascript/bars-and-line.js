@@ -4,7 +4,7 @@ var chart = new Tactile.Chart({
   height: 400,
   // time (period here) is unix milliseconds/1000
   data: [ 
-    {period: 1325376000, actual: 4, plan: 1}, 
+    {period: 1325376000, actual: 4, plan: 0}, 
     {period: 1328054400, actual: 5, plan: 1}, 
     {period: 1330560000, actual: 6, plan: 2}, 
     {period: 1333238400, actual: 7, plan: 3}, 

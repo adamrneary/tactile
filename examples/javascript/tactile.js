@@ -160,7 +160,7 @@ Tactile.AxisY = AxisY = (function() {
       return y;
     });
     if (this.orientation === "left") {
-      this.vis.append('rect').attr('height', this.graph.height).attr('width', 100).attr('class', 'clipping-mask').attr("transform", "translate(-100, 0)").attr('fill', 'white');
+      this.vis.append('rect').attr('height', this.graph.height + 10).attr('width', 20).attr('class', 'clipping-mask').attr("transform", "translate(-20, 0)").attr('fill', 'white');
     }
     g = this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
@@ -642,12 +642,11 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
   };
 
   BarRenderer.prototype.barWidth = function() {
-    var barWidth, data, frequentInterval, stackedData;
-    stackedData = this.graph.stackedData || this.graph.stackData();
-    data = stackedData.slice(-1).shift();
-    frequentInterval = this._frequentInterval();
-    barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
-    return barWidth;
+    var barWidth, count, data;
+    this.graph.stackData();
+    data = this.series.stack;
+    count = data.length;
+    return barWidth = this.graph.width / count * (1 - this.gapSize);
   };
 
   BarRenderer.prototype.initialize = function(options) {
@@ -666,35 +665,6 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
     frequentInterval = this._frequentInterval();
     domain.x[1] += parseInt(frequentInterval.magnitude);
     return domain;
-  };
-
-  BarRenderer.prototype._frequentInterval = function() {
-    var data, frequentInterval, i, interval, intervalCounts, stackedData;
-    stackedData = this.graph.stackedData || this.graph.stackData();
-    data = stackedData.slice(-1).shift();
-    intervalCounts = {};
-    i = 0;
-    while (i < data.length - 1) {
-      interval = data[i + 1].x - data[i].x;
-      intervalCounts[interval] = intervalCounts[interval] || 0;
-      intervalCounts[interval]++;
-      i++;
-    }
-    frequentInterval = {
-      count: 0
-    };
-    _.keys(intervalCounts).forEach(function(i) {
-      if (frequentInterval.count < intervalCounts[i]) {
-        return frequentInterval = {
-          count: intervalCounts[i],
-          magnitude: i
-        };
-      }
-    });
-    this._frequentInterval = function() {
-      return frequentInterval;
-    };
-    return frequentInterval;
   };
 
   return BarRenderer;
@@ -1065,10 +1035,13 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.discoverRange = function(renderer) {
-    var domain;
+    var domain, rangeStart;
     domain = renderer.domain();
     if (renderer.cartesian) {
-      this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
+      if (this._hasDifferentRenderers() && this._containsBarChart()) {
+        rangeStart = this.width / renderer.series.stack.length / 2;
+      }
+      this.x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, this.width]);
       this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
       return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
     }
@@ -1176,6 +1149,16 @@ Tactile.Chart = Chart = (function() {
     return _.uniq(_.map(this.series, function(s) {
       return s.renderer;
     })).length > 1;
+  };
+
+  Chart.prototype._containsBarChart = function() {
+    var names;
+    names = _.map(this.series, function(s) {
+      return s.renderer;
+    });
+    return _.find(names, function(name) {
+      return name === 'bar';
+    }) !== void 0;
   };
 
   return Chart;
