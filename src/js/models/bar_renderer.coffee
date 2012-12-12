@@ -43,6 +43,8 @@ Tactile.BarRenderer = class BarRenderer extends RendererBase
       .attr("fill", @series.color)
       .attr("rx", edgeRatio)
       .attr("ry", edgeRatio)
+      
+    nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
 
     barXOffset += seriesBarWidth if @unstack
         

@@ -24,6 +24,9 @@ var chart = new Tactile.Chart({
     renderer: "bar", // TODO: rename bar to column
     wide: true,
     round: true,
+    tooltip: function(d) {
+      return d.y + " customers";
+    },
     dataTransform: function(d){
       return {
         x: d.period,
@@ -36,6 +39,9 @@ var chart = new Tactile.Chart({
     name: 'reach, plan',
     renderer: "draggableLine", // TODO: rename draggableLine to line
     sigfigs: 0,
+    tooltip: function(d) {
+      return d.y + " customers planned";
+    },
     dataTransform: function(d){
       return {
         x: d.period,

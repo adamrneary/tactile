@@ -26,20 +26,6 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     super() # draws the line chart
     
     return if @series.disabled
-    nodes = @graph.vis.selectAll("circle")
-      .data(@series.stack)
-      .enter()
-      .append("svg:circle")
-      .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
-      .attr("r", (d) => (if ("r" of d) then d.r else (if d is @selected then @dotSize + 1 else @dotSize)))
-      .attr("class",  (d) => (if d is @selected then "selected" else null))
-      .attr("stroke", (d) => (if d is @selected then 'orange' else 'white'))
-      .attr("stroke-width", '2')
-      .style("cursor", "ns-resize")
-      .on("mousedown.drag", @_datapointDrag)
-      .on("touchstart.drag", @_datapointDrag)
-
     nodes = @graph.vis.selectAll("circle").data(@series.stack)
         
     nodes.enter().append("svg:circle")
@@ -53,16 +39,17 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .attr("r", (d) => (if ("r" of d) then d.r else (if d is @selected then @dotSize + 1 else @dotSize)))
       .attr("class",  (d) => (if d is @selected then "selected" else null))
       .attr("stroke", (d) => (if d is @selected then 'orange' else 'white'))
-      
+    
+    nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
+    
     _.each nodes[0], (n) =>
       n?.setAttribute "fill", @series.color  
 
     if @dragged and @dragged.y
-      nodes.filter((d,i)=> i is @dragged.i)
-        .each((d)=>
-          d.y = @dragged.y)
+      nodes
+        .filter((d,i) => i is @dragged.i)
+        .each((d) => d.y = @dragged.y)
 
-        
   _bindMouseEvents: =>
     d3.select(@graph.element)
       .on("mousemove.drag", @_mouseMove)
