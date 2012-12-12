@@ -36,9 +36,9 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
 
     nodes.attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
-      .attr("r", (d) => (if ("r" of d) then d.r else (if d is @selected then @dotSize + 1 else @dotSize)))
-      .attr("class",  (d) => (if d is @selected then "selected" else null))
-      .attr("stroke", (d) => (if d is @selected then 'orange' else 'white'))
+      .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
+      .attr("class",  (d) => ["draggable-node", (if d.dragged then "selected" else null)].join(' '))
+      .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
     
     nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
     
@@ -48,7 +48,9 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     if @dragged and @dragged.y
       nodes
         .filter((d,i) => i is @dragged.i)
-        .each((d) => d.y = @dragged.y)
+        .each (d) => 
+          d.y = @dragged.y
+          d.dragged = true
 
   _bindMouseEvents: =>
     d3.select(@graph.element)

@@ -774,20 +774,16 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       if ("r" in d) {
         return d.r;
       } else {
-        if (d === _this.selected) {
+        if (d.dragged) {
           return _this.dotSize + 1;
         } else {
           return _this.dotSize;
         }
       }
     }).attr("class", function(d) {
-      if (d === _this.selected) {
-        return "selected";
-      } else {
-        return null;
-      }
+      return ["draggable-node", (d.dragged ? "selected" : null)].join(' ');
     }).attr("stroke", function(d) {
-      if (d === _this.selected) {
+      if (d.dragged) {
         return 'orange';
       } else {
         return 'white';
@@ -805,7 +801,8 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       return nodes.filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
-        return d.y = _this.dragged.y;
+        d.y = _this.dragged.y;
+        return d.dragged = true;
       });
     }
   };

@@ -541,14 +541,19 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px;
 }
 
+/* line 515, ../src/scss/charts.scss */
+g .draggable-node.selected, g .draggable-node:hover {
+  stroke: orange;
+}
+
 /* Leaderboard */
-/* line 517, ../src/scss/charts.scss */
+/* line 524, ../src/scss/charts.scss */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold;
 }
-/* line 523, ../src/scss/charts.scss */
+/* line 530, ../src/scss/charts.scss */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -557,7 +562,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-weight: 800;
   text-transform: uppercase;
 }
-/* line 531, ../src/scss/charts.scss */
+/* line 538, ../src/scss/charts.scss */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
@@ -565,47 +570,47 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 538, ../src/scss/charts.scss */
+/* line 545, ../src/scss/charts.scss */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none;
 }
-/* line 543, ../src/scss/charts.scss */
+/* line 550, ../src/scss/charts.scss */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none;
 }
-/* line 548, ../src/scss/charts.scss */
+/* line 555, ../src/scss/charts.scss */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none;
 }
-/* line 553, ../src/scss/charts.scss */
+/* line 560, ../src/scss/charts.scss */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none;
 }
 
 /* Gauge */
-/* line 562, ../src/scss/charts.scss */
+/* line 569, ../src/scss/charts.scss */
 .gauge.arc {
   fill: #e2dedf;
 }
-/* line 566, ../src/scss/charts.scss */
+/* line 573, ../src/scss/charts.scss */
 .gauge.arc-value {
   fill: #30878f;
 }
-/* line 570, ../src/scss/charts.scss */
+/* line 577, ../src/scss/charts.scss */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf;
 }
-/* line 575, ../src/scss/charts.scss */
+/* line 582, ../src/scss/charts.scss */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345;
 }
-/* line 580, ../src/scss/charts.scss */
+/* line 587, ../src/scss/charts.scss */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;
