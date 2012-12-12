@@ -46,15 +46,17 @@ Tactile.RendererBase = class RendererBase
     
   render: ->
     # drawing line by default
-    @graph.vis.selectAll("path")
+    line = @graph.vis.selectAll("path")
       .data([@series.stack])
-      .enter()
+
+    line.enter()
       .append("svg:path")
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
-      .attr("d", @seriesPathFactory())
+
+    line.attr("d", @seriesPathFactory())
     
   configure: (options) ->
     # merge base defaults with particular renderer's

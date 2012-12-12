@@ -486,7 +486,10 @@ Tactile.RendererBase = RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function() {
-    return this.graph.vis.selectAll("path").data([this.series.stack]).enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless')).attr("d", this.seriesPathFactory());
+    var line;
+    line = this.graph.vis.selectAll("path").data([this.series.stack]);
+    line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    return line.attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.configure = function(options) {
