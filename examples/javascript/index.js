@@ -4,8 +4,8 @@ var examples = [
         title: "Simple Line"
     },
     {
-        shortLink:"bars-and-line", 
-        title: "Bars and Line"
+        shortLink:"columns-and-line", 
+        title: "Columns and Line"
     },
     {
         shortLink:"stacked-bars", 

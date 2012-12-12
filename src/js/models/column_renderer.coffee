@@ -1,5 +1,5 @@
-Tactile.BarRenderer = class BarRenderer extends RendererBase
-  name: "bar"
+Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
+  name: "column"
 
   specificDefaults:
     gapSize: 0.15

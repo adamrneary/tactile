@@ -583,27 +583,27 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
 
 })(RendererBase);
 
-var BarRenderer,
+var ColumnRenderer,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Tactile.BarRenderer = BarRenderer = (function(_super) {
+Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
 
-  __extends(BarRenderer, _super);
+  __extends(ColumnRenderer, _super);
 
-  function BarRenderer() {
-    return BarRenderer.__super__.constructor.apply(this, arguments);
+  function ColumnRenderer() {
+    return ColumnRenderer.__super__.constructor.apply(this, arguments);
   }
 
-  BarRenderer.prototype.name = "bar";
+  ColumnRenderer.prototype.name = "column";
 
-  BarRenderer.prototype.specificDefaults = {
+  ColumnRenderer.prototype.specificDefaults = {
     gapSize: 0.15,
     tension: null,
     round: true
   };
 
-  BarRenderer.prototype.render = function() {
+  ColumnRenderer.prototype.render = function() {
     var activeSeriesCount, barWidth, barXOffset, edgeRatio, nodes, seriesBarWidth, transform, yValue,
       _this = this;
     barWidth = this.barWidth();
@@ -646,7 +646,7 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
     }
   };
 
-  BarRenderer.prototype.barWidth = function() {
+  ColumnRenderer.prototype.barWidth = function() {
     var barWidth, count, data;
     this.graph.stackData();
     data = this.series.stack;
@@ -654,16 +654,16 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
     return barWidth = this.graph.width / count * (1 - this.gapSize);
   };
 
-  BarRenderer.prototype.initialize = function(options) {
+  ColumnRenderer.prototype.initialize = function(options) {
     if (options == null) {
       options = {};
     }
     return this.gapSize = options.gapSize || this.gapSize;
   };
 
-  BarRenderer.prototype.domain = function() {
+  ColumnRenderer.prototype.domain = function() {
     var domain, frequentInterval;
-    domain = BarRenderer.__super__.domain.call(this);
+    domain = ColumnRenderer.__super__.domain.call(this);
     if (this.graph._hasDifferentRenderers()) {
       return domain;
     }
@@ -672,7 +672,7 @@ Tactile.BarRenderer = BarRenderer = (function(_super) {
     return domain;
   };
 
-  return BarRenderer;
+  return ColumnRenderer;
 
 })(RendererBase);
 
@@ -928,7 +928,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype._renderers = {
     'gauge': GaugeRenderer,
-    'bar': BarRenderer,
+    'column': ColumnRenderer,
     'line': LineRenderer,
     'draggableLine': DraggableLineRenderer
   };
@@ -1022,7 +1022,7 @@ Tactile.Chart = Chart = (function() {
     var domain, rangeStart;
     domain = renderer.domain();
     if (renderer.cartesian) {
-      if (this._hasDifferentRenderers() && this._containsBarChart()) {
+      if (this._hasDifferentRenderers() && this._containsColumnChart()) {
         rangeStart = this.width / renderer.series.stack.length / 2;
       }
       this.x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, this.width]);
@@ -1135,13 +1135,13 @@ Tactile.Chart = Chart = (function() {
     })).length > 1;
   };
 
-  Chart.prototype._containsBarChart = function() {
+  Chart.prototype._containsColumnChart = function() {
     var names;
     names = _.map(this.series, function(s) {
       return s.renderer;
     });
     return _.find(names, function(name) {
-      return name === 'bar';
+      return name === 'column';
     }) !== void 0;
   };
 

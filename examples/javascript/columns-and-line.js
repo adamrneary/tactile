@@ -21,7 +21,7 @@ var chart = new Tactile.Chart({
   series: [
   {
     name: 'reach, actual',
-    renderer: "bar", // TODO: rename bar to column
+    renderer: "column",
     wide: true,
     round: true,
     tooltip: function(d) {
