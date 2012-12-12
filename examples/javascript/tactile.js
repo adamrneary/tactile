@@ -761,7 +761,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype.render = function() {
-    var nodes,
+    var nodes, _ref,
       _this = this;
     DraggableLineRenderer.__super__.render.call(this);
     if (this.series.disabled) {
@@ -800,7 +800,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     _.each(nodes[0], function(n) {
       return n != null ? n.setAttribute("fill", _this.series.color) : void 0;
     });
-    if (this.dragged && (this.dragged.y != null)) {
+    if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
       return nodes.filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
@@ -836,7 +836,8 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._mouseUp = function() {
-    if (!(this.dragged && (this.dragged.y != null))) {
+    var _ref;
+    if (((_ref = this.dragged) != null ? _ref.y : void 0) == null) {
       return;
     }
     if (this.dragged) {

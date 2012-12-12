@@ -46,7 +46,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       n?.setAttribute "fill", @series.color  
 
 
-    if @dragged and @dragged.y?
+    if @dragged?.y?
       
       nodes
         .filter((d,i) => i is @dragged.i)
@@ -76,7 +76,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       @update()
 
   _mouseUp: =>    
-    return unless @dragged and @dragged.y?
+    return unless @dragged?.y?
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
     $(@graph).find('.selected').attr('class', '')
     d3.select("body").style "cursor", "auto"
