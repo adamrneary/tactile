@@ -19,36 +19,35 @@ var chart = new Tactile.Chart({
   ],
   
   series: [
-    {
-      name: 'reach, actual',
-      renderer: "bar", // TODO: rename bar to column
-      wide: true,
-      round: true,
-      dataTransform: function(d){
-        return {
-          x: d.period,
-          y: d.actual
-        };
-      }
+  {
+    name: 'reach, actual',
+    renderer: "bar", // TODO: rename bar to column
+    wide: true,
+    round: true,
+    dataTransform: function(d){
+      return {
+        x: d.period,
+        y: d.actual
+      };
     }
-    ,
-    {
-      name: 'reach, plan',
-      renderer: "draggableLine", // TODO: rename draggableLine to line
-      sigfigs: 0,
-      dataTransform: function(d){
-        return {
-          x: d.period,
-          y: d.plan
-        };
-      },
-      onDrag: function(d,series,graph){
-      },
-      afterDrag: function(d,y,i,draggedSeries,graph){
-          graph.data[i].plan = y;
-          graph.data[i].actual = Math.round(y/2);
-      }
+  }
+  ,
+  {
+    name: 'reach, plan',
+    renderer: "draggableLine", // TODO: rename draggableLine to line
+    sigfigs: 0,
+    dataTransform: function(d){
+      return {
+        x: d.period,
+        y: d.plan
+      };
+    },
+    onDrag: function(d,series,graph){},
+    afterDrag: function(d,y,i,draggedSeries,graph){
+      graph.data[i].plan = y;
+      graph.data[i].actual = Math.round(y/2);
     }
+  }
   ]
 });
 

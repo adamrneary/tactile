@@ -12,7 +12,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     @onDrag = @series.onDrag || ->
     @dragged = @selected = null
     @_bindMouseEvents()
-    @power = Math.pow(10,@series.sigfigs)
+    @power = Math.pow(10, @series.sigfigs)
 
   seriesPathFactory: ->
     d3.svg.line()
@@ -43,16 +43,16 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     nodes = @graph.vis.selectAll("circle").data(@series.stack)
         
     nodes.enter().append("svg:circle")
-          .attr("stroke-width", '2')
-          .style("cursor", "ns-resize")
-          .on("mousedown.drag", @_datapointDrag)
-          .on("touchstart.drag", @_datapointDrag)
+      .attr("stroke-width", '2')
+      .style("cursor", "ns-resize")
+      .on("mousedown.drag", @_datapointDrag)
+      .on("touchstart.drag", @_datapointDrag)
 
     nodes.attr("cx", (d) => @graph.x d.x)
-          .attr("cy", (d) => @graph.y d.y)
-          .attr("r", (d) => (if ("r" of d) then d.r else (if d is @selected then @dotSize + 1 else @dotSize)))
-          .attr("class",  (d) => (if d is @selected then "selected" else null))
-          .attr("stroke", (d) => (if d is @selected then 'orange' else 'white'))
+      .attr("cy", (d) => @graph.y d.y)
+      .attr("r", (d) => (if ("r" of d) then d.r else (if d is @selected then @dotSize + 1 else @dotSize)))
+      .attr("class",  (d) => (if d is @selected then "selected" else null))
+      .attr("stroke", (d) => (if d is @selected then 'orange' else 'white'))
       
     _.each nodes[0], (n) =>
       n?.setAttribute "fill", @series.color  
@@ -79,12 +79,12 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     t = d3.event.changedTouches
     if @dragged
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
-      @dragged.y = Math.round(inverted*@power)/@power
+      @dragged.y = Math.round(inverted * @power) / @power
       @onDrag(@dragged, @series, @graph);
       @update()
 
   _mouseUp: =>
-    @afterDrag(@dragged.d,@dragged.y,@dragged.i, @series,@graph) if @dragged
+    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
     $(@graph).find('.selected').attr('class', '')
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
