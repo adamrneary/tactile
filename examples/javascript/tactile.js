@@ -835,6 +835,9 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._mouseUp = function() {
+    if (!(this.dragged && this.dragged.y)) {
+      return;
+    }
     if (this.dragged) {
       this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
     }
