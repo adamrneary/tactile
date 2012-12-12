@@ -743,7 +743,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   DraggableLineRenderer.prototype.initialize = function() {
     this.afterDrag = this.series.afterDrag || function() {};
     this.onDrag = this.series.onDrag || function() {};
-    this.dragged = this.selected = null;
+    this.dragged = null;
     this._bindMouseEvents();
     return this.power = Math.pow(10, this.series.sigfigs);
   };
@@ -812,7 +812,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._datapointDrag = function(d, i) {
-    this.selected = this.dragged = {
+    this.dragged = {
       d: d,
       i: i
     };

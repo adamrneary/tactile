@@ -10,7 +10,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
   initialize: ->
     @afterDrag = @series.afterDrag || ->
     @onDrag = @series.onDrag || ->
-    @dragged = @selected = null
+    @dragged = null
     @_bindMouseEvents()
     @power = Math.pow(10, @series.sigfigs)
 
@@ -60,7 +60,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .on("touchend.drag", @_mouseUp)
       
   _datapointDrag: (d,i) =>    
-    @selected = @dragged = {d: d, i:i}
+    @dragged = {d: d, i:i}
     @update()
 
   _mouseMove: =>
