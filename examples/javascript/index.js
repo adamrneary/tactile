@@ -8,6 +8,10 @@ var examples = [
         title: "Columns and Line"
     },
     {
+        shortLink:"area", 
+        title: "Area"
+    },
+    {
         shortLink:"stacked-bars", 
         title: "Stacked Bars"
     }

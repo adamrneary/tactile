@@ -727,6 +727,60 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
 
 })(RendererBase);
 
+var AreaRenderer,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.AreaRenderer = AreaRenderer = (function(_super) {
+
+  __extends(AreaRenderer, _super);
+
+  function AreaRenderer() {
+    return AreaRenderer.__super__.constructor.apply(this, arguments);
+  }
+
+  AreaRenderer.prototype.name = "area";
+
+  AreaRenderer.prototype.dotSize = 5;
+
+  AreaRenderer.prototype.specificDefaults = {
+    unstack: true,
+    fill: false,
+    stroke: true
+  };
+
+  AreaRenderer.prototype.seriesPathFactory = function() {
+    var _this = this;
+    return d3.svg.area().x(function(d) {
+      return _this.graph.x(d.x);
+    }).y0(function(d) {
+      return _this.graph.y(d.y0);
+    }).y1(function(d) {
+      return _this.graph.y(d.y + d.y0);
+    }).interpolate(this.graph.interpolation).tension(this.tension);
+  };
+
+  AreaRenderer.prototype.render = function() {
+    var _this = this;
+    AreaRenderer.__super__.render.call(this);
+    this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("stroke", 'white').attr("stroke-width", '2');
+    return this.graph.vis.selectAll("path").data([this.series.stack]).attr('fill', this.series.color).attr("class", 'area');
+  };
+
+  return AreaRenderer;
+
+})(RendererBase);
+
 var DraggableLineRenderer,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -949,6 +1003,7 @@ Tactile.Chart = Chart = (function() {
     'gauge': GaugeRenderer,
     'column': ColumnRenderer,
     'line': LineRenderer,
+    'area': AreaRenderer,
     'draggableLine': DraggableLineRenderer
   };
 
