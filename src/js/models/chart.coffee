@@ -97,10 +97,10 @@ Tactile.Chart = class Chart
       else
         console.log("ERROR:#{axisString} is not currently implemented")
                         
-  # used in range slider
+  # Used by range slider
   dataDomain: ->
     # take from the first series
-    data = @series[0].data
+    data = @renderers[0].series.stack
     [data[0].x, data.slice(-1).shift().x]  
 
   stackData: ->

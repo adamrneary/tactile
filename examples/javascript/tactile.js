@@ -1048,7 +1048,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.dataDomain = function() {
     var data;
-    data = this.series[0].data;
+    data = this.renderers[0].series.stack;
     return [data[0].x, data.slice(-1).shift().x];
   };
 
