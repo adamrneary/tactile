@@ -808,7 +808,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._bindMouseEvents = function() {
-    return d3.select(this.graph.element).on("mousemove.drag", this._mouseMove).on("touchmove.drag", this._mouseMove).on("mouseup.drag", this._mouseUp).on("touchend.drag", this._mouseUp);
+    return d3.select(this.graph.element).on("mousemove.drag", this._mouseMove).on("touchmove.drag", this._mouseMove).on("mouseup.drag", this._mouseUp).on("mouseout", this._mouseUp).on("touchend.drag", this._mouseUp);
   };
 
   DraggableLineRenderer.prototype._datapointDrag = function(d, i) {
@@ -833,7 +833,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._mouseUp = function() {
-    if (!(this.dragged && this.dragged.y)) {
+    if (!(this.dragged && (this.dragged.y != null))) {
       return;
     }
     if (this.dragged) {

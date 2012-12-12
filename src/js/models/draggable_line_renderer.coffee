@@ -59,6 +59,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .on("mousemove.drag", @_mouseMove)
       .on("touchmove.drag", @_mouseMove)
       .on("mouseup.drag", @_mouseUp)
+      .on("mouseout", @_mouseUp)
       .on("touchend.drag", @_mouseUp)
       
   _datapointDrag: (d,i) =>    
@@ -75,8 +76,8 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       @onDrag(@dragged, @series, @graph);
       @update()
 
-  _mouseUp: =>
-    return unless @dragged and @dragged.y
+  _mouseUp: =>    
+    return unless @dragged and @dragged.y?
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
     $(@graph).find('.selected').attr('class', '')
     d3.select("body").style "cursor", "auto"
