@@ -159,9 +159,6 @@ Tactile.AxisY = AxisY = (function() {
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
-    if (this.orientation === "left") {
-      this.vis.append('rect').attr('height', this.graph.height + 10).attr('width', 20).attr('class', 'clipping-mask').attr("transform", "translate(-20, 0)").attr('fill', 'white');
-    }
     g = this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
     g.call(yAxis);
@@ -693,6 +690,8 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
 
   LineRenderer.prototype.name = "line";
 
+  LineRenderer.prototype.dotSize = 5;
+
   LineRenderer.prototype.specificDefaults = {
     unstack: true,
     fill: false,
@@ -708,7 +707,77 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
     }).interpolate(this.graph.interpolation).tension(this.tension);
   };
 
+  LineRenderer.prototype.render = function() {
+    var _this = this;
+    LineRenderer.__super__.render.call(this);
+    return this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("stroke", 'white').attr("stroke-width", '2');
+  };
+
   return LineRenderer;
+
+})(RendererBase);
+
+var AreaRenderer,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.AreaRenderer = AreaRenderer = (function(_super) {
+
+  __extends(AreaRenderer, _super);
+
+  function AreaRenderer() {
+    return AreaRenderer.__super__.constructor.apply(this, arguments);
+  }
+
+  AreaRenderer.prototype.name = "area";
+
+  AreaRenderer.prototype.dotSize = 5;
+
+  AreaRenderer.prototype.specificDefaults = {
+    unstack: true,
+    fill: false,
+    stroke: true
+  };
+
+  AreaRenderer.prototype.seriesPathFactory = function() {
+    var _this = this;
+    return d3.svg.area().x(function(d) {
+      return _this.graph.x(d.x);
+    }).y0(function(d) {
+      return _this.graph.y(d.y0);
+    }).y1(function(d) {
+      return _this.graph.y(d.y + d.y0);
+    }).interpolate(this.graph.interpolation).tension(this.tension);
+  };
+
+  AreaRenderer.prototype.render = function() {
+    var _this = this;
+    AreaRenderer.__super__.render.call(this);
+    this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("stroke", 'white').attr("stroke-width", '2');
+    return this.graph.vis.selectAll("path").data([this.series.stack]).attr('fill', this.series.color).attr("class", 'area');
+  };
+
+  return AreaRenderer;
 
 })(RendererBase);
 
@@ -768,7 +837,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       return;
     }
     nodes = this.graph.vis.selectAll("circle").data(this.series.stack);
-    nodes.enter().append("svg:circle").attr("stroke-width", '2').style("cursor", "ns-resize").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
+    nodes.enter().append("svg:circle").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     nodes.attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
@@ -785,13 +854,13 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
       }
     }).attr("class", function(d) {
       return ["draggable-node", (d.dragged ? "selected" : null)].join(' ');
-    }).attr("stroke", function(d) {
+    }).style("cursor", "ns-resize").attr("stroke", function(d) {
       if (d.dragged) {
         return 'orange';
       } else {
         return 'white';
       }
-    });
+    }).attr("stroke-width", '2');
     if (this.series.tooltip) {
       nodes.attr("data-original-title", function(d) {
         return _this.series.tooltip(d);
@@ -935,6 +1004,7 @@ Tactile.Chart = Chart = (function() {
     'gauge': GaugeRenderer,
     'column': ColumnRenderer,
     'line': LineRenderer,
+    'area': AreaRenderer,
     'draggableLine': DraggableLineRenderer
   };
 

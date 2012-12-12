@@ -4,6 +4,7 @@ Tactile.Chart = class Chart
     'gauge': GaugeRenderer
     'column': ColumnRenderer
     'line': LineRenderer
+    'area': AreaRenderer
     'draggableLine': DraggableLineRenderer
   
   mainDefaults: 

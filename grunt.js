@@ -51,6 +51,7 @@ module.exports = function(grunt) {
                   'build/gauge_renderer.js',
                   'build/column_renderer.js',
                   'build/line_renderer.js',
+                  'build/area_renderer.js',
                   'build/draggable_line_renderer.js',
 
                   'build/range_slider.js',

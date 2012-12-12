@@ -19,18 +19,6 @@ Tactile.AxisY = class AxisY
     
     axis.tickFormat @options.tickFormat or (y) -> y
     
-    
-    # A workaround to hide any elements that are drawn outside of the inner canvas
-    # which happens if bars are drawned on the center of a point
-    if @orientation is "left"
-      @vis.append('rect')
-        # add few pixes to hide any elements drawn below the inner canvas
-        .attr('height', @graph.height + 10) 
-        .attr('width', 20)
-        .attr('class', 'clipping-mask')
-        .attr("transform", "translate(-20, 0)")
-        .attr('fill', 'white')
-    
     g = @vis.append("g")
       .attr("class", ["y-ticks", @ticksTreatment].join(" "))
     yAxis = axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)

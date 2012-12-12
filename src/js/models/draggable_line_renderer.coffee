@@ -29,17 +29,18 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     nodes = @graph.vis.selectAll("circle").data(@series.stack)
         
     nodes.enter().append("svg:circle")
-      .attr("stroke-width", '2')
-      .style("cursor", "ns-resize")
       .on("mousedown.drag", @_datapointDrag)
       .on("touchstart.drag", @_datapointDrag)
-
+      
     nodes.attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
-      .attr("class",  (d) => ["draggable-node", (if d.dragged then "selected" else null)].join(' '))
+      .attr("class", (d) => ["draggable-node", (if d.dragged then "selected" else null)].join(' '))
+      .style("cursor", "ns-resize")
       .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
+      .attr("stroke-width", '2')
     
+  
     nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
     
     _.each nodes[0], (n) =>
