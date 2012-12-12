@@ -20,6 +20,22 @@ var chart = new Tactile.Chart({
   
   series: [
   {
+    name: 'reach, actual',
+    renderer: "bar", // TODO: rename bar to column
+    wide: true,
+    round: true,
+    tooltip: function(d) {
+      return d.y + " customers";
+    },
+    dataTransform: function(d){
+      return {
+        x: d.period,
+        y: d.actual
+      };
+    }
+  }
+  ,
+  {
     name: 'reach, plan',
     renderer: "draggableLine", // TODO: rename draggableLine to line
     sigfigs: 0,
