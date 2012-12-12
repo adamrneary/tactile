@@ -797,7 +797,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     _.each(nodes[0], function(n) {
       return n != null ? n.setAttribute("fill", _this.series.color) : void 0;
     });
-    if (this.dragged && this.dragged.y) {
+    if (this.dragged && (this.dragged.y != null)) {
       return nodes.filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
@@ -820,12 +820,13 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._mouseMove = function() {
-    var inverted, p, t;
+    var inverted, p, t, value;
     p = d3.svg.mouse(this.graph.vis[0][0]);
     t = d3.event.changedTouches;
     if (this.dragged) {
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
-      this.dragged.y = Math.round(inverted * this.power) / this.power;
+      value = Math.round(inverted * this.power) / this.power;
+      this.dragged.y = value;
       this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
     }

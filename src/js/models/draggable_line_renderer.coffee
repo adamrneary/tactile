@@ -45,10 +45,12 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     _.each nodes[0], (n) =>
       n?.setAttribute "fill", @series.color  
 
-    if @dragged and @dragged.y
+
+    if @dragged and @dragged.y?
+      
       nodes
         .filter((d,i) => i is @dragged.i)
-        .each (d) => 
+        .each (d) =>
           d.y = @dragged.y
           d.dragged = true
 
@@ -68,9 +70,8 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     t = d3.event.changedTouches
     if @dragged
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
-      
-      #TODO/FIXME: this has problems with 0, can't drag to 0 now.
-      @dragged.y = Math.round(inverted * @power) / @power
+      value = Math.round(inverted * @power) / @power
+      @dragged.y = value
       @onDrag(@dragged, @series, @graph);
       @update()
 
