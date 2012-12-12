@@ -39,11 +39,18 @@ Tactile.Chart = class Chart
         not s.disabled
         
     @setSize( width: args.width, height: args.height )
-    @_setupCanvas()
-    
     # need a constant class name for a containing div
     $(@element).addClass('graph-container')
+    @_setupCanvas()
+    
     @initRenderers(args)
+    
+    # TODO: 
+    # it should be possible to pass options to the axes
+    # so far they were 
+    # for x: unit, ticksTreatment, grid 
+    # for y: orientation, pixelsPerTick, ticks and few more.
+    axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
 
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
@@ -53,13 +60,6 @@ Tactile.Chart = class Chart
     # TODO: Change this to enter(), transition(), and exit() ASAP.
     @vis.selectAll("*").remove()
     
-    # TODO: 
-    # it should be possible to pass options to the axes
-    # so far they were 
-    # for x: unit, ticksTreatment, grid 
-    # for y: orientation, pixelsPerTick, ticks and few more.
-    axes = [@findAxis(@axes.x),@findAxis(@axes.y)]
-
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)

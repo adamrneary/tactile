@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-11
+/*! tactile - v0.0.1 - 2012-12-12
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -987,7 +987,8 @@ Tactile.Chart = Chart = (function() {
   };
 
   function Chart(args) {
-    var _this = this;
+    var axes,
+      _this = this;
     this.renderers = [];
     this.window = {};
     this.updateCallbacks = [];
@@ -1007,20 +1008,20 @@ Tactile.Chart = Chart = (function() {
       width: args.width,
       height: args.height
     });
-    this._setupCanvas();
     $(this.element).addClass('graph-container');
+    this._setupCanvas();
     this.initRenderers(args);
+    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
   }
 
   Chart.prototype.render = function() {
-    var axes, stackedData,
+    var stackedData,
       _this = this;
     if (this.renderers === void 0 || _.isEmpty(this.renderers)) {
       return;
     }
     stackedData = this.stackData();
     this.vis.selectAll("*").remove();
-    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
     _.each(this.renderers, function(renderer) {
       _this.discoverRange(renderer);
       return renderer.render();
