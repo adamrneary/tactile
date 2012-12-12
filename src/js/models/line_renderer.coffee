@@ -1,5 +1,6 @@
 Tactile.LineRenderer = class LineRenderer extends RendererBase
   name: "line"
+  dotSize: 5
   
   specificDefaults:
     unstack: true
@@ -12,3 +13,14 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     .y((d) => @graph.y d.y)
     .interpolate(@graph.interpolation)
     .tension @tension
+
+  render: ->
+    super()
+    @graph.vis.selectAll("circle").data(@series.stack)
+      .enter()
+      .append("svg:circle")
+      .attr("cx", (d) => @graph.x d.x)
+      .attr("cy", (d) => @graph.y d.y)
+      .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
+      .attr("stroke", 'white')
+      .attr("stroke-width", '2')
