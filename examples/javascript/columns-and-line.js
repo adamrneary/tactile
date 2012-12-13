@@ -27,7 +27,7 @@ var chart = new Tactile.Chart({
     tooltip: function(d) {
       return d.y + " customers";
     },
-    dataTransform: function(d){
+    dataTransform: function(d) {
       return {
         x: d.period,
         y: d.actual
@@ -39,6 +39,7 @@ var chart = new Tactile.Chart({
     name: 'reach, plan',
     renderer: "draggableLine", // TODO: rename draggableLine to line
     sigfigs: 0,
+    color: "#c05020",
     tooltip: function(d) {
       return d.y + " customers planned";
     },
