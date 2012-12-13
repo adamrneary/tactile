@@ -10,11 +10,11 @@ var examples = [
     {
         shortLink:"area", 
         title: "Area"
-    },
-    {
-        shortLink:"stacked-bars", 
-        title: "Stacked Bars"
     }
+    // {
+    //     shortLink:"stacked-bars", 
+    //     title: "Stacked Bars"
+    // }
 ];
 
 var showcaseObject = {
