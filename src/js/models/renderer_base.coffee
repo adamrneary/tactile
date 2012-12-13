@@ -46,16 +46,16 @@ Tactile.RendererBase = class RendererBase
     
   render: ->
     # drawing line by default
-    
-    @seriesCanvas().selectAll("path")
-      .remove() # TODO: this is a workaround, without this dragging is somewhat damaged
-      .data([@series.stack]).enter()
-      .append("svg:path")
-      .attr("d", @seriesPathFactory())
+    line = @seriesCanvas().selectAll("path")
+      .data([@series.stack])
+      
+    line.enter().append("svg:path")
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
+      
+    line.attr("d", @seriesPathFactory())
     
   # Creates separate g element for each series. This gives us better control over each paths/rets/circles
   # for a particular series data. 

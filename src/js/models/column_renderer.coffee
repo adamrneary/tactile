@@ -32,9 +32,12 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     if @graph._hasDifferentRenderers()
       barXOffset -= seriesBarWidth / 2    
     
-    nodes = @seriesCanvas().selectAll("rect").data(@series.stack).enter()
+    nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
+    
+    nodes.enter()
       .append("svg:rect")
-      .attr("x", (d) => @graph.x(d.x) + barXOffset)
+      
+    nodes.attr("x", (d) => @graph.x(d.x) + barXOffset)
       .attr("y", yValue)
       .attr("width", seriesBarWidth)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))

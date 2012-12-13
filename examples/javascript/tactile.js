@@ -483,7 +483,10 @@ Tactile.RendererBase = RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function() {
-    return this.seriesCanvas().selectAll("path").remove().data([this.series.stack]).enter().append("svg:path").attr("d", this.seriesPathFactory()).attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    var line;
+    line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
+    line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    return line.attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -638,7 +641,9 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.graph._hasDifferentRenderers()) {
       barXOffset -= seriesBarWidth / 2;
     }
-    nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack).enter().append("svg:rect").attr("x", function(d) {
+    nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
+    nodes.enter().append("svg:rect");
+    nodes.attr("x", function(d) {
       return _this.graph.x(d.x) + barXOffset;
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
@@ -863,7 +868,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
-    nodes = this.seriesCanvas().selectAll("circle").data(this.series.stack).remove();
+    nodes = this.seriesCanvas().selectAll("circle").data(this.series.stack);
     nodes.enter().append("svg:circle").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     nodes.attr("cx", function(d) {
       return _this.graph.x(d.x);
