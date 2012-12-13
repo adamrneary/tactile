@@ -16,11 +16,13 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
   render: ->
     super()
-    @graph.vis.selectAll("circle").data(@series.stack)
+    @seriesCanvas().selectAll('circle')
+      .data(@series.stack)
       .enter()
       .append("svg:circle")
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
+      .attr("fill", @series.color)
       .attr("stroke", 'white')
       .attr("stroke-width", '2')

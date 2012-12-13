@@ -46,17 +46,30 @@ Tactile.RendererBase = class RendererBase
     
   render: ->
     # drawing line by default
-    line = @graph.vis.selectAll("path")
-      .data([@series.stack])
-
-    line.enter()
+    
+    @seriesCanvas().selectAll("path")
+      .remove() # TODO: this is a workaround, without this dragging is somewhat damaged
+      .data([@series.stack]).enter()
       .append("svg:path")
+      .attr("d", @seriesPathFactory())
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
-
-    line.attr("d", @seriesPathFactory())
+    
+  # Creates separate g element for each series. This gives us better control over each paths/rets/circles
+  # for a particular series data. 
+  # If we had all paths in a single node and want to do selectAll('path') to add new path you would modify
+  # all the paths, not the only ones attached to the current series, which is very not desired.
+  seriesCanvas: ->
+    @_seriesCanvas ||= @graph.vis
+      .selectAll("g##{@_nameToId()}")
+      .data([@series.stack])
+      .enter()
+      .append("g")
+      .attr('id', @_nameToId())
+      
+    @_seriesCanvas
     
   configure: (options) ->
     # merge base defaults with particular renderer's
@@ -64,3 +77,7 @@ Tactile.RendererBase = class RendererBase
     options = _.extend {}, defaults, options
     _.each options, (val, key) =>
       @[key] = val
+
+  _nameToId: ->
+    #TODO: handle empty name
+    @series.name?.replace(/\s+/g, '-').toLowerCase()

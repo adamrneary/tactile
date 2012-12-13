@@ -57,10 +57,6 @@ Tactile.Chart = class Chart
     return if @renderers is undefined or _.isEmpty(@renderers)
     stackedData = @stackData()
     
-    # clear everything
-    # TODO: Change this to enter(), transition(), and exit() ASAP.
-    @vis.selectAll("*").remove()
-    
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)

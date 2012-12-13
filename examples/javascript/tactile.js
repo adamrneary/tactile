@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-12
+/*! tactile - v0.0.1 - 2012-12-13
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -483,10 +483,12 @@ Tactile.RendererBase = RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function() {
-    var line;
-    line = this.graph.vis.selectAll("path").data([this.series.stack]);
-    line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    return line.attr("d", this.seriesPathFactory());
+    return this.seriesCanvas().selectAll("path").remove().data([this.series.stack]).enter().append("svg:path").attr("d", this.seriesPathFactory()).attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+  };
+
+  RendererBase.prototype.seriesCanvas = function() {
+    this._seriesCanvas || (this._seriesCanvas = this.graph.vis.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr('id', this._nameToId()));
+    return this._seriesCanvas;
   };
 
   RendererBase.prototype.configure = function(options) {
@@ -499,6 +501,11 @@ Tactile.RendererBase = RendererBase = (function() {
     return _.each(options, function(val, key) {
       return _this[key] = val;
     });
+  };
+
+  RendererBase.prototype._nameToId = function() {
+    var _ref;
+    return (_ref = this.series.name) != null ? _ref.replace(/\s+/g, '-').toLowerCase() : void 0;
   };
 
   return RendererBase;
@@ -631,7 +638,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.graph._hasDifferentRenderers()) {
       barXOffset -= seriesBarWidth / 2;
     }
-    nodes = this.graph.vis.selectAll("path").data(this.series.stack).enter().append("svg:rect").attr("x", function(d) {
+    nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack).enter().append("svg:rect").attr("x", function(d) {
       return _this.graph.x(d.x) + barXOffset;
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
@@ -710,7 +717,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   LineRenderer.prototype.render = function() {
     var _this = this;
     LineRenderer.__super__.render.call(this);
-    return this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+    return this.seriesCanvas().selectAll('circle').data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -720,7 +727,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       } else {
         return _this.dotSize;
       }
-    }).attr("stroke", 'white').attr("stroke-width", '2');
+    }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
   };
 
   return LineRenderer;
@@ -728,6 +735,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
 })(RendererBase);
 
 var AreaRenderer,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -736,6 +744,7 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   __extends(AreaRenderer, _super);
 
   function AreaRenderer() {
+    this._y0 = __bind(this._y0, this);
     return AreaRenderer.__super__.constructor.apply(this, arguments);
   }
 
@@ -745,8 +754,16 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.specificDefaults = {
     unstack: true,
-    fill: false,
+    fill: true,
     stroke: true
+  };
+
+  AreaRenderer.prototype._y0 = function(d) {
+    if (this.unstack) {
+      return 0;
+    } else {
+      return d.y0;
+    }
   };
 
   AreaRenderer.prototype.seriesPathFactory = function() {
@@ -754,16 +771,27 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     return d3.svg.area().x(function(d) {
       return _this.graph.x(d.x);
     }).y0(function(d) {
-      return _this.graph.y(d.y0);
+      return _this.graph.y(_this._y0(d));
     }).y1(function(d) {
-      return _this.graph.y(d.y + d.y0);
+      return _this.graph.y(d.y + _this._y0(d));
+    }).interpolate(this.graph.interpolation).tension(this.tension);
+  };
+
+  AreaRenderer.prototype.seriesStrokeFactory = function() {
+    var _this = this;
+    return d3.svg.line().x(function(d) {
+      return _this.graph.x(d.x);
+    }).y(function(d) {
+      return _this.graph.y(d.y + _this._y0(d));
     }).interpolate(this.graph.interpolation).tension(this.tension);
   };
 
   AreaRenderer.prototype.render = function() {
     var _this = this;
     AreaRenderer.__super__.render.call(this);
-    this.graph.vis.selectAll("circle").data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+    this.seriesCanvas().selectAll('path').style("opacity", 0.3);
+    this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]).enter().append("svg:path").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr("d", this.seriesStrokeFactory());
+    return this.seriesCanvas().selectAll('circle').data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -773,8 +801,7 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
       } else {
         return _this.dotSize;
       }
-    }).attr("stroke", 'white').attr("stroke-width", '2');
-    return this.graph.vis.selectAll("path").data([this.series.stack]).attr('fill', this.series.color).attr("class", 'area');
+    }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
   };
 
   return AreaRenderer;
@@ -836,7 +863,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
-    nodes = this.graph.vis.selectAll("circle").data(this.series.stack);
+    nodes = this.seriesCanvas().selectAll("circle").data(this.series.stack).remove();
     nodes.enter().append("svg:circle").on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     nodes.attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -1079,7 +1106,6 @@ Tactile.Chart = Chart = (function() {
       return;
     }
     stackedData = this.stackData();
-    this.vis.selectAll("*").remove();
     _.each(this.renderers, function(renderer) {
       _this.discoverRange(renderer);
       return renderer.render();

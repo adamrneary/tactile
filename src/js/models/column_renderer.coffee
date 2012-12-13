@@ -32,7 +32,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     if @graph._hasDifferentRenderers()
       barXOffset -= seriesBarWidth / 2    
     
-    nodes = @graph.vis.selectAll("path").data(@series.stack).enter()
+    nodes = @seriesCanvas().selectAll("rect").data(@series.stack).enter()
       .append("svg:rect")
       .attr("x", (d) => @graph.x(d.x) + barXOffset)
       .attr("y", yValue)

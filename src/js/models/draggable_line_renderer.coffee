@@ -26,7 +26,10 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     super() # draws the line chart
     
     return if @series.disabled
-    nodes = @graph.vis.selectAll("circle").data(@series.stack)
+    nodes = @seriesCanvas()
+      .selectAll("circle")
+      .data(@series.stack)
+      .remove() # TODO: this is a workaround, without this dragging is somewhat damaged
         
     nodes.enter().append("svg:circle")
       .on("mousedown.drag", @_datapointDrag)

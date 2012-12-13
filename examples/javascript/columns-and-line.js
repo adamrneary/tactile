@@ -20,7 +20,7 @@ var chart = new Tactile.Chart({
   
   series: [
   {
-    name: 'reach, actual',
+    name: 'reach actual',
     renderer: "column",
     wide: true,
     round: true,
@@ -36,7 +36,7 @@ var chart = new Tactile.Chart({
   }
   ,
   {
-    name: 'reach, plan',
+    name: 'reach plan',
     renderer: "draggableLine", // TODO: rename draggableLine to line
     sigfigs: 0,
     color: "#c05020",
