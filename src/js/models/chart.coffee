@@ -21,9 +21,9 @@ Tactile.Chart = class Chart
 
 
   seriesDefaults:
-    xValue: (d)-> d.x
-    yValue: (d)-> d.y
-    dataTransform: (d)->d
+    xValue: (d) -> d.x
+    yValue: (d) -> d.y
+    dataTransform: (d) -> d
 
   constructor: (args) ->
     @renderers = []
@@ -85,12 +85,13 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height])
 
-  findAxis: (axisString)->
+  findAxis: (axisString) ->
+    return if _.some(@renderers, (r) -> r.cartesian is false)
     switch axisString
       when "linear"
-        new Tactile.AxisY({graph: this})
+        new Tactile.AxisY({graph: @})
       when "time"
-        new Tactile.AxisTime({graph: this})
+        new Tactile.AxisTime({graph: @})
       else
         console.log("ERROR:#{axisString} is not currently implemented")
                         

@@ -3,11 +3,6 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
 
   specificDefaults: 
     cartesian: false
-    padding:
-      top: 0.01
-      right: 0
-      bottom: 0.2
-      left: 0
     
   render: ->
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
@@ -17,7 +12,7 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
     pointerTailLength = 0.015
     pointerHeadLength = 0.900
     totalSizeDivide = 1.3
-    @bottomOffset = 1 - @padding.bottom
+    @bottomOffset = 0.75
     
     minAngle = -85
     maxAngle = 85
@@ -25,8 +20,8 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
   
     plotValue = @value
     r = Math.round( @graph.height / totalSizeDivide )
-    translateWidth = ( @graph.width - @padding.right ) / 2
-    translateHeight = @graph.height * @bottomOffset
+    translateWidth = ( @graph.width ) / 2
+    translateHeight = r
     originTranslate = "translate(#{translateWidth}, #{translateHeight})"
 
     
@@ -120,8 +115,8 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
       .attr("transform", "translate(#{0.90 * @graph.width}, #{1.15 * @graph.height * @bottomOffset})")
     
   domain: ->
-    @value = @series.data[0].value
-    @min = @series.data[0].min
-    @max = @series.data[0].max
+    @value = @series.stack[0].value
+    @min = @series.stack[0].min
+    @max = @series.stack[0].max
 
     [@min, @max]

@@ -530,13 +530,7 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
   GaugeRenderer.prototype.name = "gauge";
 
   GaugeRenderer.prototype.specificDefaults = {
-    cartesian: false,
-    padding: {
-      top: 0.01,
-      right: 0,
-      bottom: 0.2,
-      left: 0
-    }
+    cartesian: false
   };
 
   GaugeRenderer.prototype.render = function() {
@@ -548,14 +542,14 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     pointerTailLength = 0.015;
     pointerHeadLength = 0.900;
     totalSizeDivide = 1.3;
-    this.bottomOffset = 1 - this.padding.bottom;
+    this.bottomOffset = 0.75;
     minAngle = -85;
     maxAngle = 85;
     angleRange = maxAngle - minAngle;
     plotValue = this.value;
     r = Math.round(this.graph.height / totalSizeDivide);
-    translateWidth = (this.graph.width - this.padding.right) / 2;
-    translateHeight = this.graph.height * this.bottomOffset;
+    translateWidth = this.graph.width / 2;
+    translateHeight = r;
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
     arcs = this.graph.vis.append("g").attr("class", "gauge arc").attr("transform", originTranslate);
@@ -583,9 +577,9 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
   };
 
   GaugeRenderer.prototype.domain = function() {
-    this.value = this.series.data[0].value;
-    this.min = this.series.data[0].min;
-    this.max = this.series.data[0].max;
+    this.value = this.series.stack[0].value;
+    this.min = this.series.stack[0].min;
+    this.max = this.series.stack[0].max;
     return [this.min, this.max];
   };
 
@@ -1138,6 +1132,11 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.findAxis = function(axisString) {
+    if (_.some(this.renderers, function(r) {
+      return r.cartesian === false;
+    })) {
+      return;
+    }
     switch (axisString) {
       case "linear":
         return new Tactile.AxisY({
