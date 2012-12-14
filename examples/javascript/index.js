@@ -1,24 +1,25 @@
 var examples = [
     {
-        shortLink:"simple-line", 
+        shortLink: "simple-line", 
         title: "Simple Line"
     },
     {
-        shortLink:"columns-and-line", 
+        shortLink: "columns-and-line", 
         title: "Columns and Line"
     },
     {
-        shortLink:"area", 
+        shortLink: "area", 
         title: "Area"
     },
     {
         shortLink:"sliding-timeframe", 
         title: "Sliding Timeframe"
+    },
+    {
+        shortLink: "gauge",
+        title: "Gauge"
+        
     }
-    // {
-    //     shortLink:"stacked-bars", 
-    //     title: "Stacked Bars"
-    // }
 ];
 
 var showcaseObject = {
