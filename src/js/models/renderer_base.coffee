@@ -55,7 +55,7 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
       
-    line.attr("d", @seriesPathFactory())
+    line.transition(200).attr("d", @seriesPathFactory())
     
   # Creates separate g element for each series. This gives us better control over each paths/rets/circles
   # for a particular series data. 

@@ -10,6 +10,10 @@ var examples = [
     {
         shortLink:"area", 
         title: "Area"
+    },
+    {
+        shortLink:"sliding-timeframe", 
+        title: "Sliding Timeframe"
     }
     // {
     //     shortLink:"stacked-bars", 

@@ -14,6 +14,7 @@ Tactile.Chart = class Chart
     offset: 'zero'
     min: undefined
     max: undefined
+    timeframe: [-Infinity,Infinity]
     order: [] # multi renderer support
     axes:
       x: "time"
@@ -172,13 +173,7 @@ Tactile.Chart = class Chart
 
   # this trims data down to the range that is currently viewed. 
   # See range_slider for a clue how it's used
-  _slice: (d) ->
-    if @window.xMin or @window.xMax
-      isInRange = true
-      isInRange = false if @window.xMin and d.x < @window.xMin
-      isInRange = false if @window.xMax and d.x > @window.xMax
-      return isInRange
-    true
+  _slice: (d) => (@timeframe[0] <= d.x <= @timeframe[1])
     
   _deg2rad: (deg) ->
     deg * Math.PI / 180

@@ -486,7 +486,7 @@ Tactile.RendererBase = RendererBase = (function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
     line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    return line.attr("d", this.seriesPathFactory());
+    return line.transition(200).attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -720,9 +720,16 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype.render = function() {
-    var _this = this;
+    var circ,
+      _this = this;
     LineRenderer.__super__.render.call(this);
-    return this.seriesCanvas().selectAll('circle').data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ.enter().append("svg:circle").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    });
+    circ.transition(200).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -733,6 +740,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         return _this.dotSize;
       }
     }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
+    return circ.exit().remove();
   };
 
   return LineRenderer;
@@ -1028,7 +1036,8 @@ Tactile.RangeSlider = RangeSlider = (function() {
 
 })();
 
-var Chart;
+var Chart,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Tactile.Chart = Chart = (function() {
 
@@ -1057,6 +1066,7 @@ Tactile.Chart = Chart = (function() {
     offset: 'zero',
     min: void 0,
     max: void 0,
+    timeframe: [-Infinity, Infinity],
     order: [],
     axes: {
       x: "time",
@@ -1077,6 +1087,8 @@ Tactile.Chart = Chart = (function() {
   };
 
   function Chart(args) {
+    this._slice = __bind(this._slice, this);
+
     var axes,
       _this = this;
     this.renderers = [];
@@ -1217,18 +1229,8 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype._slice = function(d) {
-    var isInRange;
-    if (this.window.xMin || this.window.xMax) {
-      isInRange = true;
-      if (this.window.xMin && d.x < this.window.xMin) {
-        isInRange = false;
-      }
-      if (this.window.xMax && d.x > this.window.xMax) {
-        isInRange = false;
-      }
-      return isInRange;
-    }
-    return true;
+    var _ref;
+    return (this.timeframe[0] <= (_ref = d.x) && _ref <= this.timeframe[1]);
   };
 
   Chart.prototype._deg2rad = function(deg) {
