@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     },
     coffee:{
         coffee:{
-            src: ['src/js/models/*'],
+            src: ['src/js/models/*','src/js/util/*'],
             dest: 'build/'
         }       
     },
@@ -38,8 +38,9 @@ module.exports = function(grunt) {
         dist: {
             src: ['<banner:meta.banner>', 
                   'src/js/intro.js',
+                  'build/tooltip.js',
                   'src/js/core.js',
-                  'src/js/score.js',
+
 
                   'build/fixtures_time.js',
                   'build/axis_y.js',

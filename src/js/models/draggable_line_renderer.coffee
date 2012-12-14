@@ -42,8 +42,16 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
       .attr("stroke-width", '2')
     
-  
-    nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
+
+    if @series.tooltip
+      nodes.tooltip (d,i) =>
+        text: @series.tooltip(d)
+        placement: "mouse"
+        position: [d.x,d.y]
+        mousemove: true
+        gravity: "top"
+        displacement: [-@series.tooltip(d).length*3.5,-45]
+
     
     _.each nodes[0], (n) =>
       n?.setAttribute "fill", @series.color  
