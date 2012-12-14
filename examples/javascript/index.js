@@ -55,6 +55,6 @@ $(document).ready(function(){
 
                       Backbone.history.start();
                       if(!window.location.hash) {
-                          showcase.navigate("/#simple-line");
+                          showcase.navigate("/#line");
                       }
                   });
