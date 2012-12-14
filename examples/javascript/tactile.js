@@ -236,18 +236,21 @@ Tactile.AxisY = AxisY = (function() {
   }
 
   AxisY.prototype.render = function() {
-    var axis, g, gridSize, yAxis;
-    this.vis.selectAll('.y-ticks, .y-grid').remove();
+    var axis, grid, gridSize, y, yAxis;
+    y = this.vis.selectAll('.y-ticks').data([0]);
+    y.enter().append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
-    g = this.vis.append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
-    g.call(yAxis);
+    y.transition(this.transitionSpeed).call(yAxis);
     if (this.grid) {
+      console.log("grid");
       gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
-      this.graph.vis.append("svg:g").attr("class", "y-grid").call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+      grid = this.vis.selectAll('.y-grid').data([0]);
+      grid.enter().append("svg:g").attr("class", "y-grid");
+      grid.transition().call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
     }
     return this._renderHeight = this.graph.height;
   };
@@ -741,11 +744,6 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("rx", edgeRatio).attr("ry", edgeRatio);
-    if (this.series.tooltip) {
-      nodes.attr("data-original-title", function(d) {
-        return _this.series.tooltip(d);
-      });
-    }
     if (this.unstack) {
       return barXOffset += seriesBarWidth;
     }

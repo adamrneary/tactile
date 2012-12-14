@@ -24,6 +24,7 @@ var chart = new Tactile.Chart({
   height: 400,
   timeframe: timeframeVal,
   data: data,                                      
+  grid: true,                                  
   series: [
     {
       name: 'xy',

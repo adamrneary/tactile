@@ -47,7 +47,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", edgeRatio)
       .attr("ry", edgeRatio)
       
-    nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
+    #nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
 
     barXOffset += seriesBarWidth if @unstack
         
