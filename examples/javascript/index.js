@@ -1,11 +1,7 @@
 var examples = [
     {
-        shortLink: "simple-line", 
-        title: "Simple Line"
-    },
-    {
-        shortLink: "columns-and-line", 
-        title: "Columns and Line"
+        shortLink: "line", 
+        title: "Line"
     },
     {
         shortLink: "area", 
@@ -13,7 +9,11 @@ var examples = [
     },
     {
         shortLink:"sliding-timeframe", 
-        title: "Sliding Timeframe"
+        title: "Sliding timeframe"
+    },
+    {
+        shortLink: "multiple-series", 
+        title: "Multiple series"
     },
     {
         shortLink: "gauge",
