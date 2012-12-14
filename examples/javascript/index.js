@@ -1,11 +1,19 @@
 var cartesian = [
   {
+    shortLink: "scatter", 
+    title: "Scatter (future)"
+  },
+  {
     shortLink: "line", 
     title: "Line"
   },
   {
     shortLink: "column", 
     title: "Column"
+  },
+  {
+    shortLink: "stacked-column", 
+    title: "Stacked column (future)"
   },
   {
     shortLink: "area", 
@@ -20,7 +28,19 @@ var cartesian = [
 var noncartesian = [
   {
     shortLink: "gauge",
-    title: "Gauge"
+    title: "Gauge (future)"
+  },
+  {
+    shortLink: "leaderboard",
+    title: "Leaderboard (future)"
+  },
+  {
+    shortLink: "sankey",
+    title: "Sankey (future)"
+  },
+  {
+    shortLink: "multi-donut",
+    title: "Multiple donuts (future)"
   }
 ];
 
@@ -28,6 +48,14 @@ var components = [
   {
     shortLink:"sliding-timeframe", 
     title: "Sliding timeframe"
+  },
+  {
+    shortLink:"filter", 
+    title: "Filters (future)"
+  },
+  {
+    shortLink:"legend", 
+    title: "Legend (future)"
   }
 ];
 
