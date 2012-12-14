@@ -13,6 +13,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     @dragged = null
     @_bindMouseEvents()
     @power = Math.pow(10, @series.sigfigs)
+    @setSpeed = @transitionSpeed
 
   seriesPathFactory: ->
     d3.svg.line()
@@ -77,6 +78,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     @update()
 
   _mouseMove: =>
+    @transitionSpeed = 0
     p = d3.svg.mouse(@graph.vis[0][0])
     t = d3.event.changedTouches
     if @dragged
@@ -93,6 +95,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
     @dragged = null if @dragged
+    @transitionSpeed = @setSpeed
     @update()
 
   update: =>

@@ -14,6 +14,7 @@ Tactile.Chart = class Chart
     offset: 'zero'
     min: undefined
     max: undefined
+    transitionSpeed: 200
     timeframe: [-Infinity,Infinity]
     order: [] # multi renderer support
     axes:

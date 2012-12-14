@@ -44,7 +44,7 @@ Tactile.RendererBase = class RendererBase
     { x: [xMin, xMax], y: [yMin, yMax] }
     
     
-  render: ->
+  render: =>
     # drawing line by default
     line = @seriesCanvas().selectAll("path")
       .data([@series.stack])
@@ -54,8 +54,12 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
-      
-    line.transition(200).attr("d", @seriesPathFactory())
+
+    if @transitionSpeed is 0
+      line.attr("d", @seriesPathFactory())       
+    else  
+      line.transition(@transitionSpeed).attr("d", @seriesPathFactory())       
+
     
   # Creates separate g element for each series. This gives us better control over each paths/rets/circles
   # for a particular series data. 

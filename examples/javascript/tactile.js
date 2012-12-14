@@ -511,7 +511,8 @@ Tactile.HoverDetail = HoverDetail = (function() {
 
 })();
 
-var RendererBase;
+var RendererBase,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Tactile.RendererBase = RendererBase = (function() {
 
@@ -528,6 +529,8 @@ Tactile.RendererBase = RendererBase = (function() {
     if (options == null) {
       options = {};
     }
+    this.render = __bind(this.render, this);
+
     this.graph = options.graph;
     this.tension = options.tension || this.tension;
     this.configure(options);
@@ -569,7 +572,11 @@ Tactile.RendererBase = RendererBase = (function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
     line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    return line.transition(200).attr("d", this.seriesPathFactory());
+    if (this.transitionSpeed === 0) {
+      return line.attr("d", this.seriesPathFactory());
+    } else {
+      return line.transition(this.transitionSpeed).attr("d", this.seriesPathFactory());
+    }
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -934,7 +941,8 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = null;
     this._bindMouseEvents();
-    return this.power = Math.pow(10, this.series.sigfigs);
+    this.power = Math.pow(10, this.series.sigfigs);
+    return this.setSpeed = this.transitionSpeed;
   };
 
   DraggableLineRenderer.prototype.seriesPathFactory = function() {
@@ -1017,6 +1025,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
 
   DraggableLineRenderer.prototype._mouseMove = function() {
     var inverted, p, t, value;
+    this.transitionSpeed = 0;
     p = d3.svg.mouse(this.graph.vis[0][0]);
     t = d3.event.changedTouches;
     if (this.dragged) {
@@ -1042,6 +1051,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.dragged) {
       this.dragged = null;
     }
+    this.transitionSpeed = this.setSpeed;
     return this.update();
   };
 
@@ -1150,6 +1160,7 @@ Tactile.Chart = Chart = (function() {
     offset: 'zero',
     min: void 0,
     max: void 0,
+    transitionSpeed: 200,
     timeframe: [-Infinity, Infinity],
     order: [],
     axes: {
