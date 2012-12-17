@@ -34,12 +34,22 @@ Tactile.Chart = class Chart
     @renderers = []
     @window = {}
     @updateCallbacks = []
-    
+                
     args = _.extend({}, @mainDefaults, args)
     args.series = _.map(args.series, (d) => _.extend({}, @seriesDefaults, d))
+    #TODO: Deep copy issuses abound here. 
+    args.axes = 
+        x:
+                frame: (args?.axes?.x?.frame or mainDefaults.axes.x.frame)
+                dimension: (args?.axes?.x?.dimension or mainDefaults.axes.x.dimension)
+        y:
+                frame: (args?.axes?.y?.frame or @mainDefaults.axes.y.frame)
+                dimension: (args?.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
+        
+                                        
     _.each args, (val, key) =>
       @[key] = val
-        
+                                                        
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
@@ -74,7 +84,7 @@ Tactile.Chart = class Chart
     # TODO: add possibilty so the update is animated
     @render()
 
-  discoverRange: (renderer) ->
+  discoverRange: (renderer) =>
     domain = renderer.domain()
     if renderer.cartesian
       # TODO: This needs way prettier implementation
@@ -83,9 +93,15 @@ Tactile.Chart = class Chart
       # rendered in the center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
         rangeStart = @width / renderer.series.stack.length / 2
-        
-      @x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, @width])
-      @y = d3.scale.linear().domain(domain.y).range([@height, 0])
+
+      xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
+                (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
+      yframe = [(if @axes.y.frame[0] then @axes.y.frame[0] else domain.y[0]),
+                (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
+
+                        
+      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, @width])
+      @y = d3.scale.linear().domain(yframe).range([@height, 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height])

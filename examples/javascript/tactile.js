@@ -1205,7 +1205,9 @@ Tactile.Chart = Chart = (function() {
   function Chart(args) {
     this._slice = __bind(this._slice, this);
 
-    var axes,
+    this.discoverRange = __bind(this.discoverRange, this);
+
+    var axes, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
       _this = this;
     this.renderers = [];
     this.window = {};
@@ -1214,6 +1216,16 @@ Tactile.Chart = Chart = (function() {
     args.series = _.map(args.series, function(d) {
       return _.extend({}, _this.seriesDefaults, d);
     });
+    args.axes = {
+      x: {
+        frame: (args != null ? (_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0 : void 0) || mainDefaults.axes.x.frame,
+        dimension: (args != null ? (_ref2 = args.axes) != null ? (_ref3 = _ref2.x) != null ? _ref3.dimension : void 0 : void 0 : void 0) || mainDefaults.axes.x.dimension
+      },
+      y: {
+        frame: (args != null ? (_ref4 = args.axes) != null ? (_ref5 = _ref4.y) != null ? _ref5.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.y.frame,
+        dimension: (args != null ? (_ref6 = args.axes) != null ? (_ref7 = _ref6.y) != null ? _ref7.dimension : void 0 : void 0 : void 0) || this.mainDefaults.axes.y.dimension
+      }
+    };
     _.each(args, function(val, key) {
       return _this[key] = val;
     });
@@ -1253,14 +1265,16 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.discoverRange = function(renderer) {
-    var domain, rangeStart;
+    var domain, rangeStart, xframe, yframe;
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {
         rangeStart = this.width / renderer.series.stack.length / 2;
       }
-      this.x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, this.width]);
-      this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
+      xframe = [(this.axes.x.frame[0] ? this.axes.x.frame[0] : domain.x[0]), (this.axes.x.frame[1] ? this.axes.x.frame[1] : domain.x[1])];
+      yframe = [(this.axes.y.frame[0] ? this.axes.y.frame[0] : domain.y[0]), (this.axes.y.frame[1] ? this.axes.y.frame[1] : domain.y[1])];
+      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, this.width]);
+      this.y = d3.scale.linear().domain(yframe).range([this.height, 0]);
       return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
     }
   };
