@@ -1252,9 +1252,7 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.findAxis = function(axisString) {
-    if (_.some(this.renderers, function(r) {
-      return r.cartesian === false;
-    })) {
+    if (!this._allRenderersCartesian()) {
       return;
     }
     switch (axisString) {
@@ -1337,6 +1335,9 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype._slice = function(d) {
     var _ref;
+    if (!this._allRenderersCartesian()) {
+      return true;
+    }
     return (this.timeframe[0] <= (_ref = d.x) && _ref <= this.timeframe[1]);
   };
 
@@ -1358,6 +1359,12 @@ Tactile.Chart = Chart = (function() {
     return _.find(names, function(name) {
       return name === 'column';
     }) !== void 0;
+  };
+
+  Chart.prototype._allRenderersCartesian = function() {
+    return _.every(this.renderers, function(r) {
+      return r.cartesian === true;
+    });
   };
 
   return Chart;

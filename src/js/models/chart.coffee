@@ -88,7 +88,7 @@ Tactile.Chart = class Chart
         .range([0, @height])
 
   findAxis: (axisString) ->
-    return if _.some(@renderers, (r) -> r.cartesian is false)
+    return unless @_allRenderersCartesian()
     switch axisString
       when "linear"
         new Tactile.AxisY({graph: @})
@@ -175,7 +175,9 @@ Tactile.Chart = class Chart
 
   # this trims data down to the range that is currently viewed. 
   # See range_slider for a clue how it's used
-  _slice: (d) => (@timeframe[0] <= d.x <= @timeframe[1])
+  _slice: (d) => 
+    return true unless @_allRenderersCartesian() 
+    @timeframe[0] <= d.x <= @timeframe[1]
     
   _deg2rad: (deg) ->
     deg * Math.PI / 180
@@ -186,3 +188,6 @@ Tactile.Chart = class Chart
   _containsColumnChart: ->
     names = _.map(@series, (s) -> s.renderer)
     _.find(names, (name) -> name == 'column') != undefined
+    
+  _allRenderersCartesian: ->
+    _.every(@renderers, (r) -> r.cartesian is true)

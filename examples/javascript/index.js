@@ -28,7 +28,7 @@ var cartesian = [
 var noncartesian = [
   {
     shortLink: "gauge",
-    title: "Gauge (future)"
+    title: "Gauge"
   },
   {
     shortLink: "leaderboard",
