@@ -78,7 +78,7 @@ Tactile.Chart = class Chart
       # It moves the range 'right' by the value of half width of a bar
       # So if we have different renderers including bar chart points are 
       # rendered in the center of each bar and not a single bar is cut off by the chart border
-      if @_hasDifferentRenderers() and @_containsColumnChart()
+      if @_containsColumnChart()
         rangeStart = @width / renderer.series.stack.length / 2
         
       @x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, @width])
@@ -140,13 +140,13 @@ Tactile.Chart = class Chart
     @updateCallbacks.push callback
 
   initRenderers: (args) ->
-    _.each @series.active(), (s) => 
+    _.each @series.active(), (s, index) => 
       name = s.renderer
       if (!@_renderers[name])
         throw "couldn't find renderer #{name}"
 
       rendererClass = @_renderers[name]
-      rendererOptions = _.extend {}, args, {graph: @, series: s}
+      rendererOptions = _.extend {}, args, {graph: @, series: s, rendererIndex: index}
       r = new rendererClass(rendererOptions)
       @renderers.push r
       

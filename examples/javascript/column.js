@@ -1,6 +1,6 @@
 var data = [
   // time (period here) is unix milliseconds/1000 
-  {period: 1325376000, actual: 4, plan: 0}, 
+  {period: 1325376000, actual: 4, plan: 1}, 
   {period: 1328054400, actual: 5, plan: 1}, 
   {period: 1330560000, actual: 6, plan: 2}, 
   {period: 1333238400, actual: 7, plan: 3}, 
@@ -23,8 +23,8 @@ var chart = new Tactile.Chart({
   {
     name: 'reach actual',
     renderer: "column",
-    wide: true,
-    round: true,
+    round: false,
+    color: "#c05020",
     tooltip: function(d) {
       return d.y + " customers";
     },
@@ -32,6 +32,21 @@ var chart = new Tactile.Chart({
       return {
         x: d.period,
         y: d.actual
+      };
+    }
+  },
+  {
+    name: 'planned',
+    renderer: "column",
+    round: false,
+    color: "#6060c0",
+    tooltip: function(d) {
+      return d.y + " planned";
+    },
+    dataTransform: function(d) {
+      return {
+        x: d.period,
+        y: d.plan
       };
     }
   }

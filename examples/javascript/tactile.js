@@ -706,14 +706,14 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype.specificDefaults = {
     gapSize: 0.15,
     tension: null,
-    round: true
+    round: true,
+    unstack: true
   };
 
   ColumnRenderer.prototype.render = function() {
-    var activeSeriesCount, barWidth, barXOffset, edgeRatio, nodes, seriesBarWidth, transform, yValue,
+    var activeSeriesCount, barWidth, edgeRatio, nodes, seriesBarWidth, transform, yValue,
       _this = this;
     barWidth = this.barWidth();
-    barXOffset = 0;
     activeSeriesCount = this.graph.series.filter(function(s) {
       return !s.disabled;
     }).length;
@@ -726,6 +726,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
+    console.log(this.series.round);
     edgeRatio = this.series.round ? Math.round(0.05783 * seriesBarWidth + 1) : 0;
     yValue = function(d) {
       if (_this.unstack) {
@@ -734,19 +735,26 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
         return (_this.graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1);
       }
     };
-    if (this.graph._hasDifferentRenderers()) {
-      barXOffset -= seriesBarWidth / 2;
-    }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
     nodes.attr("x", function(d) {
-      return _this.graph.x(d.x) + barXOffset;
+      return _this._barX(_this.graph.x(d.x), seriesBarWidth);
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("rx", edgeRatio).attr("ry", edgeRatio);
     if (this.unstack) {
-      return barXOffset += seriesBarWidth;
+      return Tactile.ColumnRenderer.NEXT_SERIES_OFFSET += seriesBarWidth;
     }
+  };
+
+  ColumnRenderer.prototype._barX = function(x, seriesBarWidth) {
+    var barXOffset, initialX;
+    barXOffset = -seriesBarWidth / 2;
+    initialX = x + barXOffset;
+    if (!this.unstack) {
+      return initialX;
+    }
+    return initialX + (this.rendererIndex * seriesBarWidth);
   };
 
   ColumnRenderer.prototype.barWidth = function() {
@@ -762,17 +770,6 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       options = {};
     }
     return this.gapSize = options.gapSize || this.gapSize;
-  };
-
-  ColumnRenderer.prototype.domain = function() {
-    var domain, frequentInterval;
-    domain = ColumnRenderer.__super__.domain.call(this);
-    if (this.graph._hasDifferentRenderers()) {
-      return domain;
-    }
-    frequentInterval = this._frequentInterval();
-    domain.x[1] += parseInt(frequentInterval.magnitude);
-    return domain;
   };
 
   return ColumnRenderer;
@@ -1242,7 +1239,7 @@ Tactile.Chart = Chart = (function() {
     var domain, rangeStart;
     domain = renderer.domain();
     if (renderer.cartesian) {
-      if (this._hasDifferentRenderers() && this._containsColumnChart()) {
+      if (this._containsColumnChart()) {
         rangeStart = this.width / renderer.series.stack.length / 2;
       }
       this.x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, this.width]);
@@ -1311,7 +1308,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.initRenderers = function(args) {
     var _this = this;
-    return _.each(this.series.active(), function(s) {
+    return _.each(this.series.active(), function(s, index) {
       var name, r, rendererClass, rendererOptions;
       name = s.renderer;
       if (!_this._renderers[name]) {
@@ -1320,7 +1317,8 @@ Tactile.Chart = Chart = (function() {
       rendererClass = _this._renderers[name];
       rendererOptions = _.extend({}, args, {
         graph: _this,
-        series: s
+        series: s,
+        rendererIndex: index
       });
       r = new rendererClass(rendererOptions);
       return _this.renderers.push(r);

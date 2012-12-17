@@ -5,10 +5,10 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     gapSize: 0.15
     tension: null
     round: true
+    unstack: true
 
   render: ->
     barWidth = @barWidth()
-    barXOffset = 0
     activeSeriesCount = @graph.series.filter((s) -> not s.disabled).length
     seriesBarWidth = if @unstack and not @series.wide then (barWidth / activeSeriesCount) else barWidth
 
@@ -28,16 +28,12 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       else
         (@graph.y(d.y0 + Math.abs(d.y))) * ((if d.y < 0 then -1 else 1))
         
-    # center the bar if we have more than one type of renderers
-    if @graph._hasDifferentRenderers()
-      barXOffset -= seriesBarWidth / 2    
-    
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
     
     nodes.enter()
       .append("svg:rect")
       
-    nodes.attr("x", (d) => @graph.x(d.x) + barXOffset)
+    nodes.attr("x", (d) => @_barX(@graph.x(d.x), seriesBarWidth))
       .attr("y", yValue)
       .attr("width", seriesBarWidth)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
@@ -49,8 +45,16 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       
     #nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
 
-    barXOffset += seriesBarWidth if @unstack
-        
+    Tactile.ColumnRenderer.NEXT_SERIES_OFFSET += seriesBarWidth if @unstack
+    
+  _barX: (x, seriesBarWidth) ->
+    # center the bar around the value it represents
+    barXOffset = - seriesBarWidth / 2  
+    initialX = x + barXOffset
+    return initialX unless @unstack
+    initialX + (@rendererIndex * seriesBarWidth)
+    
+    
   barWidth: ->
     @graph.stackData()
     data = @series.stack
@@ -61,16 +65,3 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
     
-  domain: ->
-    domain = super()
-    # Domain is overriden by the bar_renderer to make all of the bars visible 
-    # in the chart container. This is however, undesired when we render stuff 
-    # of different types in one chart. We need all rendered charts to be drawn 
-    # with same domain.
-    # TODO: if it's possible, move this logic to the bar_renderer render method
-    return domain if @graph._hasDifferentRenderers()
-    
-    frequentInterval = @_frequentInterval()
-    domain.x[1] += parseInt(frequentInterval.magnitude)
-    domain
-  
