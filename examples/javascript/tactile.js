@@ -740,7 +740,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       return _this._barX(_this.graph.x(d.x), seriesBarWidth);
     }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("rx", edgeRatio).attr("ry", edgeRatio);
+    }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", edgeRatio).attr("ry", edgeRatio);
     if (this.unstack) {
       return Tactile.ColumnRenderer.NEXT_SERIES_OFFSET += seriesBarWidth;
     }

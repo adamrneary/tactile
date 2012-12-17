@@ -40,6 +40,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("transform", transform)
       .attr("class", "bar #{if @series.color then '' else 'colorless'}")
       .attr("fill", @series.color)
+      .attr("stroke", 'white')
       .attr("rx", edgeRatio)
       .attr("ry", edgeRatio)
       
