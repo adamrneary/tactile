@@ -690,6 +690,7 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
 })(RendererBase);
 
 var ColumnRenderer,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -698,6 +699,13 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
   __extends(ColumnRenderer, _super);
 
   function ColumnRenderer() {
+    this._barY = __bind(this._barY, this);
+
+    this._seriesBarWidth = __bind(this._seriesBarWidth, this);
+
+    this._edgeRatio = __bind(this._edgeRatio, this);
+
+    this._transformMatrix = __bind(this._transformMatrix, this);
     return ColumnRenderer.__super__.constructor.apply(this, arguments);
   }
 
@@ -711,62 +719,18 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
   };
 
   ColumnRenderer.prototype.render = function() {
-    var activeSeriesCount, barWidth, edgeRatio, nodes, seriesBarWidth, transform, yValue,
+    var nodes,
       _this = this;
-    barWidth = this.barWidth();
-    activeSeriesCount = this.graph.series.filter(function(s) {
-      return !s.disabled;
-    }).length;
-    seriesBarWidth = this.unstack && !this.series.wide ? barWidth / activeSeriesCount : barWidth;
-    transform = function(d) {
-      var matrix;
-      matrix = [1, 0, 0, (d.y < 0 ? -1 : 1), 0, (d.y < 0 ? this.graph.y.magnitude(Math.abs(d.y)) * 2 : 0)];
-      return "matrix(" + matrix.join(",") + ")";
-    };
     if (this.series.disabled) {
       return;
     }
-    edgeRatio = this.series.round ? Math.round(0.05783 * seriesBarWidth + 1) : 0;
-    yValue = function(d) {
-      if (_this.unstack) {
-        return (_this.graph.y(Math.abs(d.y))) * (d.y < 0 ? -1 : 1);
-      } else {
-        return (_this.graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1);
-      }
-    };
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
-    nodes.attr("x", function(d) {
-      return _this._barX(_this.graph.x(d.x), seriesBarWidth);
-    }).attr("y", yValue).attr("width", seriesBarWidth).attr("height", function(d) {
+    return nodes.attr("x", function(d) {
+      return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
+    }).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("transform", transform).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", edgeRatio).attr("ry", edgeRatio);
-    if (this.unstack) {
-      return Tactile.ColumnRenderer.NEXT_SERIES_OFFSET += seriesBarWidth;
-    }
-  };
-
-  ColumnRenderer.prototype._barX = function(x, seriesBarWidth) {
-    var barXOffset, initialX;
-    barXOffset = -seriesBarWidth / 2;
-    initialX = x + barXOffset;
-    if (this.unstack) {
-      return initialX + (this._columnRendererIndex() * seriesBarWidth);
-    } else {
-      return initialX;
-    }
-  };
-
-  ColumnRenderer.prototype._columnRendererIndex = function() {
-    var renderers,
-      _this = this;
-    if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
-      return 0;
-    }
-    renderers = this.graph.renderers.slice(0, this.rendererIndex);
-    return _.filter(renderers, function(r) {
-      return r.name === _this.name;
-    }).length;
+    }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
   };
 
   ColumnRenderer.prototype.barWidth = function() {
@@ -782,6 +746,104 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       options = {};
     }
     return this.gapSize = options.gapSize || this.gapSize;
+  };
+
+  ColumnRenderer.prototype.stackTransition = function() {
+    var count, nodes, slideTransition,
+      _this = this;
+    this.unstack = false;
+    this.graph.discoverRange(this);
+    count = this.series.stack.length;
+    nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
+    nodes.enter().append("svg:rect");
+    slideTransition = function() {
+      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("width", _this._seriesBarWidth()).attr("x", function(d) {
+        return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
+      });
+    };
+    this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
+      return (i % count) * 10;
+    }).attr("y", this._barY).attr("height", function(d) {
+      return _this.graph.y.magnitude(Math.abs(d.y));
+    }).each('end', slideTransition);
+    return this.graph.updateCallbacks.forEach(function(callback) {
+      return callback();
+    });
+  };
+
+  ColumnRenderer.prototype.unstackTransition = function() {
+    var count, growTransition,
+      _this = this;
+    this.unstack = true;
+    this.graph.discoverRange(this);
+    count = this.series.stack.length;
+    growTransition = function() {
+      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("height", function(d) {
+        return _this.graph.y.magnitude(Math.abs(d.y));
+      }).attr("y", _this._barY);
+    };
+    this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
+      return (i % count) * 10;
+    }).attr("x", function(d) {
+      return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
+    }).attr("width", this._seriesBarWidth()).each('end', growTransition);
+    return this.graph.updateCallbacks.forEach(function(callback) {
+      return callback();
+    });
+  };
+
+  ColumnRenderer.prototype._transformMatrix = function(d) {
+    var matrix;
+    matrix = [1, 0, 0, (d.y < 0 ? -1 : 1), 0, (d.y < 0 ? this.graph.y.magnitude(Math.abs(d.y)) * 2 : 0)];
+    return "matrix(" + matrix.join(",") + ")";
+  };
+
+  ColumnRenderer.prototype._edgeRatio = function() {
+    if (this.series.round) {
+      return Math.round(0.05783 * this._seriesBarWidth() + 1);
+    } else {
+      return 0;
+    }
+  };
+
+  ColumnRenderer.prototype._seriesBarWidth = function() {
+    var activeSeriesCount, barWidth, seriesBarWidth;
+    barWidth = this.barWidth();
+    activeSeriesCount = this.graph.series.filter(function(s) {
+      return !s.disabled;
+    }).length;
+    return seriesBarWidth = this.unstack && !this.series.wide ? barWidth / activeSeriesCount : barWidth;
+  };
+
+  ColumnRenderer.prototype._barX = function(x, seriesBarWidth) {
+    var barXOffset, initialX;
+    barXOffset = -seriesBarWidth / 2;
+    initialX = x + barXOffset;
+    if (this.unstack) {
+      return initialX + (this._columnRendererIndex() * seriesBarWidth);
+    } else {
+      return initialX;
+    }
+  };
+
+  ColumnRenderer.prototype._barY = function(d) {
+    if (this.unstack) {
+      return this.graph.y(Math.abs(d.y)) * (d.y < 0 ? -1 : 1);
+    } else {
+      return this.graph.y(d.y0 + Math.abs(d.y)) * (d.y < 0 ? -1 : 1);
+    }
+  };
+
+  ColumnRenderer.prototype._columnRendererIndex = function() {
+    var renderers,
+      _this = this;
+    if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
+      return 0;
+    }
+    renderers = this.graph.renderers.slice(0, this.rendererIndex);
+    return _.filter(renderers, function(r) {
+      return r.name === _this.name;
+    }).length;
   };
 
   return ColumnRenderer;
@@ -1362,18 +1424,34 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype._containsColumnChart = function() {
-    var names;
-    names = _.map(this.series, function(s) {
-      return s.renderer;
+    return _.any(this.renderers, function(r) {
+      return r.name === 'column';
     });
-    return _.find(names, function(name) {
-      return name === 'column';
-    }) !== void 0;
   };
 
   Chart.prototype._allRenderersCartesian = function() {
     return _.every(this.renderers, function(r) {
       return r.cartesian === true;
+    });
+  };
+
+  Chart.prototype.stackTransition = function() {
+    var renderers;
+    renderers = this.renderers.filter(function(r) {
+      return r.name === 'column';
+    });
+    return _.each(renderers, function(r) {
+      return r.stackTransition();
+    });
+  };
+
+  Chart.prototype.unstackTransition = function() {
+    var renderers;
+    renderers = this.renderers.filter(function(r) {
+      return r.name === 'column';
+    });
+    return _.each(renderers, function(r) {
+      return r.unstackTransition();
     });
   };
 
