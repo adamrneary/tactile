@@ -583,7 +583,7 @@ Tactile.RendererBase = RendererBase = (function() {
   RendererBase.prototype.render = function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
-    line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
     if (this.transitionSpeed === 0) {
       return line.attr("d", this.seriesPathFactory());
     } else {
@@ -886,7 +886,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       _this = this;
     LineRenderer.__super__.render.call(this);
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
-    circ.enter().append("svg:circle").attr("cx", function(d) {
+    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)").attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1239,11 +1239,16 @@ Tactile.Chart = Chart = (function() {
     min: void 0,
     max: void 0,
     transitionSpeed: 200,
-    timeframe: [-Infinity, Infinity],
     order: [],
     axes: {
-      x: "time",
-      y: "linear"
+      x: {
+        dimension: "time",
+        frame: [void 0, void 0]
+      },
+      y: {
+        dimension: "linear",
+        frame: [void 0, void 0]
+      }
     }
   };
 
@@ -1262,7 +1267,9 @@ Tactile.Chart = Chart = (function() {
   function Chart(args) {
     this._slice = __bind(this._slice, this);
 
-    var axes,
+    this.discoverRange = __bind(this.discoverRange, this);
+
+    var axes, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
       _this = this;
     this.renderers = [];
     this.window = {};
@@ -1271,6 +1278,16 @@ Tactile.Chart = Chart = (function() {
     args.series = _.map(args.series, function(d) {
       return _.extend({}, _this.seriesDefaults, d);
     });
+    args.axes = {
+      x: {
+        frame: (args != null ? (_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.x.frame,
+        dimension: (args != null ? (_ref2 = args.axes) != null ? (_ref3 = _ref2.x) != null ? _ref3.dimension : void 0 : void 0 : void 0) || this.mainDefaults.axes.x.dimension
+      },
+      y: {
+        frame: (args != null ? (_ref4 = args.axes) != null ? (_ref5 = _ref4.y) != null ? _ref5.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.y.frame,
+        dimension: (args != null ? (_ref6 = args.axes) != null ? (_ref7 = _ref6.y) != null ? _ref7.dimension : void 0 : void 0 : void 0) || this.mainDefaults.axes.y.dimension
+      }
+    };
     _.each(args, function(val, key) {
       return _this[key] = val;
     });
@@ -1310,33 +1327,35 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.discoverRange = function(renderer) {
-    var domain, rangeStart;
+    var domain, rangeStart, xframe, yframe;
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {
         rangeStart = this.width / renderer.series.stack.length / 2;
       }
-      this.x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, this.width]);
-      this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
+      xframe = [(this.axes.x.frame[0] ? this.axes.x.frame[0] : domain.x[0]), (this.axes.x.frame[1] ? this.axes.x.frame[1] : domain.x[1])];
+      yframe = [(this.axes.y.frame[0] ? this.axes.y.frame[0] : domain.y[0]), (this.axes.y.frame[1] ? this.axes.y.frame[1] : domain.y[1])];
+      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, this.width]);
+      this.y = d3.scale.linear().domain(yframe).range([this.height, 0]);
       return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
     }
   };
 
-  Chart.prototype.findAxis = function(axisString) {
+  Chart.prototype.findAxis = function(axis) {
     if (!this._allRenderersCartesian()) {
       return;
     }
-    switch (axisString) {
+    switch (axis.dimension) {
       case "linear":
-        return new Tactile.AxisY(_.extend({}, this.axes.yOptions, {
+        return new Tactile.AxisY(_.extend({}, axis.options, {
           graph: this
         }));
       case "time":
-        return new Tactile.AxisTime(_.extend({}, this.axes.xOptions, {
+        return new Tactile.AxisTime(_.extend({}, axis.options, {
           graph: this
         }));
       default:
-        return console.log("ERROR:" + axisString + " is not currently implemented");
+        return console.log("ERROR:" + axis.dimension + " is not currently implemented");
     }
   };
 
@@ -1350,7 +1369,7 @@ Tactile.Chart = Chart = (function() {
     var i, layout, seriesData, stackedData,
       _this = this;
     seriesData = this.series.active().map(function(d) {
-      return _this.data.map(d.dataTransform).filter(_this._slice);
+      return _this.data.map(d.dataTransform);
     });
     layout = d3.layout.stack();
     layout.offset(this.offset);
@@ -1402,7 +1421,9 @@ Tactile.Chart = Chart = (function() {
   Chart.prototype._setupCanvas = function() {
     this.vis = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight).append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
-    return this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
+    this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
+    this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
+    return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");
   };
 
   Chart.prototype._slice = function(d) {

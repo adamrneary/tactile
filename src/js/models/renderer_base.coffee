@@ -50,6 +50,7 @@ Tactile.RendererBase = class RendererBase
       .data([@series.stack])
       
     line.enter().append("svg:path")
+      .attr("clip-path","url(#clip)")                
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)

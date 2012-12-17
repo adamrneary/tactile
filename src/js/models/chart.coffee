@@ -15,11 +15,15 @@ Tactile.Chart = class Chart
     min: undefined
     max: undefined
     transitionSpeed: 200
-    timeframe: [-Infinity, Infinity]
     order: [] # multi renderer support
     axes:
-      x: "time"
-      y: "linear"
+      x:
+        dimension: "time"
+        frame: [undefined, undefined]
+      y: 
+        dimension: "linear"
+        frame: [undefined, undefined]
+
 
   seriesDefaults:
     xValue: (d) -> d.x
@@ -30,12 +34,22 @@ Tactile.Chart = class Chart
     @renderers = []
     @window = {}
     @updateCallbacks = []
-    
+                
     args = _.extend({}, @mainDefaults, args)
     args.series = _.map(args.series, (d) => _.extend({}, @seriesDefaults, d))
+    #TODO: Deep copy issuses abound here. 
+    args.axes = 
+        x:
+                frame: (args?.axes?.x?.frame or @mainDefaults.axes.x.frame)
+                dimension: (args?.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
+        y:
+                frame: (args?.axes?.y?.frame or @mainDefaults.axes.y.frame)
+                dimension: (args?.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
+        
+                                        
     _.each args, (val, key) =>
       @[key] = val
-        
+                                                        
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
@@ -54,6 +68,7 @@ Tactile.Chart = class Chart
     # for y: orientation, pixelsPerTick, ticks and few more.
     axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
 
+
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
     stackedData = @stackData()
@@ -70,7 +85,7 @@ Tactile.Chart = class Chart
     # TODO: add possibilty so the update is animated
     @render()
 
-  discoverRange: (renderer) ->
+  discoverRange: (renderer) =>
     domain = renderer.domain()
     if renderer.cartesian
       # TODO: This needs way prettier implementation
@@ -79,22 +94,28 @@ Tactile.Chart = class Chart
       # rendered in the center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
         rangeStart = @width / renderer.series.stack.length / 2
-        
-      @x = d3.scale.linear().domain(domain.x).range([rangeStart || 0, @width])
-      @y = d3.scale.linear().domain(domain.y).range([@height, 0])
+
+      xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
+                (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
+      yframe = [(if @axes.y.frame[0] then @axes.y.frame[0] else domain.y[0]),
+                (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
+
+                        
+      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, @width])
+      @y = d3.scale.linear().domain(yframe).range([@height, 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height])
 
-  findAxis: (axisString) ->
+  findAxis: (axis) ->
     return unless @_allRenderersCartesian()
-    switch axisString
+    switch axis.dimension
       when "linear"
-        new Tactile.AxisY(_.extend {}, @axes.yOptions, {graph: @})
+        new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
       when "time"
-        new Tactile.AxisTime(_.extend {}, @axes.xOptions, {graph: @})
+        new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
       else
-        console.log("ERROR:#{axisString} is not currently implemented")
+        console.log("ERROR:#{axis.dimension} is not currently implemented")
                         
   # Used by range slider
   dataDomain: ->
@@ -107,7 +128,7 @@ Tactile.Chart = class Chart
     # https://github.com/mbostock/d3/wiki/Stack-Layout
 
     seriesData = @series.active().map((d) =>
-      @data.map(d.dataTransform).filter(@_slice))
+      @data.map(d.dataTransform))
 
     layout = d3.layout.stack()
     layout.offset(@offset)
@@ -169,6 +190,27 @@ Tactile.Chart = class Chart
     @vis = @vis.append("g")
       .attr("transform", "translate(#{@padding.left},#{@padding.right})")
       .attr("class", "inner-canvas")
+
+    # Add the default clip path.
+    @vis.append("clipPath")
+        .attr("id", "clip")
+      .append("rect")
+        .attr("width", @width)
+        # increase height to provide room vertically for line thickness
+        .attr("height", @height + 4) 
+        # translate to adjust for increased height (split the difference)
+        .attr("transform", "translate(0,-2)")
+
+    # Add the clip path.
+    @vis.append("clipPath")
+        .attr("id", "scatter-clip")
+      .append("rect")
+        # increase width to provide room vertically for circle radius
+        .attr("width", @width + 12)
+        # increase height to provide room vertically for circle radius
+        .attr("height", @height + 12) 
+        # translate to adjust for increased width and height
+        .attr("transform", "translate(-6,-6)")                                                                                                
           
       
 

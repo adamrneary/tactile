@@ -1,4 +1,4 @@
-var timeframeVal = [2,10];
+var frameVal = [2,10];
 var data = [ 
   { x: 0, y: 10,  z:  0 }, 
   { x: 1, y: 170, z: 200 }, 
@@ -22,9 +22,14 @@ var chart = new Tactile.Chart({
   element: $("#example_view")[0],
   width: 680,
   height: 400,
-  timeframe: timeframeVal,
   data: data,                                      
-  grid: true,                                  
+  grid: true,         
+  axes: {
+      x: {
+          dimension: "time",
+          frame: frameVal
+    }
+  },
   series: [
     {
       name: 'xy',
@@ -58,10 +63,10 @@ $("#example_view").append(sl);
 sl.slider({
   min: 0,
   max: 15,
-  values: timeframeVal,
+  values: frameVal,
   range:true,
   slide: function(event,ui){
-    chart.timeframe = ui.values;
+    chart.axes.x.frame = ui.values;
     chart.render();
   }                        
 });
