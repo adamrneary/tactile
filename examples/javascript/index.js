@@ -13,7 +13,7 @@ var cartesian = [
   },
   {
     shortLink: "stacked-column", 
-    title: "Stacked column (future)"
+    title: "Stacked column"
   },
   {
     shortLink: "area", 
