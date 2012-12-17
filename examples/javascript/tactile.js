@@ -1266,13 +1266,13 @@ Tactile.Chart = Chart = (function() {
     }
     switch (axisString) {
       case "linear":
-        return new Tactile.AxisY({
+        return new Tactile.AxisY(_.extend({}, this.axes.yOptions, {
           graph: this
-        });
+        }));
       case "time":
-        return new Tactile.AxisTime({
+        return new Tactile.AxisTime(_.extend({}, this.axes.xOptions, {
           graph: this
-        });
+        }));
       default:
         return console.log("ERROR:" + axisString + " is not currently implemented");
     }

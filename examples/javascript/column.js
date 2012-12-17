@@ -19,6 +19,10 @@ var chart = new Tactile.Chart({
   width: 680,
   height: 400,
   data: data,
+  axes: {
+    y: 'linear', x: 'time', 
+    xOptions: {ticksTreatment: 'align-start'}
+  },
   series: [
   {
     name: 'reach actual',

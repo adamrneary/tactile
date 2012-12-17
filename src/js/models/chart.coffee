@@ -15,12 +15,11 @@ Tactile.Chart = class Chart
     min: undefined
     max: undefined
     transitionSpeed: 200
-    timeframe: [-Infinity,Infinity]
+    timeframe: [-Infinity, Infinity]
     order: [] # multi renderer support
     axes:
       x: "time"
       y: "linear"
-
 
   seriesDefaults:
     xValue: (d) -> d.x
@@ -91,9 +90,9 @@ Tactile.Chart = class Chart
     return unless @_allRenderersCartesian()
     switch axisString
       when "linear"
-        new Tactile.AxisY({graph: @})
+        new Tactile.AxisY(_.extend {}, @axes.yOptions, {graph: @})
       when "time"
-        new Tactile.AxisTime({graph: @})
+        new Tactile.AxisTime(_.extend {}, @axes.xOptions, {graph: @})
       else
         console.log("ERROR:#{axisString} is not currently implemented")
                         

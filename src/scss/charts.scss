@@ -167,12 +167,14 @@
   &.grid {
     border-left: 1px dotted rgba(0, 0, 0, 0.2);
   }
+  
   fill: black;
   position: absolute;
   top: 0;
   bottom: 0;
   width: 0px;
   pointer-events: none;
+  
   .title {
     position: absolute;
     font-size: 11px;
@@ -185,6 +187,16 @@
     bottom: -10px;
     text-anchor: middle;
     left: -12px;
+    
+    
+  }
+  
+  &.align-end .title {
+    text-anchor: end;
+  }
+  
+  &.align-start .title {
+    text-anchor: start;
   }
 }
 
