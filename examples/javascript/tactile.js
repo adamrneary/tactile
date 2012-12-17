@@ -726,7 +726,6 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.series.disabled) {
       return;
     }
-    console.log(this.series.round);
     edgeRatio = this.series.round ? Math.round(0.05783 * seriesBarWidth + 1) : 0;
     yValue = function(d) {
       if (_this.unstack) {
@@ -751,10 +750,23 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     var barXOffset, initialX;
     barXOffset = -seriesBarWidth / 2;
     initialX = x + barXOffset;
-    if (!this.unstack) {
+    if (this.unstack) {
+      return initialX + (this._columnRendererIndex() * seriesBarWidth);
+    } else {
       return initialX;
     }
-    return initialX + (this.rendererIndex * seriesBarWidth);
+  };
+
+  ColumnRenderer.prototype._columnRendererIndex = function() {
+    var renderers,
+      _this = this;
+    if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
+      return 0;
+    }
+    renderers = this.graph.renderers.slice(0, this.rendererIndex);
+    return _.filter(renderers, function(r) {
+      return r.name === _this.name;
+    }).length;
   };
 
   ColumnRenderer.prototype.barWidth = function() {

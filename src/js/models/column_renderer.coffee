@@ -51,10 +51,20 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     # center the bar around the value it represents
     barXOffset = - seriesBarWidth / 2  
     initialX = x + barXOffset
-    return initialX unless @unstack
-    initialX + (@rendererIndex * seriesBarWidth)
     
+    if @unstack
+      initialX + (@_columnRendererIndex() * seriesBarWidth)
+    else
+      return initialX 
     
+  # Returns the index of this column renderer
+  # For example: if this is the third renderer of the column type it will have index equal to 2
+  _columnRendererIndex: ->
+    return 0 if @rendererIndex == 0 || @rendererIndex is undefined
+    renderers = @graph.renderers.slice(0, @rendererIndex)
+    _.filter(renderers, (r) => r.name == @name).length
+
+
   barWidth: ->
     @graph.stackData()
     data = @series.stack
