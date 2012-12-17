@@ -227,8 +227,18 @@ Tactile.Chart = class Chart
     _.uniq(_.map(@series, (s) -> s.renderer)).length > 1
     
   _containsColumnChart: ->
-    names = _.map(@series, (s) -> s.renderer)
-    _.find(names, (name) -> name == 'column') != undefined
+    _.any(@renderers, (r) -> r.name == 'column')
     
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
+    
+    
+  stackTransition: -> 
+    renderers = @renderers.filter((r) -> r.name == 'column')
+    _.each(renderers, (r) -> r.stackTransition())
+    
+  unstackTransition: -> 
+    renderers = @renderers.filter((r) -> r.name == 'column')
+    _.each(renderers, (r) -> r.unstackTransition())
+    
+    
