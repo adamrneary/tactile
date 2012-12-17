@@ -50,8 +50,8 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
         placement: "mouse"
         position: [d.x,d.y]
         mousemove: true
-        gravity: "top"
-        displacement: [-@series.tooltip(d).length*3.5,-45]
+        gravity: "right"
+        displacement: [@series.tooltip(d).length,-16]
 
     
     _.each nodes[0], (n) =>
