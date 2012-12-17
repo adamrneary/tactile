@@ -68,6 +68,7 @@ Tactile.Chart = class Chart
     # for y: orientation, pixelsPerTick, ticks and few more.
     axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
 
+
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
     stackedData = @stackData()
@@ -189,6 +190,27 @@ Tactile.Chart = class Chart
     @vis = @vis.append("g")
       .attr("transform", "translate(#{@padding.left},#{@padding.right})")
       .attr("class", "inner-canvas")
+
+    # Add the default clip path.
+    @vis.append("clipPath")
+        .attr("id", "clip")
+      .append("rect")
+        .attr("width", @width)
+        # increase height to provide room vertically for line thickness
+        .attr("height", @height + 4) 
+        # translate to adjust for increased height (split the difference)
+        .attr("transform", "translate(0,-2)")
+
+    # Add the clip path.
+    @vis.append("clipPath")
+        .attr("id", "scatter-clip")
+      .append("rect")
+        # increase width to provide room vertically for circle radius
+        .attr("width", @width + 12)
+        # increase height to provide room vertically for circle radius
+        .attr("height", @height + 12) 
+        # translate to adjust for increased width and height
+        .attr("transform", "translate(-6,-6)")                                                                                                
           
       
 

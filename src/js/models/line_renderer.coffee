@@ -16,11 +16,13 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
   render: ->
     super()
+
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
       
     circ.enter()
       .append("svg:circle")
+        .attr("clip-path","url(#scatter-clip)")
         .attr("cx", (d) => @graph.x d.x)
         .attr("cy", (d) => @graph.y d.y)
       

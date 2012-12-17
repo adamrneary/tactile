@@ -583,7 +583,7 @@ Tactile.RendererBase = RendererBase = (function() {
   RendererBase.prototype.render = function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
-    line.enter().append("svg:path").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
     if (this.transitionSpeed === 0) {
       return line.attr("d", this.seriesPathFactory());
     } else {
@@ -824,7 +824,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       _this = this;
     LineRenderer.__super__.render.call(this);
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
-    circ.enter().append("svg:circle").attr("cx", function(d) {
+    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)").attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1359,7 +1359,9 @@ Tactile.Chart = Chart = (function() {
   Chart.prototype._setupCanvas = function() {
     this.vis = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight).append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
-    return this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
+    this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
+    this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
+    return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");
   };
 
   Chart.prototype._slice = function(d) {
