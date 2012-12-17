@@ -15,11 +15,15 @@ Tactile.Chart = class Chart
     min: undefined
     max: undefined
     transitionSpeed: 200
-    timeframe: [-Infinity, Infinity]
     order: [] # multi renderer support
     axes:
-      x: "time"
-      y: "linear"
+      x:
+        dimension: "time"
+        frame: [undefined, undefined]
+      y: 
+        dimension: "linear"
+        frame: [undefined, undefined]
+
 
   seriesDefaults:
     xValue: (d) -> d.x
@@ -86,15 +90,15 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height])
 
-  findAxis: (axisString) ->
+  findAxis: (axis) ->
     return unless @_allRenderersCartesian()
-    switch axisString
+    switch axis.dimension
       when "linear"
-        new Tactile.AxisY(_.extend {}, @axes.yOptions, {graph: @})
+        new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
       when "time"
-        new Tactile.AxisTime(_.extend {}, @axes.xOptions, {graph: @})
+        new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
       else
-        console.log("ERROR:#{axisString} is not currently implemented")
+        console.log("ERROR:#{axis.dimension} is not currently implemented")
                         
   # Used by range slider
   dataDomain: ->
@@ -107,7 +111,7 @@ Tactile.Chart = class Chart
     # https://github.com/mbostock/d3/wiki/Stack-Layout
 
     seriesData = @series.active().map((d) =>
-      @data.map(d.dataTransform).filter(@_slice))
+      @data.map(d.dataTransform))
 
     layout = d3.layout.stack()
     layout.offset(@offset)

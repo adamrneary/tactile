@@ -20,8 +20,13 @@ var chart = new Tactile.Chart({
   height: 400,
   data: data,
   axes: {
-    y: 'linear', x: 'time', 
-    xOptions: {ticksTreatment: 'align-start'}
+    y: {
+        dimension: 'linear'
+    }, 
+    x:{
+        dimension: 'time', 
+        options: {ticksTreatment: 'align-start'}
+    }
   },
   series: [
   {

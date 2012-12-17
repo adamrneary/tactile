@@ -1177,11 +1177,16 @@ Tactile.Chart = Chart = (function() {
     min: void 0,
     max: void 0,
     transitionSpeed: 200,
-    timeframe: [-Infinity, Infinity],
     order: [],
     axes: {
-      x: "time",
-      y: "linear"
+      x: {
+        dimension: "time",
+        frame: [void 0, void 0]
+      },
+      y: {
+        dimension: "linear",
+        frame: [void 0, void 0]
+      }
     }
   };
 
@@ -1260,21 +1265,21 @@ Tactile.Chart = Chart = (function() {
     }
   };
 
-  Chart.prototype.findAxis = function(axisString) {
+  Chart.prototype.findAxis = function(axis) {
     if (!this._allRenderersCartesian()) {
       return;
     }
-    switch (axisString) {
+    switch (axis.dimension) {
       case "linear":
-        return new Tactile.AxisY(_.extend({}, this.axes.yOptions, {
+        return new Tactile.AxisY(_.extend({}, axis.options, {
           graph: this
         }));
       case "time":
-        return new Tactile.AxisTime(_.extend({}, this.axes.xOptions, {
+        return new Tactile.AxisTime(_.extend({}, axis.options, {
           graph: this
         }));
       default:
-        return console.log("ERROR:" + axisString + " is not currently implemented");
+        return console.log("ERROR:" + axis.dimension + " is not currently implemented");
     }
   };
 
@@ -1288,7 +1293,7 @@ Tactile.Chart = Chart = (function() {
     var i, layout, seriesData, stackedData,
       _this = this;
     seriesData = this.series.active().map(function(d) {
-      return _this.data.map(d.dataTransform).filter(_this._slice);
+      return _this.data.map(d.dataTransform);
     });
     layout = d3.layout.stack();
     layout.offset(this.offset);
