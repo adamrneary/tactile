@@ -1218,8 +1218,8 @@ Tactile.Chart = Chart = (function() {
     });
     args.axes = {
       x: {
-        frame: (args != null ? (_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0 : void 0) || mainDefaults.axes.x.frame,
-        dimension: (args != null ? (_ref2 = args.axes) != null ? (_ref3 = _ref2.x) != null ? _ref3.dimension : void 0 : void 0 : void 0) || mainDefaults.axes.x.dimension
+        frame: (args != null ? (_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.x.frame,
+        dimension: (args != null ? (_ref2 = args.axes) != null ? (_ref3 = _ref2.x) != null ? _ref3.dimension : void 0 : void 0 : void 0) || this.mainDefaults.axes.x.dimension
       },
       y: {
         frame: (args != null ? (_ref4 = args.axes) != null ? (_ref5 = _ref4.y) != null ? _ref5.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.y.frame,

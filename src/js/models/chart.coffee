@@ -40,8 +40,8 @@ Tactile.Chart = class Chart
     #TODO: Deep copy issuses abound here. 
     args.axes = 
         x:
-                frame: (args?.axes?.x?.frame or mainDefaults.axes.x.frame)
-                dimension: (args?.axes?.x?.dimension or mainDefaults.axes.x.dimension)
+                frame: (args?.axes?.x?.frame or @mainDefaults.axes.x.frame)
+                dimension: (args?.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
         y:
                 frame: (args?.axes?.y?.frame or @mainDefaults.axes.y.frame)
                 dimension: (args?.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
