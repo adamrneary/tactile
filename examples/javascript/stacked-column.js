@@ -57,17 +57,17 @@ var chart = new Tactile.Chart({
     }
   },
   {
-    name: 'weirdo',
+    name: 'sum',
     renderer: "column",
     round: false,
     color: "#6020c0",
     tooltip: function(d) {
-      return d.y + " weirdo";
+      return d.y + " sum";
     },
     dataTransform: function(d) {
       return {
         x: d.period,
-        y: parseInt(d.plan / d.period)
+        y: parseInt(d.plan + d.actual)
       };
     }
   }
