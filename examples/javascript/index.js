@@ -94,10 +94,10 @@ $(document).ready(function() {
   _.map(cartesian, function(route) {
     prepareLinks(route, $("#cartLinkList"));
   });
-  _.map(cartesian, function(route) {
+  _.map(noncartesian, function(route) {
     prepareLinks(route, $("#noncartLinkList"));
   });
-  _.map(cartesian, function(route) {
+  _.map(components, function(route) {
     prepareLinks(route, $("#compLinkList"));
   });
 
