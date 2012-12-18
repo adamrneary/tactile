@@ -75,7 +75,6 @@ var chart = new Tactile.Chart({
 });
 
 chart.render();
-$('.btn-group').removeClass('hidden');
 $('#group').on('click', function() {
   return chart.unstackTransition();
 });

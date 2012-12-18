@@ -13,7 +13,8 @@ var cartesian = [
 },
 {
   shortLink: "stacked-column", 
-  title: "Stacked column"
+  title: "Stacked column",
+  buttons: true
 },
 {
   shortLink: "area", 
@@ -60,7 +61,7 @@ var components = [
 ];
 
 var showcaseObject = {
-  routes:{}
+  routes: {}
 };
 
 
@@ -75,6 +76,12 @@ var prepareLinks = function(route, el) {
     var url = "javascript/" + route.shortLink + ".js";
     var script = $("<script>").attr("src", url);
     $("#example_view").empty().append(script);
+    
+    $(".stack-unstack-buttons").hide();
+    if(route.buttons) {
+      $(".stack-unstack-buttons").show();
+    }
+    
     $("#example_js").load(url, function() {
       $(this).removeClass("rainbow");
       Rainbow.color();
