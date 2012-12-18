@@ -64,33 +64,33 @@ var showcaseObject = {
 };
 
 
-var prepareLinks = function(route, el){
+var prepareLinks = function(route, el) {
   var link = $("<a>")
-  .attr("href","/#"+route.shortLink)
+  .attr("href", "/#" + route.shortLink)
   .text(route.title);
   el.append($("<li>").append(link));
   showcaseObject.routes[route.shortLink] = route.shortLink;
-  showcaseObject[route.shortLink] = function(){
+  showcaseObject[route.shortLink] = function() {
     $("#example_header").text(route.title);
-    var url = "javascript/"+route.shortLink+".js";
-    var script = $("<script>").attr("src",url);
+    var url = "javascript/" + route.shortLink + ".js";
+    var script = $("<script>").attr("src", url);
     $("#example_view").empty().append(script);
-    $("#example_js").load(url,function(){
+    $("#example_js").load(url, function() {
       $(this).removeClass("rainbow");
       Rainbow.color();
     });
     Rainbow.color();
-  };          
+  };
 }
 
-$(document).ready(function(){
-  _.map(cartesian, function(route){
+$(document).ready(function() {
+  _.map(cartesian, function(route) {
     prepareLinks(route, $("#cartLinkList"));
   });
-  _.map(cartesian, function(route){
+  _.map(cartesian, function(route) {
     prepareLinks(route, $("#noncartLinkList"));
   });
-  _.map(cartesian, function(route){
+  _.map(cartesian, function(route) {
     prepareLinks(route, $("#compLinkList"));
   });
 
@@ -98,7 +98,7 @@ $(document).ready(function(){
   var showcase = new Showcase();
 
   Backbone.history.start();
-  if(!window.location.hash) {
+  if (!window.location.hash) {
     showcase.navigate("/#line");
   }
 });
