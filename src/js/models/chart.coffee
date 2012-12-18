@@ -232,13 +232,14 @@ Tactile.Chart = class Chart
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
     
+  renderersByType: (name) ->
+    @renderers.filter((r) -> r.name == name)
     
   stackTransition: -> 
-    renderers = @renderers.filter((r) -> r.name == 'column')
-    _.each(renderers, (r) -> r.stackTransition())
+    # Probably we'll want other types soon too
+    _.each(@renderersByType('column'), (r) -> r.stackTransition())
     
   unstackTransition: -> 
-    renderers = @renderers.filter((r) -> r.name == 'column')
-    _.each(renderers, (r) -> r.unstackTransition())
+    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
     
     

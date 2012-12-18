@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-17
+/*! tactile - v0.0.1 - 2012-12-18
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -762,7 +762,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       });
     };
     this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
-      return (i % count) * 10;
+      return (i % count) * 20;
     }).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).each('end', slideTransition);
@@ -783,7 +783,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       }).attr("y", _this._barY);
     };
     this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
-      return (i % count) * 10;
+      return (i % count) * 20;
     }).attr("x", function(d) {
       return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
     }).attr("width", this._seriesBarWidth()).each('end', growTransition);
@@ -815,10 +815,19 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     return seriesBarWidth = this.unstack && !this.series.wide ? barWidth / activeSeriesCount : barWidth;
   };
 
+  ColumnRenderer.prototype._barXOffset = function(seriesBarWidth) {
+    var barXOffset, count;
+    count = this.graph.renderersByType(this.name).length;
+    if (count === 1 || !this.unstack) {
+      return barXOffset = -seriesBarWidth / 2;
+    } else {
+      return barXOffset = -seriesBarWidth * count / 2;
+    }
+  };
+
   ColumnRenderer.prototype._barX = function(x, seriesBarWidth) {
-    var barXOffset, initialX;
-    barXOffset = -seriesBarWidth / 2;
-    initialX = x + barXOffset;
+    var initialX;
+    initialX = x + this._barXOffset(seriesBarWidth);
     if (this.unstack) {
       return initialX + (this._columnRendererIndex() * seriesBarWidth);
     } else {
@@ -1456,22 +1465,20 @@ Tactile.Chart = Chart = (function() {
     });
   };
 
-  Chart.prototype.stackTransition = function() {
-    var renderers;
-    renderers = this.renderers.filter(function(r) {
-      return r.name === 'column';
+  Chart.prototype.renderersByType = function(name) {
+    return this.renderers.filter(function(r) {
+      return r.name === name;
     });
-    return _.each(renderers, function(r) {
+  };
+
+  Chart.prototype.stackTransition = function() {
+    return _.each(this.renderersByType('column'), function(r) {
       return r.stackTransition();
     });
   };
 
   Chart.prototype.unstackTransition = function() {
-    var renderers;
-    renderers = this.renderers.filter(function(r) {
-      return r.name === 'column';
-    });
-    return _.each(renderers, function(r) {
+    return _.each(this.renderersByType('column'), function(r) {
       return r.unstackTransition();
     });
   };

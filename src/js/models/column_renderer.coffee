@@ -58,7 +58,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     @seriesCanvas().selectAll("rect")
       .transition()
       .duration(500)
-      .delay((d, i) -> (i % count) * 10)
+      .delay((d, i) -> (i % count) * 20)
       .attr("y", @_barY)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .each('end', slideTransition)
@@ -81,7 +81,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     @seriesCanvas().selectAll("rect")
       .transition()
       .duration(500)
-      .delay((d, i) -> (i % count) * 10)
+      .delay((d, i) -> (i % count) * 20)
       .attr("x", (d) => @_barX(@graph.x(d.x), @_seriesBarWidth()))
       .attr("width", @_seriesBarWidth())
       .each('end', growTransition)
@@ -103,10 +103,19 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     activeSeriesCount = @graph.series.filter((s) -> not s.disabled).length
     seriesBarWidth = if @unstack and not @series.wide then (barWidth / activeSeriesCount) else barWidth
     
+    
+  # when we have couple of series we want them all to be center-aligned around the x-value
+  _barXOffset: (seriesBarWidth) ->
+    count = @graph.renderersByType(@name).length
+    
+    if count == 1 || !@unstack
+      barXOffset = - seriesBarWidth / 2 
+    else
+      barXOffset = - seriesBarWidth * count / 2
+
   _barX: (x, seriesBarWidth) ->
     # center the bar around the value it represents
-    barXOffset = - seriesBarWidth / 2  
-    initialX = x + barXOffset
+    initialX = x + @_barXOffset(seriesBarWidth)
     
     if @unstack
       initialX + (@_columnRendererIndex() * seriesBarWidth)
@@ -122,6 +131,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     
   # Returns the index of this column renderer
   # For example: if this is the third renderer of the column type it will have index equal to 2
+  # this is handy when you need to modify the x,y values depending on what is the number of the currently rendered bars
   _columnRendererIndex: ->
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)

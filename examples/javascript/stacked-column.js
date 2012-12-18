@@ -55,6 +55,21 @@ var chart = new Tactile.Chart({
         y: d.plan
       };
     }
+  },
+  {
+    name: 'weirdo',
+    renderer: "column",
+    round: false,
+    color: "#6020c0",
+    tooltip: function(d) {
+      return d.y + " weirdo";
+    },
+    dataTransform: function(d) {
+      return {
+        x: d.period,
+        y: parseInt(d.plan / d.period)
+      };
+    }
   }
   ]
 });
