@@ -14,7 +14,7 @@ var cartesian = [
 {
   shortLink: "stacked-column", 
   title: "Stacked column",
-  buttons: true
+  groupingButtons: true
 },
 {
   shortLink: "area", 
@@ -78,7 +78,7 @@ var prepareLinks = function(route, el) {
     $("#example_view").empty().append(script);
     
     $(".stack-unstack-buttons").hide();
-    if(route.buttons) {
+    if(route.groupingButtons) {
       $(".stack-unstack-buttons").show();
     }
     
