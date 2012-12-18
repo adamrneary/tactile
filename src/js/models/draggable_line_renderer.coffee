@@ -43,7 +43,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
       .attr("stroke-width", '2')
     
-
+    # TODO: extract this into a tooltip class, in the same fashion as axes are handled
     if @series.tooltip
       nodes.tooltip (d,i) =>
         text: @series.tooltip(d)

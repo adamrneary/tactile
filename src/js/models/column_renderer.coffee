@@ -26,7 +26,15 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       
-    #nodes.attr("data-original-title", (d) => @series.tooltip(d)) if @series.tooltip
+    # TODO: extract this into a tooltip class, in the same fashion as axes are handled  
+    if @series.tooltip
+      nodes.tooltip (d,i) =>
+        text: @series.tooltip(d)
+        placement: "mouse"
+        position: [d.x,d.y]
+        mousemove: true
+        gravity: "right"
+        displacement: [@series.tooltip(d).length, -16]
     
   barWidth: ->
     @graph.stackData()

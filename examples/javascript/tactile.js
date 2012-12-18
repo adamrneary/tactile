@@ -726,11 +726,23 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
-    return nodes.attr("x", function(d) {
+    nodes.attr("x", function(d) {
       return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
     }).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+    if (this.series.tooltip) {
+      return nodes.tooltip(function(d, i) {
+        return {
+          text: _this.series.tooltip(d),
+          placement: "mouse",
+          position: [d.x, d.y],
+          mousemove: true,
+          gravity: "right",
+          displacement: [_this.series.tooltip(d).length, -16]
+        };
+      });
+    }
   };
 
   ColumnRenderer.prototype.barWidth = function() {
