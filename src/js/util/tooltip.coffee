@@ -3,17 +3,22 @@
 #
 annotate = (options,create)->
     el = d3.select(this)
-
-    move_tip = (selection)->
-      center =  [0,0]
-
+    chartContainer = el.node().nearestViewportElement
+    
+    if options.tooltipCircleNode
+      tooltipCircleNode = options.tooltipCircleNode
+    else 
+      tooltipCircleNode = el.node().parentNode
+    
+    move_tip = (selection) ->
+      center = [0,0]
       if options.placement is "mouse"
         center = d3.mouse(d3.select('body').node())
       else
         offsets =  @ownerSVGElement.getBoundingClientRect()
         center[0] = offsets.left
         center[1] = offsets.top
-
+        
         center[0] += options.position[0]
         center[1] += options.position[1]
 
@@ -28,18 +33,28 @@ annotate = (options,create)->
         .style("top","#{center[1]}px")
         .style("display","block")
 
-    el.on("mouseover",()->
+    el.on("mouseover", () ->
       tip = create()
-
+      hoveredNode = el.node().getBBox()
+      
+      d3.select(tooltipCircleNode)
+        .append("svg:circle")
+        .attr("cx", hoveredNode.x + hoveredNode.width / 2)
+        .attr("cy", hoveredNode.y)
+        .attr("r", 3)
+        .attr('class', 'tooltip-circle')
+        .attr("stroke", 'orange')
+        .attr("fill", 'white')
+        .attr("stroke-width", '1')
+        
       tip.classed("annotation", true)
         .classed(options.gravity, true)
         .classed('fade', true)
         .style("display","none")
 
-      tip.append("div")
-        .attr("class","arrow")
+      tip.append("div").attr("class","arrow")
 
-      inner = ()-> tip.classed('in', true)
+      inner = () -> tip.classed('in', true)
 
       setTimeout(inner,10)
 
@@ -47,44 +62,17 @@ annotate = (options,create)->
     )
 
     if options.mousemove
-      el.on("mousemove",()->
+      el.on("mousemove", () ->
         d3.select(".annotation").call(move_tip.bind(this))
       )
 
-    el.on("mouseout",()->
+    el.on("mouseout", () ->
+      d3.select(tooltipCircleNode).selectAll("circle.tooltip-circle").remove()
+        
       tip = d3.selectAll(".annotation").classed('in', false)
       remover = ()-> tip.remove()
       setTimeout(remover,150)
     )
-
-d3.selection.prototype.popover = (f)->
-  body = d3.select('body')
-
-  this.each((d,i)->
-    options = f.apply(this,arguments)
-
-    create_popover = ()->
-
-      tip = body.append("div")
-        .classed("popover", true)
-
-      inner = tip.append("div")
-        .attr("class","popover-inner")
-
-      inner.append("h3")
-        .text(options.title)
-        .attr("class","popover-title")
-
-      inner.append("div")
-        .attr("class","popover-content")
-        .append("p")
-        .html(options.content[0][0].outerHTML)
-
-      return tip
-
-    annotate.call(this,options,create_popover)
-  )
-
 
 d3.selection.prototype.tooltip = (f)->
   body = d3.select('body')

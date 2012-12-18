@@ -6,8 +6,14 @@
 var annotate;
 
 annotate = function(options, create) {
-  var el, move_tip;
+  var chartContainer, el, move_tip, tooltipCircleNode;
   el = d3.select(this);
+  chartContainer = el.node().nearestViewportElement;
+  if (options.tooltipCircleNode) {
+    tooltipCircleNode = options.tooltipCircleNode;
+  } else {
+    tooltipCircleNode = el.node().parentNode;
+  }
   move_tip = function(selection) {
     var center, offsets;
     center = [0, 0];
@@ -27,8 +33,10 @@ annotate = function(options, create) {
     return selection.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
   };
   el.on("mouseover", function() {
-    var inner, tip;
+    var hoveredNode, inner, tip;
     tip = create();
+    hoveredNode = el.node().getBBox();
+    d3.select(tooltipCircleNode).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
     tip.classed("annotation", true).classed(options.gravity, true).classed('fade', true).style("display", "none");
     tip.append("div").attr("class", "arrow");
     inner = function() {
@@ -44,29 +52,12 @@ annotate = function(options, create) {
   }
   return el.on("mouseout", function() {
     var remover, tip;
+    d3.select(tooltipCircleNode).selectAll("circle.tooltip-circle").remove();
     tip = d3.selectAll(".annotation").classed('in', false);
     remover = function() {
       return tip.remove();
     };
     return setTimeout(remover, 150);
-  });
-};
-
-d3.selection.prototype.popover = function(f) {
-  var body;
-  body = d3.select('body');
-  return this.each(function(d, i) {
-    var create_popover, options;
-    options = f.apply(this, arguments);
-    create_popover = function() {
-      var inner, tip;
-      tip = body.append("div").classed("popover", true);
-      inner = tip.append("div").attr("class", "popover-inner");
-      inner.append("h3").text(options.title).attr("class", "popover-title");
-      inner.append("div").attr("class", "popover-content").append("p").html(options.content[0][0].outerHTML);
-      return tip;
-    };
-    return annotate.call(this, options, create_popover);
   });
 };
 
@@ -701,6 +692,8 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
   function ColumnRenderer() {
     this._barY = __bind(this._barY, this);
 
+    this._barX = __bind(this._barX, this);
+
     this._seriesBarWidth = __bind(this._seriesBarWidth, this);
 
     this._edgeRatio = __bind(this._edgeRatio, this);
@@ -726,20 +719,23 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
-    nodes.attr("x", function(d) {
-      return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
-    }).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
+    nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+    return this.setupTooltips();
+  };
+
+  ColumnRenderer.prototype.setupTooltips = function() {
+    var _this = this;
     if (this.series.tooltip) {
-      return nodes.tooltip(function(d, i) {
+      return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
         return {
           text: _this.series.tooltip(d),
-          placement: "mouse",
-          position: [d.x, d.y],
-          mousemove: true,
+          position: [_this._barX(d), _this._barY(d)],
+          tooltipCircleNode: _this.seriesCanvas().node().parentNode,
           gravity: "right",
-          displacement: [_this.series.tooltip(d).length, -16]
+          circleOnHover: true,
+          displacement: [40, 13]
         };
       });
     }
@@ -769,15 +765,14 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
     slideTransition = function() {
-      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("width", _this._seriesBarWidth()).attr("x", function(d) {
-        return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
-      });
+      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("width", _this._seriesBarWidth()).attr("x", _this._barX);
     };
     this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
       return (i % count) * 20;
     }).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).each('end', slideTransition);
+    this.setupTooltips();
     return this.graph.updateCallbacks.forEach(function(callback) {
       return callback();
     });
@@ -796,9 +791,8 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     };
     this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
       return (i % count) * 20;
-    }).attr("x", function(d) {
-      return _this._barX(_this.graph.x(d.x), _this._seriesBarWidth());
-    }).attr("width", this._seriesBarWidth()).each('end', growTransition);
+    }).attr("x", this._barX).attr("width", this._seriesBarWidth()).each('end', growTransition);
+    this.setupTooltips();
     return this.graph.updateCallbacks.forEach(function(callback) {
       return callback();
     });
@@ -837,8 +831,10 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     }
   };
 
-  ColumnRenderer.prototype._barX = function(x, seriesBarWidth) {
-    var initialX;
+  ColumnRenderer.prototype._barX = function(d) {
+    var initialX, seriesBarWidth, x;
+    x = this.graph.x(d.x);
+    seriesBarWidth = this._seriesBarWidth();
     initialX = x + this._barXOffset(seriesBarWidth);
     if (this.unstack) {
       return initialX + (this._columnRendererIndex() * seriesBarWidth);

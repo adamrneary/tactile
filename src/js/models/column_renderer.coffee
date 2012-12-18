@@ -15,7 +15,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     nodes.enter()
       .append("svg:rect")
       
-    nodes.attr("x", (d) => @_barX(@graph.x(d.x), @_seriesBarWidth()))
+    nodes.attr("x", @_barX)
       .attr("y", @_barY)
       .attr("width", @_seriesBarWidth())
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
@@ -26,15 +26,19 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       
+    @setupTooltips()
+   
+   
+  setupTooltips: ->   
     # TODO: extract this into a tooltip class, in the same fashion as axes are handled  
     if @series.tooltip
-      nodes.tooltip (d,i) =>
+      @seriesCanvas().selectAll("rect").tooltip (d,i) =>
         text: @series.tooltip(d)
-        placement: "mouse"
-        position: [d.x,d.y]
-        mousemove: true
+        position: [@_barX(d), @_barY(d)]
+        tooltipCircleNode: @seriesCanvas().node().parentNode
         gravity: "right"
-        displacement: [@series.tooltip(d).length, -16]
+        circleOnHover: true
+        displacement: [40, 13]
     
   barWidth: ->
     @graph.stackData()
@@ -61,7 +65,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         .transition()
         .duration(500)
         .attr("width", @_seriesBarWidth())
-        .attr("x", (d) => @_barX(@graph.x(d.x), @_seriesBarWidth()))
+        .attr("x", @_barX)
     
     @seriesCanvas().selectAll("rect")
       .transition()
@@ -71,6 +75,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .each('end', slideTransition)
     
+    @setupTooltips()
     @graph.updateCallbacks.forEach (callback) ->
       callback()
     
@@ -90,10 +95,11 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .transition()
       .duration(500)
       .delay((d, i) -> (i % count) * 20)
-      .attr("x", (d) => @_barX(@graph.x(d.x), @_seriesBarWidth()))
+      .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
       .each('end', growTransition)
-      
+    
+    @setupTooltips()
     @graph.updateCallbacks.forEach (callback) ->
       callback()
     
@@ -121,8 +127,10 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     else
       barXOffset = - seriesBarWidth * count / 2
 
-  _barX: (x, seriesBarWidth) ->
+  _barX: (d) =>
+    x = @graph.x(d.x)
     # center the bar around the value it represents
+    seriesBarWidth = @_seriesBarWidth()
     initialX = x + @_barXOffset(seriesBarWidth)
     
     if @unstack
