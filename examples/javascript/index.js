@@ -84,8 +84,6 @@ var prepareLinks = function(route, el){
 }
 
 $(document).ready(function(){
-
-  // TODO: remove the duplicative code i just created!
   _.map(cartesian, function(route){
     prepareLinks(route, $("#cartLinkList"));
   });
