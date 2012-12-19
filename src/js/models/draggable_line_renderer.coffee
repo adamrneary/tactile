@@ -46,12 +46,11 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     # TODO: extract this into a tooltip class, in the same fashion as axes are handled
     if @series.tooltip
       nodes.tooltip (d,i) =>
+        graph: @graph
         text: @series.tooltip(d)
         placement: "mouse"
-        position: [d.x,d.y]
         mousemove: true
         gravity: "right"
-        displacement: [@series.tooltip(d).length,-16]
 
     
     _.each nodes[0], (n) =>

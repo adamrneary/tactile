@@ -32,16 +32,14 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
   setupTooltips: ->   
     # TODO: extract this into a tooltip class, in the same fashion as axes are handled  
     if @series.tooltip
-      @seriesCanvas().selectAll("rect").tooltip (d,i) =>
+      @seriesCanvas().selectAll("rect").tooltip (d, i) =>
+        graph: @graph
         text: @series.tooltip(d)
-        position: [@_barX(d), @_barY(d)]
-        tooltipCircleNode: @seriesCanvas().node().parentNode
-        gravity: "right"
         circleOnHover: true
-        displacement: [40, 13]
+        tooltipCircleContainer: @graph.vis.node()
+        gravity: "right"
     
   barWidth: ->
-    @graph.stackData()
     data = @series.stack
     
     count = data.length

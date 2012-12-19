@@ -6,37 +6,47 @@
 var annotate;
 
 annotate = function(options, create) {
-  var chartContainer, el, move_tip, tooltipCircleNode;
+  var chartContainer, el, move_tip, tooltipCircleContainer;
   el = d3.select(this);
   chartContainer = el.node().nearestViewportElement;
-  if (options.tooltipCircleNode) {
-    tooltipCircleNode = options.tooltipCircleNode;
-  } else {
-    tooltipCircleNode = el.node().parentNode;
+  if (options.tooltipCircleContainer) {
+    tooltipCircleContainer = options.tooltipCircleContainer;
+  } else if (options.circleOnHover) {
+    tooltipCircleContainer = el.node().parentNode;
   }
   move_tip = function(selection) {
-    var center, offsets;
+    var center, hoveredNode, offsets;
     center = [0, 0];
     if (options.placement === "mouse") {
-      center = d3.mouse(d3.select('body').node());
+      center = d3.mouse(options.graph.element);
     } else {
       offsets = this.ownerSVGElement.getBoundingClientRect();
-      center[0] = offsets.left;
-      center[1] = offsets.top;
-      center[0] += options.position[0];
-      center[1] += options.position[1];
-      center[0] += window.scrollX;
-      center[1] += window.scrollY;
+      if (options.position) {
+        center[0] = options.position[0];
+        center[1] = options.position[1];
+      } else {
+        hoveredNode = el.node().getBBox();
+        center[0] = hoveredNode.x + hoveredNode.width / 2;
+        center[1] = hoveredNode.y;
+      }
+      center[0] += options.graph.margin.left;
+      center[0] += options.graph.padding.left;
+      center[1] += options.graph.margin.top;
+      center[1] += options.graph.padding.top;
     }
-    center[0] += options.displacement[0];
-    center[1] += options.displacement[1];
+    if (options.displacement) {
+      center[0] += options.displacement[0];
+      center[1] += options.displacement[1];
+    }
     return selection.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
   };
   el.on("mouseover", function() {
     var hoveredNode, inner, tip;
     tip = create();
     hoveredNode = el.node().getBBox();
-    d3.select(tooltipCircleNode).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
+    if (options.circleOnHover) {
+      d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
+    }
     tip.classed("annotation", true).classed(options.gravity, true).style("display", "none");
     if (options.fade) {
       tip.classed('fade', true);
@@ -55,7 +65,7 @@ annotate = function(options, create) {
   }
   return el.on("mouseout", function() {
     var remover, tip;
-    d3.select(tooltipCircleNode).selectAll("circle.tooltip-circle").remove();
+    d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
     tip = d3.selectAll(".annotation").classed('in', false);
     remover = function() {
       return tip.remove();
@@ -65,15 +75,16 @@ annotate = function(options, create) {
 };
 
 d3.selection.prototype.tooltip = function(f) {
-  var body;
-  body = d3.select('body');
-  return this.each(function(d, i) {
+  var selection;
+  selection = this;
+  return selection.each(function(d, i) {
     var create_tooltip, options;
     options = f.apply(this, arguments);
     create_tooltip = function() {
-      var tip;
-      tip = body.append("div").classed("tooltip", true);
-      tip.append("div").html(options.text).attr("class", "tooltip-inner");
+      var chartContainer, tip;
+      chartContainer = d3.select(options.graph.element);
+      tip = chartContainer.append('div').classed("tooltip", true);
+      tip.append('div').html(options.text).classed("tooltip-inner", true);
       return tip;
     };
     return annotate.call(this, options, create_tooltip);
@@ -733,12 +744,11 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.series.tooltip) {
       return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
         return {
+          graph: _this.graph,
           text: _this.series.tooltip(d),
-          position: [_this._barX(d), _this._barY(d)],
-          tooltipCircleNode: _this.seriesCanvas().node().parentNode,
-          gravity: "right",
           circleOnHover: true,
-          displacement: [40, 13]
+          tooltipCircleContainer: _this.graph.vis.node(),
+          gravity: "right"
         };
       });
     }
@@ -746,7 +756,6 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.barWidth = function() {
     var barWidth, count, data;
-    this.graph.stackData();
     data = this.series.stack;
     count = data.length;
     return barWidth = this.graph.width / count * (1 - this.gapSize);
@@ -1087,12 +1096,11 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.series.tooltip) {
       nodes.tooltip(function(d, i) {
         return {
+          graph: _this.graph,
           text: _this.series.tooltip(d),
           placement: "mouse",
-          position: [d.x, d.y],
           mousemove: true,
-          gravity: "right",
-          displacement: [_this.series.tooltip(d).length, -16]
+          gravity: "right"
         };
       });
     }
@@ -1439,8 +1447,9 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype._setupCanvas = function() {
-    this.vis = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight).append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-    this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
+    this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
+    this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
     this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
     this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
     return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");

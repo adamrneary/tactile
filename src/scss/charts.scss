@@ -54,15 +54,15 @@
 
 .graph-container svg * {
   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
-   -ms-user-select: none;
-   user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  
+  /*
+  Introduced in IE 10.
+  See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /* Specific rules for mini-charts */
@@ -426,6 +426,22 @@
     }
   }
 }
+
+.graph-container {
+  .tooltip {
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  .tooltip.right {
+    padding-left: 5px;
+    margin-left: 10px;
+    margin-top: -12px;
+  }
+}
+
+
 
 // --------------------
 // SERIES TYPES

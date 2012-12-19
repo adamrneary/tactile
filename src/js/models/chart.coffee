@@ -174,14 +174,15 @@ Tactile.Chart = class Chart
   # appends all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
-    @vis = d3.select(@element)
+    @svg = d3.select(@element)
       .append("svg")
         .attr('width', @outerWidth)
         .attr('height', @outerHeight)
-      .append("g")
+        
+    @vis = @svg.append("g")
         .attr("transform", "translate(#{@margin.left},#{@margin.top})")
         
-    @vis.append("g")
+    @vis = @vis.append("g")
       .attr("class", "outer-canvas")
       .attr("width", @innerWidth)
       .attr("height", @innerHeight)  

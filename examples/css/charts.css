@@ -63,8 +63,8 @@
   -khtml-user-select: none;
   -webkit-user-select: none;
   /*
-    Introduced in IE 10.
-    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  Introduced in IE 10.
+  See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
   */
   -ms-user-select: none;
   user-select: none;
@@ -448,24 +448,37 @@
   display: block;
 }
 
-/* sankey */
+/* line 431, ../src/scss/charts.scss */
+.graph-container .tooltip {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+}
 /* line 437, ../src/scss/charts.scss */
+.graph-container .tooltip.right {
+  padding-left: 5px;
+  margin-left: 10px;
+  margin-top: -12px;
+}
+
+/* sankey */
+/* line 453, ../src/scss/charts.scss */
 .sankey-chart .node {
   stroke: #fff;
   stroke-width: 2px;
 }
-/* line 442, ../src/scss/charts.scss */
+/* line 458, ../src/scss/charts.scss */
 .sankey-chart .link {
   fill: none;
   stroke: #000;
   opacity: .3;
 }
-/* line 447, ../src/scss/charts.scss */
+/* line 463, ../src/scss/charts.scss */
 .sankey-chart .link.on {
   stroke: #F00;
   opacity: .7;
 }
-/* line 452, ../src/scss/charts.scss */
+/* line 468, ../src/scss/charts.scss */
 .sankey-chart .node {
   stroke: none;
 }
@@ -475,12 +488,12 @@
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-/* line 465, ../src/scss/charts.scss */
+/* line 481, ../src/scss/charts.scss */
 #scatter {
   width: 65%;
 }
 
-/* line 469, ../src/scss/charts.scss */
+/* line 485, ../src/scss/charts.scss */
 .scatter.xaxis path,
 .scatter.xaxis line {
   fill: none;
@@ -488,7 +501,7 @@
   shape-rendering: crispEdges;
 }
 
-/* line 476, ../src/scss/charts.scss */
+/* line 492, ../src/scss/charts.scss */
 .scatter.yaxis path,
 .scatter.yaxis line {
   fill: none;
@@ -496,89 +509,89 @@
   shape-rendering: crispEdges;
 }
 
-/* line 483, ../src/scss/charts.scss */
+/* line 499, ../src/scss/charts.scss */
 .scatter.xaxis text,
 .scatter.xaxis text {
   fill: black;
   font-size: 12px;
 }
 
-/* line 488, ../src/scss/charts.scss */
+/* line 504, ../src/scss/charts.scss */
 .point {
   stroke-width: 2px;
   z-index: 100;
 }
-/* line 492, ../src/scss/charts.scss */
+/* line 508, ../src/scss/charts.scss */
 .point.point-noise {
   fill: #a69b9e;
 }
-/* line 493, ../src/scss/charts.scss */
+/* line 509, ../src/scss/charts.scss */
 .point.point-dogs {
   fill: #dc6e59;
 }
-/* line 494, ../src/scss/charts.scss */
+/* line 510, ../src/scss/charts.scss */
 .point.point-sprouts {
   fill: #19affe;
 }
-/* line 495, ../src/scss/charts.scss */
+/* line 511, ../src/scss/charts.scss */
 .point.point-stars {
   fill: #8ac16f;
 }
 
-/* line 499, ../src/scss/charts.scss */
+/* line 515, ../src/scss/charts.scss */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6;
 }
 
-/* line 504, ../src/scss/charts.scss */
+/* line 520, ../src/scss/charts.scss */
 rect.colorless {
   fill: #5a6ca1;
 }
 
-/* line 512, ../src/scss/charts.scss */
+/* line 528, ../src/scss/charts.scss */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px;
 }
 
-/* line 519, ../src/scss/charts.scss */
+/* line 535, ../src/scss/charts.scss */
 path.colorless {
   stroke: #405192;
 }
-/* line 523, ../src/scss/charts.scss */
+/* line 539, ../src/scss/charts.scss */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none;
 }
-/* line 528, ../src/scss/charts.scss */
+/* line 544, ../src/scss/charts.scss */
 path.line {
   fill: none;
   stroke-width: 2px;
 }
-/* line 532, ../src/scss/charts.scss */
+/* line 548, ../src/scss/charts.scss */
 path.area {
   fill: #e7e7e7;
 }
 
-/* line 538, ../src/scss/charts.scss */
+/* line 554, ../src/scss/charts.scss */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px;
 }
 
-/* line 543, ../src/scss/charts.scss */
+/* line 559, ../src/scss/charts.scss */
 g .draggable-node.selected, g .draggable-node:hover {
   stroke: orange;
 }
 
 /* Leaderboard */
-/* line 552, ../src/scss/charts.scss */
+/* line 568, ../src/scss/charts.scss */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold;
 }
-/* line 558, ../src/scss/charts.scss */
+/* line 574, ../src/scss/charts.scss */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -587,7 +600,7 @@ g .draggable-node.selected, g .draggable-node:hover {
   font-weight: 800;
   text-transform: uppercase;
 }
-/* line 566, ../src/scss/charts.scss */
+/* line 582, ../src/scss/charts.scss */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
@@ -595,47 +608,47 @@ g .draggable-node.selected, g .draggable-node:hover {
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 573, ../src/scss/charts.scss */
+/* line 589, ../src/scss/charts.scss */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none;
 }
-/* line 578, ../src/scss/charts.scss */
+/* line 594, ../src/scss/charts.scss */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none;
 }
-/* line 583, ../src/scss/charts.scss */
+/* line 599, ../src/scss/charts.scss */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none;
 }
-/* line 588, ../src/scss/charts.scss */
+/* line 604, ../src/scss/charts.scss */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none;
 }
 
 /* Gauge */
-/* line 597, ../src/scss/charts.scss */
+/* line 613, ../src/scss/charts.scss */
 .gauge.arc {
   fill: #e2dedf;
 }
-/* line 601, ../src/scss/charts.scss */
+/* line 617, ../src/scss/charts.scss */
 .gauge.arc-value {
   fill: #30878f;
 }
-/* line 605, ../src/scss/charts.scss */
+/* line 621, ../src/scss/charts.scss */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf;
 }
-/* line 610, ../src/scss/charts.scss */
+/* line 626, ../src/scss/charts.scss */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345;
 }
-/* line 615, ../src/scss/charts.scss */
+/* line 631, ../src/scss/charts.scss */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;
