@@ -16,7 +16,6 @@ Tactile.Tooltip = Tooltip = (function() {
   };
 
   Tooltip.spotlightOn = function(d) {
-    console.log(d);
     return Tooltip._spotlightMode = true;
   };
 
@@ -70,7 +69,7 @@ Tactile.Tooltip = Tooltip = (function() {
       tip = _this.create();
       hoveredNode = el.node().getBBox();
       if (_this.options.circleOnHover) {
-        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
+        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y + 1).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
       }
       tip.classed("annotation", true).classed(_this.options.gravity, true).style("display", "none");
       if (_this.options.fade) {

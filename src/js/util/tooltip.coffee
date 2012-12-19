@@ -64,7 +64,7 @@ Tactile.Tooltip = class Tooltip
         d3.select(tooltipCircleContainer)
           .append("svg:circle")
           .attr("cx", hoveredNode.x + hoveredNode.width / 2)
-          .attr("cy", hoveredNode.y)
+          .attr("cy", hoveredNode.y + 1)
           .attr("r", 3)
           .attr('class', 'tooltip-circle')
           .attr("stroke", 'orange')
