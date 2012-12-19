@@ -95,13 +95,14 @@ Tactile.Tooltip = Tooltip = (function() {
         return tip.classed('in', true);
       };
       setTimeout(inner, 10);
-      return tip.style("display", "").call(moveTip.bind(_this));
+      tip.style("display", "");
+      return moveTip(tip);
     });
     mouseMove = function() {
       return d3.select(".annotation").call(moveTip.bind(this));
     };
     if (this.options.mousemove) {
-      this.el.on("mousemove", mouseMove).on("mousemove.drag", mouseMove);
+      this.el.on("mousemove", mouseMove);
     }
     return this.el.on("mouseout", function() {
       var remover, tip;

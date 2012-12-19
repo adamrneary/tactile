@@ -2,6 +2,7 @@
 # Copied from https://github.com/zmaril/d3-bootstrap-plugins
 #
 
+# TODO: Copy color from the @series.color
 Tactile.Tooltip = class Tooltip
   @_spotlightMode: false
 
@@ -99,8 +100,9 @@ Tactile.Tooltip = class Tooltip
       inner = () -> tip.classed('in', true)
 
       setTimeout(inner,10)
-
-      tip.style("display","").call(moveTip.bind(@))
+      
+      tip.style("display","")
+      moveTip(tip)
     )
 
 
@@ -108,12 +110,10 @@ Tactile.Tooltip = class Tooltip
       d3.select(".annotation").call(moveTip.bind(@))
     
     if @options.mousemove
-#      d3.select(@options.graph.element).on("mousemove", mouseMove).on("mousemove.drag", mouseMove)
       @el.on("mousemove", mouseMove)
-        .on("mousemove.drag", mouseMove)
 
     @el.on("mouseout", () ->
-      return if Tooltip._spotlightMode
+      return if Tooltip._spotlightMode # don't hide the tooltip if spotlight 
       d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove()
 
       tip = d3.selectAll(".annotation").classed('in', false)
@@ -127,4 +127,9 @@ d3.selection.prototype.tooltip = (f) ->
   selection.each (d,i) ->
     options = f.apply(@, arguments)
     new Tactile.Tooltip(@, options)
+    
+#  TODO: can't bind this without breaking other mouse events
+#  options = f.apply(@el, arguments)  
+#  d3.select(options.graph.element).on "mousemove.drag", ->
+#    # find the tip (.annotation) here and update it's height according to the mouse y
     
