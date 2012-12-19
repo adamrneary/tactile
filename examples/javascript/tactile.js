@@ -19,12 +19,10 @@ Tactile.Tooltip = Tooltip = (function() {
     return Tooltip._spotlightMode = true;
   };
 
-  function Tooltip(el, optionsFunction, dArguments) {
+  function Tooltip(el, options) {
     this.el = el;
-    this.optionsFunction = optionsFunction;
-    this.dArguments = dArguments;
+    this.options = options;
     this.el = d3.select(this.el);
-    this.options = this.optionsFunction.apply(this.el, this.dArguments);
     this.annotate();
   }
 
@@ -33,7 +31,6 @@ Tactile.Tooltip = Tooltip = (function() {
     chartContainer = d3.select(this.options.graph.element);
     if (Tooltip._spotlightMode && this.el.node().classList.contains("selected")) {
       tip = chartContainer.select('.tooltip');
-      tip.select('.tooltip-inner').html(this.options.text);
     } else {
       chartContainer.selectAll('.tooltip').remove();
       tip = chartContainer.append('div').classed("tooltip", true);
@@ -93,6 +90,7 @@ Tactile.Tooltip = Tooltip = (function() {
         tip.classed('fade', true);
       }
       tip.append("div").attr("class", "arrow");
+      tip.select('.tooltip-inner').html(_this.options.text);
       inner = function() {
         return tip.classed('in', true);
       };
@@ -124,10 +122,12 @@ Tactile.Tooltip = Tooltip = (function() {
 })();
 
 d3.selection.prototype.tooltip = function(f) {
-  var selection;
+  var options, selection;
   selection = this;
+  options = {};
   return selection.each(function(d, i) {
-    return new Tactile.Tooltip(this, f, arguments);
+    options = f.apply(this, arguments);
+    return new Tactile.Tooltip(this, options);
   });
 };
 

@@ -11,16 +11,15 @@ Tactile.Tooltip = class Tooltip
   @spotlightOn: (d) ->
     Tooltip._spotlightMode = true
     
-  constructor: (@el, @optionsFunction, @dArguments) ->
+  constructor: (@el, @options) ->
     @el = d3.select(@el)
-    @options = @optionsFunction.apply(@el, @dArguments)
     @annotate()
 
+  # TODO: Done in a hurry. Dry this out.
   appendTooltip: ->
     chartContainer = d3.select(@options.graph.element)
     if Tooltip._spotlightMode && @el.node().classList.contains("selected")
       tip = chartContainer.select('.tooltip')
-      tip.select('.tooltip-inner').html(@options.text)
     else
       chartContainer.selectAll('.tooltip').remove()
       tip = chartContainer.append('div')
@@ -96,7 +95,7 @@ Tactile.Tooltip = class Tooltip
       tip.classed('fade', true) if @options.fade
 
       tip.append("div").attr("class","arrow")
-
+      tip.select('.tooltip-inner').html(@options.text)
       inner = () -> tip.classed('in', true)
 
       setTimeout(inner,10)
@@ -124,5 +123,8 @@ Tactile.Tooltip = class Tooltip
 
 d3.selection.prototype.tooltip = (f) ->
   selection = @
+  options = {}
   selection.each (d,i) ->
-    new Tactile.Tooltip(@, f, arguments)
+    options = f.apply(@, arguments)
+    new Tactile.Tooltip(@, options)
+    
