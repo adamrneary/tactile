@@ -48,7 +48,6 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       nodes.tooltip (d,i) =>
         graph: @graph
         text: @series.tooltip(d)
-        placement: "mouse"
         mousemove: true
         gravity: "right"
 
@@ -73,6 +72,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .on("touchend.drag", @_mouseUp)
       
   _datapointDrag: (d,i) =>    
+    Tactile.Tooltip.spotlightOn(d)
     @dragged = {d: d, i:i}
     @update()
 
@@ -94,6 +94,9 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
     @dragged = null if @dragged
+    
+    Tactile.Tooltip.turnOffspotlight()
+    
     @transitionSpeed = @setSpeed
     @update()
 

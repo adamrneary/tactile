@@ -3,6 +3,15 @@
 #
 
 Tactile.Tooltip = class Tooltip
+  @_spotlightMode: false
+
+  @turnOffspotlight: () ->
+    Tooltip._spotlightMode = false
+    
+  @spotlightOn: (d) ->
+    Tooltip._spotlightMode = true
+    
+
   constructor: (@el, @options, @create) ->
     @annotate()
     
@@ -17,7 +26,7 @@ Tactile.Tooltip = class Tooltip
     else if @options.circleOnHover
       tooltipCircleContainer = el.node().parentNode
 
-    move_tip = (selection) =>
+    move_tip = (tip) =>
       center = [0,0]
       if @options.placement is "mouse"
         center = d3.mouse(@options.graph.element)
@@ -40,12 +49,13 @@ Tactile.Tooltip = class Tooltip
         center[0] += @options.displacement[0]
         center[1] += @options.displacement[1]
 
-      selection
+      tip
         .style("left","#{center[0]}px")
         .style("top","#{center[1]}px")
         .style("display","block")
 
     el.on("mouseover", () =>
+      return if Tooltip._spotlightMode
       tip = @create()
       hoveredNode = el.node().getBBox()
 
@@ -76,12 +86,17 @@ Tactile.Tooltip = class Tooltip
       tip.style("display","").call(move_tip.bind(@))
     )
 
+
+    mouseMove = () -> 
+      d3.select(".annotation").call(move_tip.bind(@))
+    
     if @options.mousemove
-      el.on("mousemove", () ->
-        d3.select(".annotation").call(move_tip.bind(@))
-      )
+#      d3.select(@options.graph.element).on("mousemove", mouseMove).on("mousemove.drag", mouseMove)
+      el.on("mousemove", mouseMove)
+        .on("mousemove.drag", mouseMove)
 
     el.on("mouseout", () ->
+      return if Tooltip._spotlightMode
       d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove()
 
       tip = d3.selectAll(".annotation").classed('in', false)

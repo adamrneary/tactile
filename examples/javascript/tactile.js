@@ -9,6 +9,17 @@ var Tooltip;
 
 Tactile.Tooltip = Tooltip = (function() {
 
+  Tooltip._spotlightMode = false;
+
+  Tooltip.turnOffspotlight = function() {
+    return Tooltip._spotlightMode = false;
+  };
+
+  Tooltip.spotlightOn = function(d) {
+    console.log(d);
+    return Tooltip._spotlightMode = true;
+  };
+
   function Tooltip(el, options, create) {
     this.el = el;
     this.options = options;
@@ -17,7 +28,7 @@ Tactile.Tooltip = Tooltip = (function() {
   }
 
   Tooltip.prototype.annotate = function() {
-    var chartContainer, el, move_tip, tooltipCircleContainer,
+    var chartContainer, el, mouseMove, move_tip, tooltipCircleContainer,
       _this = this;
     el = d3.select(this.el);
     chartContainer = el.node().nearestViewportElement;
@@ -26,7 +37,7 @@ Tactile.Tooltip = Tooltip = (function() {
     } else if (this.options.circleOnHover) {
       tooltipCircleContainer = el.node().parentNode;
     }
-    move_tip = function(selection) {
+    move_tip = function(tip) {
       var center, hoveredNode;
       center = [0, 0];
       if (_this.options.placement === "mouse") {
@@ -49,10 +60,13 @@ Tactile.Tooltip = Tooltip = (function() {
         center[0] += _this.options.displacement[0];
         center[1] += _this.options.displacement[1];
       }
-      return selection.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
+      return tip.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
     };
     el.on("mouseover", function() {
       var hoveredNode, inner, tip;
+      if (Tooltip._spotlightMode) {
+        return;
+      }
       tip = _this.create();
       hoveredNode = el.node().getBBox();
       if (_this.options.circleOnHover) {
@@ -69,13 +83,17 @@ Tactile.Tooltip = Tooltip = (function() {
       setTimeout(inner, 10);
       return tip.style("display", "").call(move_tip.bind(_this));
     });
+    mouseMove = function() {
+      return d3.select(".annotation").call(move_tip.bind(this));
+    };
     if (this.options.mousemove) {
-      el.on("mousemove", function() {
-        return d3.select(".annotation").call(move_tip.bind(this));
-      });
+      el.on("mousemove", mouseMove).on("mousemove.drag", mouseMove);
     }
     return el.on("mouseout", function() {
       var remover, tip;
+      if (Tooltip._spotlightMode) {
+        return;
+      }
       d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
       tip = d3.selectAll(".annotation").classed('in', false);
       remover = function() {
@@ -1111,7 +1129,6 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
         return {
           graph: _this.graph,
           text: _this.series.tooltip(d),
-          placement: "mouse",
           mousemove: true,
           gravity: "right"
         };
@@ -1135,6 +1152,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._datapointDrag = function(d, i) {
+    Tactile.Tooltip.spotlightOn(d);
     this.dragged = {
       d: d,
       i: i
@@ -1170,6 +1188,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.dragged) {
       this.dragged = null;
     }
+    Tactile.Tooltip.turnOffspotlight();
     this.transitionSpeed = this.setSpeed;
     return this.update();
   };
