@@ -49,8 +49,9 @@ annotate = (options,create)->
         
       tip.classed("annotation", true)
         .classed(options.gravity, true)
-        .classed('fade', true)
         .style("display","none")
+
+      tip.classed('fade', true) if options.fade
 
       tip.append("div").attr("class","arrow")
 

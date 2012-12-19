@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-18
+/*! tactile - v0.0.1 - 2012-12-19
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -37,7 +37,10 @@ annotate = function(options, create) {
     tip = create();
     hoveredNode = el.node().getBBox();
     d3.select(tooltipCircleNode).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
-    tip.classed("annotation", true).classed(options.gravity, true).classed('fade', true).style("display", "none");
+    tip.classed("annotation", true).classed(options.gravity, true).style("display", "none");
+    if (options.fade) {
+      tip.classed('fade', true);
+    }
     tip.append("div").attr("class", "arrow");
     inner = function() {
       return tip.classed('in', true);
