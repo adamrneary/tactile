@@ -37,6 +37,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         circleOnHover: true
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+        
     
   barWidth: ->
     data = @series.stack

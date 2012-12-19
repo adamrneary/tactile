@@ -38,8 +38,8 @@ module.exports = function(grunt) {
         dist: {
             src: ['<banner:meta.banner>', 
                   'src/js/intro.js',
-                  'build/tooltip.js',
                   'src/js/core.js',
+                  'build/tooltip.js',
 
 
                   'build/fixtures_time.js',

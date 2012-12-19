@@ -3,76 +3,91 @@
 * Copyright (c) 2012 Activecell; Licensed  */
 
 (function (){
-var annotate;
+var Tactile = window.Tactile || {};
+window.Tactile = Tactile;
+var Tooltip;
 
-annotate = function(options, create) {
-  var chartContainer, el, move_tip, tooltipCircleContainer;
-  el = d3.select(this);
-  chartContainer = el.node().nearestViewportElement;
-  if (options.tooltipCircleContainer) {
-    tooltipCircleContainer = options.tooltipCircleContainer;
-  } else if (options.circleOnHover) {
-    tooltipCircleContainer = el.node().parentNode;
+Tactile.Tooltip = Tooltip = (function() {
+
+  function Tooltip(el, options, create) {
+    this.el = el;
+    this.options = options;
+    this.create = create;
+    this.annotate();
   }
-  move_tip = function(selection) {
-    var center, hoveredNode, offsets;
-    center = [0, 0];
-    if (options.placement === "mouse") {
-      center = d3.mouse(options.graph.element);
-    } else {
-      offsets = this.ownerSVGElement.getBoundingClientRect();
-      if (options.position) {
-        center[0] = options.position[0];
-        center[1] = options.position[1];
+
+  Tooltip.prototype.annotate = function() {
+    var chartContainer, el, move_tip, tooltipCircleContainer,
+      _this = this;
+    el = d3.select(this.el);
+    chartContainer = el.node().nearestViewportElement;
+    if (this.options.tooltipCircleContainer) {
+      tooltipCircleContainer = this.options.tooltipCircleContainer;
+    } else if (this.options.circleOnHover) {
+      tooltipCircleContainer = el.node().parentNode;
+    }
+    move_tip = function(selection) {
+      var center, hoveredNode;
+      center = [0, 0];
+      if (_this.options.placement === "mouse") {
+        center = d3.mouse(_this.options.graph.element);
       } else {
-        hoveredNode = el.node().getBBox();
-        center[0] = hoveredNode.x + hoveredNode.width / 2;
-        center[1] = hoveredNode.y;
+        if (_this.options.position) {
+          center[0] = _this.options.position[0];
+          center[1] = _this.options.position[1];
+        } else {
+          hoveredNode = el.node().getBBox();
+          center[0] = hoveredNode.x + hoveredNode.width / 2;
+          center[1] = hoveredNode.y;
+        }
+        center[0] += _this.options.graph.margin.left;
+        center[0] += _this.options.graph.padding.left;
+        center[1] += _this.options.graph.margin.top;
+        center[1] += _this.options.graph.padding.top;
       }
-      center[0] += options.graph.margin.left;
-      center[0] += options.graph.padding.left;
-      center[1] += options.graph.margin.top;
-      center[1] += options.graph.padding.top;
-    }
-    if (options.displacement) {
-      center[0] += options.displacement[0];
-      center[1] += options.displacement[1];
-    }
-    return selection.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
-  };
-  el.on("mouseover", function() {
-    var hoveredNode, inner, tip;
-    tip = create();
-    hoveredNode = el.node().getBBox();
-    if (options.circleOnHover) {
-      d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
-    }
-    tip.classed("annotation", true).classed(options.gravity, true).style("display", "none");
-    if (options.fade) {
-      tip.classed('fade', true);
-    }
-    tip.append("div").attr("class", "arrow");
-    inner = function() {
-      return tip.classed('in', true);
+      if (_this.options.displacement) {
+        center[0] += _this.options.displacement[0];
+        center[1] += _this.options.displacement[1];
+      }
+      return selection.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
     };
-    setTimeout(inner, 10);
-    return tip.style("display", "").call(move_tip.bind(this));
-  });
-  if (options.mousemove) {
-    el.on("mousemove", function() {
-      return d3.select(".annotation").call(move_tip.bind(this));
+    el.on("mouseover", function() {
+      var hoveredNode, inner, tip;
+      tip = _this.create();
+      hoveredNode = el.node().getBBox();
+      if (_this.options.circleOnHover) {
+        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
+      }
+      tip.classed("annotation", true).classed(_this.options.gravity, true).style("display", "none");
+      if (_this.options.fade) {
+        tip.classed('fade', true);
+      }
+      tip.append("div").attr("class", "arrow");
+      inner = function() {
+        return tip.classed('in', true);
+      };
+      setTimeout(inner, 10);
+      return tip.style("display", "").call(move_tip.bind(_this));
     });
-  }
-  return el.on("mouseout", function() {
-    var remover, tip;
-    d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
-    tip = d3.selectAll(".annotation").classed('in', false);
-    remover = function() {
-      return tip.remove();
-    };
-    return setTimeout(remover, 150);
-  });
-};
+    if (this.options.mousemove) {
+      el.on("mousemove", function() {
+        return d3.select(".annotation").call(move_tip.bind(this));
+      });
+    }
+    return el.on("mouseout", function() {
+      var remover, tip;
+      d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
+      tip = d3.selectAll(".annotation").classed('in', false);
+      remover = function() {
+        return tip.remove();
+      };
+      return setTimeout(remover, 150);
+    });
+  };
+
+  return Tooltip;
+
+})();
 
 d3.selection.prototype.tooltip = function(f) {
   var selection;
@@ -87,12 +102,10 @@ d3.selection.prototype.tooltip = function(f) {
       tip.append('div').html(options.text).classed("tooltip-inner", true);
       return tip;
     };
-    return annotate.call(this, options, create_tooltip);
+    return new Tactile.Tooltip(this, options, create_tooltip);
   });
 };
 
-var Tactile = window.Tactile || {};
-window.Tactile = Tactile;
 var FixturesTime;
 
 Tactile.FixturesTime = FixturesTime = (function() {
