@@ -30,7 +30,6 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
    
    
   setupTooltips: ->   
-    # TODO: extract this into a tooltip class, in the same fashion as axes are handled  
     if @series.tooltip
       @seriesCanvas().selectAll("rect").tooltip (d, i) =>
         graph: @graph

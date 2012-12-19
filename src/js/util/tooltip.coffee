@@ -2,6 +2,7 @@
 # Copied from https://github.com/zmaril/d3-bootstrap-plugins
 #
 
+# TODO: this is a global namespace declaration
 annotate = (options,create) ->
     el = d3.select(@)
     chartContainer = el.node().nearestViewportElement
