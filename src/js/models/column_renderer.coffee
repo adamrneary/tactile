@@ -32,6 +32,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
   setupTooltips: ->   
     if @series.tooltip
       @seriesCanvas().selectAll("rect").tooltip (d, i) =>
+        circleColor: @series.color
         graph: @graph
         text: @series.tooltip(d)
         circleOnHover: true

@@ -85,7 +85,7 @@ Tactile.Tooltip = class Tooltip
           .attr("cy", hoveredNode.y + 1)
           .attr("r", 3)
           .attr('class', 'tooltip-circle')
-          .attr("stroke", 'orange')
+          .attr("stroke", @options.circleColor || 'orange')
           .attr("fill", 'white')
           .attr("stroke-width", '1')
 

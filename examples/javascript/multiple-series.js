@@ -25,6 +25,7 @@ var chart = new Tactile.Chart({
     renderer: "column",
     wide: true,
     round: true,
+    color: "#6020c0",
     tooltip: function(d) {
       return d.y + " customers";
     },

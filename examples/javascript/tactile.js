@@ -83,7 +83,7 @@ Tactile.Tooltip = Tooltip = (function() {
       tip = _this.appendTooltip();
       if (_this.options.circleOnHover) {
         hoveredNode = _this.el.node().getBBox();
-        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y + 1).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
+        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y + 1).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", _this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
       }
       tip.classed("annotation", true).classed(_this.options.gravity, true).style("display", "none");
       if (_this.options.fade) {
@@ -783,6 +783,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if (this.series.tooltip) {
       return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
         return {
+          circleColor: _this.series.color,
           graph: _this.graph,
           text: _this.series.tooltip(d),
           circleOnHover: true,
