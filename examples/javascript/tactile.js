@@ -19,24 +19,39 @@ Tactile.Tooltip = Tooltip = (function() {
     return Tooltip._spotlightMode = true;
   };
 
-  function Tooltip(el, options, create) {
+  function Tooltip(el, optionsFunction, dArguments) {
     this.el = el;
-    this.options = options;
-    this.create = create;
+    this.optionsFunction = optionsFunction;
+    this.dArguments = dArguments;
+    this.el = d3.select(this.el);
+    this.options = this.optionsFunction.apply(this.el, this.dArguments);
     this.annotate();
   }
 
+  Tooltip.prototype.appendTooltip = function() {
+    var chartContainer, tip;
+    chartContainer = d3.select(this.options.graph.element);
+    if (Tooltip._spotlightMode && this.el.node().classList.contains("selected")) {
+      tip = chartContainer.select('.tooltip');
+      tip.select('.tooltip-inner').html(this.options.text);
+    } else {
+      chartContainer.selectAll('.tooltip').remove();
+      tip = chartContainer.append('div').classed("tooltip", true);
+      tip.append('div').html(this.options.text).classed("tooltip-inner", true);
+    }
+    return tip;
+  };
+
   Tooltip.prototype.annotate = function() {
-    var chartContainer, el, mouseMove, move_tip, tooltipCircleContainer,
+    var chartContainer, mouseMove, moveTip, tooltipCircleContainer,
       _this = this;
-    el = d3.select(this.el);
-    chartContainer = el.node().nearestViewportElement;
+    chartContainer = this.el.node().nearestViewportElement;
     if (this.options.tooltipCircleContainer) {
       tooltipCircleContainer = this.options.tooltipCircleContainer;
     } else if (this.options.circleOnHover) {
-      tooltipCircleContainer = el.node().parentNode;
+      tooltipCircleContainer = this.el.node().parentNode;
     }
-    move_tip = function(tip) {
+    moveTip = function(tip) {
       var center, hoveredNode;
       center = [0, 0];
       if (_this.options.placement === "mouse") {
@@ -46,7 +61,7 @@ Tactile.Tooltip = Tooltip = (function() {
           center[0] = _this.options.position[0];
           center[1] = _this.options.position[1];
         } else {
-          hoveredNode = el.node().getBBox();
+          hoveredNode = _this.el.node().getBBox();
           center[0] = hoveredNode.x + hoveredNode.width / 2;
           center[1] = hoveredNode.y;
         }
@@ -61,14 +76,16 @@ Tactile.Tooltip = Tooltip = (function() {
       }
       return tip.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
     };
-    el.on("mouseover", function() {
+    this.el.on("mouseover", function() {
       var hoveredNode, inner, tip;
       if (Tooltip._spotlightMode) {
-        return;
+        if (!_this.el.node().classList.contains("selected")) {
+          return;
+        }
       }
-      tip = _this.create();
-      hoveredNode = el.node().getBBox();
+      tip = _this.appendTooltip();
       if (_this.options.circleOnHover) {
+        hoveredNode = _this.el.node().getBBox();
         d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y + 1).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", 'orange').attr("fill", 'white').attr("stroke-width", '1');
       }
       tip.classed("annotation", true).classed(_this.options.gravity, true).style("display", "none");
@@ -80,15 +97,15 @@ Tactile.Tooltip = Tooltip = (function() {
         return tip.classed('in', true);
       };
       setTimeout(inner, 10);
-      return tip.style("display", "").call(move_tip.bind(_this));
+      return tip.style("display", "").call(moveTip.bind(_this));
     });
     mouseMove = function() {
-      return d3.select(".annotation").call(move_tip.bind(this));
+      return d3.select(".annotation").call(moveTip.bind(this));
     };
     if (this.options.mousemove) {
-      el.on("mousemove", mouseMove).on("mousemove.drag", mouseMove);
+      this.el.on("mousemove", mouseMove).on("mousemove.drag", mouseMove);
     }
-    return el.on("mouseout", function() {
+    return this.el.on("mouseout", function() {
       var remover, tip;
       if (Tooltip._spotlightMode) {
         return;
@@ -110,16 +127,7 @@ d3.selection.prototype.tooltip = function(f) {
   var selection;
   selection = this;
   return selection.each(function(d, i) {
-    var create_tooltip, options;
-    options = f.apply(this, arguments);
-    create_tooltip = function() {
-      var chartContainer, tip;
-      chartContainer = d3.select(options.graph.element);
-      tip = chartContainer.append('div').classed("tooltip", true);
-      tip.append('div').html(options.text).classed("tooltip-inner", true);
-      return tip;
-    };
-    return new Tactile.Tooltip(this, options, create_tooltip);
+    return new Tactile.Tooltip(this, f, arguments);
   });
 };
 
@@ -1092,7 +1100,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype.render = function() {
-    var nodes, _ref,
+    var draggedNodes, nodes, _ref,
       _this = this;
     DraggableLineRenderer.__super__.render.call(this);
     if (this.series.disabled) {
@@ -1123,27 +1131,35 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
         return 'white';
       }
     }).attr("stroke-width", '2');
-    if (this.series.tooltip) {
-      nodes.tooltip(function(d, i) {
-        return {
-          graph: _this.graph,
-          text: _this.series.tooltip(d),
-          mousemove: true,
-          gravity: "right"
-        };
-      });
-    }
     _.each(nodes[0], function(n) {
       return n != null ? n.setAttribute("fill", _this.series.color) : void 0;
     });
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
-      return nodes.filter(function(d, i) {
+      draggedNodes = nodes.filter(function(d, i) {
         return i === _this.dragged.i;
-      }).each(function(d) {
+      });
+      draggedNodes.each(function(d) {
         d.y = _this.dragged.y;
         return d.dragged = true;
       });
     }
+    if (this.series.tooltip) {
+      return this._initTooltips();
+    }
+  };
+
+  DraggableLineRenderer.prototype._initTooltips = function() {
+    var nodes,
+      _this = this;
+    nodes = this.seriesCanvas().selectAll("circle");
+    return this.seriesCanvas().selectAll("circle").tooltip(function(d, i) {
+      return {
+        graph: _this.graph,
+        text: _this.series.tooltip(d),
+        mousemove: true,
+        gravity: "right"
+      };
+    });
   };
 
   DraggableLineRenderer.prototype._bindMouseEvents = function() {

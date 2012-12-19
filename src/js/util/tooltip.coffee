@@ -11,22 +11,38 @@ Tactile.Tooltip = class Tooltip
   @spotlightOn: (d) ->
     Tooltip._spotlightMode = true
     
-
-  constructor: (@el, @options, @create) ->
+  constructor: (@el, @optionsFunction, @dArguments) ->
+    @el = d3.select(@el)
+    @options = @optionsFunction.apply(@el, @dArguments)
     @annotate()
+
+  appendTooltip: ->
+    chartContainer = d3.select(@options.graph.element)
+    if Tooltip._spotlightMode && @el.node().classList.contains("selected")
+      tip = chartContainer.select('.tooltip')
+      tip.select('.tooltip-inner').html(@options.text)
+    else
+      chartContainer.selectAll('.tooltip').remove()
+      tip = chartContainer.append('div')
+        .classed("tooltip", true)
+
+      tip.append('div')
+        .html(@options.text)
+        .classed("tooltip-inner", true)
+
+    return tip
     
   annotate: () ->
-    el = d3.select(@el)
-    chartContainer = el.node().nearestViewportElement
+    chartContainer = @el.node().nearestViewportElement
 
     # tooltipCircleContainer is an element to which the circle will be appended
     # sets the parent node by default
     if @options.tooltipCircleContainer
       tooltipCircleContainer = @options.tooltipCircleContainer
     else if @options.circleOnHover
-      tooltipCircleContainer = el.node().parentNode
+      tooltipCircleContainer = @el.node().parentNode
 
-    move_tip = (tip) =>
+    moveTip = (tip) =>
       center = [0,0]
       if @options.placement is "mouse"
         center = d3.mouse(@options.graph.element)
@@ -35,7 +51,7 @@ Tactile.Tooltip = class Tooltip
           center[0] = @options.position[0]
           center[1] = @options.position[1]
         else
-          hoveredNode = el.node().getBBox()
+          hoveredNode = @el.node().getBBox()
           center[0] = hoveredNode.x + hoveredNode.width / 2
           center[1] = hoveredNode.y
 
@@ -54,13 +70,15 @@ Tactile.Tooltip = class Tooltip
         .style("top","#{center[1]}px")
         .style("display","block")
 
-    el.on("mouseover", () =>
-      return if Tooltip._spotlightMode
-      tip = @create()
-      hoveredNode = el.node().getBBox()
+    @el.on("mouseover", () =>
+      if Tooltip._spotlightMode
+        return unless @el.node().classList.contains("selected")
+        
+      tip = @appendTooltip()
 
       # puts small circle on the hovered node
       if @options.circleOnHover
+        hoveredNode = @el.node().getBBox()
         d3.select(tooltipCircleContainer)
           .append("svg:circle")
           .attr("cx", hoveredNode.x + hoveredNode.width / 2)
@@ -83,19 +101,19 @@ Tactile.Tooltip = class Tooltip
 
       setTimeout(inner,10)
 
-      tip.style("display","").call(move_tip.bind(@))
+      tip.style("display","").call(moveTip.bind(@))
     )
 
 
     mouseMove = () -> 
-      d3.select(".annotation").call(move_tip.bind(@))
+      d3.select(".annotation").call(moveTip.bind(@))
     
     if @options.mousemove
 #      d3.select(@options.graph.element).on("mousemove", mouseMove).on("mousemove.drag", mouseMove)
-      el.on("mousemove", mouseMove)
+      @el.on("mousemove", mouseMove)
         .on("mousemove.drag", mouseMove)
 
-    el.on("mouseout", () ->
+    @el.on("mouseout", () ->
       return if Tooltip._spotlightMode
       d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove()
 
@@ -107,17 +125,4 @@ Tactile.Tooltip = class Tooltip
 d3.selection.prototype.tooltip = (f) ->
   selection = @
   selection.each (d,i) ->
-    options = f.apply(@, arguments)
-    
-    create_tooltip = () ->
-      chartContainer = d3.select(options.graph.element)
-      tip = chartContainer.append('div')
-        .classed("tooltip", true)
-      
-      tip.append('div')
-        .html(options.text)
-        .classed("tooltip-inner", true)
-
-      return tip
-
-    new Tactile.Tooltip(@, options, create_tooltip)
+    new Tactile.Tooltip(@, f, arguments)

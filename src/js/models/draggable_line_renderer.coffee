@@ -43,26 +43,28 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
       .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
       .attr("stroke-width", '2')
     
-    # TODO: extract this into a tooltip class, in the same fashion as axes are handled
-    if @series.tooltip
-      nodes.tooltip (d,i) =>
-        graph: @graph
-        text: @series.tooltip(d)
-        mousemove: true
-        gravity: "right"
-
     
     _.each nodes[0], (n) =>
       n?.setAttribute "fill", @series.color  
 
-
     if @dragged?.y?
-      
-      nodes
-        .filter((d,i) => i is @dragged.i)
-        .each (d) =>
-          d.y = @dragged.y
-          d.dragged = true
+      draggedNodes = 
+        nodes
+          .filter((d,i) => i is @dragged.i)
+      draggedNodes.each (d) =>
+            d.y = @dragged.y
+            d.dragged = true
+    
+    @_initTooltips() if @series.tooltip
+    
+
+  _initTooltips: () -> 
+    nodes = @seriesCanvas().selectAll("circle")
+    @seriesCanvas().selectAll("circle").tooltip (d,i) =>
+      graph: @graph
+      text: @series.tooltip(d)
+      mousemove: true
+      gravity: "right"
 
   _bindMouseEvents: =>
     d3.select(@graph.element)
