@@ -8,7 +8,8 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
   render: ->
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
-      
+    
+    #TODO: this block of code is the same in few places
     circ.enter()
       .append("svg:circle")
         .attr("clip-path", "url(#scatter-clip)")

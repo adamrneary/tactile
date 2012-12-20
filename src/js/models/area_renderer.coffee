@@ -36,6 +36,7 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
       .attr("stroke", @series.color)
       .attr("d", @seriesStrokeFactory())
       
+    #TODO: this block of code is the same in few places    
     @seriesCanvas().selectAll('circle')
       .data(@series.stack)
       .enter()
