@@ -40,13 +40,13 @@ Tactile.Tooltip = Tooltip = (function() {
   };
 
   Tooltip.prototype.annotate = function() {
-    var chartContainer, mouseMove, moveTip, tooltipCircleContainer,
+    var chartContainer, mouseMove, moveTip,
       _this = this;
     chartContainer = this.el.node().nearestViewportElement;
     if (this.options.tooltipCircleContainer) {
-      tooltipCircleContainer = this.options.tooltipCircleContainer;
+      this.tooltipCircleContainer = this.options.tooltipCircleContainer;
     } else if (this.options.circleOnHover) {
-      tooltipCircleContainer = this.el.node().parentNode;
+      this.tooltipCircleContainer = this.el.node().parentNode;
     }
     moveTip = function(tip) {
       var center, hoveredNode;
@@ -62,6 +62,9 @@ Tactile.Tooltip = Tooltip = (function() {
           center[0] = hoveredNode.x + hoveredNode.width / 2;
           center[1] = hoveredNode.y;
         }
+        if (_this.el.node().tagName === 'circle') {
+          center[1] += hoveredNode.height / 2;
+        }
         center[0] += _this.options.graph.margin.left;
         center[0] += _this.options.graph.padding.left;
         center[1] += _this.options.graph.margin.top;
@@ -74,7 +77,7 @@ Tactile.Tooltip = Tooltip = (function() {
       return tip.style("left", "" + center[0] + "px").style("top", "" + center[1] + "px").style("display", "block");
     };
     this.el.on("mouseover", function() {
-      var hoveredNode, inner, tip;
+      var inner, tip;
       if (Tooltip._spotlightMode) {
         if (!_this.el.node().classList.contains("selected")) {
           return;
@@ -82,8 +85,7 @@ Tactile.Tooltip = Tooltip = (function() {
       }
       tip = _this.appendTooltip();
       if (_this.options.circleOnHover) {
-        hoveredNode = _this.el.node().getBBox();
-        d3.select(tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y + 1).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", _this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
+        _this._appendTipCircle();
       }
       tip.classed("annotation", true).classed(_this.options.gravity, true).style("display", "none");
       if (_this.options.fade) {
@@ -109,13 +111,31 @@ Tactile.Tooltip = Tooltip = (function() {
       if (Tooltip._spotlightMode) {
         return;
       }
-      d3.select(tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
+      d3.select(_this.tooltipCircleContainer).selectAll("circle.tooltip-circle").remove();
+      if (_this.el.node().tagName === 'circle') {
+        _this.el.classed('tip-hovered', false);
+        _this.el.attr('stroke', _this.el.attr('data-stroke-color'));
+        _this.el.attr('fill', _this.el.attr('data-fill-color'));
+      }
       tip = d3.selectAll(".annotation").classed('in', false);
       remover = function() {
         return tip.remove();
       };
       return setTimeout(remover, 150);
     });
+  };
+
+  Tooltip.prototype._appendTipCircle = function() {
+    var hoveredNode;
+    hoveredNode = this.el.node().getBBox();
+    if (this.el.node().tagName === 'circle') {
+      this.el.attr('data-stroke-color', this.el.attr('stroke'));
+      this.el.attr('data-fill-color', this.el.attr('fill'));
+      this.el.attr('fill', 'white');
+      return this.el.attr('stroke', this.options.circleColor);
+    } else {
+      return d3.select(this.tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
+    }
   };
 
   return Tooltip;
@@ -960,7 +980,19 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         return _this.dotSize;
       }
     }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
-    return circ.exit().remove();
+    circ.exit().remove();
+    if (this.series.tooltip) {
+      return circ.tooltip(function(d, i) {
+        return {
+          circleColor: _this.series.color,
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          circleOnHover: true,
+          tooltipCircleContainer: _this.graph.vis.node(),
+          gravity: "right"
+        };
+      });
+    }
   };
 
   return LineRenderer;

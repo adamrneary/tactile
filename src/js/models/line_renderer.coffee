@@ -36,3 +36,13 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .attr("stroke-width", '2')
 
     circ.exit().remove()
+
+
+    if @series.tooltip
+      circ.tooltip (d, i) =>
+        circleColor: @series.color
+        graph: @graph
+        text: @series.tooltip(d)
+        circleOnHover: true
+        tooltipCircleContainer: @graph.vis.node()
+        gravity: "right"

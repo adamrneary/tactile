@@ -486,6 +486,10 @@
   }
 }
 
+.graph-container circle.tip-hovered {
+  stroke-width: 1;
+}
+
 .draggable-node-chart, .draggableLine {
   circle.selected, circle:hover {
     fill: $alloy-orange-60;

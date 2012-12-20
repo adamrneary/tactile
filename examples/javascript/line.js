@@ -16,6 +16,9 @@ var chart = new Tactile.Chart({
         name: 'y',
         renderer: 'line',
         color: "#c05020",
+        tooltip: function(d) {
+          return d.y + " enemies";
+        },
         dataTransform: function(d) {
           return {
             x: d.x,
@@ -27,6 +30,9 @@ var chart = new Tactile.Chart({
         name: 'z',
         renderer: 'line',
         color: "#6060c0",
+        tooltip: function(d) {
+          return d.y + " friends";
+        },
         dataTransform: function(d) {
           return {
             x: d.x,
