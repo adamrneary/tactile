@@ -1563,7 +1563,7 @@ Tactile.Chart = Chart = (function() {
     this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
     this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
-    this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.right + ")").attr("class", "inner-canvas");
+    this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
     this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
     return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");
   };

@@ -192,7 +192,7 @@ Tactile.Chart = class Chart
       
     # this is the canvas on which all data should be drawn  
     @vis = @vis.append("g")
-      .attr("transform", "translate(#{@padding.left},#{@padding.right})")
+      .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
 
     # Add the default clip path.
