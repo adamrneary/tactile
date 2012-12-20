@@ -91,10 +91,12 @@ Tactile.Chart = class Chart
     if renderer.cartesian
       # TODO: This needs way prettier implementation
       # It moves the range 'right' by the value of half width of a bar
-      # So if we have different renderers including bar chart points are 
+      # So if we have renderers including bar chart points are 
       # rendered in the center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
-        rangeStart = @width / renderer.series.stack.length / 2
+        barWidth = @width / renderer.series.stack.length / 2
+        rangeStart = barWidth
+        rangeEnd = @width - barWidth
 
       xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
                 (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
@@ -102,7 +104,7 @@ Tactile.Chart = class Chart
                 (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
 
                         
-      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, @width])
+      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width])
       @y = d3.scale.linear().domain(yframe).range([@height, 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])

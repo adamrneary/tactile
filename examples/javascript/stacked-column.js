@@ -1,3 +1,5 @@
+var frameVal = [1325376000,1354320000];
+
 var data = [
   // time (period here) is unix milliseconds/1000 
   {period: 1325376000, actual: 4, plan: 1}, 
@@ -22,9 +24,14 @@ var chart = new Tactile.Chart({
   unstack: false,
   
   axes: {
-    y: 'linear', x: 'time', 
+    y: 'linear', 
+    x: {
+      dimension: "time",
+      frame: frameVal
+    }, 
     xOptions: {ticksTreatment: 'align-middle'}
   },
+  
   series: [
   {
     name: 'reach actual',
@@ -75,6 +82,20 @@ var chart = new Tactile.Chart({
 });
 
 chart.render();
+var sl = $("<div>").attr("id","slider");
+$("#example_view").append(sl);
+sl.slider({
+  min: 1325376000,
+  max: 1354320000,
+  values: frameVal,
+  range:true,
+  slide: function(event,ui){
+    chart.axes.x.frame = ui.values;
+    chart.render();
+  }                        
+});
+
+
 $('#group').on('click', function() {
   return chart.unstackTransition();
 });

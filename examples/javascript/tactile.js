@@ -772,7 +772,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-    nodes.enter().append("svg:rect");
+    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
     nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
@@ -1466,15 +1466,17 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.discoverRange = function(renderer) {
-    var domain, rangeStart, xframe, yframe;
+    var barWidth, domain, rangeEnd, rangeStart, xframe, yframe;
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {
-        rangeStart = this.width / renderer.series.stack.length / 2;
+        barWidth = this.width / renderer.series.stack.length / 2;
+        rangeStart = barWidth;
+        rangeEnd = this.width - barWidth;
       }
       xframe = [(this.axes.x.frame[0] ? this.axes.x.frame[0] : domain.x[0]), (this.axes.x.frame[1] ? this.axes.x.frame[1] : domain.x[1])];
       yframe = [(this.axes.y.frame[0] ? this.axes.y.frame[0] : domain.y[0]), (this.axes.y.frame[1] ? this.axes.y.frame[1] : domain.y[1])];
-      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, this.width]);
+      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width]);
       this.y = d3.scale.linear().domain(yframe).range([this.height, 0]);
       return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
     }

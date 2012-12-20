@@ -1,21 +1,21 @@
 var frameVal = [2,10];
 var data = [ 
-  { x: 0, y: 10,  z:  0 }, 
-  { x: 1, y: 170, z: 200 }, 
-  { x: 2, y: 280, z: 100 }, 
-  { x: 3, y: 205, z: 300 }, 
-  { x: 4, y: 332, z: 400 },
-  { x: 5, y: 427, z: 450 },
-  { x: 6, y: 32, z: 600 },
-  { x: 7, y: 232, z: 601 },
-  { x: 8, y: 902, z: 700 },
-  { x: 9, y: 100, z: 430 },
-  { x: 10, y: 204, z: 490 },
-  { x: 11, y: 456, z: 450 },
-  { x: 12, y: 239, z: 720 },
-  { x: 13, y: 539, z: 650 },
-  { x: 14, y: 100, z: 100 },
-  { x: 15, y: 200, z: 20}
+  {x: 0, y: 10,  z:  0}, 
+  {x: 1, y: 170, z: 200}, 
+  {x: 2, y: 280, z: 100}, 
+  {x: 3, y: 205, z: 300}, 
+  {x: 4, y: 332, z: 400},
+  {x: 5, y: 327, z: 450},
+  {x: 6, y: 332, z: 600},
+  {x: 7, y: 232, z: 601},
+  {x: 8, y: 402, z: 700},
+  {x: 9, y: 100, z: 430},
+  {x: 10, y: 134, z: 490},
+  {x: 11, y: 356, z: 450},
+  {x: 12, y: 339, z: 720},
+  {x: 13, y: 539, z: 650},
+  {x: 14, y: 650, z: 300},
+  {x: 15, y: 700, z: 100}
 ];
 
 var chart = new Tactile.Chart({
@@ -25,34 +25,34 @@ var chart = new Tactile.Chart({
   data: data,                                      
   grid: true,         
   axes: {
-      x: {
-          dimension: "time",
-          frame: frameVal
+    x: {
+      dimension: "time",
+      frame: frameVal
     }
   },
   series: [
-    {
-      name: 'xy',
-      renderer: 'line',
-      color: "#c05020",
-      dataTransform: function(d) {
-        return {
-          x: d.x,
-          y: d.y
-        };
-      }
-    }, 
-    {
-      name: 'xz',
-      renderer: 'line',
-      color: "#6060c0",
-      dataTransform: function(d) {
-        return {
-          x: d.x,
-          y: d.z
-        };
-      }
+  {
+    name: 'xy',
+    renderer: 'line',
+    color: "#c05020",
+    dataTransform: function(d) {
+      return {
+        x: d.x,
+        y: d.y
+      };
     }
+  }, 
+  {
+    name: 'xz',
+    renderer: 'line',
+    color: "#6060c0",
+    dataTransform: function(d) {
+      return {
+        x: d.x,
+        y: d.z
+      };
+    }
+  }
   ]
 });
 

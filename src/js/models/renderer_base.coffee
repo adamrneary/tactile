@@ -51,18 +51,18 @@ Tactile.RendererBase = class RendererBase
       .data([@series.stack])
       
     line.enter().append("svg:path")
-      .attr("clip-path","url(#clip)")                
+      .attr("clip-path","url(#clip)")
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
 
     if @transitionSpeed is 0
-      line.attr("d", @seriesPathFactory())       
-    else  
-      line.transition(@transitionSpeed).attr("d", @seriesPathFactory())       
+      line.attr("d", @seriesPathFactory())
+    else
+      line.transition(@transitionSpeed).attr("d", @seriesPathFactory())
 
-    
+
   # Creates separate g element for each series. This gives us better control over each paths/rets/circles
   # for a particular series data. 
   # If we had all paths in a single node and want to do selectAll('path') to add new path you would modify

@@ -14,6 +14,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     
     nodes.enter()
       .append("svg:rect")
+      .attr("clip-path","url(#clip)")
       
     nodes.attr("x", @_barX)
       .attr("y", @_barY)
