@@ -63,7 +63,7 @@ Tactile.Tooltip = Tooltip = (function() {
           center[1] = hoveredNode.y;
         }
         if (_this.el.node().tagName === 'circle') {
-          center[1] += hoveredNode.height / 2;
+          center[1] += hoveredNode.height / 2 - 1;
         }
         center[0] += _this.options.graph.margin.left;
         center[0] += _this.options.graph.padding.left;

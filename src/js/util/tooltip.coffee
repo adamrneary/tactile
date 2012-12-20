@@ -55,7 +55,7 @@ Tactile.Tooltip = class Tooltip
           center[0] = hoveredNode.x + hoveredNode.width / 2
           center[1] = hoveredNode.y
 
-        center[1] += (hoveredNode.height / 2) if @el.node().tagName == 'circle'
+        center[1] += (hoveredNode.height / 2 - 1) if @el.node().tagName == 'circle'
 
         center[0] += @options.graph.margin.left
         center[0] += @options.graph.padding.left
