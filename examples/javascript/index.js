@@ -1,7 +1,7 @@
 var cartesian = [
 {
   shortLink: "scatter", 
-  title: "Scatter (future)"
+  title: "Scatter"
 },
 {
   shortLink: "line", 
@@ -19,10 +19,6 @@ var cartesian = [
 {
   shortLink: "area", 
   title: "Area"
-},
-{
-  shortLink: "scatter", 
-  title: "Scatter"
 },
 {
   shortLink: "multiple-series", 
