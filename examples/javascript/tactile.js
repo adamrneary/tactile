@@ -29,7 +29,7 @@ Tactile.Tooltip = Tooltip = (function() {
   Tooltip.prototype.appendTooltip = function() {
     var chartContainer, tip;
     chartContainer = d3.select(this.options.graph.element);
-    if (Tooltip._spotlightMode && this.el.node().classList.contains("selected")) {
+    if (Tooltip._spotlightMode && this.el.node().classList.contains("active")) {
       tip = chartContainer.select('.tooltip');
     } else {
       chartContainer.selectAll('.tooltip').remove();
@@ -79,7 +79,7 @@ Tactile.Tooltip = Tooltip = (function() {
     this.el.on("mouseover", function() {
       var inner, tip;
       if (Tooltip._spotlightMode) {
-        if (!_this.el.node().classList.contains("selected")) {
+        if (!_this.el.node().classList.contains("active")) {
           return;
         }
       }
@@ -1208,7 +1208,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
         }
       }
     }).attr("class", function(d) {
-      return ["draggable-node", (d.dragged ? "selected" : null)].join(' ');
+      return ["draggable-node", (d.dragged ? "active" : null)].join(' ');
     }).style("cursor", "ns-resize").attr("stroke", function(d) {
       if (d.dragged) {
         return 'orange';
@@ -1280,7 +1280,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
     if (this.dragged) {
       this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
     }
-    $(this.graph).find('.selected').attr('class', '');
+    $(this.graph).find('.active').attr('class', '');
     d3.select("body").style("cursor", "auto");
     d3.select("body").style("cursor", "auto");
     if (this.dragged) {

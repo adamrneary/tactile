@@ -38,7 +38,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     nodes.attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
-      .attr("class", (d) => ["draggable-node", (if d.dragged then "selected" else null)].join(' '))
+      .attr("class", (d) => ["draggable-node", (if d.dragged then "active" else null)].join(' '))
       .style("cursor", "ns-resize")
       .attr("stroke", (d) => (if d.dragged then 'orange' else 'white'))
       .attr("stroke-width", '2')
@@ -91,7 +91,7 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
   _mouseUp: =>    
     return unless @dragged?.y?
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
-    $(@graph).find('.selected').attr('class', '')
+    $(@graph).find('.active').attr('class', '')
     d3.select("body").style "cursor", "auto"
     d3.select("body").style "cursor", "auto"
     @dragged = null if @dragged
