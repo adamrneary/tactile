@@ -227,18 +227,6 @@ Tactile.FixturesTime = FixturesTime = (function() {
 
   FixturesTime.prototype.ceil = function(time, unit) {
     var nearFuture, rounded;
-    if (unit.name === "month") {
-      nearFuture = new Date((time + unit.seconds - 1) * 1000);
-      rounded = new Date(0);
-      rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-      rounded.setUTCMonth(nearFuture.getUTCMonth());
-      rounded.setUTCDate(1);
-      rounded.setUTCHours(0);
-      rounded.setUTCMinutes(0);
-      rounded.setUTCSeconds(0);
-      rounded.setUTCMilliseconds(0);
-      return rounded.getTime() / 1000;
-    }
     if (unit.name === "year") {
       nearFuture = new Date((time + unit.seconds - 1) * 1000);
       rounded = new Date(0);
