@@ -1,4 +1,4 @@
-var frameVal = [1325376000,1354320000];
+var frameVal = [1330560000,1354320000];
 
 var data = [
   // time (period here) is unix milliseconds/1000 
@@ -27,9 +27,11 @@ var chart = new Tactile.Chart({
     y: 'linear', 
     x: {
       dimension: "time",
-      frame: frameVal
-    }, 
-    xOptions: {ticksTreatment: 'align-middle'}
+      frame: frameVal,
+      options: {
+        ticksTreatment: 'align-middle'
+      }
+    }
   },
   
   series: [
@@ -88,7 +90,7 @@ sl.slider({
   min: 1325376000,
   max: 1354320000,
   values: frameVal,
-  range:true,
+  range: true,
   slide: function(event,ui){
     chart.axes.x.frame = ui.values;
     chart.render();
