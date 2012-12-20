@@ -478,29 +478,6 @@
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
 
-#scatter {
-  width: 65%;
-}
-.scatter.xaxis path,
-.scatter.xaxis line {
-  fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;
-}
-
-.scatter.yaxis path,
-.scatter.yaxis line {
-  fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;
-}
-
-.scatter.xaxis text,
-.scatter.xaxis text {
-  fill: black;
-  font-size: 12px;
-}
-
 .point {
   stroke-width: 2px;
   z-index: 100;
