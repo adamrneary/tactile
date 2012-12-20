@@ -478,14 +478,12 @@
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
 
-.point {
-  stroke-width: 2px;
-  z-index: 100;
-  
-  &.point-noise { fill: $grey }
-  &.point-dogs { fill: $danger }
-  &.point-sprouts { fill: $info }
-  &.point-stars { fill: $success }
+.scatter {
+  circle {
+    &.low { fill: $danger }
+    &.mid { fill: $info }
+    &.high { fill: $success }
+  }
 }
 
 .draggable-node-chart, .draggableLine {

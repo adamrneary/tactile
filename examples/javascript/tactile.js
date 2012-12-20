@@ -637,7 +637,7 @@ Tactile.RendererBase = RendererBase = (function() {
   };
 
   RendererBase.prototype.seriesCanvas = function() {
-    this._seriesCanvas || (this._seriesCanvas = this.graph.vis.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr('id', this._nameToId()));
+    this._seriesCanvas || (this._seriesCanvas = this.graph.vis.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr('id', this._nameToId()).attr('class', this.name));
     return this._seriesCanvas;
   };
 
@@ -1092,6 +1092,11 @@ Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
         return _this.dotSize;
       }
     }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
+    if (this.series.cssConditions) {
+      circ.attr('class', function(d) {
+        return _this.series.cssConditions(d);
+      });
+    }
     return circ.exit().remove();
   };
 

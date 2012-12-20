@@ -23,6 +23,11 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
       .attr("fill", @series.color)
       .attr("stroke", 'white')
       .attr("stroke-width", '2')
+      
+      
+    if @series.cssConditions
+      circ.attr('class', (d) => @series.cssConditions(d))
+      
 
     circ.exit().remove()
 

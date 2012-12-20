@@ -74,6 +74,7 @@ Tactile.RendererBase = class RendererBase
       .enter()
       .append("g")
       .attr('id', @_nameToId())
+      .attr('class', @name)
       
     @_seriesCanvas
     
