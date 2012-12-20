@@ -548,7 +548,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 }
 
 /* line 538, ../src/scss/charts.scss */
-g .draggable-node.selected, g .draggable-node:hover {
+g .draggable-node.selected {
   stroke: orange;
 }
 

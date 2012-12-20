@@ -535,7 +535,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 }
 
 g .draggable-node {
-  &.selected, &:hover {
+  &.selected {
     stroke: orange;
   }
 }

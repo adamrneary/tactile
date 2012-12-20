@@ -38,9 +38,10 @@ var chart = new Tactile.Chart({
   },
   {
     name: 'reach plan',
-    renderer: "draggableLine", // TODO: rename draggableLine to line
+    renderer: "line",
     sigfigs: 0,
     color: "#c05020",
+    draggable: true,
     tooltip: function(d) {
       return d.y + " customers planned";
     },

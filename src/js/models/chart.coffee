@@ -6,7 +6,6 @@ Tactile.Chart = class Chart
     'line': LineRenderer
     'area': AreaRenderer
     'scatter': ScatterRenderer
-    'draggableLine': DraggableLineRenderer
   
   mainDefaults: 
     margin: {top: 20, right: 20, bottom: 20, left: 20}
