@@ -12,7 +12,6 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
     #TODO: this block of code is the same in few places
     circ.enter()
       .append("svg:circle")
-        .attr("clip-path", "url(#scatter-clip)")
         .attr("cx", (d) => @graph.x d.x)
         .attr("cy", (d) => @graph.y d.y)
       
@@ -27,7 +26,14 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
       
     if @series.cssConditions
       circ.attr('class', (d) => @series.cssConditions(d))
-      
+    
+    if @series.tooltip
+      @seriesCanvas().selectAll("circle").tooltip (d,i) =>
+        graph: @graph
+        text: @series.tooltip(d)
+        mousemove: true
+        gravity: "right"
+        displacement: [5, d.r - 5]
 
     circ.exit().remove()
 

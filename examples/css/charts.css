@@ -501,60 +501,60 @@
   fill: #8ac16f;
 }
 
-/* line 489, ../src/scss/charts.scss */
+/* line 490, ../src/scss/charts.scss */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6;
 }
 
-/* line 494, ../src/scss/charts.scss */
+/* line 495, ../src/scss/charts.scss */
 rect.colorless {
   fill: #5a6ca1;
 }
 
-/* line 502, ../src/scss/charts.scss */
+/* line 503, ../src/scss/charts.scss */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px;
 }
 
-/* line 509, ../src/scss/charts.scss */
+/* line 510, ../src/scss/charts.scss */
 path.colorless {
   stroke: #405192;
 }
-/* line 513, ../src/scss/charts.scss */
+/* line 514, ../src/scss/charts.scss */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none;
 }
-/* line 518, ../src/scss/charts.scss */
+/* line 519, ../src/scss/charts.scss */
 path.line {
   fill: none;
   stroke-width: 2px;
 }
-/* line 522, ../src/scss/charts.scss */
+/* line 523, ../src/scss/charts.scss */
 path.area {
   fill: #e7e7e7;
 }
 
-/* line 528, ../src/scss/charts.scss */
+/* line 529, ../src/scss/charts.scss */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px;
 }
 
-/* line 533, ../src/scss/charts.scss */
+/* line 534, ../src/scss/charts.scss */
 g .draggable-node.selected, g .draggable-node:hover {
   stroke: orange;
 }
 
 /* Leaderboard */
-/* line 542, ../src/scss/charts.scss */
+/* line 543, ../src/scss/charts.scss */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold;
 }
-/* line 548, ../src/scss/charts.scss */
+/* line 549, ../src/scss/charts.scss */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -563,7 +563,7 @@ g .draggable-node.selected, g .draggable-node:hover {
   font-weight: 800;
   text-transform: uppercase;
 }
-/* line 556, ../src/scss/charts.scss */
+/* line 557, ../src/scss/charts.scss */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
@@ -571,47 +571,47 @@ g .draggable-node.selected, g .draggable-node:hover {
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 563, ../src/scss/charts.scss */
+/* line 564, ../src/scss/charts.scss */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none;
 }
-/* line 568, ../src/scss/charts.scss */
+/* line 569, ../src/scss/charts.scss */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none;
 }
-/* line 573, ../src/scss/charts.scss */
+/* line 574, ../src/scss/charts.scss */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none;
 }
-/* line 578, ../src/scss/charts.scss */
+/* line 579, ../src/scss/charts.scss */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none;
 }
 
 /* Gauge */
-/* line 587, ../src/scss/charts.scss */
+/* line 588, ../src/scss/charts.scss */
 .gauge.arc {
   fill: #e2dedf;
 }
-/* line 591, ../src/scss/charts.scss */
+/* line 592, ../src/scss/charts.scss */
 .gauge.arc-value {
   fill: #30878f;
 }
-/* line 595, ../src/scss/charts.scss */
+/* line 596, ../src/scss/charts.scss */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf;
 }
-/* line 600, ../src/scss/charts.scss */
+/* line 601, ../src/scss/charts.scss */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345;
 }
-/* line 605, ../src/scss/charts.scss */
+/* line 606, ../src/scss/charts.scss */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;

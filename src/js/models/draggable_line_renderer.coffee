@@ -59,7 +59,6 @@ Tactile.DraggableLineRenderer = class DraggableLineRenderer extends RendererBase
     
 
   _initTooltips: () -> 
-    nodes = @seriesCanvas().selectAll("circle")
     @seriesCanvas().selectAll("circle").tooltip (d,i) =>
       graph: @graph
       text: @series.tooltip(d)

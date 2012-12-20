@@ -1076,7 +1076,7 @@ Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
     var circ,
       _this = this;
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
-    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)").attr("cx", function(d) {
+    circ.enter().append("svg:circle").attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1095,6 +1095,17 @@ Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
     if (this.series.cssConditions) {
       circ.attr('class', function(d) {
         return _this.series.cssConditions(d);
+      });
+    }
+    if (this.series.tooltip) {
+      this.seriesCanvas().selectAll("circle").tooltip(function(d, i) {
+        return {
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          mousemove: true,
+          gravity: "right",
+          displacement: [5, d.r - 5]
+        };
       });
     }
     return circ.exit().remove();
@@ -1203,9 +1214,7 @@ Tactile.DraggableLineRenderer = DraggableLineRenderer = (function(_super) {
   };
 
   DraggableLineRenderer.prototype._initTooltips = function() {
-    var nodes,
-      _this = this;
-    nodes = this.seriesCanvas().selectAll("circle");
+    var _this = this;
     return this.seriesCanvas().selectAll("circle").tooltip(function(d, i) {
       return {
         graph: _this.graph,
