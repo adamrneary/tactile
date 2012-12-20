@@ -5,6 +5,7 @@ Tactile.RendererBase = class RendererBase
     tension: 0.95
     strokeWidth: 3
     unstack: true
+    dotSize: 5
     
     stroke: false
     fill: false

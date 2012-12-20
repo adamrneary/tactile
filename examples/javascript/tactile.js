@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-19
+/*! tactile - v0.0.1 - 2012-12-20
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -577,6 +577,7 @@ Tactile.RendererBase = RendererBase = (function() {
     tension: 0.95,
     strokeWidth: 3,
     unstack: true,
+    dotSize: 5,
     stroke: false,
     fill: false
   };
@@ -1052,6 +1053,52 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
 
 })(RendererBase);
 
+var ScatterRenderer,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
+
+  __extends(ScatterRenderer, _super);
+
+  function ScatterRenderer() {
+    return ScatterRenderer.__super__.constructor.apply(this, arguments);
+  }
+
+  ScatterRenderer.prototype.name = "scatter";
+
+  ScatterRenderer.prototype.specificDefaults = {
+    fill: true,
+    stroke: false
+  };
+
+  ScatterRenderer.prototype.render = function() {
+    var circ,
+      _this = this;
+    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)").attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    });
+    circ.transition(200).attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
+    return circ.exit().remove();
+  };
+
+  return ScatterRenderer;
+
+})(RendererBase);
+
 var DraggableLineRenderer,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -1295,6 +1342,7 @@ Tactile.Chart = Chart = (function() {
     'column': ColumnRenderer,
     'line': LineRenderer,
     'area': AreaRenderer,
+    'scatter': ScatterRenderer,
     'draggableLine': DraggableLineRenderer
   };
 

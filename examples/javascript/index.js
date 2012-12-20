@@ -21,6 +21,10 @@ var cartesian = [
   title: "Area"
 },
 {
+  shortLink: "scatter", 
+  title: "Scatter"
+},
+{
   shortLink: "multiple-series", 
   title: "Multiple series types"
 }

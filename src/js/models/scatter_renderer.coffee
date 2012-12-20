@@ -1,28 +1,17 @@
-Tactile.LineRenderer = class LineRenderer extends RendererBase
-  name: "line"
-  dotSize: 5
+Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
+  name: "scatter"
   
   specificDefaults:
-    unstack: true
-    fill: false
-    stroke: true
-
-  seriesPathFactory: ->
-    d3.svg.line()
-    .x((d) => @graph.x d.x)
-    .y((d) => @graph.y d.y)
-    .interpolate(@graph.interpolation)
-    .tension @tension
+    fill: true
+    stroke: false
 
   render: ->
-    super()
-
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
       
     circ.enter()
       .append("svg:circle")
-        .attr("clip-path","url(#scatter-clip)")
+        .attr("clip-path", "url(#scatter-clip)")
         .attr("cx", (d) => @graph.x d.x)
         .attr("cy", (d) => @graph.y d.y)
       
@@ -35,3 +24,6 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .attr("stroke-width", '2')
 
     circ.exit().remove()
+
+    
+    
