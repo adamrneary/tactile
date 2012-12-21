@@ -93,6 +93,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     t = d3.event.changedTouches
     if @dragged
       # TODO: move this to tooltip
+      # TODO: update tooltip text continuously on dragging
       elementRelativeposition = d3.mouse(@graph.element)
       tip = d3.select(@graph.element).select('.tooltip')
       tip.style("top", "#{elementRelativeposition[1]}px")
