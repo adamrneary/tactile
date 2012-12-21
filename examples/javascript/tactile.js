@@ -315,6 +315,104 @@ Tactile.AxisY = AxisY = (function() {
 
 })();
 
+var Dragger,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Tactile.Dragger = Dragger = (function() {
+
+  function Dragger(args) {
+    this.update = __bind(this.update, this);
+
+    this._mouseUp = __bind(this._mouseUp, this);
+
+    this._mouseMove = __bind(this._mouseMove, this);
+
+    this._datapointDrag = __bind(this._datapointDrag, this);
+    this.renderer = args.renderer;
+    this.graph = this.renderer.graph;
+    this.series = this.renderer.series;
+    this.render = args.render;
+    this.afterDrag = this.series.afterDrag || function() {};
+    this.onDrag = this.series.onDrag || function() {};
+    this.dragged = null;
+    this._bindMouseEvents();
+    this.power = Math.pow(10, this.series.sigfigs);
+    this.setSpeed = this.renderer.transitionSpeed;
+  }
+
+  Dragger.prototype._bindMouseEvents = function() {
+    return d3.select(this.graph.element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
+  };
+
+  Dragger.prototype.makeHandlers = function(nodes) {
+    nodes = nodes;
+    return nodes.on("mousedown.drag." + this.series.name, this._datapointDrag).on("touchstart.drag." + this.series.name, this._datapointDrag);
+  };
+
+  Dragger.prototype.updateDraggedNode = function(nodes) {
+    var _ref,
+      _this = this;
+    if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
+      return nodes.filter(function(d, i) {
+        return i === _this.dragged.i;
+      }).each(function(d) {
+        d.y = _this.dragged.y;
+        return d.dragged = true;
+      });
+    }
+  };
+
+  Dragger.prototype._datapointDrag = function(d, i) {
+    Tactile.Tooltip.spotlightOn(d);
+    this.dragged = {
+      d: d,
+      i: i
+    };
+    return this.update();
+  };
+
+  Dragger.prototype._mouseMove = function() {
+    var elementRelativeposition, inverted, p, t, tip, value;
+    p = d3.svg.mouse(this.graph.vis.node());
+    t = d3.event.changedTouches;
+    if (this.dragged) {
+      elementRelativeposition = d3.mouse(this.graph.element);
+      tip = d3.select(this.graph.element).select('.tooltip');
+      tip.style("top", "" + elementRelativeposition[1] + "px");
+      this.renderer.transitionSpeed = 0;
+      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      value = Math.round(inverted * this.power) / this.power;
+      this.dragged.y = value;
+      this.onDrag(this.dragged, this.series, this.graph);
+      return this.update();
+    }
+  };
+
+  Dragger.prototype._mouseUp = function() {
+    var _ref;
+    if (((_ref = this.dragged) != null ? _ref.y : void 0) == null) {
+      return;
+    }
+    if (this.dragged) {
+      this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
+    }
+    $(this.graph).find('.active').attr('class', '');
+    d3.select("body").style("cursor", "auto");
+    this.dragged = null;
+    Tactile.Tooltip.turnOffspotlight();
+    this.renderer.transitionSpeed = this.setSpeed;
+    return this.update();
+  };
+
+  Dragger.prototype.update = function() {
+    this.graph.update();
+    return this.render();
+  };
+
+  return Dragger;
+
+})();
+
 var AxisTime;
 
 Tactile.AxisTime = AxisTime = (function() {
@@ -938,15 +1036,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   __extends(LineRenderer, _super);
 
   function LineRenderer() {
-    this._mouseUp = __bind(this._mouseUp, this);
-
-    this._mouseMove = __bind(this._mouseMove, this);
-
-    this._datapointDrag = __bind(this._datapointDrag, this);
-
-    this._bindMouseEvents = __bind(this._bindMouseEvents, this);
-
-    this.update = __bind(this.update, this);
+    this.render = __bind(this.render, this);
     return LineRenderer.__super__.constructor.apply(this, arguments);
   }
 
@@ -969,27 +1059,25 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype.initialize = function() {
-    this.afterDrag = this.series.afterDrag || function() {};
-    this.onDrag = this.series.onDrag || function() {};
-    this.dragged = null;
     if (this.series.draggable) {
-      this._bindMouseEvents();
+      this.dragger = new Dragger({
+        renderer: this,
+        render: this.render
+      });
     }
-    this.power = Math.pow(10, this.series.sigfigs);
-    this.setSpeed = this.transitionSpeed;
     return this.timesRendered = 0;
   };
 
   LineRenderer.prototype.render = function() {
-    var circ, newCircs, _ref,
+    var circ, newCircs,
       _this = this;
     LineRenderer.__super__.render.call(this);
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle");
-    if (this.series.draggable) {
-      newCircs.on("mousedown.drag." + this.series.name, this._datapointDrag).on("touchstart.drag." + this.series.name, this._datapointDrag);
+    if (this.dragger) {
+      this.dragger.makeHandlers(newCircs);
     }
-    circ.transition().duration(this.timesRendered === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
+    circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1022,16 +1110,9 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       circ.style("cursor", "ns-resize");
     }
     circ.exit().remove();
-    if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
-      circ.filter(function(d, i) {
-        return i === _this.dragged.i;
-      }).each(function(d) {
-        d.y = _this.dragged.y;
-        return d.dragged = true;
-      });
-    }
+    this.dragger.updateDraggedNode(circ);
     if (this.series.tooltip) {
-      circ.tooltip(function(d, i) {
+      return circ.tooltip(function(d, i) {
         return {
           circleColor: _this.series.color,
           graph: _this.graph,
@@ -1042,58 +1123,6 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         };
       });
     }
-    return this.timesRendered++;
-  };
-
-  LineRenderer.prototype.update = function() {
-    this.graph.update();
-    return this.render();
-  };
-
-  LineRenderer.prototype._bindMouseEvents = function() {
-    return d3.select(this.graph.element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
-  };
-
-  LineRenderer.prototype._datapointDrag = function(d, i) {
-    Tactile.Tooltip.spotlightOn(d);
-    this.dragged = {
-      d: d,
-      i: i
-    };
-    return this.update();
-  };
-
-  LineRenderer.prototype._mouseMove = function() {
-    var elementRelativeposition, inverted, p, t, tip, value;
-    p = d3.svg.mouse(this.graph.vis.node());
-    t = d3.event.changedTouches;
-    if (this.dragged) {
-      elementRelativeposition = d3.mouse(this.graph.element);
-      tip = d3.select(this.graph.element).select('.tooltip');
-      tip.style("top", "" + elementRelativeposition[1] + "px");
-      this.transitionSpeed = 0;
-      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
-      value = Math.round(inverted * this.power) / this.power;
-      this.dragged.y = value;
-      this.onDrag(this.dragged, this.series, this.graph);
-      return this.update();
-    }
-  };
-
-  LineRenderer.prototype._mouseUp = function() {
-    var _ref;
-    if (((_ref = this.dragged) != null ? _ref.y : void 0) == null) {
-      return;
-    }
-    if (this.dragged) {
-      this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
-    }
-    $(this.graph).find('.active').attr('class', '');
-    d3.select("body").style("cursor", "auto");
-    this.dragged = null;
-    Tactile.Tooltip.turnOffspotlight();
-    this.transitionSpeed = this.setSpeed;
-    return this.update();
   };
 
   return LineRenderer;

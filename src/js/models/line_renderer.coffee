@@ -15,28 +15,21 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .tension @tension
 
   initialize: ->
-    @afterDrag = @series.afterDrag || ->
-    @onDrag = @series.onDrag || ->
-    @dragged = null
-    @_bindMouseEvents() if @series.draggable
-    @power = Math.pow(10, @series.sigfigs)
-    @setSpeed = @transitionSpeed
-    @timesRendered = 0  # handy when we decide about the transition time
+    @dragger = new Dragger(renderer: @, render: @render) if @series.draggable
+    @timesRendered = 0
 
-  render: ->
+  render: =>
     super()
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
 
-    if @series.draggable
-      newCircs.on("mousedown.drag.#{@series.name}", @_datapointDrag)
-        .on("touchstart.drag.#{@series.name}", @_datapointDrag)
+    @dragger.makeHandlers(newCircs) if @dragger
 
     circ
       .transition()
-      .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
@@ -51,12 +44,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
     circ.exit().remove()
 
-    if @dragged?.y?
-      circ
-        .filter((d, i) => i is @dragged.i)
-        .each (d) =>
-          d.y = @dragged.y
-          d.dragged = true
+    @dragger.updateDraggedNode(circ)
 
     if @series.tooltip
       circ.tooltip (d, i) =>
@@ -67,54 +55,3 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
-    @timesRendered++
-
-  update: =>
-    @graph.update()
-    @render()
-
-  # Dragging logic below
-
-  _bindMouseEvents: =>
-    d3.select(@graph.element)
-      .on("mousemove.drag.#{@series.name}", @_mouseMove)
-      .on("touchmove.drag.#{@series.name}", @_mouseMove)
-      .on("mouseup.drag.#{@series.name}", @_mouseUp)
-      .on("touchend.drag.#{@series.name}", @_mouseUp)
-
-  _datapointDrag: (d, i) =>
-    # lock the tooltip on the dragged element
-    Tactile.Tooltip.spotlightOn(d)
-    @dragged = {d: d, i: i}
-    @update()
-
-  _mouseMove: =>
-    p = d3.svg.mouse(@graph.vis.node())
-    t = d3.event.changedTouches
-    if @dragged
-      # TODO: move this to tooltip
-      # TODO: update tooltip text continuously on dragging
-      elementRelativeposition = d3.mouse(@graph.element)
-      tip = d3.select(@graph.element).select('.tooltip')
-      tip.style("top", "#{elementRelativeposition[1]}px")
-
-      @transitionSpeed = 0
-      inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
-      value = Math.round(inverted * @power) / @power
-      @dragged.y = value
-      @onDrag(@dragged, @series, @graph);
-      @update()
-
-  _mouseUp: =>
-    return unless @dragged?.y?
-    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
-    $(@graph).find('.active').attr('class', '')
-    d3.select("body").style "cursor", "auto"
-    @dragged = null
-
-    # unlock the tooltip from the dragged element
-    Tactile.Tooltip.turnOffspotlight()
-
-    @transitionSpeed = @setSpeed
-    @update()
-    

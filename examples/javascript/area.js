@@ -28,6 +28,10 @@ var chart = new Tactile.Chart({
     {
       name: 'y',
       renderer: 'area',
+      draggable: true,
+      afterDrag: function (d, y, i, draggedSeries, graph) {
+        graph.data[i].y = y;
+      },
       color: "#c05020",
       dataTransform: function (d) {
         return {
