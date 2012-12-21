@@ -129,8 +129,12 @@ Tactile.Tooltip = Tooltip = (function() {
     var hoveredNode;
     hoveredNode = this.el.node().getBBox();
     if (this.el.node().tagName === 'circle') {
-      this.el.attr('data-stroke-color', this.el.attr('stroke'));
-      this.el.attr('data-fill-color', this.el.attr('fill'));
+      if (!this.el.attr('data-stroke-color')) {
+        this.el.attr('data-stroke-color', this.el.attr('stroke'));
+      }
+      if (!this.el.attr('data-fill-color')) {
+        this.el.attr('data-fill-color', this.el.attr('fill'));
+      }
       this.el.attr('fill', 'white');
       return this.el.attr('stroke', this.options.circleColor);
     } else {
@@ -1001,9 +1005,15 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
       return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
-    }).attr("fill", this.series.color).attr("stroke", function(d) {
+    }).attr("fill", function(d) {
       if (d.dragged) {
-        return 'orange';
+        return 'white';
+      } else {
+        return _this.series.color;
+      }
+    }).attr("stroke", function(d) {
+      if (d.dragged) {
+        return _this.series.color;
       } else {
         return 'white';
       }
