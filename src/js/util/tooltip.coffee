@@ -2,7 +2,6 @@
 # Copied from https://github.com/zmaril/d3-bootstrap-plugins
 #
 
-# TODO: Copy color from the @series.color
 Tactile.Tooltip = class Tooltip
   @_spotlightMode: false
 

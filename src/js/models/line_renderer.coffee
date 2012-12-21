@@ -31,8 +31,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     newCircs = circ.enter().append("svg:circle")
 
     if @series.draggable
-      newCircs.on("mousedown.drag", @_datapointDrag)
-        .on("touchstart.drag", @_datapointDrag)
+      newCircs.on("mousedown.drag.#{@series.name}", @_datapointDrag)
+        .on("touchstart.drag.#{@series.name}", @_datapointDrag)
 
     circ
       .transition()
@@ -77,10 +77,10 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
   _bindMouseEvents: =>
     d3.select(@graph.element)
-      .on("mousemove.drag", @_mouseMove)
-      .on("touchmove.drag", @_mouseMove)
-      .on("mouseup.drag", @_mouseUp)
-      .on("touchend.drag", @_mouseUp)
+      .on("mousemove.drag.#{@series.name}", @_mouseMove)
+      .on("touchmove.drag.#{@series.name}", @_mouseMove)
+      .on("mouseup.drag.#{@series.name}", @_mouseUp)
+      .on("touchend.drag.#{@series.name}", @_mouseUp)
 
   _datapointDrag: (d, i) =>
     # lock the tooltip on the dragged element

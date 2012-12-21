@@ -987,7 +987,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle");
     if (this.series.draggable) {
-      newCircs.on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
+      newCircs.on("mousedown.drag." + this.series.name, this._datapointDrag).on("touchstart.drag." + this.series.name, this._datapointDrag);
     }
     circ.transition().duration(this.timesRendered === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -1051,7 +1051,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype._bindMouseEvents = function() {
-    return d3.select(this.graph.element).on("mousemove.drag", this._mouseMove).on("touchmove.drag", this._mouseMove).on("mouseup.drag", this._mouseUp).on("touchend.drag", this._mouseUp);
+    return d3.select(this.graph.element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
   };
 
   LineRenderer.prototype._datapointDrag = function(d, i) {

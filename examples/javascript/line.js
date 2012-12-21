@@ -25,7 +25,7 @@ var chart = new Tactile.Chart({
   },
   series: [
     {
-      name: 'y',
+      name: 'enemies',
       renderer: 'line',
       sigfigs: 0,
       draggable: true,
@@ -44,10 +44,14 @@ var chart = new Tactile.Chart({
       }
     },
     {
-      name: 'z',
+      name: 'friends',
       renderer: 'line',
       sigfigs: 1,
       color: "#6060c0",
+      draggable: true,
+      afterDrag: function (d, y, i, draggedSeries, graph) {
+        graph.data[i].z = y;
+      },
       tooltip: function (d) {
         return d.y + " friends";
       },
