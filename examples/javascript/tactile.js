@@ -1064,10 +1064,13 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype._mouseMove = function() {
-    var inverted, p, t, value;
+    var elementRelativeposition, inverted, p, t, tip, value;
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
+      elementRelativeposition = d3.mouse(this.graph.element);
+      tip = d3.select(this.graph.element).select('.tooltip');
+      tip.style("top", "" + elementRelativeposition[1] + "px");
       this.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;

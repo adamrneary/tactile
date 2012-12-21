@@ -92,6 +92,11 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     p = d3.svg.mouse(@graph.vis.node())
     t = d3.event.changedTouches
     if @dragged
+      # TODO: move this to tooltip
+      elementRelativeposition = d3.mouse(@graph.element)
+      tip = d3.select(@graph.element).select('.tooltip')
+      tip.style("top", "#{elementRelativeposition[1]}px")
+
       @transitionSpeed = 0
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
       value = Math.round(inverted * @power) / @power

@@ -143,9 +143,3 @@ d3.selection.prototype.tooltip = (f) ->
   selection.each (d,i) ->
     options = f.apply(@, arguments)
     new Tactile.Tooltip(@, options)
-    
-#  TODO: can't bind this without breaking other mouse events
-#  options = f.apply(@el, arguments)  
-#  d3.select(options.graph.element).on "mousemove.drag", ->
-#    # find the tip (.annotation) here and update it's height according to the mouse y
-    
