@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-20
+/*! tactile - v0.0.1 - 2012-12-21
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -637,11 +637,7 @@ Tactile.RendererBase = RendererBase = (function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    if (this.transitionSpeed === 0) {
-      return line.attr("d", this.seriesPathFactory());
-    } else {
-      return line.transition(this.transitionSpeed).attr("d", this.seriesPathFactory());
-    }
+    return line.transition().duration(this.transitionSpeed).attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -976,7 +972,8 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       this._bindMouseEvents();
     }
     this.power = Math.pow(10, this.series.sigfigs);
-    return this.setSpeed = this.transitionSpeed;
+    this.setSpeed = this.transitionSpeed;
+    return this.timesRendered = 0;
   };
 
   LineRenderer.prototype.render = function() {
@@ -988,7 +985,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
     if (this.series.draggable) {
       newCircs.on("mousedown.drag", this._datapointDrag).on("touchstart.drag", this._datapointDrag);
     }
-    circ.attr("clip-path", "url(#scatter-clip)").attr("cx", function(d) {
+    circ.transition().duration(this.timesRendered === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1002,8 +999,8 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
           return _this.dotSize;
         }
       }
-    }).attr("class", function(d) {
-      return [_this.series.draggable ? "draggable-node" : void 0, (d.dragged ? "active" : null)].join(' ');
+    }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
+      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
     }).attr("fill", this.series.color).attr("stroke", function(d) {
       if (d.dragged) {
         return 'orange';
@@ -1024,7 +1021,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       });
     }
     if (this.series.tooltip) {
-      return circ.tooltip(function(d, i) {
+      circ.tooltip(function(d, i) {
         return {
           circleColor: _this.series.color,
           graph: _this.graph,
@@ -1035,6 +1032,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         };
       });
     }
+    return this.timesRendered++;
   };
 
   LineRenderer.prototype.update = function() {
@@ -1057,10 +1055,10 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
 
   LineRenderer.prototype._mouseMove = function() {
     var inverted, p, t, value;
-    this.transitionSpeed = 0;
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
+      this.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;
       this.dragged.y = value;

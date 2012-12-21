@@ -57,10 +57,7 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke-width", @strokeWidth)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
 
-    if @transitionSpeed is 0
-      line.attr("d", @seriesPathFactory())
-    else
-      line.transition(@transitionSpeed).attr("d", @seriesPathFactory())
+    line.transition().duration(@transitionSpeed).attr("d", @seriesPathFactory())
 
 
   # Creates separate g element for each series. This gives us better control over each paths/rets/circles
