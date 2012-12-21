@@ -1132,6 +1132,10 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     }
   };
 
+  AreaRenderer.prototype.initialize = function() {
+    return this.timesRendered = 0;
+  };
+
   AreaRenderer.prototype.seriesPathFactory = function() {
     var _this = this;
     return d3.svg.area().x(function(d) {
@@ -1153,11 +1157,16 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   };
 
   AreaRenderer.prototype.render = function() {
-    var _this = this;
+    var circ, stroke,
+      _this = this;
     AreaRenderer.__super__.render.call(this);
-    this.seriesCanvas().selectAll('path').style("opacity", 0.3);
-    this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]).enter().append("svg:path").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr("d", this.seriesStrokeFactory());
-    return this.seriesCanvas().selectAll('circle').data(this.series.stack).enter().append("svg:circle").attr("cx", function(d) {
+    this.seriesCanvas().select('path').style("opacity", 0.15);
+    stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
+    stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr('class', 'stroke');
+    stroke.transition().duration(this.transitionSpeed).attr("d", this.seriesStrokeFactory());
+    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)");
+    return circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
