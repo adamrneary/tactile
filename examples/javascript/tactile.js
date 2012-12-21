@@ -372,13 +372,14 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype._mouseMove = function() {
-    var elementRelativeposition, inverted, p, t, tip, value;
+    var elementRelativeposition, inverted, offsetTop, p, t, tip, value;
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
       elementRelativeposition = d3.mouse(this.graph.element);
       tip = d3.select(this.graph.element).select('.tooltip');
-      tip.style("top", "" + elementRelativeposition[1] + "px");
+      offsetTop = this.graph.padding.top + this.graph.margin.top;
+      tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
       this.renderer.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;
