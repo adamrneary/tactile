@@ -1070,13 +1070,13 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype.render = function() {
-    var circ, newCircs,
+    var circ, newCircs, _ref, _ref1,
       _this = this;
     LineRenderer.__super__.render.call(this);
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle");
-    if (this.dragger) {
-      this.dragger.makeHandlers(newCircs);
+    if ((_ref = this.dragger) != null) {
+      _ref.makeHandlers(newCircs);
     }
     circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -1111,7 +1111,9 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       circ.style("cursor", "ns-resize");
     }
     circ.exit().remove();
-    this.dragger.updateDraggedNode(circ);
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.updateDraggedNode(circ);
+    }
     if (this.series.tooltip) {
       return circ.tooltip(function(d, i) {
         return {
