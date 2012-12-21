@@ -331,7 +331,6 @@ Tactile.Dragger = Dragger = (function() {
     this.renderer = args.renderer;
     this.graph = this.renderer.graph;
     this.series = this.renderer.series;
-    this.render = args.render;
     this.afterDrag = this.series.afterDrag || function() {};
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = null;
@@ -363,7 +362,9 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype._datapointDrag = function(d, i) {
-    Tactile.Tooltip.spotlightOn(d);
+    if (this.series.tooltip) {
+      Tactile.Tooltip.spotlightOn(d);
+    }
     this.dragged = {
       d: d,
       i: i
@@ -376,10 +377,12 @@ Tactile.Dragger = Dragger = (function() {
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
-      elementRelativeposition = d3.mouse(this.graph.element);
-      tip = d3.select(this.graph.element).select('.tooltip');
-      offsetTop = this.graph.padding.top + this.graph.margin.top;
-      tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
+      if (this.series.tooltip) {
+        elementRelativeposition = d3.mouse(this.graph.element);
+        tip = d3.select(this.graph.element).select('.tooltip');
+        offsetTop = this.graph.padding.top + this.graph.margin.top;
+        tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
+      }
       this.renderer.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;
@@ -400,14 +403,16 @@ Tactile.Dragger = Dragger = (function() {
     $(this.graph).find('.active').attr('class', '');
     d3.select("body").style("cursor", "auto");
     this.dragged = null;
-    Tactile.Tooltip.turnOffspotlight();
+    if (this.series.tooltip) {
+      Tactile.Tooltip.turnOffspotlight();
+    }
     this.renderer.transitionSpeed = this.setSpeed;
     return this.update();
   };
 
   Dragger.prototype.update = function() {
     this.graph.update();
-    return this.render();
+    return this.renderer.render();
   };
 
   return Dragger;
@@ -1062,8 +1067,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
   LineRenderer.prototype.initialize = function() {
     if (this.series.draggable) {
       this.dragger = new Dragger({
-        renderer: this,
-        render: this.render
+        renderer: this
       });
     }
     return this.timesRendered = 0;
@@ -1077,6 +1081,9 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
     newCircs = circ.enter().append("svg:circle");
     if ((_ref = this.dragger) != null) {
       _ref.makeHandlers(newCircs);
+    }
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.updateDraggedNode(circ);
     }
     circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -1111,9 +1118,6 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       circ.style("cursor", "ns-resize");
     }
     circ.exit().remove();
-    if ((_ref1 = this.dragger) != null) {
-      _ref1.updateDraggedNode(circ);
-    }
     if (this.series.tooltip) {
       return circ.tooltip(function(d, i) {
         return {
@@ -1165,6 +1169,11 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   };
 
   AreaRenderer.prototype.initialize = function() {
+    if (this.series.draggable) {
+      this.dragger = new Dragger({
+        renderer: this
+      });
+    }
     return this.timesRendered = 0;
   };
 
@@ -1189,16 +1198,22 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   };
 
   AreaRenderer.prototype.render = function() {
-    var circ, stroke,
+    var circ, newCircs, stroke, _ref, _ref1,
       _this = this;
-    AreaRenderer.__super__.render.call(this);
     this.seriesCanvas().select('path').style("opacity", 0.15);
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr('class', 'stroke');
     stroke.transition().duration(this.transitionSpeed).attr("d", this.seriesStrokeFactory());
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
-    circ.enter().append("svg:circle").attr("clip-path", "url(#scatter-clip)");
-    return circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
+    newCircs = circ.enter().append("svg:circle");
+    if ((_ref = this.dragger) != null) {
+      _ref.makeHandlers(newCircs);
+    }
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.updateDraggedNode(circ);
+    }
+    AreaRenderer.__super__.render.call(this);
+    circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
@@ -1206,9 +1221,31 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
       if ("r" in d) {
         return d.r;
       } else {
-        return _this.dotSize;
+        if (d.dragged) {
+          return _this.dotSize + 1;
+        } else {
+          return _this.dotSize;
+        }
       }
-    }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
+    }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
+      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
+    }).attr("fill", function(d) {
+      if (d.dragged) {
+        return 'white';
+      } else {
+        return _this.series.color;
+      }
+    }).attr("stroke", function(d) {
+      if (d.dragged) {
+        return _this.series.color;
+      } else {
+        return 'white';
+      }
+    }).attr("stroke-width", '2');
+    if (this.series.draggable) {
+      circ.style("cursor", "ns-resize");
+    }
+    return circ.exit().remove();
   };
 
   return AreaRenderer;
@@ -1243,7 +1280,7 @@ Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
     });
-    circ.transition(200).attr("cx", function(d) {
+    circ.transition().duration(this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);

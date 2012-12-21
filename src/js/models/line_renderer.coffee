@@ -15,7 +15,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .tension @tension
 
   initialize: ->
-    @dragger = new Dragger(renderer: @, render: @render) if @series.draggable
+    @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
 
   render: =>
@@ -26,6 +26,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     newCircs = circ.enter().append("svg:circle")
 
     @dragger?.makeHandlers(newCircs)
+    @dragger?.updateDraggedNode(circ)
 
     circ
       .transition()
@@ -44,7 +45,6 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
     circ.exit().remove()
 
-    @dragger?.updateDraggedNode(circ)
 
     if @series.tooltip
       circ.tooltip (d, i) =>

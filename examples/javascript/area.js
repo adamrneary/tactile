@@ -16,7 +16,6 @@ var chart = new Tactile.Chart({
   element: $("#example_view")[0],
   width: 680,
   height: 400,
-  fill: true,
   data: data,
   axes: {
     x: {
@@ -26,8 +25,9 @@ var chart = new Tactile.Chart({
   },
   series: [
     {
-      name: 'y',
+      name: 'enemies',
       renderer: 'area',
+      sigfigs: 0,
       draggable: true,
       afterDrag: function (d, y, i, draggedSeries, graph) {
         graph.data[i].y = y;
@@ -39,12 +39,16 @@ var chart = new Tactile.Chart({
           y: d.y
         };
       }
-    }
-    ,
+    },
     {
-      name: 'z',
+      name: 'friends',
       renderer: 'area',
-      color: "#2374A6",
+      sigfigs: 1,
+      color: "#6060c0",
+      draggable: true,
+      afterDrag: function (d, y, i, draggedSeries, graph) {
+        graph.data[i].z = y;
+      },
       dataTransform: function (d) {
         return {
           x: d.x,

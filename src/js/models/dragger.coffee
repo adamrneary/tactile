@@ -4,7 +4,6 @@ Tactile.Dragger = class Dragger
     @renderer = args.renderer
     @graph = @renderer.graph
     @series = @renderer.series
-    @render = args.render
 
     @afterDrag = @series.afterDrag || ->
     @onDrag = @series.onDrag || ->
@@ -36,7 +35,7 @@ Tactile.Dragger = class Dragger
 
   _datapointDrag: (d, i) =>
     # lock the tooltip on the dragged element
-    Tactile.Tooltip.spotlightOn(d)
+    Tactile.Tooltip.spotlightOn(d) if @series.tooltip
     @dragged = {d: d, i: i}
     @update()
 
@@ -47,10 +46,11 @@ Tactile.Dragger = class Dragger
     if @dragged
       # TODO: !! move this to tooltip
       # TODO: !! update tooltip text continuously on dragging
-      elementRelativeposition = d3.mouse(@graph.element)
-      tip = d3.select(@graph.element).select('.tooltip')
-      offsetTop = @graph.padding.top + @graph.margin.top
-      tip.style("top", "#{@graph.y(@dragged.y) + offsetTop}px")
+      if @series.tooltip
+        elementRelativeposition = d3.mouse(@graph.element)
+        tip = d3.select(@graph.element).select('.tooltip')
+        offsetTop = @graph.padding.top + @graph.margin.top
+        tip.style("top", "#{@graph.y(@dragged.y) + offsetTop}px")
 
       @renderer.transitionSpeed = 0
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
@@ -67,11 +67,11 @@ Tactile.Dragger = class Dragger
     @dragged = null
 
     # unlock the tooltip from the dragged element
-    Tactile.Tooltip.turnOffspotlight()
+    Tactile.Tooltip.turnOffspotlight() if @series.tooltip
 
     @renderer.transitionSpeed = @setSpeed
     @update()
 
   update: =>
     @graph.update()
-    @render()
+    @renderer.render()

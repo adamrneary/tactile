@@ -15,7 +15,8 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
         .attr("cx", (d) => @graph.x d.x)
         .attr("cy", (d) => @graph.y d.y)
       
-    circ.transition(200)
+    circ.transition()
+      .duration(@transitionSpeed)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
