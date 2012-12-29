@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-27
+/*! tactile - v0.0.1 - 2012-12-29
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -335,7 +335,7 @@ Tactile.Dragger = Dragger = (function() {
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = null;
     this._bindMouseEvents();
-    this.power = Math.pow(10, this.series.sigfigs);
+    this.power = Math.pow(10, this.series.sigfigs || 1);
     this.setSpeed = this.renderer.transitionSpeed;
   }
 
@@ -352,6 +352,7 @@ Tactile.Dragger = Dragger = (function() {
     var _ref,
       _this = this;
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
+      console.log("updated", this.dragged);
       return nodes.filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
@@ -374,6 +375,7 @@ Tactile.Dragger = Dragger = (function() {
 
   Dragger.prototype._mouseMove = function() {
     var elementRelativeposition, inverted, offsetTop, p, t, tip, value;
+    console.log("mousemove");
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
@@ -386,6 +388,7 @@ Tactile.Dragger = Dragger = (function() {
       this.renderer.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;
+      console.log(this.power, inverted, value);
       this.dragged.y = value;
       this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
@@ -877,17 +880,37 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     unstack: true
   };
 
+  ColumnRenderer.prototype.initialize = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    if (this.series.draggable) {
+      this.dragger = new Dragger({
+        renderer: this
+      });
+    }
+    return this.gapSize = options.gapSize || this.gapSize;
+  };
+
   ColumnRenderer.prototype.render = function() {
-    var nodes,
+    var newNodes, nodes, _ref, _ref1,
       _this = this;
     if (this.series.disabled) {
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
+    newNodes = nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
+    if ((_ref = this.dragger) != null) {
+      _ref.makeHandlers(newNodes);
+    }
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.updateDraggedNode(newNodes);
+    }
     nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+    }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d) {
+      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
+    });
     return this.setupTooltips();
   };
 
@@ -912,13 +935,6 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     data = this.series.stack;
     count = data.length;
     return barWidth = this.graph.width / count * (1 - this.gapSize);
-  };
-
-  ColumnRenderer.prototype.initialize = function(options) {
-    if (options == null) {
-      options = {};
-    }
-    return this.gapSize = options.gapSize || this.gapSize;
   };
 
   ColumnRenderer.prototype.stackTransition = function() {
@@ -1449,6 +1465,8 @@ Tactile.Chart = Chart = (function() {
     max: void 0,
     transitionSpeed: 200,
     order: [],
+    height: 400,
+    width: 730,
     axes: {
       x: {
         dimension: "time",
@@ -1478,9 +1496,9 @@ Tactile.Chart = Chart = (function() {
     this.window = {};
     this.updateCallbacks = [];
     args = _.extend({}, this.mainDefaults, args);
-    args.series = _.map(args.series, function(d) {
+    args.series = (args.series ? _.map(args.series, function(d) {
       return _.extend({}, _this.seriesDefaults, d);
-    });
+    }) : []);
     args.axes = {
       x: {
         frame: (args != null ? (_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0 : void 0) || this.mainDefaults.axes.x.frame,
@@ -1531,7 +1549,6 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.discoverRange = function(renderer) {
     var barWidth, domain, rangeEnd, rangeStart, xframe, yframe;
-    console.log(renderer);
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {

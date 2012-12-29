@@ -7,14 +7,23 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     round: true
     unstack: true
 
+  
+  initialize: (options = {}) ->
+    @dragger = new Dragger(renderer: @) if @series.draggable    
+    @gapSize = options.gapSize || @gapSize
+  
   render: ->
     return if (@series.disabled)
 
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
+
+    newNodes = nodes.enter()
+        .append("svg:rect")
+        .attr("clip-path","url(#clip)")
+
+    @dragger?.makeHandlers(newNodes)
+    @dragger?.updateDraggedNode(newNodes)
     
-    nodes.enter()
-      .append("svg:rect")
-      .attr("clip-path","url(#clip)")
       
     nodes.attr("x", @_barX)
       .attr("y", @_barY)
@@ -26,6 +35,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("stroke", 'white')
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
+      .attr("class", (d) =>
+        [("draggable-node" if @series.draggable), (if d.dragged then "active" else null)].join(' '))
       
     @setupTooltips()
    
@@ -46,9 +57,6 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     
     count = data.length
     barWidth = @graph.width / count * (1 - @gapSize)
-
-  initialize: (options = {}) ->
-    @gapSize = options.gapSize || @gapSize
     
   stackTransition: ->
     @unstack = false

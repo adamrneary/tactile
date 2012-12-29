@@ -39,6 +39,7 @@ var chart = new Tactile.Chart({
     renderer: "column",
     round: false,
     color: "#c05020",
+    draggable: true,
     tooltip: function(d) {
       return d.y + " customers";
     },
@@ -54,6 +55,7 @@ var chart = new Tactile.Chart({
     renderer: "column",
     round: false,
     color: "#6060c0",
+    draggable: true,
     tooltip: function(d) {
       return d.y + " planned";
     },

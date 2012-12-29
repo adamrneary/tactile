@@ -54,4 +54,3 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         circleOnHover: true
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
-
