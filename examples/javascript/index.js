@@ -40,6 +40,10 @@ var noncartesian = [
   title: "Sankey (future)"
 },
 {
+  shortLink: "donut",
+  title: "Donut"
+},
+{
   shortLink: "multi-donut",
   title: "Multiple donuts (future)"
 }

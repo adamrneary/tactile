@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-21
+/*! tactile - v0.0.1 - 2012-12-27
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -1200,6 +1200,7 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   AreaRenderer.prototype.render = function() {
     var circ, newCircs, stroke, _ref, _ref1,
       _this = this;
+    AreaRenderer.__super__.render.call(this);
     this.seriesCanvas().select('path').style("opacity", 0.15);
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr('class', 'stroke');
@@ -1212,7 +1213,6 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     if ((_ref1 = this.dragger) != null) {
       _ref1.updateDraggedNode(circ);
     }
-    AreaRenderer.__super__.render.call(this);
     circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
@@ -1314,6 +1314,42 @@ Tactile.ScatterRenderer = ScatterRenderer = (function(_super) {
 
 })(RendererBase);
 
+var DonutRenderer,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.DonutRenderer = DonutRenderer = (function(_super) {
+
+  __extends(DonutRenderer, _super);
+
+  function DonutRenderer() {
+    return DonutRenderer.__super__.constructor.apply(this, arguments);
+  }
+
+  DonutRenderer.prototype.name = "donut";
+
+  DonutRenderer.prototype.specificDefaults = {
+    cartesian: false
+  };
+
+  DonutRenderer.prototype.initialize = function() {
+    this.donut = d3.layout.pie().value(function(d) {
+      return d.val;
+    });
+    return this.arc = d3.svg.arc().outerRadius(50).innerRadius(30);
+  };
+
+  DonutRenderer.prototype._total = function() {};
+
+  DonutRenderer.prototype.render = function() {
+    var donut;
+    return donut = this.seriesCanvas().selectAll(".arc").data(this.donut).enter().append("path").attr("class", "donut-arc").attr("d", this.arc).style("color", "black");
+  };
+
+  return DonutRenderer;
+
+})(RendererBase);
+
 var RangeSlider,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -1390,7 +1426,8 @@ Tactile.Chart = Chart = (function() {
     'column': ColumnRenderer,
     'line': LineRenderer,
     'area': AreaRenderer,
-    'scatter': ScatterRenderer
+    'scatter': ScatterRenderer,
+    'donut': DonutRenderer
   };
 
   Chart.prototype.mainDefaults = {
@@ -1425,12 +1462,6 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.seriesDefaults = {
-    xValue: function(d) {
-      return d.x;
-    },
-    yValue: function(d) {
-      return d.y;
-    },
     dataTransform: function(d) {
       return d;
     }
@@ -1500,6 +1531,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.discoverRange = function(renderer) {
     var barWidth, domain, rangeEnd, rangeStart, xframe, yframe;
+    console.log(renderer);
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {

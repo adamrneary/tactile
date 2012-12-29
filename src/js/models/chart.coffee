@@ -6,6 +6,7 @@ Tactile.Chart = class Chart
     'line': LineRenderer
     'area': AreaRenderer
     'scatter': ScatterRenderer
+    'donut': DonutRenderer
 
   mainDefaults:
     margin: {top: 20, right: 20, bottom: 20, left: 20}
@@ -26,8 +27,6 @@ Tactile.Chart = class Chart
 
 
   seriesDefaults:
-    xValue: (d) -> d.x
-    yValue: (d) -> d.y
     dataTransform: (d) -> d
 
   constructor: (args) ->
@@ -86,6 +85,7 @@ Tactile.Chart = class Chart
     @render()
 
   discoverRange: (renderer) =>
+    console.log(renderer)
     domain = renderer.domain()
     if renderer.cartesian
       # TODO: This needs way prettier implementation

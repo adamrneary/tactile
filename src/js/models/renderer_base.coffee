@@ -1,5 +1,4 @@
 Tactile.RendererBase = class RendererBase
-
   defaults:
     cartesian: true
     tension: 0.95

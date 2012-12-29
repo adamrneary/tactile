@@ -1,5 +1,3 @@
-var frameVal = [0, 4];
-
 var data = [
           {"label":"FL", "val":40000 },
           {"label":"CA", "val":30000 },
@@ -25,15 +23,3 @@ var chart = new Tactile.Chart({
 });
 
 chart.render();
-var sl = $("<div>").attr("id", "slider");
-$("#example_view").append(sl);
-sl.slider({
-  min: 0,
-  max: 8,
-  values: frameVal,
-  range: true,
-  slide: function (event, ui) {
-    chart.axes.x.frame = ui.values;
-    chart.render();
-  }
-});
