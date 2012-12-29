@@ -17,6 +17,8 @@ Tactile.Chart = class Chart
     max: undefined
     transitionSpeed: 200
     order: [] # multi renderer support
+    height: 400
+    width: 730
     axes:
       x:
         dimension: "time"
