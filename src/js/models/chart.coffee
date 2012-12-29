@@ -35,7 +35,7 @@ Tactile.Chart = class Chart
     @updateCallbacks = []
 
     args = _.extend({}, @mainDefaults, args)
-    args.series = _.map(args.series, (d) => _.extend({}, @seriesDefaults, d))
+    args.series = (if args.series then _.map(args.series, (d) => _.extend({}, @seriesDefaults, d)) else [])
     #TODO: Deep copy issuses abound here. 
     args.axes =
         x:
@@ -59,7 +59,7 @@ Tactile.Chart = class Chart
     @_setupCanvas()
 
     @initRenderers(args)
-
+    
     # TODO:
     # it should be possible to pass options to the axes
     # so far they were 
@@ -85,7 +85,6 @@ Tactile.Chart = class Chart
     @render()
 
   discoverRange: (renderer) =>
-    console.log(renderer)
     domain = renderer.domain()
     if renderer.cartesian
       # TODO: This needs way prettier implementation
