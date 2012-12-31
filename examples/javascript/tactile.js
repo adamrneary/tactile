@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2012-12-29
+/*! tactile - v0.0.1 - 2012-12-31
 * https://github.com/activecell/tactile
 * Copyright (c) 2012 Activecell; Licensed  */
 
@@ -352,8 +352,8 @@ Tactile.Dragger = Dragger = (function() {
     var _ref,
       _this = this;
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
-      console.log("updated", this.dragged);
       return nodes.filter(function(d, i) {
+        console.log(i, _this.dragged.i);
         return i === _this.dragged.i;
       }).each(function(d) {
         d.y = _this.dragged.y;
@@ -375,7 +375,6 @@ Tactile.Dragger = Dragger = (function() {
 
   Dragger.prototype._mouseMove = function() {
     var elementRelativeposition, inverted, offsetTop, p, t, tip, value;
-    console.log("mousemove");
     p = d3.svg.mouse(this.graph.vis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
@@ -388,7 +387,6 @@ Tactile.Dragger = Dragger = (function() {
       this.renderer.transitionSpeed = 0;
       inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
       value = Math.round(inverted * this.power) / this.power;
-      console.log(this.power, inverted, value);
       this.dragged.y = value;
       this.onDrag(this.dragged, this.series, this.graph);
       return this.update();
@@ -904,7 +902,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       _ref.makeHandlers(newNodes);
     }
     if ((_ref1 = this.dragger) != null) {
-      _ref1.updateDraggedNode(newNodes);
+      _ref1.updateDraggedNode(nodes);
     }
     nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));

@@ -22,8 +22,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         .attr("clip-path","url(#clip)")
 
     @dragger?.makeHandlers(newNodes)
-    @dragger?.updateDraggedNode(newNodes)
-    
+    @dragger?.updateDraggedNode(nodes)    
       
     nodes.attr("x", @_barX)
       .attr("y", @_barY)
@@ -37,6 +36,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("ry", @_edgeRatio)
       .attr("class", (d) =>
         [("draggable-node" if @series.draggable), (if d.dragged then "active" else null)].join(' '))
+
       
     @setupTooltips()
    

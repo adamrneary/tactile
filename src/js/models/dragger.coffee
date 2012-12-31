@@ -27,9 +27,8 @@ Tactile.Dragger = class Dragger
 
   updateDraggedNode: (nodes) ->
     if @dragged?.y?
-      console.log("updated",@dragged)
       nodes
-        .filter((d, i) => i is @dragged.i)
+        .filter((d, i) => console.log(i,@dragged.i); i is @dragged.i)
         .each (d) =>
           d.y = @dragged.y
           d.dragged = true
@@ -41,7 +40,6 @@ Tactile.Dragger = class Dragger
     @update()
 
   _mouseMove: =>
-    console.log("mousemove")
     p = d3.svg.mouse(@graph.vis.node())
     t = d3.event.changedTouches
 
@@ -57,7 +55,6 @@ Tactile.Dragger = class Dragger
       @renderer.transitionSpeed = 0
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
       value = Math.round(inverted * @power) / @power
-      console.log(@power,inverted,value)
       @dragged.y = value
       @onDrag(@dragged, @series, @graph);
       @update()
