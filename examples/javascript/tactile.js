@@ -422,7 +422,7 @@ Tactile.Dragger = Dragger = (function() {
       _this = this;
     renderer = this.renderer;
     circs = this.renderer.seriesCanvas().selectAll('circle.draggable-node').data(this.series.stack);
-    newCircs = circs.enter().append("svg:circle");
+    newCircs = circs.enter().append("svg:circle").style('display', 'none');
     circs.attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
@@ -445,6 +445,7 @@ Tactile.Dragger = Dragger = (function() {
       return "draggable-node-" + i + "-" + d.x;
     }).style("cursor", "ns-resize");
     nodes.on('mouseover.show-dragging-circle', function(d, i) {
+      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
       return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
     });
     return renderer.seriesCanvas().selectAll('.draggable-node');
