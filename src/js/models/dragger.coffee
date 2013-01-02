@@ -86,7 +86,8 @@ Tactile.Dragger = class Dragger
     circs = @renderer.seriesCanvas().selectAll('circle.draggable-node')
       .data(@series.stack)
 
-    newCircs = circs.enter().append("svg:circle").style('display', 'none')
+    # append the circles but make them invisible
+    circs.enter().append("svg:circle").style('display', 'none')
 
     circs
       .attr("cx", (d) => @graph.x d.x)
@@ -100,6 +101,7 @@ Tactile.Dragger = class Dragger
       .attr('id', (d, i) -> "draggable-node-#{i}-#{d.x}")
       .style("cursor", "ns-resize")
 
+    # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i) ->
       renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
       renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}").style('display', '')
