@@ -27,11 +27,6 @@ var chart = new Tactile.Chart({
     {
       name: 'enemies',
       renderer: 'line',
-      sigfigs: 0,
-      draggable: true,
-      afterDrag: function (d, y, i, draggedSeries, graph) {
-        graph.data[i].y = y;
-      },
       color: "#c05020",
       tooltip: function (d) {
         return d.y + " enemies";
