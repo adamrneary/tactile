@@ -135,8 +135,8 @@ Tactile.Tooltip = Tooltip = (function() {
       if (!this.el.attr('data-fill-color')) {
         this.el.attr('data-fill-color', this.el.attr('fill'));
       }
-      this.el.attr('fill', 'white');
-      return this.el.attr('stroke', this.options.circleColor);
+      this.el.attr('fill', this.el.attr('data-stroke-color'));
+      return this.el.attr('stroke', this.el.attr('data-fill-color'));
     } else {
       return d3.select(this.tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 4).attr('class', 'tooltip-circle').attr("stroke", this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
     }
@@ -447,6 +447,14 @@ Tactile.Dragger = Dragger = (function() {
     nodes.on('mouseover.show-dragging-circle', function(d, i) {
       renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
       return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
+    });
+    circs.tooltip(function(d, i) {
+      return {
+        graph: _this.graph,
+        text: _this.series.tooltip(d),
+        circleOnHover: true,
+        gravity: "right"
+      };
     });
     return renderer.seriesCanvas().selectAll('.draggable-node');
   };

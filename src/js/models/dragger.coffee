@@ -106,4 +106,10 @@ Tactile.Dragger = class Dragger
       renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
       renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}").style('display', '')
 
+    circs.tooltip (d, i) =>
+      graph: @graph
+      text: @series.tooltip(d)
+      circleOnHover: true
+      gravity: "right"
+
     renderer.seriesCanvas().selectAll('.draggable-node')

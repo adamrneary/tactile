@@ -37,6 +37,7 @@ var chart = new Tactile.Chart({
     {
       name: 'reach actual',
       renderer: "column",
+      sigfigs: 0,
       round: false,
       color: "#c05020",
       draggable: true,

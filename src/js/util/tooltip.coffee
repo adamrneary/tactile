@@ -124,8 +124,8 @@ Tactile.Tooltip = class Tooltip
     if @el.node().tagName == 'circle'
       @el.attr('data-stroke-color' , @el.attr('stroke')) unless @el.attr('data-stroke-color')
       @el.attr('data-fill-color', @el.attr('fill')) unless @el.attr('data-fill-color')
-      @el.attr('fill', 'white')
-      @el.attr('stroke', @options.circleColor)
+      @el.attr('fill', @el.attr('data-stroke-color'))
+      @el.attr('stroke', @el.attr('data-fill-color'))
     else
       d3.select(@tooltipCircleContainer)
         .append("svg:circle")
