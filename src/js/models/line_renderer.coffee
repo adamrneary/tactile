@@ -26,7 +26,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
     newCircs = circ.enter().append("svg:circle")
 
     @dragger?.makeHandlers(newCircs)
-    @dragger?.updateDraggedNode(circ)
+    @dragger?.updateDraggedNode()
 
     circ
       .transition()

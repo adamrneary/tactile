@@ -131,7 +131,7 @@ Tactile.Tooltip = class Tooltip
         .append("svg:circle")
         .attr("cx", hoveredNode.x + hoveredNode.width / 2)
         .attr("cy", hoveredNode.y)
-        .attr("r", 3)
+        .attr("r", 4)
         .attr('class', 'tooltip-circle')
         .attr("stroke", @options.circleColor || 'orange')
         .attr("fill", 'white')

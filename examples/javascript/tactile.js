@@ -138,7 +138,7 @@ Tactile.Tooltip = Tooltip = (function() {
       this.el.attr('fill', 'white');
       return this.el.attr('stroke', this.options.circleColor);
     } else {
-      return d3.select(this.tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 3).attr('class', 'tooltip-circle').attr("stroke", this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
+      return d3.select(this.tooltipCircleContainer).append("svg:circle").attr("cx", hoveredNode.x + hoveredNode.width / 2).attr("cy", hoveredNode.y).attr("r", 4).attr('class', 'tooltip-circle').attr("stroke", this.options.circleColor || 'orange').attr("fill", 'white').attr("stroke-width", '1');
     }
   };
 
@@ -331,6 +331,7 @@ Tactile.Dragger = Dragger = (function() {
     this.renderer = args.renderer;
     this.graph = this.renderer.graph;
     this.series = this.renderer.series;
+    this.drawCircles = args.circles || false;
     this.afterDrag = this.series.afterDrag || function() {};
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = null;
@@ -344,15 +345,17 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype.makeHandlers = function(nodes) {
-    nodes = nodes;
+    if (this.drawCircles) {
+      nodes = this._appendCircles(nodes);
+    }
     return nodes.on("mousedown.drag." + this.series.name, this._datapointDrag).on("touchstart.drag." + this.series.name, this._datapointDrag);
   };
 
-  Dragger.prototype.updateDraggedNode = function(nodes) {
+  Dragger.prototype.updateDraggedNode = function() {
     var _ref,
       _this = this;
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
-      return nodes.filter(function(d, i) {
+      return this.renderer.seriesCanvas().selectAll('.draggable-node').filter(function(d, i) {
         return i === _this.dragged.i;
       }).each(function(d) {
         d.y = _this.dragged.y;
@@ -412,6 +415,39 @@ Tactile.Dragger = Dragger = (function() {
 
   Dragger.prototype.update = function() {
     return this.renderer.render();
+  };
+
+  Dragger.prototype._appendCircles = function(nodes) {
+    var circs, newCircs, renderer,
+      _this = this;
+    renderer = this.renderer;
+    circs = this.renderer.seriesCanvas().selectAll('circle.draggable-node').data(this.series.stack);
+    newCircs = circs.enter().append("svg:circle");
+    circs.attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    }).attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
+      return ["draggable-node", (d.dragged ? "active" : void 0)].join(' ');
+    }).attr("fill", function(d) {
+      if (d.dragged) {
+        return 'white';
+      } else {
+        return _this.series.color;
+      }
+    }).attr("stroke", function(d) {
+      if (d.dragged) {
+        return _this.series.color;
+      } else {
+        return 'white';
+      }
+    }).attr("stroke-width", '2').attr('id', function(d, i) {
+      return "draggable-node-" + i + "-" + d.x;
+    }).style("cursor", "ns-resize");
+    nodes.on('mouseover.show-dragging-circle', function(d, i) {
+      return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
+    });
+    return renderer.seriesCanvas().selectAll('.draggable-node');
   };
 
   return Dragger;
@@ -882,31 +918,32 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     }
     if (this.series.draggable) {
       this.dragger = new Dragger({
-        renderer: this
+        renderer: this,
+        circles: true
       });
     }
     return this.gapSize = options.gapSize || this.gapSize;
   };
 
   ColumnRenderer.prototype.render = function() {
-    var newNodes, nodes, _ref, _ref1,
+    var nodes, _ref, _ref1,
       _this = this;
     if (this.series.disabled) {
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-    newNodes = nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
+    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
     if ((_ref = this.dragger) != null) {
-      _ref.makeHandlers(newNodes);
+      _ref.updateDraggedNode(nodes);
+    }
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.makeHandlers(nodes);
     }
     nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d) {
-      return ["bar", (!_this.series.color ? "colorless" : void 0), (_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
+      return ["bar", (!_this.series.color ? "colorless" : void 0)].join(' ');
     });
-    if ((_ref1 = this.dragger) != null) {
-      _ref1.updateDraggedNode(nodes);
-    }
     return this.setupTooltips();
   };
 
@@ -918,7 +955,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
           circleColor: _this.series.color,
           graph: _this.graph,
           text: _this.series.tooltip(d),
-          circleOnHover: true,
+          circleOnHover: (_this.series.draggable ? false : true),
           tooltipCircleContainer: _this.graph.vis.node(),
           gravity: "right"
         };
@@ -1095,7 +1132,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
       _ref.makeHandlers(newCircs);
     }
     if ((_ref1 = this.dragger) != null) {
-      _ref1.updateDraggedNode(circ);
+      _ref1.updateDraggedNode();
     }
     circ.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);

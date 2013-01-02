@@ -4,6 +4,7 @@ Tactile.Dragger = class Dragger
     @renderer = args.renderer
     @graph = @renderer.graph
     @series = @renderer.series
+    @drawCircles = args.circles or false
 
     @afterDrag = @series.afterDrag || ->
     @onDrag = @series.onDrag || ->
@@ -20,14 +21,17 @@ Tactile.Dragger = class Dragger
       .on("mouseup.drag.#{@series.name}", @_mouseUp)
       .on("touchend.drag.#{@series.name}", @_mouseUp)
 
+  # bind dragging events to the passed nodes
   makeHandlers: (nodes) ->
-    nodes = nodes
+    nodes = @_appendCircles(nodes) if @drawCircles
+
     nodes.on("mousedown.drag.#{@series.name}", @_datapointDrag)
       .on("touchstart.drag.#{@series.name}", @_datapointDrag)
 
-  updateDraggedNode: (nodes) ->
+  # update value of a draggable node so it's y-value will reflect currently dragged position
+  updateDraggedNode: () ->
     if @dragged?.y?
-      nodes
+      @renderer.seriesCanvas().selectAll('.draggable-node')
         .filter((d, i) => i is @dragged.i)
         .each (d) =>
           d.y = @dragged.y
@@ -56,7 +60,7 @@ Tactile.Dragger = class Dragger
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
       value = Math.round(inverted * @power) / @power
       @dragged.y = value
-      @onDrag(@dragged, @series, @graph);
+      @onDrag(@dragged, @series, @graph)
       @update()
 
   _mouseUp: =>
@@ -74,3 +78,32 @@ Tactile.Dragger = class Dragger
 
   update: =>
     @renderer.render()
+
+
+  _appendCircles: (nodes) ->
+    renderer = @renderer
+
+    circs = @renderer.seriesCanvas().selectAll('circle.draggable-node')
+      .data(@series.stack)
+
+    newCircs = circs.enter().append("svg:circle")
+
+    circs
+      .attr("cx", (d) => @graph.x d.x)
+      .attr("cy", (d) => @graph.y d.y)
+      .attr("r", 4)
+      .attr("clip-path", "url(#scatter-clip)")
+      .attr("class", (d) => ["draggable-node", ("active" if d.dragged)].join(' '))
+      .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
+      .attr("stroke-width", '2')
+      .attr('id', (d, i) -> "draggable-node-#{i}-#{d.x}")
+      .style("cursor", "ns-resize")
+#      .style('display', 'none')
+
+
+    nodes.on 'mouseover.show-dragging-circle', (d, i) ->
+#      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
+      renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}").style('display', '')
+
+    renderer.seriesCanvas().selectAll('.draggable-node')
