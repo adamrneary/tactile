@@ -789,7 +789,7 @@ Tactile.RendererBase = RendererBase = (function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    return line.transition().duration(this.transitionSpeed).attr("d", this.seriesPathFactory());
+    return line.attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
