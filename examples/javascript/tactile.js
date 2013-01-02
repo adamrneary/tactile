@@ -1,6 +1,6 @@
-/*! tactile - v0.0.1 - 2012-12-31
+/*! tactile - v0.0.1 - 2013-01-02
 * https://github.com/activecell/tactile
-* Copyright (c) 2012 Activecell; Licensed  */
+* Copyright (c) 2013 Activecell; Licensed  */
 
 (function (){
 var Tactile = window.Tactile || {};
@@ -1341,24 +1341,6 @@ Tactile.DonutRenderer = DonutRenderer = (function(_super) {
   }
 
   DonutRenderer.prototype.name = "donut";
-
-  DonutRenderer.prototype.specificDefaults = {
-    cartesian: false
-  };
-
-  DonutRenderer.prototype.initialize = function() {
-    this.donut = d3.layout.pie().value(function(d) {
-      return d.val;
-    });
-    return this.arc = d3.svg.arc().outerRadius(50).innerRadius(30);
-  };
-
-  DonutRenderer.prototype._total = function() {};
-
-  DonutRenderer.prototype.render = function() {
-    var donut;
-    return donut = this.seriesCanvas().selectAll(".arc").data(this.donut).enter().append("path").attr("class", "donut-arc").attr("d", this.arc).style("color", "black");
-  };
 
   return DonutRenderer;
 
