@@ -83,7 +83,6 @@ Tactile.Chart = class Chart
       callback()
 
   update: ->
-    # TODO: add possibilty so the update is animated
     @render()
 
   discoverRange: (renderer) =>

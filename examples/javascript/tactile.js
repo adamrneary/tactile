@@ -353,7 +353,6 @@ Tactile.Dragger = Dragger = (function() {
       _this = this;
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
       return nodes.filter(function(d, i) {
-        console.log(i, _this.dragged.i);
         return i === _this.dragged.i;
       }).each(function(d) {
         d.y = _this.dragged.y;
@@ -412,7 +411,6 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype.update = function() {
-    this.graph.update();
     return this.renderer.render();
   };
 
@@ -901,14 +899,14 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     if ((_ref = this.dragger) != null) {
       _ref.makeHandlers(newNodes);
     }
+    nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
+      return _this.graph.y.magnitude(Math.abs(d.y));
+    }).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d) {
+      return ["bar", (!_this.series.color ? "colorless" : void 0), (_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
+    });
     if ((_ref1 = this.dragger) != null) {
       _ref1.updateDraggedNode(nodes);
     }
-    nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
-      return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("transform", this._transformMatrix).attr("class", "bar " + (this.series.color ? '' : 'colorless')).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d) {
-      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
-    });
     return this.setupTooltips();
   };
 
@@ -1114,7 +1112,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         }
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
-      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : null)].join(' ');
+      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
     }).attr("fill", function(d) {
       if (d.dragged) {
         return 'white';

@@ -22,22 +22,24 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         .attr("clip-path","url(#clip)")
 
     @dragger?.makeHandlers(newNodes)
-    @dragger?.updateDraggedNode(nodes)    
-      
+
     nodes.attr("x", @_barX)
       .attr("y", @_barY)
       .attr("width", @_seriesBarWidth())
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("transform", @_transformMatrix)
-      .attr("class", "bar #{if @series.color then '' else 'colorless'}")
       .attr("fill", @series.color)
       .attr("stroke", 'white')
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       .attr("class", (d) =>
-        [("draggable-node" if @series.draggable), (if d.dragged then "active" else null)].join(' '))
+        ["bar",
+          ("colorless" unless @series.color),
+          ("draggable-node" if @series.draggable),
+          ("active" if d.dragged)].join(' '))
 
-      
+
+    @dragger?.updateDraggedNode(nodes)
     @setupTooltips()
    
    

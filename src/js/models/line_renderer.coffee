@@ -36,7 +36,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d) =>
-        [("draggable-node" if @series.draggable), (if d.dragged then "active" else null)].join(' '))
+        [("draggable-node" if @series.draggable), ("active" if d.dragged)].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
       .attr("stroke-width", '2')

@@ -28,7 +28,7 @@ Tactile.Dragger = class Dragger
   updateDraggedNode: (nodes) ->
     if @dragged?.y?
       nodes
-        .filter((d, i) => console.log(i,@dragged.i); i is @dragged.i)
+        .filter((d, i) => i is @dragged.i)
         .each (d) =>
           d.y = @dragged.y
           d.dragged = true
@@ -73,5 +73,4 @@ Tactile.Dragger = class Dragger
     @update()
 
   update: =>
-    @graph.update()
     @renderer.render()
