@@ -13,7 +13,7 @@
 
 /* line 14, ../src/scss/charts.scss */
 #chart-container {
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   margin-top: 20px;
   position: relative;
 }
@@ -24,8 +24,8 @@
   right: 0;
   padding: 4px;
   z-index: 1;
-  border-left: 1px solid #E6E6E6;
-  border-bottom: 1px solid #E6E6E6;
+  border-left: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
   background: #fff;
 }
 /* line 28, ../src/scss/charts.scss */
@@ -349,7 +349,7 @@
 .chart-legend .legend-item .color {
   width: 14px;
   height: 14px;
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   margin-right: 8px;
 }
 /* line 342, ../src/scss/charts.scss */
@@ -559,7 +559,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-size: 27px;
   fill: #3e3739;
   text-anchor: end;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -567,7 +567,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -616,7 +616,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-size: 27px;
   fill: #3e3739;
   text-anchor: middle;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase;
 }

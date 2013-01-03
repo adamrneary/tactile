@@ -423,11 +423,7 @@ Tactile.Dragger = Dragger = (function() {
     renderer = this.renderer;
     circs = this.renderer.seriesCanvas().selectAll('circle.draggable-node').data(this.series.stack);
     circs.enter().append("svg:circle").style('display', 'none');
-    circs.attr("cx", function(d) {
-      return _this.graph.x(d.x);
-    }).attr("cy", function(d) {
-      return _this.graph.y(d.y);
-    }).attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
+    circs.attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
       return ["draggable-node", (d.dragged ? "active" : void 0)].join(' ');
     }).attr("fill", function(d) {
       if (d.dragged) {
@@ -444,6 +440,11 @@ Tactile.Dragger = Dragger = (function() {
     }).attr("stroke-width", '2').attr('id', function(d, i) {
       return "draggable-node-" + i + "-" + d.x;
     }).style("cursor", "ns-resize");
+    circs.transition().duration(this.renderer.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    });
     nodes.on('mouseover.show-dragging-circle', function(d, i) {
       renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
       return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
@@ -932,7 +933,8 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
         circles: true
       });
     }
-    return this.gapSize = options.gapSize || this.gapSize;
+    this.gapSize = options.gapSize || this.gapSize;
+    return this.timesRendered = 0;
   };
 
   ColumnRenderer.prototype.render = function() {
@@ -944,12 +946,12 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
     if ((_ref = this.dragger) != null) {
-      _ref.updateDraggedNode(nodes);
+      _ref.makeHandlers(nodes);
     }
     if ((_ref1 = this.dragger) != null) {
-      _ref1.makeHandlers(nodes);
+      _ref1.updateDraggedNode();
     }
-    nodes.attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
+    nodes.transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("x", this._barX).attr("y", this._barY).attr("width", this._seriesBarWidth()).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d) {
       return ["bar", (!_this.series.color ? "colorless" : void 0)].join(' ');
@@ -989,11 +991,9 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect");
     slideTransition = function() {
-      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("width", _this._seriesBarWidth()).attr("x", _this._barX);
+      return _this.seriesCanvas().selectAll("rect").transition().duration(_this.timesRendered++ === 0 ? 0 : _this.transitionSpeed).attr("width", _this._seriesBarWidth()).attr("x", _this._barX);
     };
-    this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
-      return (i % count) * 20;
-    }).attr("y", this._barY).attr("height", function(d) {
+    this.seriesCanvas().selectAll("rect").transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).each('end', slideTransition);
     this.setupTooltips();
@@ -1009,13 +1009,11 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     this.graph.discoverRange(this);
     count = this.series.stack.length;
     growTransition = function() {
-      return _this.seriesCanvas().selectAll("rect").transition().duration(500).attr("height", function(d) {
+      return _this.seriesCanvas().selectAll("rect").transition().duration(_this.timesRendered++ === 0 ? 0 : _this.transitionSpeed).attr("height", function(d) {
         return _this.graph.y.magnitude(Math.abs(d.y));
       }).attr("y", _this._barY);
     };
-    this.seriesCanvas().selectAll("rect").transition().duration(500).delay(function(d, i) {
-      return (i % count) * 20;
-    }).attr("x", this._barX).attr("width", this._seriesBarWidth()).each('end', growTransition);
+    this.seriesCanvas().selectAll("rect").transition().duration(this.timesRendered++ === 0 ? 0 : this.transitionSpeed).attr("x", this._barX).attr("width", this._seriesBarWidth()).each('end', growTransition);
     this.setupTooltips();
     return this.graph.updateCallbacks.forEach(function(callback) {
       return callback();
