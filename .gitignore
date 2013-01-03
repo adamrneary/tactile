@@ -7,3 +7,4 @@ node_modules/
 .sass-cache/
 .idea/
 examples/css/charts.css
+examples/javascript/tactile.js
