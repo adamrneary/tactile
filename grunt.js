@@ -2,7 +2,7 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-coffee'); // http://github.com/avalade/grunt-coffee
   grunt.loadNpmTasks('grunt-compass'); // https://github.com/sindresorhus/grunt-sass
-  grunt.loadNpmTasks('grunt-contrib-copy'); // https://github.com/sindresorhus/grunt-sass
+  grunt.loadNpmTasks('grunt-contrib-copy'); // https://github.com/gruntjs/grunt-contrib-copy
   // Project configuration.
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -30,7 +30,8 @@ module.exports = function(grunt) {
         dist:{
             files:{
                 "examples/javascript/":"dist/tactile.js",
-                "examples/css/":"dist/charts.css"
+                "examples/css/":"dist/charts.css",
+                "dist/":"src/scss/charts.scss"
             }
         }        
     },
