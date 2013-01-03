@@ -18,8 +18,8 @@ Tactile.Chart = class Chart
     min: undefined
     max: undefined
     transitionSpeed: 200
-    height: 400
-    width: 730
+    defaultHeight: 400
+    defaultWidth: 730
     axes:
       x:
         dimension: "time"
@@ -52,7 +52,7 @@ Tactile.Chart = class Chart
     _.each args, (val, key) =>
       @[key] = val
 
-    @setSize(width: args.width, height: args.height)
+    @setSize(width: args.width or @defaultWidth, height: args.height or @defaultHeight)
 
     @_setupCanvas()
 
@@ -108,9 +108,9 @@ Tactile.Chart = class Chart
       # So if we have renderers including bar chart points are 
       # rendered in the center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
-        barWidth = @width / renderer.series.stack.length / 2
+        barWidth = @width() / renderer.series.stack.length / 2
         rangeStart = barWidth
-        rangeEnd = @width - barWidth
+        rangeEnd = @width() - barWidth
 
       xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
         (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
@@ -118,11 +118,11 @@ Tactile.Chart = class Chart
         (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
 
 
-      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width])
-      @y = d3.scale.linear().domain(yframe).range([@height, 0])
+      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width()])
+      @y = d3.scale.linear().domain(yframe).range([@height(), 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
-        .range([0, @height])
+        .range([0, @height()])
 
   findAxis: (axis) ->
     return unless @_allRenderersCartesian()
@@ -156,9 +156,7 @@ Tactile.Chart = class Chart
 
     @stackedData = stackedData
 
-  setSize: (args) ->
-    args = args || {}
-
+  setSize: (args = {}) ->
     elWidth = $(@element).width()
     elHeight = $(@element).height()
 
@@ -167,10 +165,7 @@ Tactile.Chart = class Chart
 
     @innerWidth = @outerWidth - @margin.left - @margin.right
     @innerHeight = @outerHeight - @margin.top - @margin.bottom
-    @width = @innerWidth - @padding.left - @padding.right
-    @height = @innerHeight - @padding.top - @padding.bottom
-
-    @vis?.attr('width', @width).attr('height', @height)
+    @vis?.attr('width', @width()).attr('height', @height())
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
@@ -187,6 +182,21 @@ Tactile.Chart = class Chart
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
+
+  height: (val) ->
+    return (@innerHeight - @padding.top - @padding.bottom) or @defaultHeight unless val
+    @setSize(width: @outerWidth, height: val)
+    @
+
+  width: (val) ->
+    return (@innerWidth - @padding.left - @padding.right) or @defaultWidth unless val
+    @setSize(width: val, height: @outerHeight)
+    @
+
+#  data: (val) ->
+#    return @data unless val
+#    @data = val
+#    @
 
   # appends all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
@@ -216,9 +226,9 @@ Tactile.Chart = class Chart
     @vis.append("clipPath")
       .attr("id", "clip")
       .append("rect")
-      .attr("width", @width)
+      .attr("width", @width())
     # increase height to provide room vertically for line thickness
-      .attr("height", @height + 4)
+      .attr("height", @height() + 4)
     # translate to adjust for increased height (split the difference)
       .attr("transform", "translate(0,-2)")
 
@@ -227,9 +237,9 @@ Tactile.Chart = class Chart
       .attr("id", "scatter-clip")
       .append("rect")
     # increase width to provide room vertically for circle radius
-      .attr("width", @width + 12)
+      .attr("width", @width() + 12)
     # increase height to provide room vertically for circle radius
-      .attr("height", @height + 12)
+      .attr("height", @height() + 12)
     # translate to adjust for increased width and height
       .attr("transform", "translate(-6,-6)")
 

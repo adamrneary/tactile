@@ -26,18 +26,13 @@ var data = [
 //    }
 //  });
 
-var chart = new Tactile.Chart({
-  element: $("#example_view")[0],
-  width: 680,
-  height: 400,
-  data: data,
-  axes: {
-    x: {
-      dimension: "time",
-      frame: frameVal
-    }
-  }});
-
+var chart = new Tactile.Chart({data:data, element: $("#example_view")[0]})
+//  .data(data)
+//  .axes({
+//  x: {
+//    dimension: "time",
+//    frame: frameVal
+//  }});
 
 chart.addSeries(
   {

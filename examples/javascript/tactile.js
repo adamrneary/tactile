@@ -1489,8 +1489,8 @@ Tactile.Chart = Chart = (function() {
     min: void 0,
     max: void 0,
     transitionSpeed: 200,
-    height: 400,
-    width: 730,
+    defaultHeight: 400,
+    defaultWidth: 730,
     axes: {
       x: {
         dimension: "time",
@@ -1535,8 +1535,8 @@ Tactile.Chart = Chart = (function() {
       return _this[key] = val;
     });
     this.setSize({
-      width: args.width,
-      height: args.height
+      width: args.width || this.defaultWidth,
+      height: args.height || this.defaultHeight
     });
     this._setupCanvas();
     this.addSeries(args.series, {
@@ -1600,15 +1600,15 @@ Tactile.Chart = Chart = (function() {
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {
-        barWidth = this.width / renderer.series.stack.length / 2;
+        barWidth = this.width() / renderer.series.stack.length / 2;
         rangeStart = barWidth;
-        rangeEnd = this.width - barWidth;
+        rangeEnd = this.width() - barWidth;
       }
       xframe = [(this.axes.x.frame[0] ? this.axes.x.frame[0] : domain.x[0]), (this.axes.x.frame[1] ? this.axes.x.frame[1] : domain.x[1])];
       yframe = [(this.axes.y.frame[0] ? this.axes.y.frame[0] : domain.y[0]), (this.axes.y.frame[1] ? this.axes.y.frame[1] : domain.y[1])];
-      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width]);
-      this.y = d3.scale.linear().domain(yframe).range([this.height, 0]);
-      return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
+      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width()]);
+      this.y = d3.scale.linear().domain(yframe).range([this.height(), 0]);
+      return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height()]);
     }
   };
 
@@ -1654,16 +1654,16 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.setSize = function(args) {
     var elHeight, elWidth, _ref;
-    args = args || {};
+    if (args == null) {
+      args = {};
+    }
     elWidth = $(this.element).width();
     elHeight = $(this.element).height();
     this.outerWidth = args.width || elWidth;
     this.outerHeight = args.height || elHeight;
     this.innerWidth = this.outerWidth - this.margin.left - this.margin.right;
     this.innerHeight = this.outerHeight - this.margin.top - this.margin.bottom;
-    this.width = this.innerWidth - this.padding.left - this.padding.right;
-    this.height = this.innerHeight - this.padding.top - this.padding.bottom;
-    return (_ref = this.vis) != null ? _ref.attr('width', this.width).attr('height', this.height) : void 0;
+    return (_ref = this.vis) != null ? _ref.attr('width', this.width()).attr('height', this.height()) : void 0;
   };
 
   Chart.prototype.onUpdate = function(callback) {
@@ -1691,14 +1691,36 @@ Tactile.Chart = Chart = (function() {
     });
   };
 
+  Chart.prototype.height = function(val) {
+    if (!val) {
+      return (this.innerHeight - this.padding.top - this.padding.bottom) || this.defaultHeight;
+    }
+    this.setSize({
+      width: this.outerWidth,
+      height: val
+    });
+    return this;
+  };
+
+  Chart.prototype.width = function(val) {
+    if (!val) {
+      return (this.innerWidth - this.padding.left - this.padding.right) || this.defaultWidth;
+    }
+    this.setSize({
+      width: val,
+      height: this.outerHeight
+    });
+    return this;
+  };
+
   Chart.prototype._setupCanvas = function() {
     $(this.element).addClass('graph-container');
     this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
     this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
     this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
-    this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
-    return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");
+    this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width()).attr("height", this.height() + 4).attr("transform", "translate(0,-2)");
+    return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width() + 12).attr("height", this.height() + 12).attr("transform", "translate(-6,-6)");
   };
 
   Chart.prototype._slice = function(d) {
