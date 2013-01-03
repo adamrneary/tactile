@@ -18,8 +18,6 @@ var data = [
 
 var chart = new Tactile.Chart({
   element: $("#example_view")[0],
-  width: 680,
-  height: 400,
   data: data,
   axes: {
     y: {
@@ -32,8 +30,11 @@ var chart = new Tactile.Chart({
         ticksTreatment: 'align-middle'
       }
     }
-  },
-  series: [
+  }});
+
+chart.height(500).width(700);
+
+chart.addSeries([
     {
       name: 'reach actual',
       renderer: "column",
@@ -68,8 +69,7 @@ var chart = new Tactile.Chart({
 //        };
 //      }
 //    }
-  ]
-});
+  ]);
 
 chart.render();
 var sl = $("<div>").attr("id", "slider");

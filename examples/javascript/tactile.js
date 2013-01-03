@@ -282,7 +282,7 @@ Tactile.AxisY = AxisY = (function() {
     this.vis = this.graph.vis;
     this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
-    this.ticks = options.ticks || Math.floor(this.graph.height / pixelsPerTick);
+    this.ticks = options.ticks || Math.floor(this.graph.height() / pixelsPerTick);
     this.tickSize = options.tickSize || 4;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.grid = options.grid;
@@ -303,12 +303,12 @@ Tactile.AxisY = AxisY = (function() {
     y.transition(this.transitionSpeed).call(yAxis);
     if (this.grid) {
       console.log("grid");
-      gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
+      gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width();
       grid = this.vis.selectAll('.y-grid').data([0]);
       grid.enter().append("svg:g").attr("class", "y-grid");
       grid.transition().call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
     }
-    return this._renderHeight = this.graph.height;
+    return this._renderHeight = this.graph.height();
   };
 
   return AxisY;
@@ -387,7 +387,7 @@ Tactile.Dragger = Dragger = (function() {
         tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
       }
       this.renderer.transitionSpeed = 0;
-      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height(), p[1])));
       value = Math.round(inverted * this.power) / this.power;
       this.dragged.y = value;
       this.onDrag(this.dragged, this.series, this.graph);
@@ -851,8 +851,8 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     maxAngle = 85;
     angleRange = maxAngle - minAngle;
     plotValue = this.value;
-    r = Math.round(this.graph.height / totalSizeDivide);
-    translateWidth = this.graph.width / 2;
+    r = Math.round(this.graph.height() / totalSizeDivide);
+    translateWidth = (this.graph.width()) / 2;
     translateHeight = r;
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
@@ -867,17 +867,17 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     pg = this.graph.vis.append("g").data([lineData]).attr("class", "gauge pointer").attr("transform", originTranslate);
     pointer = pg.append("path").attr("d", pointerLine);
     pointer.transition().duration(250).attr("transform", "rotate(" + plotAngle + ")");
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
     if (this.series.labels) {
       return this.renderLabels();
     }
   };
 
   GaugeRenderer.prototype.renderLabels = function() {
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width - this.margin.right) / 1.95) + ", " + (1.20 * this.graph.height * this.bottomOffset) + ")");
-    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width() - this.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
+    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
   };
 
   GaugeRenderer.prototype.domain = function() {
@@ -977,7 +977,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     var barWidth, count, data;
     data = this.series.stack;
     count = data.length;
-    return barWidth = this.graph.width / count * (1 - this.gapSize);
+    return barWidth = this.graph.width() / count * (1 - this.gapSize);
   };
 
   ColumnRenderer.prototype.stackTransition = function() {

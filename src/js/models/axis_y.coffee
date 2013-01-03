@@ -5,7 +5,7 @@ Tactile.AxisY = class AxisY
     @vis = @graph.vis
     @orientation = options.orientation or "left"
     pixelsPerTick = options.pixelsPerTick or 75
-    @ticks = options.ticks or Math.floor(@graph.height / pixelsPerTick)
+    @ticks = options.ticks or Math.floor(@graph.height() / pixelsPerTick)
     @tickSize = options.tickSize or 4
     @ticksTreatment = options.ticksTreatment or "plain"
     @grid = options.grid
@@ -29,9 +29,9 @@ Tactile.AxisY = class AxisY
     #This should work. Untested though. 
     if @grid
       console.log("grid")
-      gridSize = ((if @orientation is "right" then 1 else -1)) * @graph.width
+      gridSize = ((if @orientation is "right" then 1 else -1)) * @graph.width()
       grid = @vis.selectAll('.y-grid').data([0])
       grid.enter().append("svg:g").attr("class", "y-grid")
       grid.transition().call(axis.ticks(@ticks).tickSubdivide(0).tickSize(gridSize))
       
-    @_renderHeight = @graph.height
+    @_renderHeight = @graph.height()

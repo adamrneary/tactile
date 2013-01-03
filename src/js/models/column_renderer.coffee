@@ -54,7 +54,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     data = @series.stack
 
     count = data.length
-    barWidth = @graph.width / count * (1 - @gapSize)
+    barWidth = @graph.width() / count * (1 - @gapSize)
 
   stackTransition: ->
     @unstack = false
