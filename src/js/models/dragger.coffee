@@ -90,8 +90,6 @@ Tactile.Dragger = class Dragger
     circs.enter().append("svg:circle").style('display', 'none')
 
     circs
-      .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
       .attr("r", 4)
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d) => ["draggable-node", ("active" if d.dragged)].join(' '))
@@ -100,6 +98,12 @@ Tactile.Dragger = class Dragger
       .attr("stroke-width", '2')
       .attr('id', (d, i) -> "draggable-node-#{i}-#{d.x}")
       .style("cursor", "ns-resize")
+
+    circs
+      .transition()
+      .duration(if @renderer.timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
+      .attr("cx", (d) => @graph.x d.x)
+      .attr("cy", (d) => @graph.y d.y)
 
     # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i) ->

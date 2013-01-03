@@ -423,11 +423,7 @@ Tactile.Dragger = Dragger = (function() {
     renderer = this.renderer;
     circs = this.renderer.seriesCanvas().selectAll('circle.draggable-node').data(this.series.stack);
     circs.enter().append("svg:circle").style('display', 'none');
-    circs.attr("cx", function(d) {
-      return _this.graph.x(d.x);
-    }).attr("cy", function(d) {
-      return _this.graph.y(d.y);
-    }).attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
+    circs.attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
       return ["draggable-node", (d.dragged ? "active" : void 0)].join(' ');
     }).attr("fill", function(d) {
       if (d.dragged) {
@@ -444,6 +440,11 @@ Tactile.Dragger = Dragger = (function() {
     }).attr("stroke-width", '2').attr('id', function(d, i) {
       return "draggable-node-" + i + "-" + d.x;
     }).style("cursor", "ns-resize");
+    circs.transition().duration(this.renderer.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.graph.y(d.y);
+    });
     nodes.on('mouseover.show-dragging-circle', function(d, i) {
       renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
       return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
@@ -1301,6 +1302,7 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     if (this.series.draggable) {
       circ.style("cursor", "ns-resize");
     }
+    this.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
     return circ.exit().remove();
   };
 
