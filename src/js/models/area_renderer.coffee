@@ -20,7 +20,7 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
     .y1((d) => @graph.y d.y + @_y0(d))
     .interpolate(@graph.interpolation)
     .tension @tension
-    
+
   seriesStrokeFactory: ->
     d3.svg.line()
     .x((d) => @graph.x d.x)
@@ -32,10 +32,9 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
     super()
 
     # TODO: make the opacity value an option
-    @seriesCanvas().select('path').style("opacity", 0.15)
+    @seriesCanvas().selectAll("path").data([@series.stack]).style("opacity", 0.15)
 
-    stroke = @seriesCanvas().selectAll('path.stroke')
-      .data([@series.stack])
+    stroke = @seriesCanvas().selectAll('path.stroke').data([@series.stack])
 
     stroke.enter()
       .append("svg:path")
