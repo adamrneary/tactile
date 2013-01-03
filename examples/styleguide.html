@@ -2,25 +2,19 @@
 <html>
   <head>
     <!-- vendor javascripts -->
-    <script type="text/javascript" src="javascript/vendor/underscore.js"></script>
-    <script type="text/javascript" src="javascript/vendor/jquery.js"></script>
-    <script type="text/javascript" src="javascript/vendor/backbone.js"></script>
-    <script type="text/javascript" src="javascript/vendor/jquery-ui.js"></script>
     <script type="text/javascript" src="javascript/vendor/d3.js"></script>
     <script type="text/javascript" src="javascript/vendor/rainbow-custom.min.js"></script>
     <script type="text/javascript" src="javascript/vendor/bootstrap.min.js"></script>
 
     <!-- tactile javascripts -->
     <script type="text/javascript" src="javascript/tactile.js"></script>
-    <script type="text/javascript" src="javascript/index.js"></script>
 
     <!-- vendor stylesheets -->
     <link rel="stylesheet" type="text/css" href="css/vendor/plugins.css"/>
-    <link rel="stylesheet" type="text/css" href="css/vendor/jquery-ui.css"/>
     <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="css/vendor/rainbow-theme.css"/>
     <style>.icon-white {background-image: url("/img/glyphicons-halflings-white.png")}</style>
-    
+
     <!-- tactile stylesheet -->
     <link rel="stylesheet" type="text/css" href="css/charts.css"/>
 
@@ -40,8 +34,8 @@
           <a class="brand" href="http://www.activecell.com">Tactile</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="/"><i class="icon-white icon-home"></i> Home</a></li>
-              <li><a href="/styleguide">
+              <li><a href="/"><i class="icon-white icon-home"></i> Home</a></li>
+              <li class="active"><a href="/styleguide">
                 <i class="icon-white icon-glass"></i> Style Guide
               </a></li>
               <li><a href="https://github.com/activecell/tactile">
@@ -58,35 +52,33 @@
       <div class="row">
         <div class="span3">
           <div class="well">
-            <ul class="nav nav-list" id="cartLinkList">
+            <ul class="nav nav-list" id="coreLinkList">
               <li class="nav-header">
-                Cartesian series
+                Core components
               </li>
+              <li><a href='#'>Axes</a></li>
             </ul>
-            <ul class="nav nav-list" id="noncartLinkList">
+            <ul class="nav nav-list" id="seriesLinkList">
               <li class="nav-header">
-                Non-cartesian series
+                Series
               </li>
-            </ul>
-            <ul class="nav nav-list" id="compLinkList">
-              <li class="nav-header">
-                Components
-              </li>
+              <li><a href='#'>Points</a></li>
+              <li><a href='#'>Lines</a></li>
+              <li><a href='#'>Areas</a></li>
+              <li><a href='#'>Columns</a></li>
+              <li><a href='#'>Leaderboard</a></li>
+              <li><a href='#'>Gauge</a></li>
             </ul>
           </div>
         </div>
 
 
         <div class="span9">
-          <h3 id="example_header"></h3>
-          <div class="btn-group stack-unstack-buttons">
-            <button class="btn btn-mini" id="stack">stacked</button>
-            <button class="btn btn-mini" id="group">grouped</button>
-          </div>
+          <h3 id="example_header">pending</h3>
+
           <div id="example_view" style="width: 680px"></div>
-          <h3>Code for example</h3>
+          <h3>pending</h3>
           <pre><code data-language="javascript" id="example_js"></code></pre>
-          <script id="example_script"></script>
         </div>
       </div>
       <hr>
