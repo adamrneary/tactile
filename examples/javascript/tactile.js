@@ -1489,7 +1489,6 @@ Tactile.Chart = Chart = (function() {
     min: void 0,
     max: void 0,
     transitionSpeed: 200,
-    order: [],
     height: 400,
     width: 730,
     axes: {
@@ -1551,6 +1550,11 @@ Tactile.Chart = Chart = (function() {
     this.initRenderers(args);
     axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
   }
+
+  Chart.prototype.addSeries = function(series) {
+    this.series.push(series);
+    return this.initRenderers();
+  };
 
   Chart.prototype.render = function() {
     var stackedData,

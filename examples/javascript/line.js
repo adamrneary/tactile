@@ -12,6 +12,20 @@ var data = [
   {x: 8, y: 332, z: 490}
 ]
 
+
+// we want sth like this:
+//var chart = new Tactile.Chart()
+//chart.element($("#example_view")[0])
+//  .width(680)
+//  .height(400)
+//  .data(data)
+//  .axes({
+//    x: {
+//      dimension: "time",
+//      frame: frameVal
+//    }
+//  });
+
 var chart = new Tactile.Chart({
   element: $("#example_view")[0],
   width: 680,
@@ -22,43 +36,54 @@ var chart = new Tactile.Chart({
       dimension: "time",
       frame: frameVal
     }
-  },
-  series: [
-    {
-      name: 'enemies',
-      renderer: 'line',
-      color: "#c05020",
-      tooltip: function (d) {
-        return d.y + " enemies";
-      },
-      dataTransform: function (d) {
-        return {
-          x: d.x,
-          y: d.y
-        };
-      }
+  }});
+
+
+chart.addSeries(
+  {
+    name: 'enemies',
+    renderer: 'line',
+    sigfigs: 0,
+    draggable: true,
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph.data[i].y = y;
     },
-    {
-      name: 'friends',
-      renderer: 'line',
-      sigfigs: 1,
-      color: "#6060c0",
-      draggable: true,
-      afterDrag: function (d, y, i, draggedSeries, graph) {
-        graph.data[i].z = y;
-      },
-      tooltip: function (d) {
-        return d.y + " friends";
-      },
-      dataTransform: function (d) {
-        return {
-          x: d.x,
-          y: d.z
-        };
-      }
+    color: "#c05020",
+    tooltip: function (d) {
+      return d.y + " enemies";
+    },
+    dataTransform: function (d) {
+      return {
+        x: d.x,
+        y: d.y
+      };
     }
-  ]
-});
+  });
+
+// Just to show that we can add a series after rendering the chart
+chart.render();
+
+chart.addSeries(
+  {
+    name: 'friends',
+    renderer: 'line',
+    sigfigs: 1,
+    color: "#6060c0",
+    draggable: true,
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph.data[i].z = y;
+    },
+    tooltip: function (d) {
+      return d.y + " friends";
+    },
+    dataTransform: function (d) {
+      return {
+        x: d.x,
+        y: d.z
+      };
+    }
+  }
+);
 
 chart.render();
 var sl = $("<div>").attr("id", "slider");

@@ -16,7 +16,6 @@ Tactile.Chart = class Chart
     min: undefined
     max: undefined
     transitionSpeed: 200
-    order: [] # multi renderer support
     height: 400
     width: 730
     axes:
@@ -69,6 +68,9 @@ Tactile.Chart = class Chart
     # for y: orientation, pixelsPerTick, ticks and few more.
     axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
 
+  addSeries: (series) ->
+    @series.push(series)
+    @initRenderers()
 
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
