@@ -396,14 +396,18 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype._mouseUp = function() {
-    var _ref;
+    var _ref,
+      _this = this;
     if (((_ref = this.dragged) != null ? _ref.y : void 0) == null) {
       return;
     }
     if (this.dragged) {
       this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
     }
-    $(this.graph).find('.active').attr('class', '');
+    this.renderer.seriesCanvas().selectAll('circle.draggable-node').data(this.series.stack).attr("class", function(d) {
+      d.dragged = false;
+      return "draggable-node";
+    });
     d3.select("body").style("cursor", "auto");
     this.dragged = null;
     if (this.series.tooltip) {
@@ -440,7 +444,7 @@ Tactile.Dragger = Dragger = (function() {
     }).attr("stroke-width", '2').attr('id', function(d, i) {
       return "draggable-node-" + i + "-" + d.x;
     }).style("cursor", "ns-resize");
-    circs.transition().duration(this.renderer.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
+    circs.transition().duration(this.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);

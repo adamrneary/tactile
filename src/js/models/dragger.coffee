@@ -13,6 +13,8 @@ Tactile.Dragger = class Dragger
     @power = Math.pow(10, (@series.sigfigs or 1))
     @setSpeed = @renderer.transitionSpeed
 
+#     @timesRendered = 0
+
 
   _bindMouseEvents: ->
     d3.select(@graph.element)
@@ -66,9 +68,16 @@ Tactile.Dragger = class Dragger
   _mouseUp: =>
     return unless @dragged?.y?
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
-    $(@graph).find('.active').attr('class', '')
+
+    @renderer.seriesCanvas().selectAll('circle.draggable-node')
+      .data(@series.stack)
+      .attr("class", (d) =>
+        d.dragged = false
+        "draggable-node"
+      )
     d3.select("body").style "cursor", "auto"
     @dragged = null
+    
 
     # unlock the tooltip from the dragged element
     Tactile.Tooltip.turnOffspotlight() if @series.tooltip
@@ -101,7 +110,7 @@ Tactile.Dragger = class Dragger
 
     circs
       .transition()
-      .duration(if @renderer.timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
+      .duration(if @timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
 
