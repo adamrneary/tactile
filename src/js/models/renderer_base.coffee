@@ -5,6 +5,7 @@ Tactile.RendererBase = class RendererBase
     strokeWidth: 3
     unstack: true
     dotSize: 5
+    opacity: 1
     
     stroke: false
     fill: false
@@ -54,6 +55,7 @@ Tactile.RendererBase = class RendererBase
       .attr("fill", (if @fill then @series.color else "none"))
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
+      .style('opacity', @opacity)
       .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
 
     line.transition().duration(@transitionSpeed).attr("d", @seriesPathFactory())

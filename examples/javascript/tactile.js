@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2013-01-02
+/*! tactile - v0.0.1 - 2013-01-03
 * https://github.com/activecell/tactile
 * Copyright (c) 2013 Activecell; Licensed  */
 
@@ -738,6 +738,7 @@ Tactile.RendererBase = RendererBase = (function() {
     strokeWidth: 3,
     unstack: true,
     dotSize: 5,
+    opacity: 1,
     stroke: false,
     fill: false
   };
@@ -788,8 +789,8 @@ Tactile.RendererBase = RendererBase = (function() {
   RendererBase.prototype.render = function() {
     var line;
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
-    line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
-    return line.attr("d", this.seriesPathFactory());
+    line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
+    return line.transition().duration(this.transitionSpeed).attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -1215,7 +1216,8 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
   AreaRenderer.prototype.specificDefaults = {
     unstack: true,
     fill: true,
-    stroke: true
+    stroke: true,
+    opacity: 0.15
   };
 
   AreaRenderer.prototype._y0 = function(d) {
@@ -1259,7 +1261,6 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     var circ, newCircs, stroke, _ref, _ref1,
       _this = this;
     AreaRenderer.__super__.render.call(this);
-    this.seriesCanvas().select('path').style("opacity", 0.15);
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr('class', 'stroke');
     stroke.transition().duration(this.transitionSpeed).attr("d", this.seriesStrokeFactory());

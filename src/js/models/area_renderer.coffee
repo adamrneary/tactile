@@ -6,6 +6,7 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
     unstack: true
     fill: true
     stroke: true
+    opacity: 0.15
     
   _y0: (d) => if @unstack then 0 else d.y0
 
@@ -30,9 +31,6 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
 
   render: ->
     super()
-
-    # TODO: make the opacity value an option
-    @seriesCanvas().selectAll("path").data([@series.stack]).style("opacity", 0.15)
 
     stroke = @seriesCanvas().selectAll('path.stroke').data([@series.stack])
 
