@@ -1302,7 +1302,6 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     if (this.series.draggable) {
       circ.style("cursor", "ns-resize");
     }
-    this.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
     return circ.exit().remove();
   };
 
