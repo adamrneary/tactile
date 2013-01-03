@@ -28,7 +28,7 @@ Tactile.Tooltip = Tooltip = (function() {
 
   Tooltip.prototype.appendTooltip = function() {
     var chartContainer, tip;
-    chartContainer = d3.select(this.options.graph.element);
+    chartContainer = d3.select(this.options.graph._element);
     if (Tooltip._spotlightMode && this.el.node().classList.contains("active")) {
       tip = chartContainer.select('.tooltip');
     } else {
@@ -52,7 +52,7 @@ Tactile.Tooltip = Tooltip = (function() {
       var center, hoveredNode;
       center = [0, 0];
       if (_this.options.placement === "mouse") {
-        center = d3.mouse(_this.options.graph.element);
+        center = d3.mouse(_this.options.graph._element);
       } else {
         if (_this.options.position) {
           center[0] = _this.options.position[0];
@@ -341,7 +341,7 @@ Tactile.Dragger = Dragger = (function() {
   }
 
   Dragger.prototype._bindMouseEvents = function() {
-    return d3.select(this.graph.element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
+    return d3.select(this.graph._element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
   };
 
   Dragger.prototype.makeHandlers = function(nodes) {
@@ -381,8 +381,8 @@ Tactile.Dragger = Dragger = (function() {
     t = d3.event.changedTouches;
     if (this.dragged) {
       if (this.series.tooltip) {
-        elementRelativeposition = d3.mouse(this.graph.element);
-        tip = d3.select(this.graph.element).select('.tooltip');
+        elementRelativeposition = d3.mouse(this.graph._element);
+        tip = d3.select(this.graph._element).select('.tooltip');
         offsetTop = this.graph.padding.top + this.graph.margin.top;
         tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
       }
@@ -1657,8 +1657,8 @@ Tactile.Chart = Chart = (function() {
     if (args == null) {
       args = {};
     }
-    elWidth = $(this.element).width();
-    elHeight = $(this.element).height();
+    elWidth = $(this._element).width();
+    elHeight = $(this._element).height();
     this.outerWidth = args.width || elWidth;
     this.outerHeight = args.height || elHeight;
     this.innerWidth = this.outerWidth - this.margin.left - this.margin.right;
@@ -1691,6 +1691,15 @@ Tactile.Chart = Chart = (function() {
     });
   };
 
+  Chart.prototype.element = function(val) {
+    if (!val) {
+      return this._element;
+    }
+    this._element = val;
+    this._setupCanvas();
+    return this;
+  };
+
   Chart.prototype.height = function(val) {
     if (!val) {
       return (this.innerHeight - this.padding.top - this.padding.bottom) || this.defaultHeight;
@@ -1714,8 +1723,8 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype._setupCanvas = function() {
-    $(this.element).addClass('graph-container');
-    this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
+    $(this._element).addClass('graph-container');
+    this.svg = d3.select(this._element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
     this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
     this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");

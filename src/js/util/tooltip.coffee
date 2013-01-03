@@ -17,7 +17,7 @@ Tactile.Tooltip = class Tooltip
 
   # TODO: Done in a hurry. Dry this out.
   appendTooltip: ->
-    chartContainer = d3.select(@options.graph.element)
+    chartContainer = d3.select(@options.graph._element)
     if Tooltip._spotlightMode && @el.node().classList.contains("active")
       tip = chartContainer.select('.tooltip')
     else
@@ -44,7 +44,7 @@ Tactile.Tooltip = class Tooltip
     moveTip = (tip) =>
       center = [0,0]
       if @options.placement is "mouse"
-        center = d3.mouse(@options.graph.element)
+        center = d3.mouse(@options.graph._element)
       else
         if @options.position
           center[0] = @options.position[0]

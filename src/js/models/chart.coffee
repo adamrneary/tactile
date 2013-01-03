@@ -157,8 +157,8 @@ Tactile.Chart = class Chart
     @stackedData = stackedData
 
   setSize: (args = {}) ->
-    elWidth = $(@element).width()
-    elHeight = $(@element).height()
+    elWidth = $(@_element).width()
+    elHeight = $(@_element).height()
 
     @outerWidth = args.width || elWidth
     @outerHeight = args.height || elHeight
@@ -182,6 +182,11 @@ Tactile.Chart = class Chart
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
+  element: (val) ->
+    return @_element unless val
+    @_element = val
+    @_setupCanvas()
+    @
 
   height: (val) ->
     return (@innerHeight - @padding.top - @padding.bottom) or @defaultHeight unless val
@@ -202,9 +207,9 @@ Tactile.Chart = class Chart
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
     # need a constant class name for a containing div
-    $(@element).addClass('graph-container')
+    $(@_element).addClass('graph-container')
 
-    @svg = d3.select(@element)
+    @svg = d3.select(@_element)
       .append("svg")
       .attr('width', @outerWidth)
       .attr('height', @outerHeight)

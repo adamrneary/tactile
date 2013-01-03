@@ -17,7 +17,6 @@ var data = [
 ]
 
 var chart = new Tactile.Chart({
-  element: $("#example_view")[0],
   data: data,
   axes: {
     y: {
@@ -32,7 +31,7 @@ var chart = new Tactile.Chart({
     }
   }});
 
-chart.height(500).width(700);
+chart.element($("#example_view")[0]).height(500).width(700);
 
 chart.addSeries([
     {

@@ -26,7 +26,7 @@ var data = [
 //    }
 //  });
 
-var chart = new Tactile.Chart({data:data, element: $("#example_view")[0]})
+var chart = new Tactile.Chart({data:data}).element($("#example_view")[0])
 //  .data(data)
 //  .axes({
 //  x: {
