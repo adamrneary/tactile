@@ -1159,7 +1159,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         }
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
-      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
+      return [(_this.dragger ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
     }).attr("fill", function(d) {
       if (d.dragged) {
         return 'white';
@@ -1517,12 +1517,10 @@ Tactile.Chart = Chart = (function() {
     var axes, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
       _this = this;
     this.renderers = [];
+    this.series = [];
     this.window = {};
     this.updateCallbacks = [];
     args = _.extend({}, this.mainDefaults, args);
-    args.series = (args.series ? _.map(args.series, function(d) {
-      return _.extend({}, _this.seriesDefaults, d);
-    }) : []);
     args.axes = {
       x: {
         frame: ((_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0) || this.mainDefaults.axes.x.frame,
@@ -1536,24 +1534,45 @@ Tactile.Chart = Chart = (function() {
     _.each(args, function(val, key) {
       return _this[key] = val;
     });
+    this.setSize({
+      width: args.width,
+      height: args.height
+    });
+    this._setupCanvas();
+    this.addSeries(args.series, {
+      overwrite: true
+    });
+    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
+  }
+
+  Chart.prototype.addSeries = function(series, options) {
+    var newSeries,
+      _this = this;
+    if (options == null) {
+      options = {
+        overwrite: false
+      };
+    }
+    if (!series) {
+      return;
+    }
+    if (!_.isArray(series)) {
+      series = [series];
+    }
+    newSeries = _.map(series, function(s) {
+      return _.extend({}, _this.seriesDefaults, s);
+    });
+    if (options.overwrite) {
+      this.series = newSeries;
+    } else {
+      this.series = this.series.concat(newSeries);
+    }
     this.series.active = function() {
       return _this.series.filter(function(s) {
         return !s.disabled;
       });
     };
-    this.setSize({
-      width: args.width,
-      height: args.height
-    });
-    $(this.element).addClass('graph-container');
-    this._setupCanvas();
-    this.initRenderers(args);
-    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
-  }
-
-  Chart.prototype.addSeries = function(series) {
-    this.series.push(series);
-    return this.initRenderers();
+    return this.initRenderers(newSeries);
   };
 
   Chart.prototype.render = function() {
@@ -1651,19 +1670,21 @@ Tactile.Chart = Chart = (function() {
     return this.updateCallbacks.push(callback);
   };
 
-  Chart.prototype.initRenderers = function(args) {
-    var _this = this;
-    return _.each(this.series.active(), function(s, index) {
+  Chart.prototype.initRenderers = function(series) {
+    var renderersSize,
+      _this = this;
+    renderersSize = this.renderers.length;
+    return _.each(series, function(s, index) {
       var name, r, rendererClass, rendererOptions;
       name = s.renderer;
       if (!_this._renderers[name]) {
         throw "couldn't find renderer " + name;
       }
       rendererClass = _this._renderers[name];
-      rendererOptions = _.extend({}, args, {
+      rendererOptions = _.extend({}, {
         graph: _this,
         series: s,
-        rendererIndex: index
+        rendererIndex: index + renderersSize
       });
       r = new rendererClass(rendererOptions);
       return _this.renderers.push(r);
@@ -1671,6 +1692,7 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype._setupCanvas = function() {
+    $(this.element).addClass('graph-container');
     this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
     this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);

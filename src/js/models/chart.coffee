@@ -9,8 +9,10 @@ Tactile.Chart = class Chart
     'donut': DonutRenderer
 
   mainDefaults:
-    margin: {top: 20, right: 20, bottom: 20, left: 20}
-    padding: {top: 10, right: 10, bottom: 10, left: 10}
+    margin:
+      {top: 20, right: 20, bottom: 20, left: 20}
+    padding:
+      {top: 10, right: 10, bottom: 10, left: 10}
     interpolation: 'monotone'
     offset: 'zero'
     min: undefined
@@ -32,35 +34,30 @@ Tactile.Chart = class Chart
 
   constructor: (args) ->
     @renderers = []
+    @series = []
     @window = {}
     @updateCallbacks = []
 
     args = _.extend({}, @mainDefaults, args)
-    args.series = (if args.series then _.map(args.series, (d) => _.extend({}, @seriesDefaults, d)) else [])
-    #TODO: Deep copy issuses abound here. 
-    args.axes =
-        x:
-          frame: (args.axes?.x?.frame or @mainDefaults.axes.x.frame)
-          dimension: (args.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
-        y:
-          frame: (args.axes?.y?.frame or @mainDefaults.axes.y.frame)
-          dimension: (args.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
 
+    #TODO: Deep copy issuses around here.
+    args.axes =
+      x:
+        frame: (args.axes?.x?.frame or @mainDefaults.axes.x.frame)
+        dimension: (args.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
+      y:
+        frame: (args.axes?.y?.frame or @mainDefaults.axes.y.frame)
+        dimension: (args.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
 
     _.each args, (val, key) =>
       @[key] = val
 
-    @series.active = =>
-      @series.filter (s) ->
-        not s.disabled
+    @setSize(width: args.width, height: args.height)
 
-    @setSize( width: args.width, height: args.height )
-    # need a constant class name for a containing div
-    $(@element).addClass('graph-container')
     @_setupCanvas()
 
-    @initRenderers(args)
-    
+    @addSeries(args.series, overwrite: true)
+
     # TODO:
     # it should be possible to pass options to the axes
     # so far they were 
@@ -68,9 +65,25 @@ Tactile.Chart = class Chart
     # for y: orientation, pixelsPerTick, ticks and few more.
     axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
 
-  addSeries: (series) ->
-    @series.push(series)
-    @initRenderers()
+  # Adds series to the chart and creates renderer instance for it
+  # you can pass a single object here or an array of them
+  # if you pass option overwrite: true all previous series will be removed
+  addSeries: (series, options = {overwrite: false}) ->
+    return unless series
+    series = [series] unless _.isArray(series)
+    newSeries = _.map(series, (s) => _.extend({}, @seriesDefaults, s))
+
+    if options.overwrite
+      @series = newSeries
+    else
+      @series = @series.concat(newSeries)
+
+    @series.active = =>
+      @series.filter (s) ->
+        not s.disabled
+
+    # only init the renderers for just added series
+    @initRenderers(newSeries)
 
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
@@ -100,9 +113,9 @@ Tactile.Chart = class Chart
         rangeEnd = @width - barWidth
 
       xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
-                (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
+        (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
       yframe = [(if @axes.y.frame[0] then @axes.y.frame[0] else domain.y[0]),
-                (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
+        (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
 
 
       @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width])
@@ -130,7 +143,6 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here: 
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-
     seriesData = @series.active().map((d) =>
       @data.map(d.dataTransform))
 
@@ -163,14 +175,15 @@ Tactile.Chart = class Chart
   onUpdate: (callback) ->
     @updateCallbacks.push callback
 
-  initRenderers: (args) ->
-    _.each @series.active(), (s, index) =>
+  initRenderers: (series) ->
+    renderersSize = @renderers.length
+    _.each series, (s, index) =>
       name = s.renderer
       if (!@_renderers[name])
         throw "couldn't find renderer #{name}"
 
       rendererClass = @_renderers[name]
-      rendererOptions = _.extend {}, args, {graph: @, series: s, rendererIndex: index}
+      rendererOptions = _.extend {}, {graph: @, series: s, rendererIndex: index + renderersSize}
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
@@ -178,13 +191,16 @@ Tactile.Chart = class Chart
   # appends all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
+    # need a constant class name for a containing div
+    $(@element).addClass('graph-container')
+
     @svg = d3.select(@element)
       .append("svg")
-        .attr('width', @outerWidth)
-        .attr('height', @outerHeight)
+      .attr('width', @outerWidth)
+      .attr('height', @outerHeight)
 
     @vis = @svg.append("g")
-        .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
 
     @vis = @vis.append("g")
       .attr("class", "outer-canvas")
@@ -198,24 +214,24 @@ Tactile.Chart = class Chart
 
     # Add the default clip path.
     @vis.append("clipPath")
-        .attr("id", "clip")
+      .attr("id", "clip")
       .append("rect")
-        .attr("width", @width)
-        # increase height to provide room vertically for line thickness
-        .attr("height", @height + 4)
-        # translate to adjust for increased height (split the difference)
-        .attr("transform", "translate(0,-2)")
+      .attr("width", @width)
+    # increase height to provide room vertically for line thickness
+      .attr("height", @height + 4)
+    # translate to adjust for increased height (split the difference)
+      .attr("transform", "translate(0,-2)")
 
     # Add the clip path.
     @vis.append("clipPath")
-        .attr("id", "scatter-clip")
+      .attr("id", "scatter-clip")
       .append("rect")
-        # increase width to provide room vertically for circle radius
-        .attr("width", @width + 12)
-        # increase height to provide room vertically for circle radius
-        .attr("height", @height + 12)
-        # translate to adjust for increased width and height
-        .attr("transform", "translate(-6,-6)")
+    # increase width to provide room vertically for circle radius
+      .attr("width", @width + 12)
+    # increase height to provide room vertically for circle radius
+      .attr("height", @height + 12)
+    # translate to adjust for increased width and height
+      .attr("transform", "translate(-6,-6)")
 
 
 
