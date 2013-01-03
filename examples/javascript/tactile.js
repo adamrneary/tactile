@@ -338,6 +338,7 @@ Tactile.Dragger = Dragger = (function() {
     this._bindMouseEvents();
     this.power = Math.pow(10, this.series.sigfigs || 1);
     this.setSpeed = this.renderer.transitionSpeed;
+    this.timesRendered = 0;
   }
 
   Dragger.prototype._bindMouseEvents = function() {
@@ -440,7 +441,7 @@ Tactile.Dragger = Dragger = (function() {
     }).attr("stroke-width", '2').attr('id', function(d, i) {
       return "draggable-node-" + i + "-" + d.x;
     }).style("cursor", "ns-resize");
-    circs.transition().duration(this.renderer.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
+    circs.transition().duration(this.timesRendered++ === 0 ? 0 : this.renderer.transitionSpeed).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
       return _this.graph.y(d.y);
