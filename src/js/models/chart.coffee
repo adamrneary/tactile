@@ -32,6 +32,8 @@ Tactile.Chart = class Chart
   seriesDefaults:
     dataTransform: (d) -> d
 
+
+
   constructor: (args) ->
     @renderers = []
     @series = []
@@ -40,14 +42,9 @@ Tactile.Chart = class Chart
 
     args = _.extend({}, @mainDefaults, args)
 
-    #TODO: Deep copy issuses around here.
-    args.axes =
-      x:
-        frame: (args.axes?.x?.frame or @mainDefaults.axes.x.frame)
-        dimension: (args.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
-      y:
-        frame: (args.axes?.y?.frame or @mainDefaults.axes.y.frame)
-        dimension: (args.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
+    if args.axes?
+      @axes(args.axes)
+      delete args.axes
 
     _.each args, (val, key) =>
       @[key] = val
@@ -55,16 +52,9 @@ Tactile.Chart = class Chart
     # FIXME: args.width should not be passed anymore
     @setSize(width: args.width or @defaultWidth, height: args.height or @defaultHeight)
 
-    @_setupCanvas()
-
     @addSeries(args.series, overwrite: true)
 
-    # TODO:
-    # it should be possible to pass options to the axes
-    # so far they were 
-    # for x: unit, ticksTreatment, grid 
-    # for y: orientation, pixelsPerTick, ticks and few more.
-    axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
+
 
   # Adds series to the chart and creates renderer instance for it
   # you can pass a single object here or an array of them
@@ -88,6 +78,7 @@ Tactile.Chart = class Chart
 
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
+    @_setupCanvas()
     stackedData = @stackData()
 
     _.each @renderers, (renderer) =>
@@ -113,11 +104,10 @@ Tactile.Chart = class Chart
         rangeStart = barWidth
         rangeEnd = @width() - barWidth
 
-      xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
-        (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
-      yframe = [(if @axes.y.frame[0] then @axes.y.frame[0] else domain.y[0]),
-        (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
-
+      xframe = [(if @_axes.x.frame[0] then @_axes.x.frame[0] else domain.x[0]),
+        (if @_axes.x.frame[1] then @_axes.x.frame[1] else domain.x[1])]
+      yframe = [(if @_axes.y.frame[0] then @_axes.y.frame[0] else domain.y[0]),
+        (if @_axes.y.frame[1] then @_axes.y.frame[1] else domain.y[1])]
 
       @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width()])
       @y = d3.scale.linear().domain(yframe).range([@height(), 0])
@@ -203,32 +193,52 @@ Tactile.Chart = class Chart
     @_data = val
     @
 
-  # appends all the chart canvas elements so it respects the margins and paddings
+  axes: (args, options) ->
+    return @_axes unless args
+    @_axes =
+      x:
+        frame: (args.x?.frame or @mainDefaults.axes.x.frame)
+        dimension: (args.x?.dimension or @mainDefaults.axes.x.dimension)
+      y:
+        frame: (args.y?.frame or @mainDefaults.axes.y.frame)
+        dimension: (args.y?.dimension or @mainDefaults.axes.y.dimension)
+
+    # TODO:
+    # it should be possible to pass options to the axes
+    # so far they were
+    # for x: unit, ticksTreatment, grid
+    # for y: orientation, pixelsPerTick, ticks and few more.
+    @findAxis(@_axes.x)
+    #    @findAxis(@_axes.y)
+    @
+
+
+  # Appends or updates all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
     # need a constant class name for a containing div
     $(@_element).addClass('graph-container')
+    @svg = @_findOrAppend(what: 'svg', in: d3.select(@_element))
 
-    @svg = d3.select(@_element)
-      .append("svg")
+    @svg
       .attr('width', @outerWidth)
       .attr('height', @outerHeight)
 
-    @vis = @svg.append("g")
+    @vis = @_findOrAppend(what: 'g', in: @svg)
       .attr("transform", "translate(#{@margin.left},#{@margin.top})")
 
-    @vis = @vis.append("g")
+    @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("class", "outer-canvas")
       .attr("width", @innerWidth)
       .attr("height", @innerHeight)
 
     # this is the canvas on which all data should be drawn  
-    @vis = @vis.append("g")
+    @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
 
     # Add the default clip path.
-    @vis.append("clipPath")
+    @_findOrAppend(what: 'clipPath', in: @vis)
       .attr("id", "clip")
       .append("rect")
       .attr("width", @width())
@@ -238,7 +248,7 @@ Tactile.Chart = class Chart
       .attr("transform", "translate(0,-2)")
 
     # Add the clip path.
-    @vis.append("clipPath")
+    @_findOrAppend(what: 'clipPath', in: @vis)
       .attr("id", "scatter-clip")
       .append("rect")
     # increase width to provide room vertically for circle radius
@@ -248,7 +258,15 @@ Tactile.Chart = class Chart
     # translate to adjust for increased width and height
       .attr("transform", "translate(-6,-6)")
 
-
+  # looks for node in given node
+  # returns it or appends to the node in `in` option
+  _findOrAppend: (options) ->
+    element = options.in
+    node = options.what
+    if element.select(node)[0][0]
+      element.select(node)
+    else
+      element.append(node)
 
   # this trims data down to the range that is currently viewed. 
   # See range_slider for a clue how it's used
@@ -277,5 +295,5 @@ Tactile.Chart = class Chart
 
   unstackTransition: ->
     _.each(@renderersByType('column'), (r) -> r.unstackTransition())
-    
+
     

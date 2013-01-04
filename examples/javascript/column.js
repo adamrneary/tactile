@@ -16,36 +16,12 @@ var data = [
   {period: 1354320000, actual: 5, plan: 2}
 ]
 
-var chart = new Tactile.Chart({
-  axes: {
-    y: {
-      dimension: 'linear'
-    },
-    x: {
-      dimension: 'time',
-      frame: frameVal,
-      options: {
-        ticksTreatment: 'align-middle'
-      }
-    }
-  }});
+var chart = new Tactile.Chart();
 
 chart.element($("#example_view")[0])
   .height(500)
   .width(700)
   .data(data);
-//  .axes({
-//    y: {
-//      dimension: 'linear'
-//    },
-//    x: {
-//      dimension: 'time',
-//      frame: frameVal,
-//      options: {
-//        ticksTreatment: 'align-middle'
-//      }
-//    }
-//  });
 
 chart.addSeries([
     {
@@ -97,7 +73,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart.axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     chart.render();
   }
 });

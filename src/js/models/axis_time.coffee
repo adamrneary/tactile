@@ -42,7 +42,6 @@ Tactile.AxisTime = class AxisTime
     g = @graph.vis.selectAll('.x-ticks').data([0])
     g.enter().append('g').attr('class', 'x-ticks')
                 
-    
     tickData = @tickOffsets().filter((tick) =>
       @graph.x.range()[0] <= @graph.x(tick.value) <= @graph.x.range()[1])
                                                                                                 
@@ -58,8 +57,7 @@ Tactile.AxisTime = class AxisTime
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
       .attr("class", 'title')
                                 
-                                
-    ticks.transition(@transitionSpeed)
+    ticks.transition(@graph.transitionSpeed)
       .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.innerHeight})")
 
     ticks.exit().remove()
