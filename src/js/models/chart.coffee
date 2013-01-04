@@ -146,16 +146,26 @@ Tactile.Chart = class Chart
 
     @stackedData = stackedData
 
+  # Set's the size for the chart
+  # please note you have to call render() or update() for this changes to be reflected in your chart
+  #
+  # outerWith, outerHeight - no margins or paddings subtracted
+  # marginedWidth, marginedHeight - margins subtracted
+  # innerWidth, innerHeight - margins and paddings subtracted
+  # width(), height() returns innerWidth as it's the most common used
   setSize: (args = {}) ->
     elWidth = $(@_element).width()
     elHeight = $(@_element).height()
 
-    @outerWidth = args.width || elWidth
-    @outerHeight = args.height || elHeight
+    @outerWidth = args.width || elWidth || @mainDefaults.defaultWidth
+    @outerHeight = args.height || elHeight || @mainDefaults.defaultHeight
 
-    @innerWidth = @outerWidth - @margin.left - @margin.right
-    @innerHeight = @outerHeight - @margin.top - @margin.bottom
-    @vis?.attr('width', @width()).attr('height', @height())
+    @marginedWidth = @outerWidth - @margin.left - @margin.right
+    @marginedHeight = @outerHeight - @margin.top - @margin.bottom
+    @innerWidth = @marginedWidth - @padding.left - @padding.right
+    @innerHeight = @marginedHeight - @padding.top - @padding.bottom
+
+    @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
@@ -179,12 +189,12 @@ Tactile.Chart = class Chart
     @
 
   height: (val) ->
-    return (@innerHeight - @padding.top - @padding.bottom) or @defaultHeight unless val
+    return (@innerHeight or @mainDefaults.defaultHeight) unless val
     @setSize(width: @outerWidth, height: val)
     @
 
   width: (val) ->
-    return (@innerWidth - @padding.left - @padding.right) or @defaultWidth unless val
+    return (@innerWidth or @mainDefaults.defaultWidth) unless val
     @setSize(width: val, height: @outerHeight)
     @
 
@@ -209,7 +219,7 @@ Tactile.Chart = class Chart
     # for x: unit, ticksTreatment, grid
     # for y: orientation, pixelsPerTick, ticks and few more.
     @findAxis(@_axes.x)
-    #    @findAxis(@_axes.y)
+    @findAxis(@_axes.y)
     @
 
 
@@ -229,8 +239,8 @@ Tactile.Chart = class Chart
 
     @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("class", "outer-canvas")
-      .attr("width", @innerWidth)
-      .attr("height", @innerHeight)
+      .attr("width", @marginedWidth)
+      .attr("height", @marginedHeight)
 
     # this is the canvas on which all data should be drawn  
     @vis = @_findOrAppend(what: 'g', in: @vis)

@@ -24,26 +24,26 @@ chart.element($("#example_view")[0])
   .data(data);
 
 chart.addSeries([
-    {
-      name: 'reach actual',
-      renderer: "column",
-      sigfigs: 0,
-      round: false,
-      color: "#c05020",
-      draggable: true,
-      tooltip: function (d) {
-        return d.y + " customers";
-      },
-      dataTransform: function (d) {
-        return {
-          x: d.period,
-          y: d.actual
-        };
-      },
-      afterDrag: function(d,y,i,draggedSeries,graph){
-        graph.data()[i].actual = y;
-      }
+  {
+    name: 'reach actual',
+    renderer: "column",
+    sigfigs: 0,
+    round: false,
+    color: "#c05020",
+    draggable: true,
+    tooltip: function (d) {
+      return d.y + " customers";
+    },
+    dataTransform: function (d) {
+      return {
+        x: d.period,
+        y: d.actual
+      };
+    },
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph.data()[i].actual = y;
     }
+  }
 
 //    ,
 //    {

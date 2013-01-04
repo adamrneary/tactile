@@ -51,14 +51,14 @@ Tactile.AxisTime = class AxisTime
     ticks.enter()                                
       .append('g')
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
-      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.innerHeight})") 
+      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
       .append('text')
       .attr("y", @marginTop)
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
       .attr("class", 'title')
                                 
-    ticks.transition(@graph.transitionSpeed)
-      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.innerHeight})")
+    ticks
+      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
 
     ticks.exit().remove()
 

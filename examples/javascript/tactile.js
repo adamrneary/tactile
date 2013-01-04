@@ -279,10 +279,10 @@ Tactile.AxisY = AxisY = (function() {
       _this = this;
     this.options = options;
     this.graph = options.graph;
-    this.vis = this.graph.vis;
     this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
     this.ticks = options.ticks || Math.floor(this.graph.height() / pixelsPerTick);
+    console.log(this.graph.height());
     this.tickSize = options.tickSize || 4;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.grid = options.grid;
@@ -293,18 +293,18 @@ Tactile.AxisY = AxisY = (function() {
 
   AxisY.prototype.render = function() {
     var axis, grid, gridSize, y, yAxis;
-    y = this.vis.selectAll('.y-ticks').data([0]);
+    y = this.graph.vis.selectAll('.y-ticks').data([0]);
     y.enter().append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
-    y.transition(this.transitionSpeed).call(yAxis);
+    y.transition().duration(this.graph.transitionSpeed).call(yAxis);
     if (this.grid) {
       console.log("grid");
       gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width();
-      grid = this.vis.selectAll('.y-grid').data([0]);
+      grid = this.graph.vis.selectAll('.y-grid').data([0]);
       grid.enter().append("svg:g").attr("class", "y-grid");
       grid.transition().call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
     }
@@ -533,12 +533,12 @@ Tactile.AxisTime = AxisTime = (function() {
       return d.value;
     });
     ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d) {
-      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.innerHeight + ")";
+      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     }).append('text').attr("y", this.marginTop).text(function(d) {
       return d.unit.formatter(new Date(d.value * 1000));
     }).attr("class", 'title');
-    ticks.transition(this.graph.transitionSpeed).attr("transform", function(d) {
-      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.innerHeight + ")";
+    ticks.attr("transform", function(d) {
+      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     });
     return ticks.exit().remove();
   };
@@ -1654,11 +1654,13 @@ Tactile.Chart = Chart = (function() {
     }
     elWidth = $(this._element).width();
     elHeight = $(this._element).height();
-    this.outerWidth = args.width || elWidth;
-    this.outerHeight = args.height || elHeight;
-    this.innerWidth = this.outerWidth - this.margin.left - this.margin.right;
-    this.innerHeight = this.outerHeight - this.margin.top - this.margin.bottom;
-    return (_ref = this.vis) != null ? _ref.attr('width', this.width()).attr('height', this.height()) : void 0;
+    this.outerWidth = args.width || elWidth || this.mainDefaults.defaultWidth;
+    this.outerHeight = args.height || elHeight || this.mainDefaults.defaultHeight;
+    this.marginedWidth = this.outerWidth - this.margin.left - this.margin.right;
+    this.marginedHeight = this.outerHeight - this.margin.top - this.margin.bottom;
+    this.innerWidth = this.marginedWidth - this.padding.left - this.padding.right;
+    this.innerHeight = this.marginedHeight - this.padding.top - this.padding.bottom;
+    return (_ref = this.vis) != null ? _ref.attr('width', this.innerWidth).attr('height', this.innerHeight) : void 0;
   };
 
   Chart.prototype.onUpdate = function(callback) {
@@ -1697,7 +1699,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.height = function(val) {
     if (!val) {
-      return (this.innerHeight - this.padding.top - this.padding.bottom) || this.defaultHeight;
+      return this.innerHeight || this.mainDefaults.defaultHeight;
     }
     this.setSize({
       width: this.outerWidth,
@@ -1708,7 +1710,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.width = function(val) {
     if (!val) {
-      return (this.innerWidth - this.padding.left - this.padding.right) || this.defaultWidth;
+      return this.innerWidth || this.mainDefaults.defaultWidth;
     }
     this.setSize({
       width: val,
@@ -1741,6 +1743,7 @@ Tactile.Chart = Chart = (function() {
       }
     };
     this.findAxis(this._axes.x);
+    this.findAxis(this._axes.y);
     return this;
   };
 
@@ -1758,7 +1761,7 @@ Tactile.Chart = Chart = (function() {
     this.vis = this._findOrAppend({
       what: 'g',
       "in": this.vis
-    }).attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
+    }).attr("class", "outer-canvas").attr("width", this.marginedWidth).attr("height", this.marginedHeight);
     this.vis = this._findOrAppend({
       what: 'g',
       "in": this.vis
