@@ -52,6 +52,7 @@ Tactile.Chart = class Chart
     _.each args, (val, key) =>
       @[key] = val
 
+    # FIXME: args.width should not be passed anymore
     @setSize(width: args.width or @defaultWidth, height: args.height or @defaultHeight)
 
     @_setupCanvas()
@@ -143,8 +144,7 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here: 
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-    seriesData = @series.active().map((d) =>
-      @data.map(d.dataTransform))
+    seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
 
     layout = d3.layout.stack()
     layout.offset(@offset)
@@ -198,10 +198,10 @@ Tactile.Chart = class Chart
     @setSize(width: val, height: @outerHeight)
     @
 
-#  data: (val) ->
-#    return @data unless val
-#    @data = val
-#    @
+  data: (val) ->
+    return @_data unless val
+    @_data = val
+    @
 
   # appends all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563

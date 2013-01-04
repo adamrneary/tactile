@@ -17,7 +17,6 @@ var data = [
 ]
 
 var chart = new Tactile.Chart({
-  data: data,
   axes: {
     y: {
       dimension: 'linear'
@@ -31,7 +30,22 @@ var chart = new Tactile.Chart({
     }
   }});
 
-chart.element($("#example_view")[0]).height(500).width(700);
+chart.element($("#example_view")[0])
+  .height(500)
+  .width(700)
+  .data(data);
+//  .axes({
+//    y: {
+//      dimension: 'linear'
+//    },
+//    x: {
+//      dimension: 'time',
+//      frame: frameVal,
+//      options: {
+//        ticksTreatment: 'align-middle'
+//      }
+//    }
+//  });
 
 chart.addSeries([
     {
@@ -54,6 +68,7 @@ chart.addSeries([
         graph.data[i].actual = y;
       }
     }
+  }
 //    ,
 //    {
 //      name: 'planned',
@@ -71,7 +86,7 @@ chart.addSeries([
 //        };
 //      }
 //    }
-  ]);
+]);
 
 chart.render();
 var sl = $("<div>").attr("id", "slider");

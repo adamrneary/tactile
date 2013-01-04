@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2013-01-03
+/*! tactile - v0.0.1 - 2013-01-04
 * https://github.com/activecell/tactile
 * Copyright (c) 2013 Activecell; Licensed  */
 
@@ -1643,7 +1643,7 @@ Tactile.Chart = Chart = (function() {
     var i, layout, seriesData, stackedData,
       _this = this;
     seriesData = this.series.active().map(function(d) {
-      return _this.data.map(d.dataTransform);
+      return _this._data.map(d.dataTransform);
     });
     layout = d3.layout.stack();
     layout.offset(this.offset);
@@ -1722,6 +1722,14 @@ Tactile.Chart = Chart = (function() {
       width: val,
       height: this.outerHeight
     });
+    return this;
+  };
+
+  Chart.prototype.data = function(val) {
+    if (!val) {
+      return this._data;
+    }
+    this._data = val;
     return this;
   };
 
