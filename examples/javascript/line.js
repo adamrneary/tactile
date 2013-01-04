@@ -13,26 +13,12 @@ var data = [
 ]
 
 
-// we want sth like this:
-//var chart = new Tactile.Chart()
-//chart.element($("#example_view")[0])
-//  .width(680)
-//  .height(400)
-//  .data(data)
-//  .axes({
-//    x: {
-//      dimension: "time",
-//      frame: frameVal
-//    }
-//  });
-
-var chart = new Tactile.Chart({data:data}).element($("#example_view")[0])
-//  .data(data)
-//  .axes({
-//  x: {
-//    dimension: "time",
-//    frame: frameVal
-//  }});
+var chart = new Tactile.Chart().element($("#example_view")[0]).data(data)
+  .axes({
+    x: {
+      dimension: "time",
+      frame: frameVal
+    }});
 
 chart.addSeries(
   {
@@ -61,7 +47,7 @@ chart.addSeries(
     color: "#6060c0",
     draggable: true,
     afterDrag: function (d, y, i, draggedSeries, graph) {
-      graph.data[i].z = y;
+      graph.data()[i].z = y;
     },
     tooltip: function (d) {
       return d.y + " friends";
@@ -85,7 +71,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart.axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     chart.render();
   }
 });

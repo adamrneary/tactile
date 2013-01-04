@@ -274,7 +274,7 @@ Tactile.Chart = class Chart
   _findOrAppend: (options) ->
     element = options.in
     node = options.what
-    selector = (if options.selector then options.selector else node)
+    selector = options.selector or node
 
     found = element.select(selector)
     if found?[0][0]

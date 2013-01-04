@@ -41,7 +41,7 @@ chart.addSeries([
       };
     },
     afterDrag: function (d, y, i, draggedSeries, graph) {
-      graph.data()[i].actual = y;
+      graph._data[i].actual = y;
     }
   }
 
@@ -73,7 +73,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart.axes().x.frame = ui.values;
+    chart._axes.x.frame = ui.values;
     chart.render();
   }
 });

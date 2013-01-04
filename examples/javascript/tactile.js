@@ -1781,7 +1781,7 @@ Tactile.Chart = Chart = (function() {
     var element, found, node, selector;
     element = options["in"];
     node = options.what;
-    selector = (options.selector ? options.selector : node);
+    selector = options.selector || node;
     found = element.select(selector);
     if (found != null ? found[0][0] : void 0) {
       return found;
