@@ -13,6 +13,8 @@ Tactile.Dragger = class Dragger
     @power = Math.pow(10, (@series.sigfigs or 1))
     @setSpeed = @renderer.transitionSpeed
 
+    @timesRendered = 0
+
 
   _bindMouseEvents: ->
     d3.select(@graph.element)
@@ -101,7 +103,7 @@ Tactile.Dragger = class Dragger
 
     circs
       .transition()
-      .duration(if @renderer.timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
+      .duration(if @timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
 
