@@ -292,6 +292,9 @@ Tactile.AxisY = AxisY = (function() {
 
   AxisY.prototype.render = function() {
     var axis, grid, gridSize, y, yAxis;
+    if (this.graph.y == null) {
+      return;
+    }
     y = this.graph.vis.selectAll('.y-ticks').data([0]);
     y.enter().append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
@@ -522,6 +525,9 @@ Tactile.AxisTime = AxisTime = (function() {
   AxisTime.prototype.render = function() {
     var g, tickData, ticks,
       _this = this;
+    if (this.graph.x == null) {
+      return;
+    }
     g = this.graph.vis.selectAll('.x-ticks').data([0]);
     g.enter().append('g').attr('class', 'x-ticks');
     tickData = this.tickOffsets().filter(function(tick) {

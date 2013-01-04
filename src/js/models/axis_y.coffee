@@ -13,6 +13,7 @@ Tactile.AxisY = class AxisY
       @render()
 
   render: ->
+    return unless @graph.y?
     y = @graph.vis.selectAll('.y-ticks').data([0])
     y.enter().append("g").attr("class", ["y-ticks", @ticksTreatment].join(" "))
     

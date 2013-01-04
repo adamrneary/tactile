@@ -39,6 +39,7 @@ Tactile.AxisTime = class AxisTime
     offsets
 
   render: ->
+    return unless @graph.x?
     g = @graph.vis.selectAll('.x-ticks').data([0])
     g.enter().append('g').attr('class', 'x-ticks')
                 
