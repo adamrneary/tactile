@@ -19,8 +19,8 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
     angleRange = maxAngle - minAngle
   
     plotValue = @value
-    r = Math.round( @graph.height / totalSizeDivide )
-    translateWidth = ( @graph.width ) / 2
+    r = Math.round( @graph.height() / totalSizeDivide )
+    translateWidth = ( @graph.width() ) / 2
     translateHeight = r
     originTranslate = "translate(#{translateWidth}, #{translateHeight})"
 
@@ -87,13 +87,13 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
       .attr("transform", "rotate(#{plotAngle})")
       
     @graph.vis.append("svg:circle")
-      .attr("r", @graph.width / 30)
+      .attr("r", @graph.width() / 30)
       .attr("class", "gauge pointer-circle")
       .style("opacity", 1)
       .attr "transform", originTranslate
     # pointer circle then inner-circle (nail)
     @graph.vis.append("svg:circle")               
-      .attr("r", @graph.width / 90)
+      .attr("r", @graph.width() / 90)
       .attr('class', 'gauge pointer-nail')
       .style("opacity", 1)
       .attr('transform', originTranslate)  
@@ -104,15 +104,15 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@min)
-      .attr("transform", "translate(#{0.1 * @graph.width}, #{1.15 * @graph.height * @bottomOffset})")
+      .attr("transform", "translate(#{0.1 * @graph.width()}, #{1.15 * @graph.height() * @bottomOffset})")
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@value)
-      .attr("transform", "translate(#{( @graph.width - @margin.right ) / 1.95}, #{1.20 * @graph.height * @bottomOffset})")
+      .attr("transform", "translate(#{( @graph.width() - @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@max)
-      .attr("transform", "translate(#{0.90 * @graph.width}, #{1.15 * @graph.height * @bottomOffset})")
+      .attr("transform", "translate(#{0.90 * @graph.width()}, #{1.15 * @graph.height() * @bottomOffset})")
     
   domain: ->
     @value = @series.stack[0].value

@@ -12,52 +12,52 @@ var data = [
   {x: 8, y: 120, z: 490}
 ]
 
-var chart = new Tactile.Chart({
-  element: $("#example_view")[0],
-  width: 680,
-  height: 400,
-  data: data,
-  axes: {
-    x: {
-      dimension: "time",
-      frame: frameVal
+
+var chart = new Tactile.Chart({unstack: false})
+  .element($("#example_view")[0])
+
+chart.data(data).width(680).height(400).axes({
+  x: {
+    dimension: "time",
+    frame: frameVal
+  }
+});
+
+chart.addSeries([
+  {
+    name: 'enemies',
+    renderer: 'area',
+    sigfigs: 0,
+    draggable: true,
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph.data()[i].y = y;
+    },
+    color: "#c05020",
+    dataTransform: function (d) {
+      return {
+        x: d.x,
+        y: d.y
+      };
     }
   },
-  series: [
-    {
-      name: 'enemies',
-      renderer: 'area',
-      sigfigs: 0,
-      draggable: true,
-      afterDrag: function (d, y, i, draggedSeries, graph) {
-        graph.data[i].y = y;
-      },
-      color: "#c05020",
-      dataTransform: function (d) {
-        return {
-          x: d.x,
-          y: d.y
-        };
-      }
+  {
+    name: 'friends',
+    renderer: 'area',
+    sigfigs: 1,
+    color: "#6060c0",
+    draggable: true,
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph.data()[i].z = y;
     },
-    {
-      name: 'friends',
-      renderer: 'area',
-      sigfigs: 1,
-      color: "#6060c0",
-      draggable: true,
-      afterDrag: function (d, y, i, draggedSeries, graph) {
-        graph.data[i].z = y;
-      },
-      dataTransform: function (d) {
-        return {
-          x: d.x,
-          y: d.z
-        };
-      }
+    dataTransform: function (d) {
+      return {
+        x: d.x,
+        y: d.z
+      };
     }
-  ]
-});
+  }
+]);
+
 
 chart.render();
 var sl = $("<div>").attr("id", "slider");
@@ -68,7 +68,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart.axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     chart.render();
   }
 });

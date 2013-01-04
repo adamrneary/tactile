@@ -9,16 +9,17 @@ Tactile.Chart = class Chart
     'donut': DonutRenderer
 
   mainDefaults:
-    margin: {top: 20, right: 20, bottom: 20, left: 20}
-    padding: {top: 10, right: 10, bottom: 10, left: 10}
+    margin:
+      {top: 20, right: 20, bottom: 20, left: 20}
+    padding:
+      {top: 10, right: 10, bottom: 10, left: 10}
     interpolation: 'monotone'
     offset: 'zero'
     min: undefined
     max: undefined
     transitionSpeed: 200
-    order: [] # multi renderer support
-    height: 400
-    width: 730
+    defaultHeight: 400
+    defaultWidth: 730
     axes:
       x:
         dimension: "time"
@@ -31,47 +32,53 @@ Tactile.Chart = class Chart
   seriesDefaults:
     dataTransform: (d) -> d
 
+
+
   constructor: (args) ->
     @renderers = []
+    @series = []
     @window = {}
     @updateCallbacks = []
 
     args = _.extend({}, @mainDefaults, args)
-    args.series = (if args.series then _.map(args.series, (d) => _.extend({}, @seriesDefaults, d)) else [])
-    #TODO: Deep copy issuses abound here. 
-    args.axes =
-        x:
-          frame: (args.axes?.x?.frame or @mainDefaults.axes.x.frame)
-          dimension: (args.axes?.x?.dimension or @mainDefaults.axes.x.dimension)
-        y:
-          frame: (args.axes?.y?.frame or @mainDefaults.axes.y.frame)
-          dimension: (args.axes?.y?.dimension or @mainDefaults.axes.y.dimension)
 
+    if args.axes?
+      @axes(args.axes)
+      delete args.axes
 
     _.each args, (val, key) =>
       @[key] = val
+
+    # FIXME: args.width should not be passed anymore
+    @setSize(width: args.width or @defaultWidth, height: args.height or @defaultHeight)
+
+    @addSeries(args.series, overwrite: true)
+
+
+
+  # Adds series to the chart and creates renderer instance for it
+  # you can pass a single object here or an array of them
+  # if you pass option overwrite: true all previous series will be removed
+  addSeries: (series, options = {overwrite: false}) ->
+    return unless series
+    series = [series] unless _.isArray(series)
+    newSeries = _.map(series, (s) => _.extend({}, @seriesDefaults, s))
+
+    if options.overwrite
+      @series = newSeries
+    else
+      @series = @series.concat(newSeries)
 
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
 
-    @setSize( width: args.width, height: args.height )
-    # need a constant class name for a containing div
-    $(@element).addClass('graph-container')
-    @_setupCanvas()
-
-    @initRenderers(args)
-    
-    # TODO:
-    # it should be possible to pass options to the axes
-    # so far they were 
-    # for x: unit, ticksTreatment, grid 
-    # for y: orientation, pixelsPerTick, ticks and few more.
-    axes = [@findAxis(@axes.x), @findAxis(@axes.y)]
-
+    # only init the renderers for just added series
+    @initRenderers(newSeries)
 
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
+    @_setupCanvas()
     stackedData = @stackData()
 
     _.each @renderers, (renderer) =>
@@ -93,21 +100,20 @@ Tactile.Chart = class Chart
       # So if we have renderers including bar chart points are 
       # rendered in the center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
-        barWidth = @width / renderer.series.stack.length / 2
+        barWidth = @width() / renderer.series.stack.length / 2
         rangeStart = barWidth
-        rangeEnd = @width - barWidth
+        rangeEnd = @width() - barWidth
 
-      xframe = [(if @axes.x.frame[0] then @axes.x.frame[0] else domain.x[0]),
-                (if @axes.x.frame[1] then @axes.x.frame[1] else domain.x[1])]
-      yframe = [(if @axes.y.frame[0] then @axes.y.frame[0] else domain.y[0]),
-                (if @axes.y.frame[1] then @axes.y.frame[1] else domain.y[1])]
+      xframe = [(if @_axes.x.frame[0] then @_axes.x.frame[0] else domain.x[0]),
+        (if @_axes.x.frame[1] then @_axes.x.frame[1] else domain.x[1])]
+      yframe = [(if @_axes.y.frame[0] then @_axes.y.frame[0] else domain.y[0]),
+        (if @_axes.y.frame[1] then @_axes.y.frame[1] else domain.y[1])]
 
-
-      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width])
-      @y = d3.scale.linear().domain(yframe).range([@height, 0])
+      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width()])
+      @y = d3.scale.linear().domain(yframe).range([@height(), 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
-        .range([0, @height])
+        .range([0, @height()])
 
   findAxis: (axis) ->
     return unless @_allRenderersCartesian()
@@ -128,9 +134,7 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here: 
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-
-    seriesData = @series.active().map((d) =>
-      @data.map(d.dataTransform))
+    seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
 
     layout = d3.layout.stack()
     layout.offset(@offset)
@@ -142,80 +146,141 @@ Tactile.Chart = class Chart
 
     @stackedData = stackedData
 
-  setSize: (args) ->
-    args = args || {}
+  # Set's the size for the chart
+  # please note you have to call render() or update() for this changes to be reflected in your chart
+  #
+  # outerWith, outerHeight - no margins or paddings subtracted
+  # marginedWidth, marginedHeight - margins subtracted
+  # innerWidth, innerHeight - margins and paddings subtracted
+  # width(), height() returns innerWidth as it's the most common used
+  setSize: (args = {}) ->
+    elWidth = $(@_element).width()
+    elHeight = $(@_element).height()
 
-    elWidth = $(@element).width()
-    elHeight = $(@element).height()
+    @outerWidth = args.width || elWidth || @mainDefaults.defaultWidth
+    @outerHeight = args.height || elHeight || @mainDefaults.defaultHeight
 
-    @outerWidth = args.width || elWidth
-    @outerHeight = args.height || elHeight
+    @marginedWidth = @outerWidth - @margin.left - @margin.right
+    @marginedHeight = @outerHeight - @margin.top - @margin.bottom
+    @innerWidth = @marginedWidth - @padding.left - @padding.right
+    @innerHeight = @marginedHeight - @padding.top - @padding.bottom
 
-    @innerWidth = @outerWidth - @margin.left - @margin.right
-    @innerHeight = @outerHeight - @margin.top - @margin.bottom
-    @width = @innerWidth - @padding.left - @padding.right
-    @height = @innerHeight - @padding.top - @padding.bottom
-
-    @vis?.attr('width', @width).attr('height', @height)
+    @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
 
-  initRenderers: (args) ->
-    _.each @series.active(), (s, index) =>
+  initRenderers: (series) ->
+    renderersSize = @renderers.length
+    _.each series, (s, index) =>
       name = s.renderer
       if (!@_renderers[name])
         throw "couldn't find renderer #{name}"
 
       rendererClass = @_renderers[name]
-      rendererOptions = _.extend {}, args, {graph: @, series: s, rendererIndex: index}
+      rendererOptions = _.extend {}, {graph: @, transitionSpeed: @transitionSpeed, series: s, rendererIndex: index + renderersSize}
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
+  element: (val) ->
+    return @_element unless val
+    @_element = val
+    @_setupCanvas()
+    @
 
-  # appends all the chart canvas elements so it respects the margins and paddings
+  height: (val) ->
+    return (@innerHeight or @mainDefaults.defaultHeight) unless val
+    @setSize(width: @outerWidth, height: val)
+    @
+
+  width: (val) ->
+    return (@innerWidth or @mainDefaults.defaultWidth) unless val
+    @setSize(width: val, height: @outerHeight)
+    @
+
+  data: (val) ->
+    return @_data unless val
+    @_data = val
+    @
+
+  axes: (args, options) ->
+    return @_axes unless args
+    @_axes =
+      x:
+        frame: (args.x?.frame or @mainDefaults.axes.x.frame)
+        dimension: (args.x?.dimension or @mainDefaults.axes.x.dimension)
+      y:
+        frame: (args.y?.frame or @mainDefaults.axes.y.frame)
+        dimension: (args.y?.dimension or @mainDefaults.axes.y.dimension)
+
+    # TODO:
+    # it should be possible to pass options to the axes
+    # so far they were
+    # for x: unit, ticksTreatment, grid
+    # for y: orientation, pixelsPerTick, ticks and few more.
+    @findAxis(@_axes.x)
+    @findAxis(@_axes.y)
+    @
+
+
+  # Appends or updates all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
-    @svg = d3.select(@element)
-      .append("svg")
-        .attr('width', @outerWidth)
-        .attr('height', @outerHeight)
+    # need a constant class name for a containing div
+    $(@_element).addClass('graph-container')
+    @svg = @_findOrAppend(what: 'svg', in: d3.select(@_element))
 
-    @vis = @svg.append("g")
-        .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+    @svg
+      .attr('width', @outerWidth)
+      .attr('height', @outerHeight)
 
-    @vis = @vis.append("g")
+    @vis = @_findOrAppend(what: 'g', in: @svg)
+      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+
+    @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("class", "outer-canvas")
-      .attr("width", @innerWidth)
-      .attr("height", @innerHeight)
+      .attr("width", @marginedWidth)
+      .attr("height", @marginedHeight)
 
     # this is the canvas on which all data should be drawn  
-    @vis = @vis.append("g")
+    @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
 
     # Add the default clip path.
-    @vis.append("clipPath")
-        .attr("id", "clip")
+    @_findOrAppend(what: 'clipPath', selector: '#clip', in: @vis)
+      .attr("id", "clip")
       .append("rect")
-        .attr("width", @width)
-        # increase height to provide room vertically for line thickness
-        .attr("height", @height + 4)
-        # translate to adjust for increased height (split the difference)
-        .attr("transform", "translate(0,-2)")
+      .attr("width", @width())
+    # increase height to provide room vertically for line thickness
+      .attr("height", @height() + 4)
+    # translate to adjust for increased height (split the difference)
+      .attr("transform", "translate(0,-2)")
 
     # Add the clip path.
-    @vis.append("clipPath")
-        .attr("id", "scatter-clip")
+    @_findOrAppend(what: 'clipPath', selector: '#scatter-clip', in: @vis)
+      .attr("id", "scatter-clip")
       .append("rect")
-        # increase width to provide room vertically for circle radius
-        .attr("width", @width + 12)
-        # increase height to provide room vertically for circle radius
-        .attr("height", @height + 12)
-        # translate to adjust for increased width and height
-        .attr("transform", "translate(-6,-6)")
+    # increase width to provide room vertically for circle radius
+      .attr("width", @width() + 12)
+    # increase height to provide room vertically for circle radius
+      .attr("height", @height() + 12)
+    # translate to adjust for increased width and height
+      .attr("transform", "translate(-6,-6)")
 
+  # looks for node in given node
+  # returns it or appends to the node in `in` option
+  # you can pass selector it is then used to lookup for the exisiting element
+  _findOrAppend: (options) ->
+    element = options.in
+    node = options.what
+    selector = options.selector or node
 
+    found = element.select(selector)
+    if found?[0][0]
+      found
+    else
+      element.append(node)
 
   # this trims data down to the range that is currently viewed. 
   # See range_slider for a clue how it's used
@@ -244,5 +309,5 @@ Tactile.Chart = class Chart
 
   unstackTransition: ->
     _.each(@renderersByType('column'), (r) -> r.unstackTransition())
-    
+
     

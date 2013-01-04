@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2013-01-03
+/*! tactile - v0.0.1 - 2013-01-04
 * https://github.com/activecell/tactile
 * Copyright (c) 2013 Activecell; Licensed  */
 
@@ -28,7 +28,7 @@ Tactile.Tooltip = Tooltip = (function() {
 
   Tooltip.prototype.appendTooltip = function() {
     var chartContainer, tip;
-    chartContainer = d3.select(this.options.graph.element);
+    chartContainer = d3.select(this.options.graph._element);
     if (Tooltip._spotlightMode && this.el.node().classList.contains("active")) {
       tip = chartContainer.select('.tooltip');
     } else {
@@ -52,7 +52,7 @@ Tactile.Tooltip = Tooltip = (function() {
       var center, hoveredNode;
       center = [0, 0];
       if (_this.options.placement === "mouse") {
-        center = d3.mouse(_this.options.graph.element);
+        center = d3.mouse(_this.options.graph._element);
       } else {
         if (_this.options.position) {
           center[0] = _this.options.position[0];
@@ -279,10 +279,9 @@ Tactile.AxisY = AxisY = (function() {
       _this = this;
     this.options = options;
     this.graph = options.graph;
-    this.vis = this.graph.vis;
     this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
-    this.ticks = options.ticks || Math.floor(this.graph.height / pixelsPerTick);
+    this.ticks = options.ticks || Math.floor(this.graph.height() / pixelsPerTick);
     this.tickSize = options.tickSize || 4;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.grid = options.grid;
@@ -293,22 +292,25 @@ Tactile.AxisY = AxisY = (function() {
 
   AxisY.prototype.render = function() {
     var axis, grid, gridSize, y, yAxis;
-    y = this.vis.selectAll('.y-ticks').data([0]);
+    if (this.graph.y == null) {
+      return;
+    }
+    y = this.graph.vis.selectAll('.y-ticks').data([0]);
     y.enter().append("g").attr("class", ["y-ticks", this.ticksTreatment].join(" "));
     axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
     axis.tickFormat(this.options.tickFormat || function(y) {
       return y;
     });
     yAxis = axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
-    y.transition(this.transitionSpeed).call(yAxis);
+    y.transition().duration(this.graph.transitionSpeed).call(yAxis);
     if (this.grid) {
       console.log("grid");
-      gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width;
-      grid = this.vis.selectAll('.y-grid').data([0]);
+      gridSize = (this.orientation === "right" ? 1 : -1) * this.graph.width();
+      grid = this.graph.vis.selectAll('.y-grid').data([0]);
       grid.enter().append("svg:g").attr("class", "y-grid");
       grid.transition().call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
     }
-    return this._renderHeight = this.graph.height;
+    return this._renderHeight = this.graph.height();
   };
 
   return AxisY;
@@ -342,7 +344,7 @@ Tactile.Dragger = Dragger = (function() {
   }
 
   Dragger.prototype._bindMouseEvents = function() {
-    return d3.select(this.graph.element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
+    return d3.select(this.graph._element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
   };
 
   Dragger.prototype.makeHandlers = function(nodes) {
@@ -382,13 +384,13 @@ Tactile.Dragger = Dragger = (function() {
     t = d3.event.changedTouches;
     if (this.dragged) {
       if (this.series.tooltip) {
-        elementRelativeposition = d3.mouse(this.graph.element);
-        tip = d3.select(this.graph.element).select('.tooltip');
+        elementRelativeposition = d3.mouse(this.graph._element);
+        tip = d3.select(this.graph._element).select('.tooltip');
         offsetTop = this.graph.padding.top + this.graph.margin.top;
         tip.style("top", "" + (this.graph.y(this.dragged.y) + offsetTop) + "px");
       }
       this.renderer.transitionSpeed = 0;
-      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height, p[1])));
+      inverted = this.graph.y.invert(Math.max(0, Math.min(this.graph.height(), p[1])));
       value = Math.round(inverted * this.power) / this.power;
       this.dragged.y = value;
       this.onDrag(this.dragged, this.series, this.graph);
@@ -523,6 +525,9 @@ Tactile.AxisTime = AxisTime = (function() {
   AxisTime.prototype.render = function() {
     var g, tickData, ticks,
       _this = this;
+    if (this.graph.x == null) {
+      return;
+    }
     g = this.graph.vis.selectAll('.x-ticks').data([0]);
     g.enter().append('g').attr('class', 'x-ticks');
     tickData = this.tickOffsets().filter(function(tick) {
@@ -533,12 +538,12 @@ Tactile.AxisTime = AxisTime = (function() {
       return d.value;
     });
     ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d) {
-      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.innerHeight + ")";
+      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     }).append('text').attr("y", this.marginTop).text(function(d) {
       return d.unit.formatter(new Date(d.value * 1000));
     }).attr("class", 'title');
-    ticks.transition(this.transitionSpeed).attr("transform", function(d) {
-      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.innerHeight + ")";
+    ticks.attr("transform", function(d) {
+      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     });
     return ticks.exit().remove();
   };
@@ -857,8 +862,8 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     maxAngle = 85;
     angleRange = maxAngle - minAngle;
     plotValue = this.value;
-    r = Math.round(this.graph.height / totalSizeDivide);
-    translateWidth = this.graph.width / 2;
+    r = Math.round(this.graph.height() / totalSizeDivide);
+    translateWidth = (this.graph.width()) / 2;
     translateHeight = r;
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
@@ -873,17 +878,17 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
     pg = this.graph.vis.append("g").data([lineData]).attr("class", "gauge pointer").attr("transform", originTranslate);
     pointer = pg.append("path").attr("d", pointerLine);
     pointer.transition().duration(250).attr("transform", "rotate(" + plotAngle + ")");
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
+    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
     if (this.series.labels) {
       return this.renderLabels();
     }
   };
 
   GaugeRenderer.prototype.renderLabels = function() {
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width - this.margin.right) / 1.95) + ", " + (1.20 * this.graph.height * this.bottomOffset) + ")");
-    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width) + ", " + (1.15 * this.graph.height * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
+    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
   };
 
   GaugeRenderer.prototype.domain = function() {
@@ -984,7 +989,7 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     var barWidth, count, data;
     data = this.series.stack;
     count = data.length;
-    return barWidth = this.graph.width / count * (1 - this.gapSize);
+    return barWidth = this.graph.width() / count * (1 - this.gapSize);
   };
 
   ColumnRenderer.prototype.stackTransition = function() {
@@ -1162,7 +1167,7 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
         }
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d) {
-      return [(_this.series.draggable ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
+      return [(_this.dragger ? "draggable-node" : void 0), (d.dragged ? "active" : void 0)].join(' ');
     }).attr("fill", function(d) {
       if (d.dragged) {
         return 'white';
@@ -1492,9 +1497,8 @@ Tactile.Chart = Chart = (function() {
     min: void 0,
     max: void 0,
     transitionSpeed: 200,
-    order: [],
-    height: 400,
-    width: 730,
+    defaultHeight: 400,
+    defaultWidth: 730,
     axes: {
       x: {
         dimension: "time",
@@ -1518,42 +1522,57 @@ Tactile.Chart = Chart = (function() {
 
     this.discoverRange = __bind(this.discoverRange, this);
 
-    var axes, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
-      _this = this;
+    var _this = this;
     this.renderers = [];
+    this.series = [];
     this.window = {};
     this.updateCallbacks = [];
     args = _.extend({}, this.mainDefaults, args);
-    args.series = (args.series ? _.map(args.series, function(d) {
-      return _.extend({}, _this.seriesDefaults, d);
-    }) : []);
-    args.axes = {
-      x: {
-        frame: ((_ref = args.axes) != null ? (_ref1 = _ref.x) != null ? _ref1.frame : void 0 : void 0) || this.mainDefaults.axes.x.frame,
-        dimension: ((_ref2 = args.axes) != null ? (_ref3 = _ref2.x) != null ? _ref3.dimension : void 0 : void 0) || this.mainDefaults.axes.x.dimension
-      },
-      y: {
-        frame: ((_ref4 = args.axes) != null ? (_ref5 = _ref4.y) != null ? _ref5.frame : void 0 : void 0) || this.mainDefaults.axes.y.frame,
-        dimension: ((_ref6 = args.axes) != null ? (_ref7 = _ref6.y) != null ? _ref7.dimension : void 0 : void 0) || this.mainDefaults.axes.y.dimension
-      }
-    };
+    if (args.axes != null) {
+      this.axes(args.axes);
+      delete args.axes;
+    }
     _.each(args, function(val, key) {
       return _this[key] = val;
     });
+    this.setSize({
+      width: args.width || this.defaultWidth,
+      height: args.height || this.defaultHeight
+    });
+    this.addSeries(args.series, {
+      overwrite: true
+    });
+  }
+
+  Chart.prototype.addSeries = function(series, options) {
+    var newSeries,
+      _this = this;
+    if (options == null) {
+      options = {
+        overwrite: false
+      };
+    }
+    if (!series) {
+      return;
+    }
+    if (!_.isArray(series)) {
+      series = [series];
+    }
+    newSeries = _.map(series, function(s) {
+      return _.extend({}, _this.seriesDefaults, s);
+    });
+    if (options.overwrite) {
+      this.series = newSeries;
+    } else {
+      this.series = this.series.concat(newSeries);
+    }
     this.series.active = function() {
       return _this.series.filter(function(s) {
         return !s.disabled;
       });
     };
-    this.setSize({
-      width: args.width,
-      height: args.height
-    });
-    $(this.element).addClass('graph-container');
-    this._setupCanvas();
-    this.initRenderers(args);
-    axes = [this.findAxis(this.axes.x), this.findAxis(this.axes.y)];
-  }
+    return this.initRenderers(newSeries);
+  };
 
   Chart.prototype.render = function() {
     var stackedData,
@@ -1561,6 +1580,7 @@ Tactile.Chart = Chart = (function() {
     if (this.renderers === void 0 || _.isEmpty(this.renderers)) {
       return;
     }
+    this._setupCanvas();
     stackedData = this.stackData();
     _.each(this.renderers, function(renderer) {
       _this.discoverRange(renderer);
@@ -1580,15 +1600,15 @@ Tactile.Chart = Chart = (function() {
     domain = renderer.domain();
     if (renderer.cartesian) {
       if (this._containsColumnChart()) {
-        barWidth = this.width / renderer.series.stack.length / 2;
+        barWidth = this.width() / renderer.series.stack.length / 2;
         rangeStart = barWidth;
-        rangeEnd = this.width - barWidth;
+        rangeEnd = this.width() - barWidth;
       }
-      xframe = [(this.axes.x.frame[0] ? this.axes.x.frame[0] : domain.x[0]), (this.axes.x.frame[1] ? this.axes.x.frame[1] : domain.x[1])];
-      yframe = [(this.axes.y.frame[0] ? this.axes.y.frame[0] : domain.y[0]), (this.axes.y.frame[1] ? this.axes.y.frame[1] : domain.y[1])];
-      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width]);
-      this.y = d3.scale.linear().domain(yframe).range([this.height, 0]);
-      return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height]);
+      xframe = [(this._axes.x.frame[0] ? this._axes.x.frame[0] : domain.x[0]), (this._axes.x.frame[1] ? this._axes.x.frame[1] : domain.x[1])];
+      yframe = [(this._axes.y.frame[0] ? this._axes.y.frame[0] : domain.y[0]), (this._axes.y.frame[1] ? this._axes.y.frame[1] : domain.y[1])];
+      this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width()]);
+      this.y = d3.scale.linear().domain(yframe).range([this.height(), 0]);
+      return this.y.magnitude = d3.scale.linear().domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]]).range([0, this.height()]);
     }
   };
 
@@ -1620,7 +1640,7 @@ Tactile.Chart = Chart = (function() {
     var i, layout, seriesData, stackedData,
       _this = this;
     seriesData = this.series.active().map(function(d) {
-      return _this.data.map(d.dataTransform);
+      return _this._data.map(d.dataTransform);
     });
     layout = d3.layout.stack();
     layout.offset(this.offset);
@@ -1634,48 +1654,147 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.setSize = function(args) {
     var elHeight, elWidth, _ref;
-    args = args || {};
-    elWidth = $(this.element).width();
-    elHeight = $(this.element).height();
-    this.outerWidth = args.width || elWidth;
-    this.outerHeight = args.height || elHeight;
-    this.innerWidth = this.outerWidth - this.margin.left - this.margin.right;
-    this.innerHeight = this.outerHeight - this.margin.top - this.margin.bottom;
-    this.width = this.innerWidth - this.padding.left - this.padding.right;
-    this.height = this.innerHeight - this.padding.top - this.padding.bottom;
-    return (_ref = this.vis) != null ? _ref.attr('width', this.width).attr('height', this.height) : void 0;
+    if (args == null) {
+      args = {};
+    }
+    elWidth = $(this._element).width();
+    elHeight = $(this._element).height();
+    this.outerWidth = args.width || elWidth || this.mainDefaults.defaultWidth;
+    this.outerHeight = args.height || elHeight || this.mainDefaults.defaultHeight;
+    this.marginedWidth = this.outerWidth - this.margin.left - this.margin.right;
+    this.marginedHeight = this.outerHeight - this.margin.top - this.margin.bottom;
+    this.innerWidth = this.marginedWidth - this.padding.left - this.padding.right;
+    this.innerHeight = this.marginedHeight - this.padding.top - this.padding.bottom;
+    return (_ref = this.vis) != null ? _ref.attr('width', this.innerWidth).attr('height', this.innerHeight) : void 0;
   };
 
   Chart.prototype.onUpdate = function(callback) {
     return this.updateCallbacks.push(callback);
   };
 
-  Chart.prototype.initRenderers = function(args) {
-    var _this = this;
-    return _.each(this.series.active(), function(s, index) {
+  Chart.prototype.initRenderers = function(series) {
+    var renderersSize,
+      _this = this;
+    renderersSize = this.renderers.length;
+    return _.each(series, function(s, index) {
       var name, r, rendererClass, rendererOptions;
       name = s.renderer;
       if (!_this._renderers[name]) {
         throw "couldn't find renderer " + name;
       }
       rendererClass = _this._renderers[name];
-      rendererOptions = _.extend({}, args, {
+      rendererOptions = _.extend({}, {
         graph: _this,
+        transitionSpeed: _this.transitionSpeed,
         series: s,
-        rendererIndex: index
+        rendererIndex: index + renderersSize
       });
       r = new rendererClass(rendererOptions);
       return _this.renderers.push(r);
     });
   };
 
+  Chart.prototype.element = function(val) {
+    if (!val) {
+      return this._element;
+    }
+    this._element = val;
+    this._setupCanvas();
+    return this;
+  };
+
+  Chart.prototype.height = function(val) {
+    if (!val) {
+      return this.innerHeight || this.mainDefaults.defaultHeight;
+    }
+    this.setSize({
+      width: this.outerWidth,
+      height: val
+    });
+    return this;
+  };
+
+  Chart.prototype.width = function(val) {
+    if (!val) {
+      return this.innerWidth || this.mainDefaults.defaultWidth;
+    }
+    this.setSize({
+      width: val,
+      height: this.outerHeight
+    });
+    return this;
+  };
+
+  Chart.prototype.data = function(val) {
+    if (!val) {
+      return this._data;
+    }
+    this._data = val;
+    return this;
+  };
+
+  Chart.prototype.axes = function(args, options) {
+    var _ref, _ref1, _ref2, _ref3;
+    if (!args) {
+      return this._axes;
+    }
+    this._axes = {
+      x: {
+        frame: ((_ref = args.x) != null ? _ref.frame : void 0) || this.mainDefaults.axes.x.frame,
+        dimension: ((_ref1 = args.x) != null ? _ref1.dimension : void 0) || this.mainDefaults.axes.x.dimension
+      },
+      y: {
+        frame: ((_ref2 = args.y) != null ? _ref2.frame : void 0) || this.mainDefaults.axes.y.frame,
+        dimension: ((_ref3 = args.y) != null ? _ref3.dimension : void 0) || this.mainDefaults.axes.y.dimension
+      }
+    };
+    this.findAxis(this._axes.x);
+    this.findAxis(this._axes.y);
+    return this;
+  };
+
   Chart.prototype._setupCanvas = function() {
-    this.svg = d3.select(this.element).append("svg").attr('width', this.outerWidth).attr('height', this.outerHeight);
-    this.vis = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-    this.vis = this.vis.append("g").attr("class", "outer-canvas").attr("width", this.innerWidth).attr("height", this.innerHeight);
-    this.vis = this.vis.append("g").attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
-    this.vis.append("clipPath").attr("id", "clip").append("rect").attr("width", this.width).attr("height", this.height + 4).attr("transform", "translate(0,-2)");
-    return this.vis.append("clipPath").attr("id", "scatter-clip").append("rect").attr("width", this.width + 12).attr("height", this.height + 12).attr("transform", "translate(-6,-6)");
+    $(this._element).addClass('graph-container');
+    this.svg = this._findOrAppend({
+      what: 'svg',
+      "in": d3.select(this._element)
+    });
+    this.svg.attr('width', this.outerWidth).attr('height', this.outerHeight);
+    this.vis = this._findOrAppend({
+      what: 'g',
+      "in": this.svg
+    }).attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.vis = this._findOrAppend({
+      what: 'g',
+      "in": this.vis
+    }).attr("class", "outer-canvas").attr("width", this.marginedWidth).attr("height", this.marginedHeight);
+    this.vis = this._findOrAppend({
+      what: 'g',
+      "in": this.vis
+    }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
+    this._findOrAppend({
+      what: 'clipPath',
+      selector: '#clip',
+      "in": this.vis
+    }).attr("id", "clip").append("rect").attr("width", this.width()).attr("height", this.height() + 4).attr("transform", "translate(0,-2)");
+    return this._findOrAppend({
+      what: 'clipPath',
+      selector: '#scatter-clip',
+      "in": this.vis
+    }).attr("id", "scatter-clip").append("rect").attr("width", this.width() + 12).attr("height", this.height() + 12).attr("transform", "translate(-6,-6)");
+  };
+
+  Chart.prototype._findOrAppend = function(options) {
+    var element, found, node, selector;
+    element = options["in"];
+    node = options.what;
+    selector = options.selector || node;
+    found = element.select(selector);
+    if (found != null ? found[0][0] : void 0) {
+      return found;
+    } else {
+      return element.append(node);
+    }
   };
 
   Chart.prototype._slice = function(d) {

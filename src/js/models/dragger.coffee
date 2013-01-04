@@ -15,7 +15,7 @@ Tactile.Dragger = class Dragger
     @timesRendered = 0
 
   _bindMouseEvents: ->
-    d3.select(@graph.element)
+    d3.select(@graph._element)
       .on("mousemove.drag.#{@series.name}", @_mouseMove)
       .on("touchmove.drag.#{@series.name}", @_mouseMove)
       .on("mouseup.drag.#{@series.name}", @_mouseUp)
@@ -51,13 +51,13 @@ Tactile.Dragger = class Dragger
       # TODO: !! move this to tooltip
       # TODO: !! update tooltip text continuously on dragging
       if @series.tooltip
-        elementRelativeposition = d3.mouse(@graph.element)
-        tip = d3.select(@graph.element).select('.tooltip')
+        elementRelativeposition = d3.mouse(@graph._element)
+        tip = d3.select(@graph._element).select('.tooltip')
         offsetTop = @graph.padding.top + @graph.margin.top
         tip.style("top", "#{@graph.y(@dragged.y) + offsetTop}px")
 
       @renderer.transitionSpeed = 0
-      inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height, p[1])))
+      inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height(), p[1])))
       value = Math.round(inverted * @power) / @power
       @dragged.y = value
       @onDrag(@dragged, @series, @graph)

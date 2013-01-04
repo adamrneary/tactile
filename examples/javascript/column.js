@@ -16,44 +16,35 @@ var data = [
   {period: 1354320000, actual: 5, plan: 2}
 ]
 
-var chart = new Tactile.Chart({
-  element: $("#example_view")[0],
-  width: 680,
-  height: 400,
-  data: data,
-  axes: {
-    y: {
-      dimension: 'linear'
+var chart = new Tactile.Chart();
+
+chart.element($("#example_view")[0])
+  .height(500)
+  .width(700)
+  .data(data);
+
+chart.addSeries([
+  {
+    name: 'reach actual',
+    renderer: "column",
+    sigfigs: 0,
+    round: false,
+    color: "#c05020",
+    draggable: true,
+    tooltip: function (d) {
+      return d.y + " customers";
     },
-    x: {
-      dimension: 'time',
-      frame: frameVal,
-      options: {
-        ticksTreatment: 'align-middle'
-      }
+    dataTransform: function (d) {
+      return {
+        x: d.period,
+        y: d.actual
+      };
+    },
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph._data[i].actual = y;
     }
-  },
-  series: [
-    {
-      name: 'reach actual',
-      renderer: "column",
-      sigfigs: 0,
-      round: false,
-      color: "#c05020",
-      draggable: true,
-      tooltip: function (d) {
-        return d.y + " customers";
-      },
-      dataTransform: function (d) {
-        return {
-          x: d.period,
-          y: d.actual
-        };
-      },
-      afterDrag: function(d,y,i,draggedSeries,graph){
-        graph.data[i].actual = y;
-      }
-    }
+  }
+
 //    ,
 //    {
 //      name: 'planned',
@@ -71,8 +62,9 @@ var chart = new Tactile.Chart({
 //        };
 //      }
 //    }
-  ]
-});
+]);
+
+chart.axes().x.frame = frameVal;
 
 chart.render();
 var sl = $("<div>").attr("id", "slider");
@@ -83,7 +75,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart.axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     chart.render();
   }
 });
