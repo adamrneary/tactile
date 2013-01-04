@@ -26,7 +26,7 @@ Tactile.Dragger = class Dragger
     nodes = @_appendCircles(nodes) if @drawCircles
 
     nodes.on("mousedown.drag.#{@series.name}", @_datapointDrag)
-#      .on("touchstart.drag.#{@series.name}", @_datapointDrag)
+      .on("touchstart.drag.#{@series.name}", @_datapointDrag)
 
   # update value of a draggable node so it's y-value will reflect currently dragged position
   updateDraggedNode: () ->
@@ -116,7 +116,7 @@ Tactile.Dragger = class Dragger
 
     # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) ->
-      renderer.graph.vis.selectAll('.draggable-node').style('display', 'none')
+      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
       circ = renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}")
       # TODO: circle should be placed at the middle of a column
       # hoveredNode = d3.select(@).node().getBBox()
