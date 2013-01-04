@@ -36,9 +36,6 @@ chart.addSeries(
     }
   });
 
-// Just to show that we can add a series after rendering the chart
-chart.render();
-
 chart.addSeries(
   {
     name: 'friends',
