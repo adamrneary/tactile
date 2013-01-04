@@ -49,6 +49,9 @@ chart.addSeries([
           x: d.period,
           y: d.actual
         };
+      },
+      afterDrag: function(d,y,i,draggedSeries,graph){
+        graph.data[i].actual = y;
       }
     }
 //    ,

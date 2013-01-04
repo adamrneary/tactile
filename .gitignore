@@ -8,3 +8,4 @@ node_modules/
 .idea/
 examples/css/charts.css
 examples/javascript/tactile.js
+*kate-swp

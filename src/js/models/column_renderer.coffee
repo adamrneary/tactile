@@ -12,6 +12,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
     @gapSize = options.gapSize || @gapSize
 
+    @timesRendered = 0
+
   render: ->
     return if (@series.disabled)
 
@@ -20,10 +22,13 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
 
-    @dragger?.updateDraggedNode(nodes)
     @dragger?.makeHandlers(nodes)
+    @dragger?.updateDraggedNode()
 
-    nodes.attr("x", @_barX)
+    nodes
+      .transition()
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+      .attr("x", @_barX)
       .attr("y", @_barY)
       .attr("width", @_seriesBarWidth())
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
@@ -34,8 +39,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("ry", @_edgeRatio)
       .attr("class", (d) =>
         ["bar", ("colorless" unless @series.color)].join(' '))
-
-
+    
     @setupTooltips()
 
 
@@ -69,14 +73,14 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     slideTransition = =>
       @seriesCanvas().selectAll("rect")
         .transition()
-        .duration(500)
+        .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
         .attr("width", @_seriesBarWidth())
         .attr("x", @_barX)
 
     @seriesCanvas().selectAll("rect")
       .transition()
-      .duration(500)
-      .delay((d, i) -> (i % count) * 20)
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+#       .delay((d, i) -> (i % count) * 20)
       .attr("y", @_barY)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .each('end', slideTransition)
@@ -93,14 +97,14 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     growTransition = =>
       @seriesCanvas().selectAll("rect")
         .transition()
-        .duration(500)
+        .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
         .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
         .attr("y", @_barY)
 
     @seriesCanvas().selectAll("rect")
       .transition()
-      .duration(500)
-      .delay((d, i) -> (i % count) * 20)
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+#       .delay((d, i) -> (i % count) * 20)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
       .each('end', growTransition)
