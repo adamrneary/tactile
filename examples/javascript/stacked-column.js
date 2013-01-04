@@ -19,7 +19,7 @@ var data = [
 
 var chart = new Tactile.Chart({unstack: false})
   .element($("#example_view")[0])
-  .data(data)
+  .data(data);
 
 chart.width(680).height(400);
 chart.axes({
