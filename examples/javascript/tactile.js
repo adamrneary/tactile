@@ -1648,7 +1648,7 @@ Tactile.Chart = Chart = (function() {
   Chart.prototype.render = function() {
     var stackedData,
       _this = this;
-    if (this.renderers === void 0 || _.isEmpty(this.renderers)) {
+    if (this.renderers === void 0 || _.isEmpty(this.renderers) || this._allSeriesDisabled()) {
       return;
     }
     this.initSeriesStackData();
@@ -1910,6 +1910,12 @@ Tactile.Chart = Chart = (function() {
   Chart.prototype._allRenderersCartesian = function() {
     return _.every(this.renderers, function(r) {
       return r.cartesian === true;
+    });
+  };
+
+  Chart.prototype._allSeriesDisabled = function() {
+    return _.every(this.series, function(s) {
+      return s.disabled === true;
     });
   };
 

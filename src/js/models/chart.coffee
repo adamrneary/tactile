@@ -108,7 +108,7 @@ Tactile.Chart = class Chart
     @dataInitialized = true
 
   render: ->
-    return if @renderers is undefined or _.isEmpty(@renderers)
+    return if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
     @initSeriesStackData()
     @_setupCanvas()
     stackedData = @stackData()
@@ -357,3 +357,6 @@ Tactile.Chart = class Chart
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
+
+  _allSeriesDisabled: ->
+    _.every(@series, (s) -> s.disabled is true)
