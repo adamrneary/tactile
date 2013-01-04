@@ -27,7 +27,7 @@ Tactile.Chart = class Chart
       frame: [undefined, undefined]
 
   # builds the chart object using any passed arguments
-  constructor: (args) ->
+  constructor: (args = {}) ->
     @renderers = []
     @series = []
     @window = {}

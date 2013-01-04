@@ -351,7 +351,7 @@ Tactile.Dragger = Dragger = (function() {
     if (this.drawCircles) {
       nodes = this._appendCircles(nodes);
     }
-    return nodes.on("mousedown.drag." + this.series.name, this._datapointDrag).on("touchstart.drag." + this.series.name, this._datapointDrag);
+    return nodes.on("mousedown.drag." + this.series.name, this._datapointDrag);
   };
 
   Dragger.prototype.updateDraggedNode = function() {
@@ -368,6 +368,7 @@ Tactile.Dragger = Dragger = (function() {
   };
 
   Dragger.prototype._datapointDrag = function(d, i) {
+    d = _.isArray(d) ? d[i] : d;
     if (this.series.tooltip) {
       Tactile.Tooltip.spotlightOn(d);
     }
@@ -1481,65 +1482,74 @@ Tactile.Chart = Chart = (function() {
     'donut': DonutRenderer
   };
 
-  Chart.prototype.mainDefaults = {
-    margin: {
-      top: 20,
-      right: 20,
-      bottom: 20,
-      left: 20
-    },
-    padding: {
-      top: 10,
-      right: 10,
-      bottom: 10,
-      left: 10
-    },
-    interpolation: 'monotone',
-    offset: 'zero',
-    min: void 0,
-    max: void 0,
-    transitionSpeed: 200,
-    defaultHeight: 400,
-    defaultWidth: 730,
-    axes: {
-      x: {
-        dimension: "time",
-        frame: [void 0, void 0]
-      },
-      y: {
-        dimension: "linear",
-        frame: [void 0, void 0]
-      }
-    }
+  Chart.prototype.margin = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 20
   };
 
-  Chart.prototype.seriesDefaults = {
-    dataTransform: function(d) {
-      return d;
+  Chart.prototype.padding = {
+    top: 10,
+    right: 10,
+    bottom: 10,
+    left: 10
+  };
+
+  Chart.prototype.interpolation = 'monotone';
+
+  Chart.prototype.offset = 'zero';
+
+  Chart.prototype.min = void 0;
+
+  Chart.prototype.max = void 0;
+
+  Chart.prototype.transitionSpeed = 200;
+
+  Chart.prototype.defaultHeight = 400;
+
+  Chart.prototype.defaultWidth = 730;
+
+  Chart.prototype.defaultAxes = {
+    x: {
+      dimension: "time",
+      frame: [void 0, void 0]
+    },
+    y: {
+      dimension: "linear",
+      frame: [void 0, void 0]
     }
   };
 
   function Chart(args) {
+    var _this = this;
+    if (args == null) {
+      args = {};
+    }
     this._slice = __bind(this._slice, this);
 
     this.discoverRange = __bind(this.discoverRange, this);
 
-    var _this = this;
     this.renderers = [];
     this.series = [];
     this.window = {};
     this.updateCallbacks = [];
-    args = _.extend({}, this.mainDefaults, args);
+    this.setSize({
+      width: args.width || this.defaultWidth,
+      height: args.height || this.defaultHeight
+    });
+    if (args.width != null) {
+      delete args.width;
+    }
+    if (args.height != null) {
+      delete args.height;
+    }
+    this.axes(args.axes || this.defaultAxes);
     if (args.axes != null) {
-      this.axes(args.axes);
       delete args.axes;
     }
     _.each(args, function(val, key) {
       return _this[key] = val;
-    });
-    this.setSize({
-      width: args.width || this.defaultWidth,
-      height: args.height || this.defaultHeight
     });
     this.addSeries(args.series, {
       overwrite: true
@@ -1547,7 +1557,7 @@ Tactile.Chart = Chart = (function() {
   }
 
   Chart.prototype.addSeries = function(series, options) {
-    var newSeries,
+    var newSeries, seriesDefaults,
       _this = this;
     if (options == null) {
       options = {
@@ -1560,8 +1570,13 @@ Tactile.Chart = Chart = (function() {
     if (!_.isArray(series)) {
       series = [series];
     }
+    seriesDefaults = {
+      dataTransform: function(d) {
+        return d;
+      }
+    };
     newSeries = _.map(series, function(s) {
-      return _.extend({}, _this.seriesDefaults, s);
+      return _.extend({}, seriesDefaults, s);
     });
     if (options.overwrite) {
       this.series = newSeries;
@@ -1661,8 +1676,8 @@ Tactile.Chart = Chart = (function() {
     }
     elWidth = $(this._element).width();
     elHeight = $(this._element).height();
-    this.outerWidth = args.width || elWidth || this.mainDefaults.defaultWidth;
-    this.outerHeight = args.height || elHeight || this.mainDefaults.defaultHeight;
+    this.outerWidth = args.width || elWidth || this.defaultWidth;
+    this.outerHeight = args.height || elHeight || this.defaultHeight;
     this.marginedWidth = this.outerWidth - this.margin.left - this.margin.right;
     this.marginedHeight = this.outerHeight - this.margin.top - this.margin.bottom;
     this.innerWidth = this.marginedWidth - this.padding.left - this.padding.right;
@@ -1696,6 +1711,24 @@ Tactile.Chart = Chart = (function() {
     });
   };
 
+  Chart.prototype.renderersByType = function(name) {
+    return this.renderers.filter(function(r) {
+      return r.name === name;
+    });
+  };
+
+  Chart.prototype.stackTransition = function() {
+    return _.each(this.renderersByType('column'), function(r) {
+      return r.stackTransition();
+    });
+  };
+
+  Chart.prototype.unstackTransition = function() {
+    return _.each(this.renderersByType('column'), function(r) {
+      return r.unstackTransition();
+    });
+  };
+
   Chart.prototype.element = function(val) {
     if (!val) {
       return this._element;
@@ -1707,7 +1740,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.height = function(val) {
     if (!val) {
-      return this.innerHeight || this.mainDefaults.defaultHeight;
+      return this.innerHeight || this.defaultHeight;
     }
     this.setSize({
       width: this.outerWidth,
@@ -1718,7 +1751,7 @@ Tactile.Chart = Chart = (function() {
 
   Chart.prototype.width = function(val) {
     if (!val) {
-      return this.innerWidth || this.mainDefaults.defaultWidth;
+      return this.innerWidth || this.defaultWidth;
     }
     this.setSize({
       width: val,
@@ -1742,12 +1775,12 @@ Tactile.Chart = Chart = (function() {
     }
     this._axes = {
       x: {
-        frame: ((_ref = args.x) != null ? _ref.frame : void 0) || this.mainDefaults.axes.x.frame,
-        dimension: ((_ref1 = args.x) != null ? _ref1.dimension : void 0) || this.mainDefaults.axes.x.dimension
+        frame: ((_ref = args.x) != null ? _ref.frame : void 0) || this.defaultAxes.x.frame,
+        dimension: ((_ref1 = args.x) != null ? _ref1.dimension : void 0) || this.defaultAxes.x.dimension
       },
       y: {
-        frame: ((_ref2 = args.y) != null ? _ref2.frame : void 0) || this.mainDefaults.axes.y.frame,
-        dimension: ((_ref3 = args.y) != null ? _ref3.dimension : void 0) || this.mainDefaults.axes.y.dimension
+        frame: ((_ref2 = args.y) != null ? _ref2.frame : void 0) || this.defaultAxes.y.frame,
+        dimension: ((_ref3 = args.y) != null ? _ref3.dimension : void 0) || this.defaultAxes.y.dimension
       }
     };
     this.findAxis(this._axes.x);
@@ -1826,24 +1859,6 @@ Tactile.Chart = Chart = (function() {
   Chart.prototype._allRenderersCartesian = function() {
     return _.every(this.renderers, function(r) {
       return r.cartesian === true;
-    });
-  };
-
-  Chart.prototype.renderersByType = function(name) {
-    return this.renderers.filter(function(r) {
-      return r.name === name;
-    });
-  };
-
-  Chart.prototype.stackTransition = function() {
-    return _.each(this.renderersByType('column'), function(r) {
-      return r.stackTransition();
-    });
-  };
-
-  Chart.prototype.unstackTransition = function() {
-    return _.each(this.renderersByType('column'), function(r) {
-      return r.unstackTransition();
     });
   };
 

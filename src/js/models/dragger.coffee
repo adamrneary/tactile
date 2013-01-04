@@ -26,7 +26,7 @@ Tactile.Dragger = class Dragger
     nodes = @_appendCircles(nodes) if @drawCircles
 
     nodes.on("mousedown.drag.#{@series.name}", @_datapointDrag)
-      .on("touchstart.drag.#{@series.name}", @_datapointDrag)
+#      .on("touchstart.drag.#{@series.name}", @_datapointDrag)
 
   # update value of a draggable node so it's y-value will reflect currently dragged position
   updateDraggedNode: () ->
@@ -38,6 +38,8 @@ Tactile.Dragger = class Dragger
           d.dragged = true
 
   _datapointDrag: (d, i) =>
+    # fix for a weird behavior that d is sometimes an array with all the nodes of the series
+    d = if _.isArray(d) then d[i] else d
     # lock the tooltip on the dragged element
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
     @dragged = {d: d, i: i}
