@@ -41,10 +41,10 @@ chart.addSeries([
         };
       },
       afterDrag: function(d,y,i,draggedSeries,graph){
-        graph.data[i].actual = y;
+        graph.data()[i].actual = y;
       }
     }
-  }
+
 //    ,
 //    {
 //      name: 'planned',
