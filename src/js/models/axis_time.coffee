@@ -56,7 +56,7 @@ Tactile.AxisTime = class AxisTime
       .attr("y", @marginTop)
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
       .attr("class", 'title')
-                                
+
     ticks
       .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
 

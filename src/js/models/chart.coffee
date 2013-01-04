@@ -178,7 +178,7 @@ Tactile.Chart = class Chart
         throw "couldn't find renderer #{name}"
 
       rendererClass = @_renderers[name]
-      rendererOptions = _.extend {}, {graph: @, series: s, rendererIndex: index + renderersSize}
+      rendererOptions = _.extend {}, {graph: @, transitionSpeed: @transitionSpeed, series: s, rendererIndex: index + renderersSize}
       r = new rendererClass(rendererOptions)
       @renderers.push r
 

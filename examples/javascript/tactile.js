@@ -1679,6 +1679,7 @@ Tactile.Chart = Chart = (function() {
       rendererClass = _this._renderers[name];
       rendererOptions = _.extend({}, {
         graph: _this,
+        transitionSpeed: _this.transitionSpeed,
         series: s,
         rendererIndex: index + renderersSize
       });
