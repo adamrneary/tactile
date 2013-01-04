@@ -67,18 +67,48 @@ Tactile.Chart = class Chart
       @series = newSeries
     else
       @series = @series.concat(newSeries)
-      
-    # TODO: Refactor this into series/renderer constructor
-    @series.active = =>
-      @series.filter (s) ->
-        not s.disabled
+
+    # Add enable/disable/toggle serie functions
+    @series[@series.length - 1].disable = () ->
+      @disabled = true;
+
+    @series[@series.length - 1].enable = () ->
+      @disabled = false;
+
+    @series[@series.length - 1].toggle = () ->
+      @disabled = not @disabled
 
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
 
+  initSeriesStackData: (options = {overwrite: false}) ->
+    return if @dataInitialized and not options.overwrite
+
+    # TODO: Refactor this into series/renderer constructor
+    @series.active = =>
+      @series.filter (s) ->
+        not s.disabled
+  
+    # Initialize each serie's stack data
+    # BEGIN
+    seriesData = @series.map((d) =>
+      @_data.map(d.dataTransform))
+
+    layout = d3.layout.stack()
+    layout.offset(@offset)
+    stackedData = layout(seriesData)
+
+    i = 0
+    @series.forEach (series) ->
+      series.stack = stackedData[i++]
+    # END
+    
+    @dataInitialized = true
+
   render: ->
     return if @renderers is undefined or _.isEmpty(@renderers)
+    @initSeriesStackData()
     @_setupCanvas()
     stackedData = @stackData()
 
@@ -148,10 +178,6 @@ Tactile.Chart = class Chart
     layout = d3.layout.stack()
     layout.offset(@offset)
     stackedData = layout(seriesData)
-
-    i = 0
-    @series.forEach (series) ->
-      series.stack = stackedData[i++]
 
     @stackedData = stackedData
 
@@ -228,6 +254,7 @@ Tactile.Chart = class Chart
   data: (val) ->
     return @_data unless val
     @_data = val
+    
     @
 
   axes: (args, options) ->

@@ -802,6 +802,11 @@ Tactile.RendererBase = RendererBase = (function() {
 
   RendererBase.prototype.render = function() {
     var line;
+    if (this.series.disabled) {
+      this.timesRendered = 0;
+      line = this.seriesCanvas().selectAll("path").data([this.series.stack]).remove();
+      return;
+    }
     line = this.seriesCanvas().selectAll("path").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "" + (this.series.className || '') + " " + (this.series.color ? '' : 'colorless'));
     return line.transition().duration(this.transitionSpeed).attr("d", this.seriesPathFactory());
@@ -954,6 +959,8 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
     var nodes, _ref, _ref1,
       _this = this;
     if (this.series.disabled) {
+      this.timesRendered = 0;
+      this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
@@ -1147,6 +1154,10 @@ Tactile.LineRenderer = LineRenderer = (function(_super) {
     var circ, newCircs, _ref, _ref1,
       _this = this;
     LineRenderer.__super__.render.call(this);
+    if (this.series.disabled) {
+      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      return;
+    }
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle");
     if ((_ref = this.dragger) != null) {
@@ -1272,6 +1283,12 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     var circ, newCircs, stroke, _ref, _ref1,
       _this = this;
     AreaRenderer.__super__.render.call(this);
+    if (this.series.disabled) {
+      this.timesRendered = 0;
+      this.seriesCanvas().selectAll("path.stroke").data(this.series.stack).remove();
+      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      return;
+    }
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color).attr('class', 'stroke');
     stroke.transition().duration(this.transitionSpeed).attr("d", this.seriesStrokeFactory());
@@ -1583,12 +1600,45 @@ Tactile.Chart = Chart = (function() {
     } else {
       this.series = this.series.concat(newSeries);
     }
+    this.series[this.series.length - 1].disable = function() {
+      return this.disabled = true;
+    };
+    this.series[this.series.length - 1].enable = function() {
+      return this.disabled = false;
+    };
+    this.series[this.series.length - 1].toggle = function() {
+      return this.disabled = !this.disabled;
+    };
+    return this.initRenderers(newSeries);
+  };
+
+  Chart.prototype.initSeriesStackData = function(options) {
+    var i, layout, seriesData, stackedData,
+      _this = this;
+    if (options == null) {
+      options = {
+        overwrite: false
+      };
+    }
+    if (this.dataInitialized && !options.overwrite) {
+      return;
+    }
     this.series.active = function() {
       return _this.series.filter(function(s) {
         return !s.disabled;
       });
     };
-    return this.initRenderers(newSeries);
+    seriesData = this.series.map(function(d) {
+      return _this._data.map(d.dataTransform);
+    });
+    layout = d3.layout.stack();
+    layout.offset(this.offset);
+    stackedData = layout(seriesData);
+    i = 0;
+    this.series.forEach(function(series) {
+      return series.stack = stackedData[i++];
+    });
+    return this.dataInitialized = true;
   };
 
   Chart.prototype.render = function() {
@@ -1597,6 +1647,7 @@ Tactile.Chart = Chart = (function() {
     if (this.renderers === void 0 || _.isEmpty(this.renderers)) {
       return;
     }
+    this.initSeriesStackData();
     this._setupCanvas();
     stackedData = this.stackData();
     _.each(this.renderers, function(renderer) {
@@ -1654,7 +1705,7 @@ Tactile.Chart = Chart = (function() {
   };
 
   Chart.prototype.stackData = function() {
-    var i, layout, seriesData, stackedData,
+    var layout, seriesData, stackedData,
       _this = this;
     seriesData = this.series.active().map(function(d) {
       return _this._data.map(d.dataTransform);
@@ -1662,10 +1713,6 @@ Tactile.Chart = Chart = (function() {
     layout = d3.layout.stack();
     layout.offset(this.offset);
     stackedData = layout(seriesData);
-    i = 0;
-    this.series.forEach(function(series) {
-      return series.stack = stackedData[i++];
-    });
     return this.stackedData = stackedData;
   };
 

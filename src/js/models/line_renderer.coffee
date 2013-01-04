@@ -20,6 +20,11 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
   render: =>
     super()
+    if (@series.disabled)
+      @seriesCanvas().selectAll('circle')
+        .data(@series.stack)
+        .remove()
+      return
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
 
