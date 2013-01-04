@@ -43,25 +43,26 @@ chart.addSeries([
     afterDrag: function (d, y, i, draggedSeries, graph) {
       graph._data[i].actual = y;
     }
+  },
+  {
+    name: 'planned',
+    renderer: "column",
+    round: false,
+    color: "#6060c0",
+    draggable: true,
+    tooltip: function (d) {
+      return d.y + " planned";
+    },
+    dataTransform: function (d) {
+      return {
+        x: d.period,
+        y: d.plan
+      };
+    },
+    afterDrag: function (d, y, i, draggedSeries, graph) {
+      graph._data[i].plan = y;
+    }
   }
-
-//    ,
-//    {
-//      name: 'planned',
-//      renderer: "column",
-//      round: false,
-//      color: "#6060c0",
-//      draggable: true,
-//      tooltip: function (d) {
-//        return d.y + " planned";
-//      },
-//      dataTransform: function (d) {
-//        return {
-//          x: d.period,
-//          y: d.plan
-//        };
-//      }
-//    }
 ]);
 
 chart.axes().x.frame = frameVal;

@@ -453,7 +453,7 @@ Tactile.Dragger = Dragger = (function() {
       return _this.graph.y(d.y);
     });
     nodes.on('mouseover.show-dragging-circle', function(d, i) {
-      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none');
+      _this.graph.vis.selectAll('.draggable-node').style('display', 'none');
       return renderer.seriesCanvas().select("#draggable-node-" + i + "-" + d.x).style('display', '');
     });
     circs.tooltip(function(d, i) {

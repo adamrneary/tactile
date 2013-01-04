@@ -113,8 +113,8 @@ Tactile.Dragger = class Dragger
       .attr("cy", (d) => @graph.y d.y)
 
     # show and hide the circle for the currently hovered element
-    nodes.on 'mouseover.show-dragging-circle', (d, i) ->
-      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
+    nodes.on 'mouseover.show-dragging-circle', (d, i) =>
+      @graph.vis.selectAll('.draggable-node').style('display', 'none')
       renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}").style('display', '')
 
     circs.tooltip (d, i) =>
