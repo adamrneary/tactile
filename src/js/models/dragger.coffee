@@ -113,9 +113,13 @@ Tactile.Dragger = class Dragger
       .attr("cy", (d) => @graph.y d.y)
 
     # show and hide the circle for the currently hovered element
-    nodes.on 'mouseover.show-dragging-circle', (d, i) =>
-      @graph.vis.selectAll('.draggable-node').style('display', 'none')
-      renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}").style('display', '')
+    nodes.on 'mouseover.show-dragging-circle', (d, i, el) ->
+      renderer.graph.vis.selectAll('.draggable-node').style('display', 'none')
+      circ = renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}")
+      # TODO: circle should be placed at the middle of a column
+      # hoveredNode = d3.select(@).node().getBBox()
+      # circ.attr('cx', hoveredNode.x + hoveredNode.width / 2)
+      circ.style('display', '')
 
     circs.tooltip (d, i) =>
       graph: @graph
