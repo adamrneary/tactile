@@ -881,7 +881,7 @@ Tactile.GaugeRenderer = GaugeRenderer = (function(_super) {
 
   GaugeRenderer.prototype.renderLabels = function() {
     this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width() - this.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
+    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
     return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ", " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
   };
 

@@ -108,7 +108,7 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@value)
-      .attr("transform", "translate(#{( @graph.width() - @margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
+      .attr("transform", "translate(#{( @graph.width() - @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@max)
