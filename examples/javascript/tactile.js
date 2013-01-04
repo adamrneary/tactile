@@ -282,7 +282,6 @@ Tactile.AxisY = AxisY = (function() {
     this.orientation = options.orientation || "left";
     pixelsPerTick = options.pixelsPerTick || 75;
     this.ticks = options.ticks || Math.floor(this.graph.height() / pixelsPerTick);
-    console.log(this.graph.height());
     this.tickSize = options.tickSize || 4;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.grid = options.grid;
@@ -1768,20 +1767,24 @@ Tactile.Chart = Chart = (function() {
     }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
     this._findOrAppend({
       what: 'clipPath',
+      selector: '#clip',
       "in": this.vis
     }).attr("id", "clip").append("rect").attr("width", this.width()).attr("height", this.height() + 4).attr("transform", "translate(0,-2)");
     return this._findOrAppend({
       what: 'clipPath',
+      selector: '#scatter-clip',
       "in": this.vis
     }).attr("id", "scatter-clip").append("rect").attr("width", this.width() + 12).attr("height", this.height() + 12).attr("transform", "translate(-6,-6)");
   };
 
   Chart.prototype._findOrAppend = function(options) {
-    var element, node;
+    var element, found, node, selector;
     element = options["in"];
     node = options.what;
-    if (element.select(node)[0][0]) {
-      return element.select(node);
+    selector = (options.selector ? options.selector : node);
+    found = element.select(selector);
+    if (found != null ? found[0][0] : void 0) {
+      return found;
     } else {
       return element.append(node);
     }

@@ -248,7 +248,7 @@ Tactile.Chart = class Chart
       .attr("class", "inner-canvas")
 
     # Add the default clip path.
-    @_findOrAppend(what: 'clipPath', in: @vis)
+    @_findOrAppend(what: 'clipPath', selector: '#clip', in: @vis)
       .attr("id", "clip")
       .append("rect")
       .attr("width", @width())
@@ -258,7 +258,7 @@ Tactile.Chart = class Chart
       .attr("transform", "translate(0,-2)")
 
     # Add the clip path.
-    @_findOrAppend(what: 'clipPath', in: @vis)
+    @_findOrAppend(what: 'clipPath', selector: '#scatter-clip', in: @vis)
       .attr("id", "scatter-clip")
       .append("rect")
     # increase width to provide room vertically for circle radius
@@ -270,11 +270,15 @@ Tactile.Chart = class Chart
 
   # looks for node in given node
   # returns it or appends to the node in `in` option
+  # you can pass selector it is then used to lookup for the exisiting element
   _findOrAppend: (options) ->
     element = options.in
     node = options.what
-    if element.select(node)[0][0]
-      element.select(node)
+    selector = (if options.selector then options.selector else node)
+
+    found = element.select(selector)
+    if found?[0][0]
+      found
     else
       element.append(node)
 

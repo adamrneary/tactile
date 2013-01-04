@@ -5,7 +5,6 @@ Tactile.AxisY = class AxisY
     @orientation = options.orientation or "left"
     pixelsPerTick = options.pixelsPerTick or 75
     @ticks = options.ticks or Math.floor(@graph.height() / pixelsPerTick)
-    console.log @graph.height()
     @tickSize = options.tickSize or 4
     @ticksTreatment = options.ticksTreatment or "plain"
     @grid = options.grid
