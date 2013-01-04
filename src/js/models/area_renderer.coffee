@@ -33,8 +33,8 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
     super()
     if (@series.disabled)
       @timesRendered = 0
-      @seriesCanvas().selectAll("path.stroke").data(@series.stack).remove()
-      @seriesCanvas().selectAll('circle').data(@series.stack).remove()
+      @seriesCanvas().selectAll("path").remove()
+      @seriesCanvas().selectAll('circle').remove()
       return
 
     stroke = @seriesCanvas().selectAll('path.stroke').data([@series.stack])

@@ -960,7 +960,9 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
       _this = this;
     if (this.series.disabled) {
       this.timesRendered = 0;
+      this.dragger.timesRendered = 0;
       this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
+      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
@@ -1285,8 +1287,8 @@ Tactile.AreaRenderer = AreaRenderer = (function(_super) {
     AreaRenderer.__super__.render.call(this);
     if (this.series.disabled) {
       this.timesRendered = 0;
-      this.seriesCanvas().selectAll("path.stroke").data(this.series.stack).remove();
-      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      this.seriesCanvas().selectAll("path").remove();
+      this.seriesCanvas().selectAll('circle').remove();
       return;
     }
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
