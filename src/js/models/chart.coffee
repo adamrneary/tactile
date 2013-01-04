@@ -1,5 +1,5 @@
 Tactile.Chart = class Chart
-# Add your renderer here. Key should be equal to the renderer `name` property
+  # Hash to map renderer name to class name. Used in looking up series type
   _renderers:
     'gauge': GaugeRenderer
     'column': ColumnRenderer
@@ -8,72 +8,73 @@ Tactile.Chart = class Chart
     'scatter': ScatterRenderer
     'donut': DonutRenderer
 
-  mainDefaults:
-    margin:
-      {top: 20, right: 20, bottom: 20, left: 20}
-    padding:
-      {top: 10, right: 10, bottom: 10, left: 10}
-    interpolation: 'monotone'
-    offset: 'zero'
-    min: undefined
-    max: undefined
-    transitionSpeed: 200
-    defaultHeight: 400
-    defaultWidth: 730
-    axes:
-      x:
-        dimension: "time"
-        frame: [undefined, undefined]
-      y:
-        dimension: "linear"
-        frame: [undefined, undefined]
+  # default values
+  margin: {top: 20, right: 20, bottom: 20, left: 20}
+  padding: {top: 10, right: 10, bottom: 10, left: 10}
+  interpolation: 'monotone'
+  offset: 'zero'
+  min: undefined
+  max: undefined
+  transitionSpeed: 200
+  defaultHeight: 400
+  defaultWidth: 730
+  defaultAxes:
+    x:
+      dimension: "time"
+      frame: [undefined, undefined]
+    y:
+      dimension: "linear"
+      frame: [undefined, undefined]
 
-
-  seriesDefaults:
-    dataTransform: (d) -> d
-
-
-
+  # builds the chart object using any passed arguments
   constructor: (args) ->
     @renderers = []
     @series = []
     @window = {}
     @updateCallbacks = []
 
-    args = _.extend({}, @mainDefaults, args)
-
-    if args.axes?
-      @axes(args.axes)
-      delete args.axes
-
+    # chart size is handled with its own method
+    @setSize
+      width: args.width or @defaultWidth
+      height: args.height or @defaultHeight
+    delete args.width if args.width?
+    delete args.height if args.height?
+    
+    # axes are handled with their own method
+    @axes args.axes or @defaultAxes
+    delete args.axes if args.axes?
+      
+    # the remaining chart properties can be applied to the object directly
     _.each args, (val, key) =>
       @[key] = val
 
-    # FIXME: args.width should not be passed anymore
-    @setSize(width: args.width or @defaultWidth, height: args.height or @defaultHeight)
-
+    # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
 
-
-
   # Adds series to the chart and creates renderer instance for it
-  # you can pass a single object here or an array of them
-  # if you pass option overwrite: true all previous series will be removed
+  # Note: you may pass a single object here or an array of them
+  # Note: pass option 'overwrite: true' to remove all previous series
   addSeries: (series, options = {overwrite: false}) ->
     return unless series
     series = [series] unless _.isArray(series)
-    newSeries = _.map(series, (s) => _.extend({}, @seriesDefaults, s))
+        
+    # TODO: Refactor this into series/renderer constructor
+    seriesDefaults =
+      dataTransform: (d) -> d
+    newSeries = _.map(series, (s) => _.extend({}, seriesDefaults, s))
 
     if options.overwrite
       @series = newSeries
     else
       @series = @series.concat(newSeries)
-
+      
+    # TODO: Refactor this into series/renderer constructor
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
 
     # only init the renderers for just added series
+    # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
 
   render: ->
@@ -97,20 +98,28 @@ Tactile.Chart = class Chart
     if renderer.cartesian
       # TODO: This needs way prettier implementation
       # It moves the range 'right' by the value of half width of a bar
-      # So if we have renderers including bar chart points are 
-      # rendered in the center of each bar and not a single bar is cut off by the chart border
+      # So if we have renderers including bar chart points are rendered in the
+      # center of each bar and not a single bar is cut off by the chart border
       if @_containsColumnChart()
         barWidth = @width() / renderer.series.stack.length / 2
         rangeStart = barWidth
         rangeEnd = @width() - barWidth
 
-      xframe = [(if @_axes.x.frame[0] then @_axes.x.frame[0] else domain.x[0]),
-        (if @_axes.x.frame[1] then @_axes.x.frame[1] else domain.x[1])]
-      yframe = [(if @_axes.y.frame[0] then @_axes.y.frame[0] else domain.y[0]),
-        (if @_axes.y.frame[1] then @_axes.y.frame[1] else domain.y[1])]
+      xframe = [
+        (if @_axes.x.frame[0] then @_axes.x.frame[0] else domain.x[0])
+        (if @_axes.x.frame[1] then @_axes.x.frame[1] else domain.x[1])
+      ]
+      yframe = [
+        (if @_axes.y.frame[0] then @_axes.y.frame[0] else domain.y[0])
+        (if @_axes.y.frame[1] then @_axes.y.frame[1] else domain.y[1])
+      ]
 
-      @x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || @width()])
-      @y = d3.scale.linear().domain(yframe).range([@height(), 0])
+      @x = d3.scale.linear()
+        .domain(xframe)
+        .range([rangeStart || 0, rangeEnd || @width()])
+      @y = d3.scale.linear()
+        .domain(yframe)
+        .range([@height(), 0])
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height()])
@@ -157,8 +166,8 @@ Tactile.Chart = class Chart
     elWidth = $(@_element).width()
     elHeight = $(@_element).height()
 
-    @outerWidth = args.width || elWidth || @mainDefaults.defaultWidth
-    @outerHeight = args.height || elHeight || @mainDefaults.defaultHeight
+    @outerWidth = args.width || elWidth || @defaultWidth
+    @outerHeight = args.height || elHeight || @defaultHeight
 
     @marginedWidth = @outerWidth - @margin.left - @margin.right
     @marginedHeight = @outerHeight - @margin.top - @margin.bottom
@@ -178,9 +187,27 @@ Tactile.Chart = class Chart
         throw "couldn't find renderer #{name}"
 
       rendererClass = @_renderers[name]
-      rendererOptions = _.extend {}, {graph: @, transitionSpeed: @transitionSpeed, series: s, rendererIndex: index + renderersSize}
+      rendererOptions = _.extend {},
+        graph: @
+        transitionSpeed: @transitionSpeed
+        series: s
+        rendererIndex: index + renderersSize
       r = new rendererClass(rendererOptions)
       @renderers.push r
+
+  renderersByType: (name) ->
+    @renderers.filter((r) -> r.name == name)
+
+  stackTransition: ->
+    # Probably we'll want other types soon too
+    _.each(@renderersByType('column'), (r) -> r.stackTransition())
+
+  unstackTransition: ->
+    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
+
+  #############################################################################
+  # expose public variables
+  #############################################################################
 
   element: (val) ->
     return @_element unless val
@@ -189,12 +216,12 @@ Tactile.Chart = class Chart
     @
 
   height: (val) ->
-    return (@innerHeight or @mainDefaults.defaultHeight) unless val
+    return (@innerHeight or @defaultHeight) unless val
     @setSize(width: @outerWidth, height: val)
     @
 
   width: (val) ->
-    return (@innerWidth or @mainDefaults.defaultWidth) unless val
+    return (@innerWidth or @defaultWidth) unless val
     @setSize(width: val, height: @outerHeight)
     @
 
@@ -207,11 +234,11 @@ Tactile.Chart = class Chart
     return @_axes unless args
     @_axes =
       x:
-        frame: (args.x?.frame or @mainDefaults.axes.x.frame)
-        dimension: (args.x?.dimension or @mainDefaults.axes.x.dimension)
+        frame: (args.x?.frame or @defaultAxes.x.frame)
+        dimension: (args.x?.dimension or @defaultAxes.x.dimension)
       y:
-        frame: (args.y?.frame or @mainDefaults.axes.y.frame)
-        dimension: (args.y?.dimension or @mainDefaults.axes.y.dimension)
+        frame: (args.y?.frame or @defaultAxes.y.frame)
+        dimension: (args.y?.dimension or @defaultAxes.y.dimension)
 
     # TODO:
     # it should be possible to pass options to the axes
@@ -222,6 +249,9 @@ Tactile.Chart = class Chart
     @findAxis(@_axes.y)
     @
 
+  #############################################################################
+  # private methods
+  #############################################################################
 
   # Appends or updates all the chart canvas elements so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
@@ -299,15 +329,3 @@ Tactile.Chart = class Chart
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
-
-  renderersByType: (name) ->
-    @renderers.filter((r) -> r.name == name)
-
-  stackTransition: ->
-    # Probably we'll want other types soon too
-    _.each(@renderersByType('column'), (r) -> r.stackTransition())
-
-  unstackTransition: ->
-    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
-
-    
