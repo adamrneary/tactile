@@ -64,6 +64,8 @@ chart.addSeries([
 //    }
 ]);
 
+chart.axes().x.frame = frameVal;
+
 chart.render();
 var sl = $("<div>").attr("id", "slider");
 $("#example_view").append(sl);
@@ -73,7 +75,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function (event, ui) {
-    chart._axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     chart.render();
   }
 });

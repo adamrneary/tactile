@@ -19,7 +19,17 @@ var data = [
 ];
 
 
-var chart = new Tactile.Chart({grid: true}).element($("#example_view")[0]).width(680).height(400).data(data);
+var chart = new Tactile.Chart({grid: true})
+  .element($("#example_view")[0])
+  .width(680)
+  .height(400)
+  .data(data)
+  .axes({
+    x: {
+      dimension: "time",
+      frame: frameVal
+    }
+  });
 
 chart.addSeries(
   [
