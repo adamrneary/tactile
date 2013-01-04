@@ -60,7 +60,7 @@ var components = [
 },
 {
   shortLink:"legend", 
-  title: "Legend (future)"
+  title: "Legend"
 }
 ];
 

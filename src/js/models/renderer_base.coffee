@@ -46,6 +46,12 @@ Tactile.RendererBase = class RendererBase
     
     
   render: =>
+    if (@series.disabled)
+      @timesRendered = 0
+      line = @seriesCanvas().selectAll("path")
+      .data([@series.stack])
+      .remove()
+      return
     # drawing line by default
     line = @seriesCanvas().selectAll("path")
       .data([@series.stack])

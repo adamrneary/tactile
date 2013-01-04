@@ -15,7 +15,12 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     @timesRendered = 0
 
   render: ->
-    return if (@series.disabled)
+    if (@series.disabled)
+      @timesRendered = 0
+      @dragger.timesRendered = 0
+      @seriesCanvas().selectAll("rect").data(@series.stack).remove()
+      @seriesCanvas().selectAll('circle').data(@series.stack).remove()
+      return
 
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
     nodes.enter()
