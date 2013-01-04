@@ -1602,15 +1602,17 @@ Tactile.Chart = Chart = (function() {
     } else {
       this.series = this.series.concat(newSeries);
     }
-    this.series[this.series.length - 1].disable = function() {
-      return this.disabled = true;
-    };
-    this.series[this.series.length - 1].enable = function() {
-      return this.disabled = false;
-    };
-    this.series[this.series.length - 1].toggle = function() {
-      return this.disabled = !this.disabled;
-    };
+    _.each(newSeries, function(s) {
+      s.disable = function() {
+        return this.disabled = true;
+      };
+      s.enable = function() {
+        return this.disabled = false;
+      };
+      return s.toggle = function() {
+        return this.disabled = !this.disabled;
+      };
+    });
     return this.initRenderers(newSeries);
   };
 

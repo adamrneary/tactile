@@ -68,15 +68,16 @@ Tactile.Chart = class Chart
     else
       @series = @series.concat(newSeries)
 
-    # Add enable/disable/toggle serie functions
-    @series[@series.length - 1].disable = () ->
-      @disabled = true;
+    _.each newSeries, (s) ->
+      # Add enable/disable/toggle serie functions
+      s.disable = () ->
+        @disabled = true;
 
-    @series[@series.length - 1].enable = () ->
-      @disabled = false;
+      s.enable = () ->
+        @disabled = false;
 
-    @series[@series.length - 1].toggle = () ->
-      @disabled = not @disabled
+      s.toggle = () ->
+        @disabled = not @disabled
 
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
