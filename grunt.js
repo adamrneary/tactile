@@ -47,8 +47,6 @@ module.exports = function(grunt) {
                   'build/axis_y.js',
                   'build/dragger.js',
                   'build/axis_time.js',
-                  'build/hover_detail.js',
-                  'build/hover_detail_multi.js',
 
                   'build/renderer_base.js',
                   'build/gauge_renderer.js',
