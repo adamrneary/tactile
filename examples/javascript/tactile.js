@@ -871,12 +871,19 @@ Tactile.ColumnRenderer = ColumnRenderer = (function(_super) {
   };
 
   ColumnRenderer.prototype._seriesBarWidth = function() {
-    var activeSeriesCount, barWidth, seriesBarWidth;
-    barWidth = this.barWidth();
-    activeSeriesCount = this.graph.series.filter(function(s) {
-      return !s.disabled;
-    }).length;
-    return seriesBarWidth = this.unstack && !this.series.wide ? barWidth / activeSeriesCount : barWidth;
+    var width,
+      _this = this;
+    if (this.series.stack.length >= 2) {
+      width = (this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x)) / (1 + this.gapSize);
+    } else {
+      width = this.graph.width() / (1 + this.gapSize);
+    }
+    if (this.unstack) {
+      width = width / this.graph.series.filter(function(d) {
+        return d.renderer === 'column';
+      }).length;
+    }
+    return width;
   };
 
   ColumnRenderer.prototype._barXOffset = function(seriesBarWidth) {
