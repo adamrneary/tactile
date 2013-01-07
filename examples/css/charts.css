@@ -340,7 +340,7 @@
   float: left;
   list-style: none;
   overflow: hidden;
-  margin: 0 0 10px 10px;
+  margin-right: 10px;
 }
 /* line 336, ../src/scss/charts.scss */
 .chart-legend .legend-item.off .text {
