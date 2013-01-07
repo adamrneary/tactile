@@ -126,10 +126,13 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     if @series.round then Math.round(0.05783 * @_seriesBarWidth() + 1) else 0
 
   _seriesBarWidth: =>
-    barWidth = @barWidth()
-    activeSeriesCount = @graph.series.filter((s) -> not s.disabled).length
-    seriesBarWidth = if @unstack and not @series.wide then (barWidth / activeSeriesCount) else barWidth
-
+    if @series.stack.length >= 2
+      width = (@graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)) / (1 + @gapSize)
+    else
+      width = @graph.width() / (1 + @gapSize)
+      
+    width = width / @graph.series.filter((d) => d.renderer == 'column').length if @unstack
+    width
 
   # when we have couple of series we want them all to be center-aligned around the x-value
   _barXOffset: (seriesBarWidth) ->
@@ -142,6 +145,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
 
   _barX: (d) =>
     x = @graph.x(d.x)
+
     # center the bar around the value it represents
     seriesBarWidth = @_seriesBarWidth()
     initialX = x + @_barXOffset(seriesBarWidth)
