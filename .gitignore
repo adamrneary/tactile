@@ -8,3 +8,4 @@ node_modules/
 .idea/
 examples/css/charts.css
 *kate-swp
+.rvmrc
