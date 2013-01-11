@@ -11,6 +11,9 @@ Tactile.Tooltip = class Tooltip
   @spotlightOn: (d) ->
     Tooltip._spotlightMode = true
     
+  @getSpotlight: () ->
+    Tooltip._spotlightMode
+  
   constructor: (@el, @options) ->
     @el = d3.select(@el)
     @annotate()

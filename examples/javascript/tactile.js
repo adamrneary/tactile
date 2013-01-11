@@ -1,4 +1,4 @@
-/*! tactile - v0.0.1 - 2013-01-07
+/*! tactile - v0.0.1 - 2013-01-11
 * https://github.com/activecell/tactile
 * Copyright (c) 2013 Activecell; Licensed  */
 
@@ -17,6 +17,10 @@ Tactile.Tooltip = Tooltip = (function() {
 
   Tooltip.spotlightOn = function(d) {
     return Tooltip._spotlightMode = true;
+  };
+
+  Tooltip.getSpotlight = function() {
+    return Tooltip._spotlightMode;
   };
 
   function Tooltip(el, options) {

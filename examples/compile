@@ -1,0 +1,1 @@
+coffee -j javascript/spec/test.js -cwb coffee/spec/
