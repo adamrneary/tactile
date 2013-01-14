@@ -255,7 +255,6 @@ Tactile.Chart = class Chart
   data: (val) ->
     return @_data unless val
     @_data = val
-    
     @
 
   axes: (args, options) ->
