@@ -47,7 +47,7 @@
   background:-moz-linear-gradient($top, $bottom);
   background:-o-linear-gradient($top, $bottom);
   background:linear-gradient($top, $bottom);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#{$top}", endColorstr="#{$bottom}", GradientType=0);
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr="#{$top}", endColorstr="#{$bottom}", GradientType=0)";
 }
 
 @mixin gradientBar($primaryColor, $secondaryColor) {
@@ -66,7 +66,7 @@
   background-image: -o-linear-gradient(left, $startColor, $endColor); // Opera 11.10
   background-image: linear-gradient(left, $startColor, $endColor); // Le standard
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($startColor)}', endColorstr='#{ie-hex-str($endColor)}', GradientType=1); // IE9 and down
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($startColor)}', endColorstr='#{ie-hex-str($endColor)}', GradientType=1)"; // IE9 and down
 }
 @mixin gradient-vertical($startColor: #555, $endColor: #333) {
   background-color: mix($startColor, $endColor, 60%);
@@ -77,7 +77,7 @@
   background-image: -o-linear-gradient(top, $startColor, $endColor); // Opera 11.10
   background-image: linear-gradient(top, $startColor, $endColor); // The standard
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($startColor)}', endColorstr='#{ie-hex-str($endColor)}', GradientType=0); // IE9 and down
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($startColor)}', endColorstr='#{ie-hex-str($endColor)}', GradientType=0)"; // IE9 and down
 }
 
 @mixin gradient-striped($color, $angle: -45deg) {
@@ -91,12 +91,12 @@
 }
 
 @mixin reset-filter() {
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
 }
 
 @mixin opacity($opacity) {
   -moz-opacity: $opacity;
-  filter:alpha(opacity=$opacity*100);
+  filter:"alpha(opacity=$opacity*100)";
   opacity: $opacity;
 }
 
@@ -342,7 +342,7 @@
 
   // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
   &:active, &.active {
-    background-color: darken($endColor, 10%) \9;
+    background-color: darken($endColor, 10%);
   }
 }
 

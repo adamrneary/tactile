@@ -1,29 +1,22 @@
 {
-  "name": "tactile",
-  "version": "0.0.1",
-  "author": "Activecell",
-  "homepage": "https://github.com/activecell/tactile",
-  "description": "Responsive d3 charting library",
-  "author":{
-      "name": "Activecell",
-      "email": "activecell.com"
+    "name": "TablesStakes",
+    "version": "0.0.9",
+    "private": true,
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha test/server/run.js -G -R spec -s 20 --timeout 6000;",
+        "start": "node run"
     },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/activecell/tactile"
-  },
-  "keywords": [
-    "d3"
-  ],
-  "dependencies" : {
-    "d3"   :  "2.x.x"
-  },
-  "noAnalyze": true,
-  "devDependencies": {
-    "grunt"    :  "0.3.11",
-    "grunt-coffee"    :  "0.0.2",
-    "grunt-compass" :  "0.3.7",
-    "grunt-contrib-copy" :  "0.3.2"
-  },
-  "license": "NONE"
+    "engines": {
+        "node": "0.8.x",
+        "npm":  "1.1.x"
+    },
+    "dependencies": {
+        "express": "3.0.6",
+        "jade": "",
+        "coffee-script": "",
+        "node-sass": "",
+        "kss": "",
+        "mocha": "",
+        "request": ""
+    }
 }

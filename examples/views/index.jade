@@ -1,0 +1,39 @@
+!!! 5
+html
+  head
+    include includes/head
+    link(href='css/examples.css', rel='stylesheet', type='text/css')
+    script(type='text/javascript', src='js/examples.js')
+
+  body
+    include includes/toppanel
+    .container
+      .row
+        .span3
+          .well
+            ul#cartLinkList.nav.nav-list
+              li.nav-header
+                | Cartesian series
+            ul#noncartLinkList.nav.nav-list
+              li.nav-header
+                | Non-cartesian series
+            ul#compLinkList.nav.nav-list
+              li.nav-header
+                | Components
+        .span9
+          h3#example_header
+          .btn-group.stack-unstack-buttons
+            button#stack.btn.btn-mini stacked
+            button#group.btn.btn-mini grouped
+          #example_view(style='width: 680px;')
+          h3 Code for example
+          pre.
+            
+          script#example_script
+      hr
+    script(type='text/javascript')
+      $(function() {
+      $("[data-original-title]").tooltip();
+      });
+
+    hr
