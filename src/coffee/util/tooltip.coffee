@@ -1,8 +1,10 @@
 # 
 # Copied from https://github.com/zmaril/d3-bootstrap-plugins
 #
+window.Tactile = {} unless window.Tactile
+window.Tactile.Tooltip = class Tooltip
 
-Tactile.Tooltip = class Tooltip
+# Tactile.Tooltip = class Tooltip
   @_spotlightMode: false
 
   @turnOffspotlight: () ->

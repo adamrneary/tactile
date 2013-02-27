@@ -57,7 +57,7 @@ Tactile.Chart = class Chart
   addSeries: (series, options = {overwrite: false}) ->
     return unless series
     series = [series] unless _.isArray(series)
-        
+
     # TODO: Refactor this into series/renderer constructor
     seriesDefaults =
       dataTransform: (d) -> d
