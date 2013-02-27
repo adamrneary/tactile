@@ -85,7 +85,6 @@ chart.addSeries([
   }, {
     name: "reach plan",
     renderer: "line",
-    sigfigs: 0,
     color: "#c05020",
     draggable: true,
     tooltip: function(d) {
@@ -97,7 +96,6 @@ chart.addSeries([
         y: d.plan
       };
     },
-    onDrag: function(d, series, graph) {},
     afterDrag: function(d, y, i, draggedSeries, graph) {
       return graph.data()[i].plan = y;
     }

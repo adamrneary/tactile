@@ -10,7 +10,9 @@ Tactile.Dragger = class Dragger
     @onDrag = @series.onDrag || ->
     @dragged = null
     @_bindMouseEvents()
-    @power = Math.pow(10, (@series.sigfigs or 1))
+    # @power = Math.pow(10, (@series.sigfigs or 1))
+    @power = if @series.sigfigs? then Math.pow(10, @series.sigfigs) else 1
+    console.log @power
     @setSpeed = @renderer.transitionSpeed
     @timesRendered = 0
 
@@ -61,6 +63,7 @@ Tactile.Dragger = class Dragger
       @renderer.transitionSpeed = 0
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height(), p[1])))
       value = Math.round(inverted * @power) / @power
+      console.log inverted, value
       @dragged.y = value
       @onDrag(@dragged, @series, @graph)
       @update()
