@@ -12,10 +12,10 @@ cartesian = [
   title: "Stacked column"
   groupingButtons: true
 ,
-  shortLink: "area" 
+  shortLink: "area"
   title: "Area"
 ,
-  shortLink: "multiple-series" 
+  shortLink: "multiple-series"
   title: "Multiple series types"
 ]
 
@@ -37,13 +37,13 @@ noncartesian = [
 ]
 
 components = [
-  shortLink:"sliding-timeframe" 
+  shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,
-  shortLink:"filter" 
+  shortLink:"filter"
   title: "Filters (future)"
 ,
-  shortLink:"legend" 
+  shortLink:"legend"
   title: "Legend"
 ]
 
@@ -69,13 +69,16 @@ prepareLinks = (route, el) ->
     $("#example_js").empty().append script
     # $("#temp").empty()
 
+    $(".stack-unstack-buttons").hide()
+    $(".stack-unstack-buttons").show()  if route.groupingButtons
+
     # $.get urlCoffee, (data) ->
     #   $("#example_js").text data
     # $.get url, (data) ->
       # $("#example_view").text data
 
     $("#example_js").load urlCoffee, ->
-      $(@).removeClass("rainbow");
+      $(@).removeClass("rainbow")
       Rainbow.color()
     Rainbow.color()
 

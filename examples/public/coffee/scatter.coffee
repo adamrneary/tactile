@@ -1,6 +1,6 @@
 data = [
   
-  # time (period here) is unix milliseconds/1000 
+  # time (period here) is unix milliseconds/1000
   period: 1325376000
   actual: 14
   plan: 5
@@ -49,7 +49,8 @@ data = [
   actual: 15
   plan: 14
 ]
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0]).data(data).width(680)
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0]).data(data).width(680)
 chart.addSeries [
   name: "actual-planned-dots"
   renderer: "scatter"

@@ -50,10 +50,11 @@ data = [
   actual: 5
   plan: 2
 ]
-chart = new Tactile.Chart().element($("#example_view")[0]).data(data).width(680).height(400).axes(x:
-  dimension: "time"
-  frame: frameVal
-)
+chart = new Tactile.Chart()
+  .element($("#example_view")[0]).data(data).width(680).height(400).axes(x:
+    dimension: "time"
+    frame: frameVal
+  )
 chart.addSeries [
   name: "reach actual"
   renderer: "column"

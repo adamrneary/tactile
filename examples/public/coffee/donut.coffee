@@ -20,7 +20,8 @@ data = [
   label: "TX"
   val: 60000
 ]
-chart = new Tactile.Chart().element($("#example_view")[0]).width(680).height(400).data(data)
+chart = new Tactile.Chart()
+  .element($("#example_view")[0]).width(680).height(400).data(data)
 chart.addSeries
   name: "donut"
   renderer: "donut"

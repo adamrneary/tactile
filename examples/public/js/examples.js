@@ -73,6 +73,10 @@ prepareLinks = function(route, el) {
     script = $("<script>").attr("src", url);
     $("#example_view").empty();
     $("#example_js").empty().append(script);
+    $(".stack-unstack-buttons").hide();
+    if (route.groupingButtons) {
+      $(".stack-unstack-buttons").show();
+    }
     $("#example_js").load(urlCoffee, function() {
       $(this).removeClass("rainbow");
       return Rainbow.color();

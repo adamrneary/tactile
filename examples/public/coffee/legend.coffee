@@ -71,7 +71,11 @@ chart.render()
 sl = $("<div>").attr("id", "slider")
 legends = $("<div>").attr("id", "legends")
 $(chart.series).each (idx, val) ->
-  legends.append $("<input>").attr("type", "checkbox").attr("name", "legend").attr("value", idx).attr("checked", "checked").after(val.name + "<br />")
+  legends.append $("<input>").attr("type", "checkbox")
+    .attr("name", "legend")
+    .attr("value", idx)
+    .attr("checked", "checked")
+    .after(val.name + "<br />")
   legends.find("input").last().click ->
     chart.series[idx].toggle()
     chart.render()

@@ -1,6 +1,6 @@
 describe 'Area series', ->
-    it 'example', (done) ->
-      done()
+  it 'example', (done) ->
+    done()
 
     # Chart = new Tactile.Chart()
 
@@ -183,9 +183,10 @@ describe 'Area series', ->
 
 
     # it "Chart: check width function", ->
-    #     Chart = Chart.width(680)
-    #     Chart.update()
-    #     assert Chart.width() is 680 - Chart.margin.left - Chart.margin.right - Chart.padding.left - Chart.padding.right
+    #   Chart = Chart.width(680)
+    #   Chart.update()
+    #   width = 680 - Chart.margin.left - Chart.margin.right - Chart.padding.left - Chart.padding.right
+    #   assert Chart.width() is width
 
 
     # it 'Tactile.Chart().render is function', ->

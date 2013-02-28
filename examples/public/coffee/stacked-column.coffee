@@ -1,7 +1,7 @@
 frameVal = [1330560000, 1354320000]
 data = [
   
-  # time (period here) is unix milliseconds/1000 
+  # time (period here) is unix milliseconds/1000
   period: 1325376000
   actual: 4
   plan: 1
@@ -50,7 +50,8 @@ data = [
   actual: 5
   plan: 2
 ]
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0]).data(data)
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0]).data(data)
 chart.width(680).height 400
 chart.axes
   y: "linear"

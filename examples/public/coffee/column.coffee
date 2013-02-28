@@ -1,5 +1,5 @@
 frameVal = [1330560000, 1354320000]
-# time (period here) is unix milliseconds/1000 
+# time (period here) is unix milliseconds/1000
 data = [
   period: 1325376000
   actual: 4
@@ -50,7 +50,7 @@ data = [
   plan: 2
 ]
 chart = new Tactile.Chart()
-chart.element($("#example_view")[0]).height(500).width(700).data data
+  .element($("#example_view")[0]).height(500).width(700).data data
 chart.addSeries [
   name: "reach actual"
   renderer: "column"
