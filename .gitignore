@@ -18,4 +18,3 @@ examples/js/tactile.js
 test/cov/*
 test/reports/*
 test/docs/*
-examples/public/docs/*
