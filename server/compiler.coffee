@@ -6,7 +6,7 @@ coffeePath = "#{__dirname}/../node_modules/coffee-script/bin/coffee"
 
 module.exports.compile = (cb) ->
   compileCoffeeSrc ->
-    #compileCoffeeTests ->
+    compileCoffeeTests ->
     compileCoffeeExamples ->
       switch glob.config.css
         when 'less'

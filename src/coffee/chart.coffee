@@ -210,23 +210,13 @@ Tactile.Chart = class Chart
     @updateCallbacks.push callback
 
   initRenderers: (series) ->
-    console.log 10101010
-    console.log series
     renderersSize = @renderers.length
     _.each series, (s, index) =>
-      console.log 7777777777
-      console.log s
-      console.log s.renderer
       name = s.renderer
-      console.log @_renderers
       if (!@_renderers[name])
         throw "couldn't find renderer #{name}"
-        console.log 8888888
-
-      console.log 7878787
       rendererClass = @_renderers[name]
       rendererOptions = _.extend {},
-        console.log 7899999
         graph: @
         transitionSpeed: @transitionSpeed
         series: s

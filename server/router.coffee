@@ -28,6 +28,27 @@ app.get '/documentation', (req,res)->
     docs: docs
     page: 'documentation'
 
+app.get '/coverage', (req,res)->
+  cover = ''
+  coverPath = "#{__dirname}/../test/reports/coverage.html"
+  htmlBody = modules.fs.readFileSync coverPath, 'utf-8'
+  if htmlBody.length > 0
+    cover = htmlBody.substr(htmlBody.indexOf("<body>")+6, htmlBody.length - 14)
+    # cover = htmlBody.substr(htmlBody.indexOf("<body>")+6, htmlBody.indexOf("</body></html>"))
+  console.log 'HHHHHEEEEEEERRRREEEEEE'
+  res.render 'coverage'
+    cover: cover
+    page: 'coverage'
+
+  #report = ''
+  #try
+    #destDir = __dirname+'/../test/reports/coverage.html'
+    #report = glob.modules.fs.readFileSync destDir
+  #res.setHeader 'Content-Type', 'text/html'
+  #res.setHeader 'Content-Length', report.length
+  #res.end report
+
+
 app.get '/test', (req,res)->
   errors = {}
   pathes = {}
@@ -52,6 +73,13 @@ app.get '/test', (req,res)->
       contents = modules.fs.readFileSync path3 + d, 'utf-8'
       errors[d] = modules.coffeelint.lint contents
 
+  path4="#{__dirname}/../test/"
+  files4 = modules.fs.readdirSync path4
+  for r in files4
+    if r.substr(-7) is ".coffee"
+      contents = modules.fs.readFileSync path4 + r, 'utf-8'
+      errors[r] = modules.coffeelint.lint contents
+
   try
     lint = glob.modules.fs.readFileSync __dirname+'/../test/reports/lint.txt'
 
@@ -59,16 +87,6 @@ app.get '/test', (req,res)->
     errors: errors
     page: 'mocha'
     lint: lint
-
-app.get '/coverage', (req,res)->
-
-  report = ''
-  try
-    destDir = __dirname+'/../test/reports/coverage.html'
-    report = glob.modules.fs.readFileSync destDir
-  res.setHeader 'Content-Type', 'text/html'
-  res.setHeader 'Content-Length', report.length
-  res.end report
 
 app.get '/styleguide', (req,res)->
   options =
