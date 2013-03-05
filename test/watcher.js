@@ -61,22 +61,33 @@ report = function (cb) {
     _env[p] = process.env[p]
   }
   _env.REPORT = 1
-  proc2 = spawn(__dirname+'/../node_modules/mocha/bin/mocha',[__dirname+'/run.js', '-R', 'html-cov', '-s', '20', '--timeout', '6000', '--globals', 'd3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'], {env: _env})
-  proc2.stdout.on('data',function(data) {
+  proc = spawn(__dirname+'/../node_modules/mocha/bin/mocha',[__dirname+'/run.js', '-R', 'html-cov', '-s', '20', '--timeout', '6000', '--globals', 'd3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'], {env: _env})
+  proc.stdout.on('data',function(data) {
       html += data.toString()
   });
-  proc2.on('exit', function(err,stdout,stderr) {
+  proc.on('exit', function(err,stdout,stderr) {
     console.log(err);
     require('fs').writeFile(__dirname+'/reports/coverage.html',html)
     if (cb) cb()
   });
 };
 
+var watched = false
+var proc = null
+var filesNames = require('fs').readdirSync(__dirname+'/../src/scss/');
 
-spec = function (cb) {
-  //proc = spawn(__dirname+'/../node_modules/mocha/bin/mocha',[__dirname+'/run.js', '-Gw','-R','spec','-s','20','--timeout','6000','--globals','d3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'], {customFds: [0,1,2]})
+  spec = function (cb) {
+    for (var name in filesNames) {
+    var path = __dirname+'/../src/scss/'+filesNames[name];
+    if (!watched) {
+      require('fs').watch(path,function(event,filename) {
+        if (proc) {
+          proc.kill()
+        }
+      });
+    }
+  }
   proc = spawn(__dirname+'/../node_modules/mocha/bin/mocha',[__dirname+'/run.js', '-Gw','-R','spec','-s','20','--timeout','6000','--globals','d3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'], {stdio: 'inherit'})
-  //proc.stdout.pipe(process.stdout, {end: false})
   proc.on('exit',function() {
     start()
   });
