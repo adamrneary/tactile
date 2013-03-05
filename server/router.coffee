@@ -34,8 +34,6 @@ app.get '/coverage', (req,res)->
   htmlBody = modules.fs.readFileSync coverPath, 'utf-8'
   if htmlBody.length > 0
     cover = htmlBody.substr(htmlBody.indexOf("<body>")+6, htmlBody.length - 14)
-    # cover = htmlBody.substr(htmlBody.indexOf("<body>")+6, htmlBody.indexOf("</body></html>"))
-  console.log 'HHHHHEEEEEEERRRREEEEEE'
   res.render 'coverage'
     cover: cover
     page: 'coverage'

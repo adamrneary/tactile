@@ -1,4 +1,4 @@
-describe 'zombie', ->
+#describe 'coffeelint', ->
   #it 'exec', (done)->
     #report = ''
     #glob.lint = require('child_process').spawn 'coffeelint', [
