@@ -1,0 +1,69 @@
+<!DOCTYPE html>  <html> <head>   <title>axis_time.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="chart.html">                 chart.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               axis_time.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.AxisTime = </span><span class="k">class</span> <span class="nx">AxisTime</span>
+
+  <span class="nv">constructor: </span><span class="nf">(args) -&gt;</span>
+    <span class="vi">@graph = </span><span class="nx">args</span><span class="p">.</span><span class="nx">graph</span>
+    <span class="vi">@ticksTreatment = </span><span class="nx">args</span><span class="p">.</span><span class="nx">ticksTreatment</span> <span class="o">or</span> <span class="s2">&quot;plain&quot;</span>
+    <span class="vi">@fixedTimeUnit = </span><span class="nx">args</span><span class="p">.</span><span class="nx">timeUnit</span>
+    <span class="vi">@marginTop = </span><span class="nx">args</span><span class="p">.</span><span class="nx">paddingBottom</span> <span class="o">or</span> <span class="mi">5</span>
+    <span class="vi">@time = </span><span class="k">new</span> <span class="nx">FixturesTime</span><span class="p">()</span>
+    <span class="vi">@grid = </span><span class="nx">args</span><span class="p">.</span><span class="nx">grid</span>
+    <span class="nx">@graph</span><span class="p">.</span><span class="nx">onUpdate</span> <span class="o">=&gt;</span>
+      <span class="nx">@render</span><span class="p">()</span>
+
+  <span class="nv">appropriateTimeUnit: </span><span class="o">-&gt;</span>
+    <span class="nv">unit = </span><span class="kc">undefined</span>
+    <span class="nv">units = </span><span class="nx">@time</span><span class="p">.</span><span class="nx">units</span>
+    <span class="nv">domain = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">domain</span><span class="p">()</span>
+    <span class="nv">rangeSeconds = </span><span class="nx">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nx">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nx">units</span><span class="p">.</span><span class="nx">forEach</span> <span class="nf">(u) -&gt;</span>
+      <span class="nv">unit = </span><span class="nx">unit</span> <span class="o">or</span> <span class="nx">u</span> <span class="k">if</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">rangeSeconds</span> <span class="err">/ u.seconds) &gt;= 2</span>
+
+    <span class="nx">unit</span> <span class="o">or</span> <span class="nx">@time</span><span class="p">.</span><span class="nx">units</span><span class="p">[</span><span class="nx">@time</span><span class="p">.</span><span class="nx">units</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+  <span class="nv">tickOffsets: </span><span class="o">-&gt;</span>
+    <span class="nv">domain = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">domain</span><span class="p">()</span>
+    <span class="nv">unit = </span><span class="nx">@fixedTimeUnit</span> <span class="o">or</span> <span class="nx">@appropriateTimeUnit</span><span class="p">()</span>
+    <span class="nv">count = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">((</span><span class="nx">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nx">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">seconds</span><span class="p">)</span>
+    <span class="nv">runningTick = </span><span class="nx">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nv">offsets = </span><span class="p">[]</span>
+    <span class="nv">i = </span><span class="mi">0</span>
+
+    <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">count</span>
+      <span class="nv">tickValue = </span><span class="nx">@time</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">runningTick</span><span class="p">,</span> <span class="nx">unit</span><span class="p">)</span>
+      <span class="nv">runningTick = </span><span class="nx">tickValue</span> <span class="o">+</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">seconds</span> <span class="err">/ 2</span>
+      <span class="nx">offsets</span><span class="p">.</span><span class="nx">push</span>
+        <span class="nv">value: </span><span class="nx">tickValue</span>
+        <span class="nv">unit: </span><span class="nx">unit</span>
+
+      <span class="nx">i</span><span class="o">++</span>
+    <span class="nx">offsets</span>
+
+  <span class="nv">render: </span><span class="o">-&gt;</span>
+    <span class="k">return</span> <span class="nx">unless</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="o">?</span>
+    <span class="nv">g = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">vis</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;.x-ticks&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nx">g</span><span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="s1">&#39;x-ticks&#39;</span><span class="p">)</span>
+                
+    <span class="nv">tickData = </span><span class="nx">@tickOffsets</span><span class="p">().</span><span class="nx">filter</span><span class="p">((</span><span class="nx">tick</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">tick</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                                                                                                
+    <span class="nv">ticks = </span><span class="nx">g</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;g.x-tick&#39;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@tickOffsets</span><span class="p">(),</span> <span class="nf">(d) -&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+
+    <span class="nx">ticks</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>                                
+      <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;x-tick&quot;</span><span class="p">,</span> <span class="nx">@ticksTreatment</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">&quot;translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="nx">@marginTop</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nf">(d) -&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">unit</span><span class="p">.</span><span class="nx">formatter</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">value</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)))</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">)</span>
+
+    <span class="nx">ticks</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">&quot;translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})&quot;</span><span class="p">)</span>
+
+    <span class="nx">ticks</span><span class="p">.</span><span class="nx">exit</span><span class="p">().</span><span class="nx">remove</span><span class="p">()</span>
+
+
+  
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

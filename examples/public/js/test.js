@@ -22,24 +22,3 @@ describe('Area series', function() {
     return done();
   });
 });
-
-describe('unit tests', function() {
-  before(function(done) {
-    glob.zombie.visit(glob.url, function(e, _browser) {
-      var $, browser, window, _;
-      browser = _browser;
-      window = browser.window;
-      $ = window.$;
-      _ = window._;
-      global.browser = browser;
-      global.window = window;
-      global.d3 = browser.window.d3;
-      global._ = window._;
-      if (glob.report) {
-        return require(__dirname + '/../cov/tactile.js');
-      }
-    });
-    return done();
-  });
-  return require('./chart_test');
-});

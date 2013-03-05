@@ -1,0 +1,89 @@
+<!DOCTYPE html>  <html> <head>   <title>fixtures_time.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="chart.html">                 chart.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               fixtures_time.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.FixturesTime = </span><span class="k">class</span> <span class="nx">FixturesTime</span>
+
+  <span class="nv">constructor: </span><span class="o">-&gt;</span> 
+    <span class="vi">@tzOffset = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTimezoneOffset</span><span class="p">()</span> <span class="o">*</span> <span class="mi">60</span>
+    <span class="vi">@months = </span><span class="p">[</span><span class="s2">&quot;Jan&quot;</span><span class="p">,</span> <span class="s2">&quot;Feb&quot;</span><span class="p">,</span> <span class="s2">&quot;Mar&quot;</span><span class="p">,</span> <span class="s2">&quot;Apr&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;Jun&quot;</span><span class="p">,</span> <span class="s2">&quot;Jul&quot;</span><span class="p">,</span> <span class="s2">&quot;Aug&quot;</span><span class="p">,</span> <span class="s2">&quot;Sep&quot;</span><span class="p">,</span> <span class="s2">&quot;Oct&quot;</span><span class="p">,</span> <span class="s2">&quot;Nov&quot;</span><span class="p">,</span> <span class="s2">&quot;Dec&quot;</span><span class="p">]</span>
+
+    <span class="vi">@units = </span> <span class="p">[</span>
+      <span class="nv">name: </span><span class="s2">&quot;decade&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">365.25</span> <span class="o">*</span> <span class="mi">10</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nb">parseInt</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;year&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">365.25</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;month&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">30.5</span>
+      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@months</span><span class="p">[</span><span class="nx">d</span><span class="p">.</span><span class="nx">getUTCMonth</span><span class="p">()]</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;week&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mi">7</span>
+      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@formatDate</span> <span class="nx">d</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;day&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">86400</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCDate</span><span class="p">()</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;6 hour&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">6</span>
+      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@formatTime</span> <span class="nx">d</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;hour&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">3600</span>
+      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@formatTime</span> <span class="nx">d</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;15 minute&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">60</span> <span class="o">*</span> <span class="mi">15</span>
+      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@formatTime</span> <span class="nx">d</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;minute&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">60</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCMinutes</span><span class="p">()</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;15 second&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">15</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s2">&quot;second&quot;</span>
+      <span class="nv">seconds: </span><span class="mi">1</span>
+      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
+    <span class="p">]</span>
+
+  <span class="nv">unit: </span><span class="nf">(unitName) -&gt;</span>
+    <span class="nx">@units</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nf">(unit) -&gt;</span>
+      <span class="nx">unitName</span> <span class="o">is</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">name</span>
+    <span class="p">).</span><span class="nx">shift</span><span class="p">()</span>
+
+  <span class="nv">formatDate: </span><span class="nf">(d) -&gt;</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">toUTCString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span><span class="sr">/, (\w+ \w+ \w+)/</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="nv">formatTime: </span><span class="nf">(d) -&gt;</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">toUTCString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(\d+:\d+):/</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="nv">ceil: </span><span class="nf">(time, unit) -&gt;</span>
+    <span class="k">if</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s2">&quot;year&quot;</span>
+      <span class="nv">nearFuture = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">((</span><span class="nx">time</span> <span class="o">+</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">seconds</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+      <span class="nv">rounded = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCFullYear</span> <span class="nx">nearFuture</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMonth</span> <span class="mi">0</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCDate</span> <span class="mi">1</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCHours</span> <span class="mi">0</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMinutes</span> <span class="mi">0</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCSeconds</span> <span class="mi">0</span>
+      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMilliseconds</span> <span class="mi">0</span>
+      <span class="k">return</span> <span class="nx">rounded</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span>
+    <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">time</span> <span class="err">/ unit.seconds) * unit.seconds</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

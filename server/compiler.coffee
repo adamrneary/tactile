@@ -18,7 +18,7 @@ module.exports.compile = (cb) ->
 
 compileCoffeeTests = (cb) ->
   testDest = "#{__dirname}/../examples/public/js/test.js"
-  srcDir = "#{__dirname}/../test/unit/"
+  srcDir = "#{__dirname}/../test/unit/*_test.coffee"
   command1 = "#{coffeePath} -j #{testDest} -cb #{srcDir}"
   command2 = "#{coffeePath} -p -cb #{srcDir}"
 

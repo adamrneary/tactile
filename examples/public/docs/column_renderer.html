@@ -1,0 +1,160 @@
+<!DOCTYPE html>  <html> <head>   <title>column_renderer.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="chart.html">                 chart.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               column_renderer.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.ColumnRenderer = </span><span class="k">class</span> <span class="nx">ColumnRenderer</span> <span class="k">extends</span> <span class="nx">RendererBase</span>
+  <span class="nv">name: </span><span class="s2">&quot;column&quot;</span>
+
+  <span class="nv">specificDefaults:</span>
+    <span class="nv">gapSize: </span><span class="mf">0.15</span>
+    <span class="nv">tension: </span><span class="kc">null</span>
+    <span class="nv">round: </span><span class="kc">true</span>
+    <span class="nv">unstack: </span><span class="kc">true</span>
+
+
+  <span class="nv">initialize: </span><span class="nf">(options = {}) -&gt;</span>
+    <span class="vi">@dragger = </span><span class="k">new</span> <span class="nx">Dragger</span><span class="p">(</span><span class="nv">renderer: </span><span class="err">@</span><span class="p">,</span> <span class="nv">circles: </span><span class="kc">true</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">draggable</span>
+    <span class="vi">@gapSize = </span><span class="nx">options</span><span class="p">.</span><span class="nx">gapSize</span> <span class="o">||</span> <span class="nx">@gapSize</span>
+
+    <span class="vi">@timesRendered = </span><span class="mi">0</span>
+
+  <span class="nv">render: </span><span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">disabled</span><span class="p">)</span>
+      <span class="vi">@timesRendered = </span><span class="mi">0</span>
+      <span class="vi">@dragger.timesRendered = </span><span class="mi">0</span>
+      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">).</span><span class="nx">remove</span><span class="p">()</span>
+      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">).</span><span class="nx">remove</span><span class="p">()</span>
+      <span class="k">return</span>
+
+    <span class="nv">nodes = </span><span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">)</span>
+    <span class="nx">nodes</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg:rect&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;clip-path&quot;</span><span class="p">,</span> <span class="s2">&quot;url(#clip)&quot;</span><span class="p">)</span>
+
+    <span class="nx">@dragger</span><span class="o">?</span><span class="p">.</span><span class="nx">makeHandlers</span><span class="p">(</span><span class="nx">nodes</span><span class="p">)</span>
+    <span class="nx">@dragger</span><span class="o">?</span><span class="p">.</span><span class="nx">updateDraggedNode</span><span class="p">()</span>
+
+    <span class="nx">nodes</span>
+      <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nx">@_barX</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="nx">@_barY</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">@_seriesBarWidth</span><span class="p">())</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">magnitude</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="nx">@_transformMatrix</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">color</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;rx&quot;</span><span class="p">,</span> <span class="nx">@_edgeRatio</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="nx">@_edgeRatio</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;colorless&quot;</span> <span class="nx">unless</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">color</span><span class="p">)].</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+    
+    <span class="nx">@setupTooltips</span><span class="p">()</span>
+
+
+  <span class="nv">setupTooltips: </span><span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">tooltip</span>
+      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">).</span><span class="nx">tooltip</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nv">circleColor: </span><span class="nx">@series</span><span class="p">.</span><span class="nx">color</span>
+        <span class="nv">graph: </span><span class="nx">@graph</span>
+        <span class="nv">text: </span><span class="nx">@series</span><span class="p">.</span><span class="nx">tooltip</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+        <span class="nv">circleOnHover: </span><span class="p">(</span><span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">draggable</span> <span class="k">then</span> <span class="kc">false</span> <span class="k">else</span> <span class="kc">true</span><span class="p">)</span>
+        <span class="nv">tooltipCircleContainer: </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">vis</span><span class="p">.</span><span class="nx">node</span><span class="p">()</span>
+        <span class="nv">gravity: </span><span class="s2">&quot;right&quot;</span>
+
+
+  <span class="nv">barWidth: </span><span class="o">-&gt;</span>
+    <span class="nv">data = </span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span>
+
+    <span class="nv">count = </span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span>
+    <span class="nv">barWidth = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span> <span class="o">/</span> <span class="nx">count</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nx">@gapSize</span><span class="p">)</span>
+
+  <span class="nv">stackTransition: </span><span class="o">-&gt;</span>
+    <span class="vi">@unstack = </span><span class="kc">false</span>
+    <span class="nx">@graph</span><span class="p">.</span><span class="nx">discoverRange</span><span class="p">(</span><span class="err">@</span><span class="p">)</span>
+    <span class="nv">count = </span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">.</span><span class="nx">length</span>
+
+    <span class="nv">nodes = </span><span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">)</span>
+
+    <span class="nx">nodes</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg:rect&quot;</span><span class="p">)</span>
+
+    <span class="nv">slideTransition = </span><span class="o">=&gt;</span>
+      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">@_seriesBarWidth</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nx">@_barX</span><span class="p">)</span>
+
+    <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="nx">@_barY</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">magnitude</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span>
+      <span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="nx">slideTransition</span><span class="p">)</span>
+
+    <span class="nx">@setupTooltips</span><span class="p">()</span>
+    <span class="nx">@graph</span><span class="p">.</span><span class="nx">updateCallbacks</span><span class="p">.</span><span class="nx">forEach</span> <span class="nf">(callback) -&gt;</span>
+      <span class="nx">callback</span><span class="p">()</span>
+
+  <span class="nv">unstackTransition: </span><span class="o">-&gt;</span>
+    <span class="vi">@unstack = </span><span class="kc">true</span>
+    <span class="nx">@graph</span><span class="p">.</span><span class="nx">discoverRange</span><span class="p">(</span><span class="err">@</span><span class="p">)</span>
+    <span class="nv">count = </span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">.</span><span class="nx">length</span>
+
+    <span class="nv">growTransition = </span><span class="o">=&gt;</span>
+      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">magnitude</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="nx">@_barY</span><span class="p">)</span>
+
+    <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nx">@_barX</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">@_seriesBarWidth</span><span class="p">())</span>
+      <span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="nx">growTransition</span><span class="p">)</span>
+
+    <span class="nx">@setupTooltips</span><span class="p">()</span>
+    <span class="nx">@graph</span><span class="p">.</span><span class="nx">updateCallbacks</span><span class="p">.</span><span class="nx">forEach</span> <span class="nf">(callback) -&gt;</span>
+      <span class="nx">callback</span><span class="p">()</span>
+
+
+  <span class="nv">_transformMatrix: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>A matrix transform for handling negative values</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">matrix = </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">((</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">((</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">magnitude</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="s2">&quot;matrix(&quot;</span> <span class="o">+</span> <span class="nx">matrix</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+
+  <span class="nv">_edgeRatio: </span><span class="o">=&gt;</span>
+    <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">round</span> <span class="k">then</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mf">0.05783</span> <span class="o">*</span> <span class="nx">@_seriesBarWidth</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+  <span class="nv">_seriesBarWidth: </span><span class="o">=&gt;</span>
+    <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+      <span class="nv">width = </span><span class="p">(</span><span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">x</span><span class="p">)</span> <span class="o">-</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nx">@gapSize</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="nv">width = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nx">@gapSize</span><span class="p">)</span>
+      
+    <span class="nv">width = </span><span class="nx">width</span> <span class="err">/ @graph.series.filter((d) =&gt; d.renderer == &#39;column&#39;).length if @unstack</span>
+    <span class="nx">width</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>when we have couple of series we want them all to be center-aligned around the x-value</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">_barXOffset: </span><span class="nf">(seriesBarWidth) -&gt;</span>
+    <span class="nv">count = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">renderersByType</span><span class="p">(</span><span class="nx">@name</span><span class="p">).</span><span class="nx">length</span>
+
+    <span class="k">if</span> <span class="nx">count</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="o">!</span><span class="nx">@unstack</span>
+      <span class="nv">barXOffset = </span><span class="o">-</span><span class="nx">seriesBarWidth</span> <span class="err">/ 2</span>
+    <span class="k">else</span>
+      <span class="nv">barXOffset = </span><span class="o">-</span><span class="nx">seriesBarWidth</span> <span class="o">*</span> <span class="nx">count</span> <span class="err">/ 2</span>
+
+  <span class="nv">_barX: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">x = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>center the bar around the value it represents</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">seriesBarWidth = </span><span class="nx">@_seriesBarWidth</span><span class="p">()</span>
+    <span class="nv">initialX = </span><span class="nx">x</span> <span class="o">+</span> <span class="nx">@_barXOffset</span><span class="p">(</span><span class="nx">seriesBarWidth</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nx">@unstack</span>
+      <span class="nx">initialX</span> <span class="o">+</span> <span class="p">(</span><span class="nx">@_columnRendererIndex</span><span class="p">()</span> <span class="o">*</span> <span class="nx">seriesBarWidth</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="k">return</span> <span class="nx">initialX</span>
+
+  <span class="nv">_barY: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>if we want to display stacked bars y should be added y0 value  </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@unstack</span>
+      <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y0</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Returns the index of this column renderer
+For example: if this is the third renderer of the column type it will have index equal to 2
+this is handy when you need to modify the x,y values depending on what is the number of the currently rendered bars</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">_columnRendererIndex: </span><span class="o">-&gt;</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="nx">@rendererIndex</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">@rendererIndex</span> <span class="o">is</span> <span class="kc">undefined</span>
+    <span class="nv">renderers = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">renderers</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">@rendererIndex</span><span class="p">)</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">renderers</span><span class="p">,(</span><span class="nx">r</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">r</span><span class="p">.</span><span class="nx">name</span> <span class="o">==</span> <span class="nx">@name</span><span class="p">).</span><span class="nx">length</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
