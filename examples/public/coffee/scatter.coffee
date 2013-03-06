@@ -5,7 +5,6 @@ data = [
   actual: 14
   plan: 5
 ,
-  period: 1328054400
   actual: 16
   plan: 10
 ,
@@ -71,8 +70,8 @@ chart.addSeries [
     d.y + " planned, got " + d.r
 
   dataTransform: (d) ->
-    x: d.period
-    y: d.plan
-    r: d.actual
+      x: d.period
+      y: d.plan
+      r: d.actual
 ]
 chart.render()
