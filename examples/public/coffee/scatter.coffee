@@ -5,11 +5,11 @@ data = [
   actual: 14
   plan: 5
 ,
-  actual: 16
+  period: 1325496000
+  actual: null
   plan: 10
 ,
   period: 1330560000
-  actual: 12
   plan: 19
 ,
   period: 1333238400
