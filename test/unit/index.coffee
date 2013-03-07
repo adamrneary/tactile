@@ -15,7 +15,16 @@ describe 'unit tests', ->
     done()
 
   require './chart_test'
-  #require './render_test'
-  #require './events_test'
-  #require './utils_test'
-
+  require './tooltip_test'
+  require './renderer_base_test'
+  require './area_renderer_test'
+  require './axis_time_test'
+  require './axis_y_test'
+  require './column_renderer_test'
+  require './donut_renderer_test'
+  require './dragger_test'
+  require './fixtures_time_test'
+  require './gauge_renderer_test'
+  require './line_renderer_test'
+  require './range_slider_test'
+  require './scatter_renderer_test'
