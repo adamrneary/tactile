@@ -62,14 +62,12 @@ app.get '/test', (req,res)->
     "#{__dirname}/../test/unit/"
   ]
 
-  a=0
   for path in pathes
     files = modules.fs.readdirSync path
     for f in files
-      a+=1
       if f.substr(-7) is ".coffee"
         contents = modules.fs.readFileSync path + f, 'utf-8'
-        errors[a] = modules.coffeelint.lint contents
+        errors[path + f] = modules.coffeelint.lint contents
 
   #try
     #lint = glob.modules.fs.readFileSync __dirname+'/../test/reports/lint.txt'
