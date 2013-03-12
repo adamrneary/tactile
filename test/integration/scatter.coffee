@@ -106,7 +106,7 @@ describe 'Scatter series', ->
     Chart = Chart.height(450)
     Chart.update()
     heightMargin = Chart.margin.top + Chart.margin.bottom
-    heightMargin = Chart.padding.top + Chart.padding.bottom
+    heightPadding = Chart.padding.top + Chart.padding.bottom
     height = heightMargin + heightPadding
     assert Chart.height() is 450 - height
 
@@ -119,7 +119,7 @@ describe 'Scatter series', ->
     widthMargin = Chart.margin.left + Chart.margin.right
     widthPadding = Chart.padding.left + Chart.padding.right
     heightMargin = Chart.margin.top + Chart.margin.bottom
-    heightMargin = Chart.padding.top + Chart.padding.bottom
+    heightPadding = Chart.padding.top + Chart.padding.bottom
     width =  widthMargin + widthPadding
     height = heightMargin + heightPadding
     assert Chart.width() is 720 - width

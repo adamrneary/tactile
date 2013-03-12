@@ -1,27 +1,6 @@
 describe 'Chart', ->
-  before (done)->
-    glob.zombie.visit glob.url, (e, _browser) ->
-      browser = _browser
-      window = browser.window
-      $ = window.$
-      _ = window._
-
-      global.browser = browser
-      global.window = window
-      global.d3 = browser.window.d3
-      global._ = window._
-      done()
-
-
-  it 'example', (done) ->
-    Chart = new window.Tactile.Chart()
-    #console.log Chart
-    Chart.render()
-    done()
-
-  it "Chart: check data function", (done)->
-    Chart = new window.Tactile.Chart()
-    data = [
+  frameVal = [0, 4]
+  data = [
       x: 0
       y: 10
       z: 0
@@ -58,32 +37,37 @@ describe 'Chart', ->
       y: 120
       z: 490
     ]
-    Chart.data(data).render()
-    assert Chart._data is data
+
+  before (done)->
+    glob.zombie.visit glob.url, (e, _browser) ->
+      browser = _browser
+      window = browser.window
+      $ = window.$
+      _ = window._
+
+      global.browser = browser
+      global.window = window
+      global.d3 = browser.window.d3
+      global._ = window._
+      done()
+
+
+  it 'Chart: constructor', (done) ->
+    # _chart = new window.Tactile.Chart()
+    _chart = new window.Tactile.Chart(unstack: false)
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes(x:{dimension: "time", frame: frameVal})
+      # .width(680).height(400).data(data)
+      # .element($("#example_view")[0]).width(680).height(400).data(data)
+
+    assert _chart
     done()
 
-
-  it "Chart: check axes function", (done)->
-    Chart = new window.Tactile.Chart()
-    frameVal = [0, 4]
-    Chart.axes(x:
-      dimension: "time"
-      frame: frameVal
-    )
-    assert Chart._axes.x.frame is frameVal
-    done()
-
-
-  it "Chart: check element function", (done)->
-    Chart = new window.Tactile.Chart()
-    Chart.element(window.$("#example_view")[0])
-    assert Chart._element is window.$("#example_view")[0]
-    done()
-
-
-  it 'addSeries', (done)->
-    Chart = new window.Tactile.Chart()
-    Chart.addSeries [
+  it 'Chart: addSeries', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart.addSeries [
       name: "enemies"
       renderer: "area"
       sigfigs: 0
@@ -108,8 +92,8 @@ describe 'Chart', ->
         x: d.x
         y: d.z
     ]
-    enemies = Chart.series[Chart.series.length-2]
-    friends = Chart.series[Chart.series.length-1]
+    enemies = _chart.series[_chart.series.length-2]
+    friends = _chart.series[_chart.series.length-1]
     assert enemies.name is 'enemies'
     assert friends.name is 'friends'
     assert enemies.renderer is 'area'
@@ -123,144 +107,228 @@ describe 'Chart', ->
     assert enemies.draggable is true
     assert friends.draggable is true
     done()
+    # assert _chart.addSeries
 
-  it 'slider', (done)->
-    Chart = new window.Tactile.Chart()
-    frameVal = [0, 4]
-    data = [
-      x: 0
-      y: 10
-      z: 0
+  it 'Chart: initSeriesStackData', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    _chart.addSeries [
+      name: "enemies"
+      renderer: "area"
+      sigfigs: 0
+      draggable: true
+      afterDrag: (d, y, i, draggedSeries, graph) ->
+        graph.data()[i].y = y
+
+      color: "#c05020"
+      dataTransform: (d) ->
+        x: d.x
+        y: d.y
     ,
-      x: 1
-      y: 170
-      z: 200
-    ,
-      x: 2
-      y: 280
-      z: 120
-    ,
-      x: 3
-      y: 205
-      z: 240
-    ,
-      x: 4
-      y: 280
-      z: 120
-    ,
-      x: 5
-      y: 205
-      z: 240
-    ,
-      x: 6
-      y: 280
-      z: 120
-    ,
-      x: 7
-      y: 205
-      z: 240
-    ,
-      x: 8
-      y: 120
-      z: 490
+      name: "friends"
+      renderer: "area"
+      sigfigs: 1
+      color: "#6060c0"
+      draggable: true
+      afterDrag: (d, y, i, draggedSeries, graph) ->
+        graph.data()[i].z = y
+
+      dataTransform: (d) ->
+        x: d.x
+        y: d.z
     ]
-
-    sl = window.$("<div>").attr("id", "slider")
-    window.$("#example_view").append sl
-    sl.slider
-      min: 0
-      max: 8
-      values: frameVal
-      range: true
-      slide: (event, ui) ->
-        Chart.axes().x.frame = ui.values
-    console.log 'yere'
-    console.log Chart.series
-    _.each Chart.series, (s) ->
-      s.enabled()
-    res = Chart._allSeriesDisabled()
-    console.log res
-
-    #console.log Chart.dataDomain
-    #Chart.dataDomain()
-    #Chart.stackData()
-    #console.log data
-    #assert 0).toBe 0
+    assert typeof _chart.initSeriesStackData is 'function'
+    assert typeof _chart.initSeriesStackData()
+    assert typeof _chart.initSeriesStackData(overwrite: true)
     done()
 
-  it "Chart: check for all series disabled", (done)->
-    Chart = new window.Tactile.Chart()
-    #console.log 'yere'
-    #console.log Chart.series
-    _.each Chart.series, (s) ->
-      s.enabled()
-    res = Chart._allSeriesDisabled()
-    #console.log res
-    #assert res is true
+  it 'Chart: render', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.render is 'function'
+    assert typeof _chart.render()
     done()
 
-
-  it "Chart: check for disable all series", (done)->
-    Chart = new window.Tactile.Chart()
-    _.each Chart.series, (s) ->
-      s.disable()
-    res = Chart._allSeriesDisabled()
-    assert res is true
+  it 'Chart: update', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.update is 'function'
+    assert typeof _chart.update()
     done()
 
+  it 'Chart: discoverRange', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.discoverRange is 'function'
+    # assert typeof _chart.discoverRange('line')
+    done()
 
+  it 'Chart: findAxis', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.findAxis is 'function'
+    # assert typeof _chart.findAxis()
+    done()
 
-  it "Chart: check setSize function", (done)->
-    Chart = new window.Tactile.Chart()
-    Chart.setSize
+  it 'Chart: dataDomain', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.dataDomain is 'function'
+    # assert typeof _chart.dataDomain()
+    done()
+
+  it 'Chart: stackData', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.stackData is 'function'
+    # assert typeof _chart.stackData()
+    done()
+
+  it 'Chart: setSize function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart.setSize
       width: 700
       height: 450
-    Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
-    widthPadding = Chart.padding.left + Chart.padding.right
-    heightMargin = Chart.margin.top + Chart.margin.bottom
-    heightPadding = Chart.padding.top + Chart.padding.bottom
+    _chart.update()
+    widthMargin = _chart.margin.left + _chart.margin.right
+    widthPadding = _chart.padding.left + _chart.padding.right
+    heightMargin = _chart.margin.top + _chart.margin.bottom
+    heightPadding = _chart.padding.top + _chart.padding.bottom
     width =  widthMargin + widthPadding
     height = heightMargin + heightPadding
-    assert Chart.width() is (700 - width)
-    assert Chart.height() is (450 - height)
+    assert _chart.width() is 700 - width
+    assert _chart.height() is 450 - height
     done()
 
-  it "Chart: check height function", (done)->
-    Chart = new window.Tactile.Chart()
-    Chart = Chart.height(400)
-    Chart.update()
-    heightMargin = Chart.margin.top + Chart.margin.bottom
-    heightPadding = Chart.padding.top + Chart.padding.bottom
+  it 'Chart: onUpdate', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.onUpdate is 'function'
+    # assert typeof _chart.onUpdate()
+    done()
+
+  it 'Chart: initRenderers', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.initRenderers is 'function'
+    # assert typeof _chart.initRenderers()
+    done()
+
+  it 'Chart: renderersByType', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.renderersByType is 'function'
+    # assert typeof _chart.renderersByType()
+    done()
+
+  it 'Chart: stackTransition', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.stackTransition is 'function'
+    # assert typeof _chart.stackTransition()
+    done()
+
+  it 'Chart: unstackTransition', (done) ->
+    _chart = new window.Tactile.Chart()
+      .data(data)
+      .width(680)
+      .height(400)
+      .axes (x:{dimension: "time", frame: frameVal})
+    assert typeof _chart.unstackTransition is 'function'
+    # assert typeof _chart.unstackTransition()
+    done()
+
+  it 'Chart: element', (done) ->
+    _chart = new window.Tactile.Chart()
+    # _chart.element($("#example_view")[0])
+    # assert _chart._element is $("#example_view")[0]
+    assert typeof _chart.element is 'function'
+    done()
+
+  it 'Chart: height function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart = _chart.height(400)
+    _chart.update()
+    heightMargin = _chart.margin.top + _chart.margin.bottom
+    heightPadding = _chart.padding.top + _chart.padding.bottom
     height = heightMargin + heightPadding
-    assert Chart.height() is 400 - height
+    assert _chart.height() is 400 - height
     done()
 
-
-  it "Chart: check width function", (done)->
-    Chart = new window.Tactile.Chart()
-    Chart = Chart.width(680)
-    Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
-    widthPadding = Chart.padding.left + Chart.padding.right
+  it 'Chart: width function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart = _chart.width(680)
+    _chart.update()
+    widthMargin = _chart.margin.left + _chart.margin.right
+    widthPadding = _chart.padding.left + _chart.padding.right
     width = 680 - widthMargin - widthPadding
-    assert Chart.width() is width
+    assert _chart.width() is width
     done()
 
-
-  it 'Tactile.Chart().render is function', (done)->
-    Chart = new window.Tactile.Chart()
-    assert typeof Chart.render is 'function'
+  it 'Chart: data function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart.data(data)
+    assert _chart._data is data
     done()
 
-
-  it 'Tactile.Chart().initSeriesStackData is function', (done)->
-    Chart = new window.Tactile.Chart()
-    assert typeof Chart.initSeriesStackData is 'function'
+  it 'Chart: axes function', (done) ->
+    frameVal = [0, 4]
+    _chart = new window.Tactile.Chart()
+    _chart.axes(x:
+      dimension: "time"
+      frame: frameVal
+    )
+    assert _chart._axes.x.frame is frameVal
     done()
 
+  it "Chart: for all series don't disabled", (done) ->
+    _chart = new window.Tactile.Chart()
+    res = _chart._allSeriesDisabled()
+    assert res
+    done()
 
   it 'Tactile.Chart().element is function', (done)->
     Chart = new window.Tactile.Chart()
     assert typeof Chart.element is 'function'
+    done()
+
+  it 'Chart: for disable all series', (done) ->
+    _chart = new window.Tactile.Chart()
+    _.each _chart.series, (s) ->
+      s.disable()
+    res = _chart._allSeriesDisabled()
+    assert res is true
     done()

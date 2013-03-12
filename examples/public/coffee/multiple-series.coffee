@@ -94,11 +94,11 @@ chart.render()
 
 sl = $("<div>").attr("id", "slider")
 $("#example_view").append sl
-  sl.slider
-    min: frameVal[0]
-    max: frameVal[1]
-    values: frameVal
-    range: true
-    slide: (event, ui) ->
-      chart.axes().x.frame = ui.values
-      chart.render()
+sl.slider
+  min: frameVal[0]
+  max: frameVal[1]
+  values: frameVal
+  range: true
+  slide: (event, ui) ->
+    chart.axes().x.frame = ui.values
+    chart.render()
