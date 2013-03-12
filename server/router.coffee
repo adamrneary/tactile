@@ -75,7 +75,6 @@ app.get '/test', (req,res)->
   res.render 'test'
     errors: errors
     page: 'mocha'
-    #lint: lint
 
 app.get '/styleguide', (req,res)->
   options =
