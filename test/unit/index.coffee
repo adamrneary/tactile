@@ -15,7 +15,8 @@ describe 'unit tests', ->
     done()
 
   require './chart_test'
-  #require './render_test'
+  require './line_test'
+  require './area_test'
   #require './events_test'
   #require './utils_test'
 

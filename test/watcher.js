@@ -43,18 +43,7 @@ server = function () {
   });
 };
 
-//report = function (cb) {
-  //cmd = 'REPORT=1 '+__dirname+'/../node_modules/mocha/bin/mocha '+__dirname+'/run.js -R html-cov -s 20 --maxBuffer 4001024 --timeout 6000 --globals d3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'
-  //console.log(exec());
-  //exec(cmd,function(err,stdout,stderr) {
-    //console.log(err);
-    //require('fs').writeFile(__dirname+'/reports/coverage.html',stdout)
-    //if (cb) cb()
-  //});
-//};
-
 report = function (cb) {
-  //cmd = 'REPORT=1 '+__dirname+'/../node_modules/mocha/bin/mocha '+__dirname+'/run.js -R html-cov -s 20 --timeout 6000 --globals d3,window,_$jscoverage,_$jscoverage_cond,_$jscoverage_done,_$jscoverage_init,_,browser'
   html = ''
   _env = {}
   for (var p in process.env) {

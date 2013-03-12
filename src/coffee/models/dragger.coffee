@@ -30,7 +30,8 @@ Tactile.Dragger = class Dragger
     nodes.on("mousedown.drag.#{@series.name}", @_datapointDrag)
       .on("touchstart.drag.#{@series.name}", @_datapointDrag)
 
-  # update value of a draggable node so it's y-value will reflect currently dragged position
+  # update value of a draggable node
+  # so it's y-value will reflect currently dragged position
   updateDraggedNode: () ->
     if @dragged?.y?
       @renderer.seriesCanvas().selectAll('.draggable-node')
@@ -40,7 +41,8 @@ Tactile.Dragger = class Dragger
           d.dragged = true
 
   _datapointDrag: (d, i) =>
-    # fix for a weird behavior that d is sometimes an array with all the nodes of the series
+    # fix for a weird behavior that d is sometimes
+    # an array with all the nodes of the series
     d = if _.isArray(d) then d[i] else d
     # lock the tooltip on the dragged element
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
@@ -74,10 +76,10 @@ Tactile.Dragger = class Dragger
 
     @renderer.seriesCanvas().selectAll('circle.draggable-node')
       .data(@series.stack)
-      .attr("class", (d) =>
-        d.dragged = false
-        "draggable-node"
-      )
+      .attr("class",
+        (d) =>
+          d.dragged = false
+          "draggable-node")
     d3.select("body").style "cursor", "auto"
     @dragged = null
     
@@ -104,7 +106,9 @@ Tactile.Dragger = class Dragger
     circs
       .attr("r", 4)
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class", (d) => ["draggable-node", ("active" if d.dragged)].join(' '))
+      .attr("class",
+        (d) =>
+          ["draggable-node", ("active" if d.dragged)].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
       .attr("stroke-width", '2')
@@ -119,7 +123,8 @@ Tactile.Dragger = class Dragger
 
     # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) ->
-      renderer.seriesCanvas().selectAll('.draggable-node').style('display', 'none')
+      renderer.seriesCanvas().selectAll('.draggable-node')
+        .style('display', 'none')
       circ = renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}")
       # TODO: circle should be placed at the middle of a column
       # hoveredNode = d3.select(@).node().getBBox()

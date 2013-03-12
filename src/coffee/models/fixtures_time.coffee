@@ -1,8 +1,21 @@
 Tactile.FixturesTime = class FixturesTime
 
-  constructor: -> 
+  constructor: ->
     @tzOffset = new Date().getTimezoneOffset() * 60
-    @months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    @months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ]
 
     @units =  [
       name: "decade"

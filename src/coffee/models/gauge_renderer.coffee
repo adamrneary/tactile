@@ -1,7 +1,7 @@
 Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
   name: "gauge"
 
-  specificDefaults: 
+  specificDefaults:
     cartesian: false
     
   render: ->
@@ -62,13 +62,13 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
       .data([1])
       .enter()
       .append("path")
-      .attr "d", innerArc  
+      .attr "d", innerArc
 
   # pointer
     lineData = [
-      [ (r * pointerWidth / 2) , 0                        ] 
+      [ (r * pointerWidth / 2) , 0                        ]
       [ 0                      , -(r * pointerHeadLength) ]
-      [ -(r * pointerWidth / 2), 0                        ] 
+      [ -(r * pointerWidth / 2), 0                        ]
       [ 0                      , (r * pointerTailLength)  ]
       [ (r * pointerWidth / 2) , 0                        ]
     ]
@@ -92,11 +92,11 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
       .style("opacity", 1)
       .attr "transform", originTranslate
     # pointer circle then inner-circle (nail)
-    @graph.vis.append("svg:circle")               
+    @graph.vis.append("svg:circle")
       .attr("r", @graph.width() / 90)
       .attr('class', 'gauge pointer-nail')
       .style("opacity", 1)
-      .attr('transform', originTranslate)  
+      .attr('transform', originTranslate)
     
     @renderLabels() if @series.labels
       
@@ -104,15 +104,18 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@min)
-      .attr("transform", "translate(#{0.1 * @graph.width()}, #{1.15 * @graph.height() * @bottomOffset})")
+      .attr("transform", "translate(#{0.1 * @graph.width()},
+      #{1.15 * @graph.height() * @bottomOffset})")
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@value)
-      .attr("transform", "translate(#{( @graph.width() - @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
+      .attr("transform", "translate(#{( @graph.width() -
+@graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
     @graph.vis.append("text")
       .attr("class", "gauge label")
       .text(@max)
-      .attr("transform", "translate(#{0.90 * @graph.width()}, #{1.15 * @graph.height() * @bottomOffset})")
+      .attr("transform", "translate(#{0.90 * @graph.width()},
+      #{1.15 * @graph.height() * @bottomOffset})")
     
   domain: ->
     @value = @series.stack[0].value

@@ -26,12 +26,13 @@ Tactile.AxisY = class AxisY
     
     y.transition().duration(@graph.transitionSpeed).call(yAxis)
 
-    #This should work. Untested though. 
+    #This should work. Untested though.
     if @grid
       console.log("grid")
       gridSize = ((if @orientation is "right" then 1 else -1)) * @graph.width()
       grid = @graph.vis.selectAll('.y-grid').data([0])
       grid.enter().append("svg:g").attr("class", "y-grid")
-      grid.transition().call(axis.ticks(@ticks).tickSubdivide(0).tickSize(gridSize))
+      grid.transition()
+        .call(axis.ticks(@ticks).tickSubdivide(0).tickSize(gridSize))
       
     @_renderHeight = @graph.height()

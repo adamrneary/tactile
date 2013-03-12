@@ -47,7 +47,8 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
       .attr("stroke", @series.color)
       .attr('class', 'stroke')
 
-    stroke.transition().duration(@transitionSpeed).attr("d", @seriesStrokeFactory())
+    stroke.transition().duration(@transitionSpeed)
+      .attr("d", @seriesStrokeFactory())
 
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
@@ -63,10 +64,19 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
       .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
-      .attr("r", (d) => (if ("r" of d) then d.r else (if d.dragged then @dotSize + 1 else @dotSize)))
+      .attr("r",
+        (d) =>
+          (
+            if ("r" of d) then d.r
+            else (if d.dragged then @dotSize + 1 else @dotSize))
+          )
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class", (d) =>
-        [("draggable-node" if @series.draggable), (if d.dragged then "active" else null)].join(' '))
+      .attr("class",
+        (d) =>
+          [
+            ("draggable-node" if @series.draggable),
+            (if d.dragged then "active" else null)
+          ].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
       .attr("stroke-width", '2')

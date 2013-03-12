@@ -109,7 +109,8 @@ Tactile.Chart = class Chart
     @dataInitialized = true
 
   render: ->
-    return if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
+    if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
+      return
     @initSeriesStackData()
     @_setupCanvas()
     stackedData = @stackData()
@@ -173,7 +174,7 @@ Tactile.Chart = class Chart
     [data[0].x, data.slice(-1).shift().x]
 
   stackData: ->
-    # Read more about stacking data here: 
+    # Read more about stacking data here:
     # https://github.com/mbostock/d3/wiki/Stack-Layout
     seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
 
@@ -184,7 +185,8 @@ Tactile.Chart = class Chart
     @stackedData = stackedData
 
   # Set's the size for the chart
-  # please note you have to call render() or update() for this changes to be reflected in your chart
+  # please note you have to call render() or update()
+  # for this changes to be reflected in your chart
   #
   # outerWith, outerHeight - no margins or paddings subtracted
   # marginedWidth, marginedHeight - margins subtracted
@@ -211,8 +213,7 @@ Tactile.Chart = class Chart
     renderersSize = @renderers.length
     _.each series, (s, index) =>
       name = s.renderer
-      if (!@_renderers[name])
-        throw "couldn't find renderer #{name}"
+      throw "couldn't find renderer #{name}" if (!@_renderers[name])
       rendererClass = @_renderers[name]
       rendererOptions = _.extend {},
         graph: @
@@ -281,7 +282,8 @@ Tactile.Chart = class Chart
   # private methods
   #############################################################################
 
-  # Appends or updates all the chart canvas elements so it respects the margins and paddings
+  # Appends or updates all the chart canvas elements
+  # so it respects the margins and paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
     # need a constant class name for a containing div
@@ -300,7 +302,7 @@ Tactile.Chart = class Chart
       .attr("width", @marginedWidth)
       .attr("height", @marginedHeight)
 
-    # this is the canvas on which all data should be drawn  
+    # this is the canvas on which all data should be drawn
     @vis = @_findOrAppend(what: 'g', in: @vis)
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
@@ -340,7 +342,7 @@ Tactile.Chart = class Chart
     else
       element.append(node)
 
-  # this trims data down to the range that is currently viewed. 
+  # this trims data down to the range that is currently viewed.
   # See range_slider for a clue how it's used
   _slice: (d) =>
     return true unless @_allRenderersCartesian()

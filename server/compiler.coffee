@@ -31,8 +31,12 @@ compileCoffeeTests = (cb) ->
       cb()
 
 compileCoffeeSrc = (cb) ->
+  firstUrl = "#{__dirname}/../src/coffee/index.coffee "
+  secondUrl = "#{__dirname}/../src/coffee/util/ "
+  thirdUrl = "#{__dirname}/../src/coffee/models/ "
+  fourthUrl = "#{__dirname}/../src/coffee/chart.coffee"
   srcDest = "#{__dirname}/../dist/#{glob.config.name}.js"
-  srcDir = "#{__dirname}/../src/coffee/index.coffee #{__dirname}/../src/coffee/util/ #{__dirname}/../src/coffee/models/ #{__dirname}/../src/coffee/chart.coffee"
+  srcDir = firstUrl + secondUrl + thirdUrl + fourthUrl
   command1 = "#{coffeePath} -j #{srcDest} -cb #{srcDir}"
   command2 = "#{coffeePath} -p -cb #{srcDir}"
   srcDocDir = "#{__dirname}/../src/coffee/"
@@ -88,18 +92,14 @@ compileLess = (cb) ->
       cb()
 
 compileExamplesScss = (cb)->
-    fs.readFile "#{__dirname}/../examples/src/scss/examples.scss", (err, scssFile)->
-        sass.render scssFile.toString(), (err, css)->
-            if err
-                console.log err
-                cb()
-            else
-                fs.writeFile "#{__dirname}/../examples/public/css/examples.css", css, ->
-                    cb()
-        , { include_paths: [ "#{__dirname}/../examples/src/scss/"] }
-
-#compileLess = (cb)->
-    #child_process.exec "#{__dirname}/../node_modules/less/bin/lessc #{__dirname}/../src/less/index.less", (err,stdout,stderr)->
-        #console.log 'less err: ',stderr if stderr
-        #fs.writeFile "#{__dirname}/../dist/#{name}.css", stdout, ->
-            #cb()
+  fs.readFile "#{__dirname}/../examples/src/scss/examples.scss",
+    (err, scssFile)->
+      sass.render scssFile.toString(), (err, css)->
+        if err
+          console.log err
+          cb()
+        else
+          fs.writeFile "#{__dirname}/../examples/public/css/examples.css",
+            css, ->
+              cb()
+      , { include_paths: [ "#{__dirname}/../examples/src/scss/"] }

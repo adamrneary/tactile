@@ -12,6 +12,10 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
 
   DonutRenderer::render = ->
     donut = undefined
-    donut = @seriesCanvas().selectAll(".arc").data(@donut).enter().append("path").attr("class", "donut-arc").attr("d", @arc).style("color", "black")
+    donut = @seriesCanvas().selectAll(".arc")
+      .data(@donut).enter().append("path")
+      .attr("class", "donut-arc")
+      .attr("d", @arc)
+      .style("color", "black")
 
   DonutRenderer

@@ -45,21 +45,25 @@ Tactile.AxisTime = class AxisTime
                 
     tickData = @tickOffsets().filter((tick) =>
       @graph.x.range()[0] <= @graph.x(tick.value) <= @graph.x.range()[1])
-                                                                                                
+
     ticks = g.selectAll('g.x-tick')
       .data(@tickOffsets(), (d) -> d.value)
 
-    ticks.enter()                                
+    ticks.enter()
       .append('g')
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
-      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
+      .attr("transform",
+        (d) =>
+          "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
       .append('text')
       .attr("y", @marginTop)
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
       .attr("class", 'title')
 
     ticks
-      .attr("transform", (d) => "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
+      .attr("transform",
+        (d) =>
+          "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
 
     ticks.exit().remove()
 

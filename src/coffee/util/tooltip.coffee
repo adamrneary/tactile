@@ -1,4 +1,4 @@
-# 
+#
 # Copied from https://github.com/zmaril/d3-bootstrap-plugins
 #
 window.Tactile = {} unless window.Tactile
@@ -17,6 +17,8 @@ window.Tactile.Tooltip = class Tooltip
     Tooltip._spotlightMode
   
   constructor: (@el, @options) ->
+    #console.log  @options, '@options'
+    #console.log @el, '@el'
     @el = d3.select(@el)
     @annotate()
 
@@ -59,7 +61,8 @@ window.Tactile.Tooltip = class Tooltip
           center[0] = hoveredNode.x + hoveredNode.width / 2
           center[1] = hoveredNode.y
 
-        center[1] += (hoveredNode.height / 2 - 1) if @el.node().tagName == 'circle'
+        if @el.node().tagName == 'circle'
+          center[1] += (hoveredNode.height / 2 - 1)
 
         center[0] += @options.graph.margin.left
         center[0] += @options.graph.padding.left
@@ -67,7 +70,7 @@ window.Tactile.Tooltip = class Tooltip
         center[1] += @options.graph.margin.top
         center[1] += @options.graph.padding.top
 
-      if @options.displacement  
+      if @options.displacement
         center[0] += @options.displacement[0]
         center[1] += @options.displacement[1]
 
@@ -101,15 +104,16 @@ window.Tactile.Tooltip = class Tooltip
       moveTip(tip)
     )
 
-    mouseMove = () -> 
+    mouseMove = () ->
       d3.select(".annotation").call(moveTip.bind(@))
     
     if @options.mousemove
       @el.on("mousemove", mouseMove)
 
     @el.on("mouseout", () =>
-      return if Tooltip._spotlightMode # don't hide the tooltip if spotlight 
-      d3.select(@tooltipCircleContainer).selectAll("circle.tooltip-circle").remove()
+      return if Tooltip._spotlightMode # don't hide the tooltip if spotlight
+      d3.select(@tooltipCircleContainer).selectAll("circle.tooltip-circle")
+        .remove()
       
       # bring back the original style of a circle
       if @el.node().tagName == 'circle'
@@ -125,10 +129,17 @@ window.Tactile.Tooltip = class Tooltip
   _appendTipCircle: ->
     hoveredNode = @el.node().getBBox()
 
-    # if element is a circle we would overwrite it's style without appending another circle for tip
+    # if element is a circle we would overwrite it's style
+    # without appending another circle for tip
     if @el.node().tagName == 'circle'
-      @el.attr('data-stroke-color' , @el.attr('stroke')) unless @el.attr('data-stroke-color')
-      @el.attr('data-fill-color', @el.attr('fill')) unless @el.attr('data-fill-color')
+      @el.attr(
+        'data-stroke-color',
+        @el.attr('stroke')) unless @el.attr('data-stroke-color'
+      )
+      @el.attr(
+        'data-fill-color',
+        @el.attr('fill')) unless @el.attr('data-fill-color'
+      )
       @el.attr('fill', @el.attr('data-stroke-color'))
       @el.attr('stroke', @el.attr('data-fill-color'))
     else

@@ -26,12 +26,15 @@ Tactile.RendererBase = class RendererBase
   domain: ->
     values = []
     stackedData = @graph.stackedData or @graph.stackData()
-    topSeriesData = (if @unstack then stackedData else [stackedData.slice(-1).shift()])
+    topSeriesData = (
+      if @unstack then stackedData else [stackedData.slice(-1).shift()]
+    )
     topSeriesData.forEach (series) =>
       series.forEach (d) =>
         # if we don't stack data we don't want to sum up the values
         # as this causes the viewed window to be way to large
-        # for example if you have x:1, y:20 and x1, y:10 y-axis will show up to y=30
+        # for example if you have x:1, y:20 and
+        # x1, y:10 y-axis will show up to y=30
         if @unstack
           values.push d.y
         else
@@ -62,15 +65,19 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
-      .attr("class", "#{@series.className or ''} #{if @series.color then '' else 'colorless'}")
+      .attr("class", "#{@series.className or ''}
+      #{if @series.color then '' else 'colorless'}")
 
     line.transition().duration(@transitionSpeed).attr("d", @seriesPathFactory())
 
 
-  # Creates separate g element for each series. This gives us better control over each paths/rets/circles
-  # for a particular series data. 
-  # If we had all paths in a single node and want to do selectAll('path') to add new path you would modify
-  # all the paths, not the only ones attached to the current series, which is very not desired.
+  # Creates separate g element for each series.
+  # This gives us better control over each paths/rets/circles
+  # for a particular series data.
+  # If we had all paths in a single node and want to do
+  # selectAll('path') to add new path you would modify
+  # all the paths, not the only ones attached to the current series,
+  # which is very not desired.
   seriesCanvas: ->
     @_seriesCanvas ||= @graph.vis
       .selectAll("g##{@_nameToId()}")

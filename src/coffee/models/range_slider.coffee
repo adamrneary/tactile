@@ -8,11 +8,16 @@
 # )
 #
 # You can also pass element in which the slider will be rendered
-# and sliderClass if you wish to call .slider on a specific node of your's element html tree
+# and sliderClass if you wish to call
+# .slider on a specific node of your's element html tree
 #
 # Advanced example:
 #
-# $('#time-slider-container').html $(<div class='greatness'><h1>Slider!</h1><div class='time-slider'></div></div>) 
+# $('#time-slider-container').html
+#
+# $(<div class='greatness'><h1>Slider!</h1>
+# <div class='time-slider'></div></div>)
+#
 # new Tactile.RangeSlider(
 #    graph: chart
 #    sliderClass: '.time-slider' # addtional selector to where to attach slider
@@ -33,7 +38,9 @@ Tactile.RangeSlider = class RangeSlider
     
     # initiates the slider
     $ =>
-      values = options.values || [@graph.dataDomain()[0], @graph.dataDomain()[1]]
+      values = options.values || [
+        @graph.dataDomain()[0], @graph.dataDomain()[1]
+      ]
       @initCallback(values, @element)
       @updateGraph(values)
       
@@ -50,8 +57,10 @@ Tactile.RangeSlider = class RangeSlider
         slide: (event, ui) =>
           @updateGraph(ui.values)
           # if we're at an extreme, stick there
-          @graph.window.xMin = undefined if @graph.dataDomain()[0] is ui.values[0]
-          @graph.window.xMax = undefined if @graph.dataDomain()[1] is ui.values[1]
+          if @graph.dataDomain()[0] is ui.values[0]
+            @graph.window.xMin = undefined
+          if @graph.dataDomain()[1] is ui.values[1]
+            @graph.window.xMax = undefined
 
 
     @graph.onUpdate =>
@@ -66,6 +75,6 @@ Tactile.RangeSlider = class RangeSlider
   updateGraph: (values) =>
     @graph.window.xMin = values[0]
     @graph.window.xMax = values[1]
-    @updateCallback(values, @element) 
+    @updateCallback(values, @element)
     @graph.update()
     

@@ -54,7 +54,7 @@ sl.slider({
   values: frameVal,
   range: true,
   slide: function(event, ui) {
-    chart.axes.x.frame = ui.values;
+    chart.axes().x.frame = ui.values;
     return chart.render();
   }
 });
