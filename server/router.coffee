@@ -49,42 +49,35 @@ app.get '/coverage', (req,res)->
 
 app.get '/test', (req,res)->
   errors = {}
-  pathes = {}
+  pathes = [
+    "#{__dirname}/../src/coffee/",
+    "#{__dirname}/../src/coffee/models/",
+    "#{__dirname}/../src/coffee/util/",
+    "#{__dirname}/../examples/public/coffee/",
+    "#{__dirname}/../server/",
+    "#{__dirname}/../test/",
+    "#{__dirname}/../test/client/",
+    "#{__dirname}/../test/integration/",
+    "#{__dirname}/../test/server/",
+    "#{__dirname}/../test/unit/"
+  ]
 
-  path = "#{__dirname}/../src/coffee/"
-  files = modules.fs.readdirSync path
-  for f in files
-    if f.substr(-7) is ".coffee"
-      contents = modules.fs.readFileSync path + f, 'utf-8'
-      errors[f] = modules.coffeelint.lint contents
+  a=0
+  for path in pathes
+    files = modules.fs.readdirSync path
+    for f in files
+      a+=1
+      if f.substr(-7) is ".coffee"
+        contents = modules.fs.readFileSync path + f, 'utf-8'
+        errors[a] = modules.coffeelint.lint contents
 
-  path2="#{__dirname}/../examples/public/coffee/"
-  files2 = modules.fs.readdirSync path2
-  for t in files2
-    contents = modules.fs.readFileSync path2 + t, 'utf-8'
-    errors[t] = modules.coffeelint.lint contents
-
-  path3="#{__dirname}/../server/"
-  files3 = modules.fs.readdirSync path3
-  for d in files3
-    if d.substr(-7) is ".coffee"
-      contents = modules.fs.readFileSync path3 + d, 'utf-8'
-      errors[d] = modules.coffeelint.lint contents
-
-  path4="#{__dirname}/../test/"
-  files4 = modules.fs.readdirSync path4
-  for r in files4
-    if r.substr(-7) is ".coffee"
-      contents = modules.fs.readFileSync path4 + r, 'utf-8'
-      errors[r] = modules.coffeelint.lint contents
-
-  try
-    lint = glob.modules.fs.readFileSync __dirname+'/../test/reports/lint.txt'
+  #try
+    #lint = glob.modules.fs.readFileSync __dirname+'/../test/reports/lint.txt'
 
   res.render 'test'
     errors: errors
     page: 'mocha'
-    lint: lint
+    #lint: lint
 
 app.get '/styleguide', (req,res)->
   options =
