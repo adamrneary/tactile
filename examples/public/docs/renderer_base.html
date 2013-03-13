@@ -39,6 +39,7 @@ x1, y:10 y-axis will show up to y=30</p>             </td>             <td class
     
     
   <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@seriesCanvas</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">disabled</span><span class="p">)</span>
       <span class="vi">@timesRendered = </span><span class="mi">0</span>
       <span class="nv">line = </span><span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
@@ -54,7 +55,7 @@ x1, y:10 y-axis will show up to y=30</p>             </td>             <td class
       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke-width&quot;</span><span class="p">,</span> <span class="nx">@strokeWidth</span><span class="p">)</span>
       <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">,</span> <span class="nx">@opacity</span><span class="p">)</span>
       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;#{@series.className or &#39;&#39;}</span>
-<span class="s2">      #{if @series.color then &#39;&#39; else &#39;colorless&#39;}&quot;</span><span class="p">)</span>
+<span class="s2"> #{if @series.color then &#39;&#39; else &#39;colorless&#39;}&quot;</span><span class="p">)</span>
 
     <span class="nx">line</span><span class="p">.</span><span class="nx">transition</span><span class="p">().</span><span class="nx">duration</span><span class="p">(</span><span class="nx">@transitionSpeed</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">@seriesPathFactory</span><span class="p">())</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Creates separate g element for each series.
 This gives us better control over each paths/rets/circles
@@ -73,7 +74,8 @@ which is very not desired.</p>             </td>             <td class="code">  
       
     <span class="nx">@_seriesCanvas</span>
     
-  <span class="nv">configure: </span><span class="nf">(options) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>merge base defaults with particular renderer's</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">defaults = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">@defaults</span><span class="p">,</span> <span class="nx">@specificDefaults</span> <span class="k">if</span> <span class="nx">@specificDefaults</span><span class="o">?</span>
+  <span class="nv">configure: </span><span class="nf">(options) -&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">options</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>merge base defaults with particular renderer's</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">defaults = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">@defaults</span><span class="p">,</span> <span class="nx">@specificDefaults</span> <span class="k">if</span> <span class="nx">@specificDefaults</span><span class="o">?</span>
     <span class="nv">options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">options</span><span class="p">,</span> <span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="o">=&gt;</span>
       <span class="err">@</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">val</span>

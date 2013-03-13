@@ -49,6 +49,7 @@ Tactile.RendererBase = class RendererBase
     
     
   render: =>
+    console.log @seriesCanvas
     if (@series.disabled)
       @timesRendered = 0
       line = @seriesCanvas().selectAll("path")
@@ -66,7 +67,7 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
       .attr("class", "#{@series.className or ''}
-      #{if @series.color then '' else 'colorless'}")
+ #{if @series.color then '' else 'colorless'}")
 
     line.transition().duration(@transitionSpeed).attr("d", @seriesPathFactory())
 
@@ -90,6 +91,7 @@ Tactile.RendererBase = class RendererBase
     @_seriesCanvas
     
   configure: (options) ->
+    console.log options
     # merge base defaults with particular renderer's
     defaults = _.extend {}, @defaults, @specificDefaults if @specificDefaults?
     options = _.extend {}, defaults, options

@@ -60,6 +60,9 @@ window.Tactile.Tooltip = class Tooltip
           hoveredNode = @el.node().getBBox()
           center[0] = hoveredNode.x + hoveredNode.width / 2
           center[1] = hoveredNode.y
+          if @options.graph.series[0].renderer is "donut"
+            center[0] = center[0] + @options.graph.series[0].height-30
+            center[1] = center[1] + @options.graph.series[0].height-30
 
         if @el.node().tagName == 'circle'
           center[1] += (hoveredNode.height / 2 - 1)
@@ -80,7 +83,7 @@ window.Tactile.Tooltip = class Tooltip
         .style("display","block")
 
     @el.on("mouseover", () =>
-      if Tooltip._spotlightMode
+     if Tooltip._spotlightMode
         return unless @el.node().classList.contains("active")
         
       tip = @appendTooltip()

@@ -7,7 +7,7 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
     fill: true
     stroke: true
     opacity: 0.15
-    
+
   _y0: (d) => if @unstack then 0 else d.y0
 
   initialize: ->
