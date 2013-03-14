@@ -1,8 +1,6 @@
 # Tactile
 A bad-ass interactive charting platform.
 
-[![Nodejitsu Deploy Status Badges](https://webhooks.nodejitsu.com/adamrneary/tactile.png)](https://webops.nodejitsu.com#adamrneary/webhooks)
-
 ## The five-minute setup.
 Check your system for local requirements (run until it passes!):
 
