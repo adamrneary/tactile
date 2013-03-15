@@ -1,102 +1,205 @@
-<!DOCTYPE html>  <html> <head>   <title>fixtures_time.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               fixtures_time.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.FixturesTime = </span><span class="k">class</span> <span class="nx">FixturesTime</span>
+<!DOCTYPE html>
 
-  <span class="nv">constructor: </span><span class="o">-&gt;</span>
-    <span class="vi">@tzOffset = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTimezoneOffset</span><span class="p">()</span> <span class="o">*</span> <span class="mi">60</span>
-    <span class="vi">@months = </span><span class="p">[</span>
-      <span class="s2">&quot;Jan&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Feb&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Mar&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Apr&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;May&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Jun&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Jul&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Aug&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Sep&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Oct&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Nov&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;Dec&quot;</span>
-    <span class="p">]</span>
+<html>
+<head>
+  <title>fixtures_time.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_y.html">
+                axis_y.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>fixtures_time.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>Tactile.FixturesTime = <span class="class"><span class="keyword">class</span> <span class="title">FixturesTime</span></span>
 
-    <span class="vi">@units = </span> <span class="p">[</span>
-      <span class="nv">name: </span><span class="s2">&quot;decade&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">365.25</span> <span class="o">*</span> <span class="mi">10</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nb">parseInt</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;year&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">365.25</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;month&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mf">30.5</span>
-      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@months</span><span class="p">[</span><span class="nx">d</span><span class="p">.</span><span class="nx">getUTCMonth</span><span class="p">()]</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;week&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">86400</span> <span class="o">*</span> <span class="mi">7</span>
-      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@formatDate</span> <span class="nx">d</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;day&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">86400</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCDate</span><span class="p">()</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;6 hour&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">6</span>
-      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@formatTime</span> <span class="nx">d</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;hour&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">3600</span>
-      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@formatTime</span> <span class="nx">d</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;15 minute&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">60</span> <span class="o">*</span> <span class="mi">15</span>
-      <span class="nv">formatter: </span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@formatTime</span> <span class="nx">d</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;minute&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">60</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCMinutes</span><span class="p">()</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;15 second&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">15</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
-    <span class="p">,</span>
-      <span class="nv">name: </span><span class="s2">&quot;second&quot;</span>
-      <span class="nv">seconds: </span><span class="mi">1</span>
-      <span class="nv">formatter: </span><span class="nf">(d) -&gt;</span>
-        <span class="nx">d</span><span class="p">.</span><span class="nx">getUTCSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
-    <span class="p">]</span>
+  constructor: -&gt;
+    <span class="property">@tzOffset</span> = <span class="keyword">new</span> Date().getTimezoneOffset() * <span class="number">60</span>
+    <span class="property">@months</span> = [
+      <span class="string">"Jan"</span>,
+      <span class="string">"Feb"</span>,
+      <span class="string">"Mar"</span>,
+      <span class="string">"Apr"</span>,
+      <span class="string">"May"</span>,
+      <span class="string">"Jun"</span>,
+      <span class="string">"Jul"</span>,
+      <span class="string">"Aug"</span>,
+      <span class="string">"Sep"</span>,
+      <span class="string">"Oct"</span>,
+      <span class="string">"Nov"</span>,
+      <span class="string">"Dec"</span>
+    ]
 
-  <span class="nv">unit: </span><span class="nf">(unitName) -&gt;</span>
-    <span class="nx">@units</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nf">(unit) -&gt;</span>
-      <span class="nx">unitName</span> <span class="o">is</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">name</span>
-    <span class="p">).</span><span class="nx">shift</span><span class="p">()</span>
+    <span class="property">@units</span> =  [
+      name: <span class="string">"decade"</span>
+      seconds: <span class="number">86400</span> * <span class="number">365.25</span> * <span class="number">10</span>
+      formatter: (d) -&gt;
+        parseInt(d.getUTCFullYear() / <span class="number">10</span>) * <span class="number">10</span>
+    ,
+      name: <span class="string">"year"</span>
+      seconds: <span class="number">86400</span> * <span class="number">365.25</span>
+      formatter: (d) -&gt;
+        d.getUTCFullYear()
+    ,
+      name: <span class="string">"month"</span>
+      seconds: <span class="number">86400</span> * <span class="number">30.5</span>
+      formatter: (d) =&gt;
+        <span class="property">@months</span>[d.getUTCMonth()]
+    ,
+      name: <span class="string">"week"</span>
+      seconds: <span class="number">86400</span> * <span class="number">7</span>
+      formatter: (d) =&gt;
+        <span class="property">@formatDate</span> d
+    ,
+      name: <span class="string">"day"</span>
+      seconds: <span class="number">86400</span>
+      formatter: (d) -&gt;
+        d.getUTCDate()
+    ,
+      name: <span class="string">"6 hour"</span>
+      seconds: <span class="number">3600</span> * <span class="number">6</span>
+      formatter: (d) =&gt;
+        <span class="property">@formatTime</span> d
+    ,
+      name: <span class="string">"hour"</span>
+      seconds: <span class="number">3600</span>
+      formatter: (d) =&gt;
+        <span class="property">@formatTime</span> d
+    ,
+      name: <span class="string">"15 minute"</span>
+      seconds: <span class="number">60</span> * <span class="number">15</span>
+      formatter: (d) =&gt;
+        <span class="property">@formatTime</span> d
+    ,
+      name: <span class="string">"minute"</span>
+      seconds: <span class="number">60</span>
+      formatter: (d) -&gt;
+        d.getUTCMinutes()
+    ,
+      name: <span class="string">"15 second"</span>
+      seconds: <span class="number">15</span>
+      formatter: (d) -&gt;
+        d.getUTCSeconds() + <span class="string">"s"</span>
+    ,
+      name: <span class="string">"second"</span>
+      seconds: <span class="number">1</span>
+      formatter: (d) -&gt;
+        d.getUTCSeconds() + <span class="string">"s"</span>
+    ]
 
-  <span class="nv">formatDate: </span><span class="nf">(d) -&gt;</span>
-    <span class="nx">d</span><span class="p">.</span><span class="nx">toUTCString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span><span class="sr">/, (\w+ \w+ \w+)/</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+  unit: (unitName) -&gt;
+    <span class="property">@units</span>.filter((unit) -&gt;
+      unitName <span class="keyword">is</span> unit.name
+    ).shift()
 
-  <span class="nv">formatTime: </span><span class="nf">(d) -&gt;</span>
-    <span class="nx">d</span><span class="p">.</span><span class="nx">toUTCString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(\d+:\d+):/</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+  formatDate: (d) -&gt;
+    d.toUTCString().match(<span class="regexp">/, (\w+ \w+ \w+)/</span>)[<span class="number">1</span>]
 
-  <span class="nv">ceil: </span><span class="nf">(time, unit) -&gt;</span>
-    <span class="k">if</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s2">&quot;year&quot;</span>
-      <span class="nv">nearFuture = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">((</span><span class="nx">time</span> <span class="o">+</span> <span class="nx">unit</span><span class="p">.</span><span class="nx">seconds</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-      <span class="nv">rounded = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCFullYear</span> <span class="nx">nearFuture</span><span class="p">.</span><span class="nx">getUTCFullYear</span><span class="p">()</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMonth</span> <span class="mi">0</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCDate</span> <span class="mi">1</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCHours</span> <span class="mi">0</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMinutes</span> <span class="mi">0</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCSeconds</span> <span class="mi">0</span>
-      <span class="nx">rounded</span><span class="p">.</span><span class="nx">setUTCMilliseconds</span> <span class="mi">0</span>
-      <span class="k">return</span> <span class="nx">rounded</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span>
-    <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">time</span> <span class="err">/ unit.seconds) * unit.seconds</span>
+  formatTime: (d) -&gt;
+    d.toUTCString().match(<span class="regexp">/(\d+:\d+):/</span>)[<span class="number">1</span>]
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+  ceil: (time, unit) -&gt;
+    <span class="keyword">if</span> unit.name <span class="keyword">is</span> <span class="string">"year"</span>
+      nearFuture = <span class="keyword">new</span> Date((time + unit.seconds - <span class="number">1</span>) * <span class="number">1000</span>)
+      rounded = <span class="keyword">new</span> Date(<span class="number">0</span>)
+      rounded.setUTCFullYear nearFuture.getUTCFullYear()
+      rounded.setUTCMonth <span class="number">0</span>
+      rounded.setUTCDate <span class="number">1</span>
+      rounded.setUTCHours <span class="number">0</span>
+      rounded.setUTCMinutes <span class="number">0</span>
+      rounded.setUTCSeconds <span class="number">0</span>
+      rounded.setUTCMilliseconds <span class="number">0</span>
+      <span class="keyword">return</span> rounded.getTime() / <span class="number">1000</span>
+    Math.ceil(time / unit.seconds) * unit.seconds</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

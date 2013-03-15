@@ -1,144 +1,304 @@
-<!DOCTYPE html>  <html> <head>   <title>tooltip.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="renderer_base.html">                 renderer_base.coffee               </a>                                           <a class="source" href="tooltip.html">                 tooltip.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               tooltip.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Copied from https://github.com/zmaril/d3-bootstrap-plugins</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nb">window</span><span class="p">.</span><span class="nv">Tactile = </span><span class="p">{}</span> <span class="nx">unless</span> <span class="nb">window</span><span class="p">.</span><span class="nx">Tactile</span>
-<span class="nb">window</span><span class="p">.</span><span class="nv">Tactile.Tooltip = </span><span class="k">class</span> <span class="nx">Tooltip</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Tactile.Tooltip = class Tooltip</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="vi">@_spotlightMode: </span><span class="kc">false</span>
+<!DOCTYPE html>
 
-  <span class="vi">@turnOffspotlight: </span><span class="nf">() -&gt;</span>
-    <span class="nv">Tooltip._spotlightMode = </span><span class="kc">false</span>
+<html>
+<head>
+  <title>tooltip.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
     
-  <span class="vi">@spotlightOn: </span><span class="nf">(d) -&gt;</span>
-    <span class="nv">Tooltip._spotlightMode = </span><span class="kc">true</span>
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="renderer_base.html">
+                renderer_base.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
     
-  <span class="vi">@getSpotlight: </span><span class="nf">() -&gt;</span>
-    <span class="nx">Tooltip</span><span class="p">.</span><span class="nx">_spotlightMode</span>
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tooltip.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Copied from <a href="https://github.com/zmaril/d3-bootstrap-plugins">https://github.com/zmaril/d3-bootstrap-plugins</a></p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>window.Tactile = {} <span class="keyword">unless</span> window.Tactile
+window.Tactile.Tooltip = <span class="class"><span class="keyword">class</span> <span class="title">Tooltip</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Tactile.Tooltip = class Tooltip</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="property">@_spotlightMode</span>: <span class="literal">false</span>
+
+  <span class="property">@turnOffspotlight</span>: () -&gt;
+    Tooltip._spotlightMode = <span class="literal">false</span>
+    
+  <span class="property">@spotlightOn</span>: (d) -&gt;
+    Tooltip._spotlightMode = <span class="literal">true</span>
+    
+  <span class="property">@getSpotlight</span>: () -&gt;
+    Tooltip._spotlightMode
   
-  <span class="nv">constructor: </span><span class="nf">(@el, @options) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>console.log  @options, '@options'
-console.log @el, '@el'</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@el = </span><span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">@el</span><span class="p">)</span>
-    <span class="nx">@annotate</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>TODO: Done in a hurry. Dry this out.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">appendTooltip: </span><span class="o">-&gt;</span>
-    <span class="nv">chartContainer = </span><span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">_element</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">Tooltip</span><span class="p">.</span><span class="nx">_spotlightMode</span> <span class="o">&amp;&amp;</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
-      <span class="nv">tip = </span><span class="nx">chartContainer</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;.tooltip&#39;</span><span class="p">)</span>
-    <span class="k">else</span>
-      <span class="nx">chartContainer</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;.tooltip&#39;</span><span class="p">).</span><span class="nx">remove</span><span class="p">()</span>
-      <span class="nv">tip = </span><span class="nx">chartContainer</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s2">&quot;tooltip&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
-
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">text</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s2">&quot;tooltip-inner&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="nx">tip</span>
-    
-  <span class="nv">annotate: </span><span class="nf">() -&gt;</span>
-    <span class="nv">chartContainer = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">nearestViewportElement</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>tooltipCircleContainer is an element to which the circle will be appended
-sets the parent node by default</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">tooltipCircleContainer</span>
-      <span class="vi">@tooltipCircleContainer = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">tooltipCircleContainer</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">circleOnHover</span>
-      <span class="vi">@tooltipCircleContainer = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">parentNode</span>
-
-    <span class="nv">moveTip = </span><span class="p">(</span><span class="nx">tip</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nv">center = </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-      <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">placement</span> <span class="o">is</span> <span class="s2">&quot;mouse&quot;</span>
-        <span class="nv">center = </span><span class="nx">d3</span><span class="p">.</span><span class="nx">mouse</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">_element</span><span class="p">)</span>
-      <span class="k">else</span>
-        <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">position</span>
-          <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-          <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span>
-          <span class="nv">hoveredNode = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">getBBox</span><span class="p">()</span>
-          <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">width</span> <span class="err">/ 2</span>
-          <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">y</span>
-          <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">series</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">renderer</span> <span class="o">is</span> <span class="s2">&quot;donut&quot;</span>
-            <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">series</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">height</span><span class="o">-</span><span class="mi">30</span>
-            <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">series</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">height</span><span class="o">-</span><span class="mi">30</span>
-
-        <span class="k">if</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;circle&#39;</span>
-          <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">height</span> <span class="err">/ 2 - 1)</span>
-
-        <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">margin</span><span class="p">.</span><span class="nx">left</span>
-        <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">padding</span><span class="p">.</span><span class="nx">left</span>
-
-        <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">margin</span><span class="p">.</span><span class="nx">top</span>
-        <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">graph</span><span class="p">.</span><span class="nx">padding</span><span class="p">.</span><span class="nx">top</span>
-
-      <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">displacement</span>
-        <span class="nx">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">displacement</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nx">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">displacement</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-      <span class="nx">tip</span>
-        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="s2">&quot;#{center[0]}px&quot;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span><span class="s2">&quot;#{center[1]}px&quot;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;display&quot;</span><span class="p">,</span><span class="s2">&quot;block&quot;</span><span class="p">)</span>
-
-    <span class="nx">@el</span><span class="p">.</span><span class="kc">on</span><span class="p">(</span><span class="s2">&quot;mouseover&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span>
-     <span class="k">if</span> <span class="nx">Tooltip</span><span class="p">.</span><span class="nx">_spotlightMode</span>
-        <span class="k">return</span> <span class="nx">unless</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
+  constructor: (<span class="property">@el</span>, <span class="property">@options</span>) -&gt;</pre></div></div>
+            
+        </li>
         
-      <span class="nv">tip = </span><span class="nx">@appendTooltip</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>puts small circle on the hovered node</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">@_appendTipCircle</span><span class="p">()</span> <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">circleOnHover</span>
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>console.log  @options, &#39;@options&#39;
+console.log @el, &#39;@el&#39;</p>
 
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">gravity</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;display&quot;</span><span class="p">,</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="property">@el</span> = d3.select(<span class="property">@el</span>)
+    <span class="property">@annotate</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>TODO: Done in a hurry. Dry this out.</p>
 
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s1">&#39;fade&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">fade</span>
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>appendTooltip: -&gt;
+    chartContainer = d3.select(<span class="property">@options</span>.graph._element)
+    <span class="keyword">if</span> Tooltip._spotlightMode &amp;&amp; <span class="property">@el</span>.node().classList.contains(<span class="string">"active"</span>)
+      tip = chartContainer.select(<span class="string">'.tooltip'</span>)
+    <span class="keyword">else</span>
+      chartContainer.selectAll(<span class="string">'.tooltip'</span>).remove()
+      tip = chartContainer.append(<span class="string">'div'</span>)
+        .classed(<span class="string">"tooltip"</span>, <span class="literal">true</span>)
 
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span><span class="s2">&quot;arrow&quot;</span><span class="p">)</span>
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;.tooltip-inner&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">text</span><span class="p">)</span>
-      <span class="nv">inner = </span><span class="nf">() -&gt;</span> <span class="nx">tip</span><span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+      tip.append(<span class="string">'div'</span>)
+        .html(<span class="property">@options</span>.text)
+        .classed(<span class="string">"tooltip-inner"</span>, <span class="literal">true</span>)
 
-      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">inner</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="keyword">return</span> tip
+    
+  annotate: () -&gt;
+    chartContainer = <span class="property">@el</span>.node().nearestViewportElement</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>tooltipCircleContainer is an element to which the circle will be appended
+sets the parent node by default</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@options</span>.tooltipCircleContainer
+      <span class="property">@tooltipCircleContainer</span> = <span class="property">@options</span>.tooltipCircleContainer
+    <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@options</span>.circleOnHover
+      <span class="property">@tooltipCircleContainer</span> = <span class="property">@el</span>.node().parentNode
+
+    <span class="function"><span class="title">moveTip</span></span> = (tip) =&gt;
+      center = [<span class="number">0</span>,<span class="number">0</span>]
+      <span class="keyword">if</span> <span class="property">@options</span>.placement <span class="keyword">is</span> <span class="string">"mouse"</span>
+        center = d3.mouse(<span class="property">@options</span>.graph._element)
+      <span class="keyword">else</span>
+        <span class="keyword">if</span> <span class="property">@options</span>.position
+          center[<span class="number">0</span>] = <span class="property">@options</span>.position[<span class="number">0</span>]
+          center[<span class="number">1</span>] = <span class="property">@options</span>.position[<span class="number">1</span>]
+        <span class="keyword">else</span>
+          hoveredNode = <span class="property">@el</span>.node().getBBox()
+          center[<span class="number">0</span>] = hoveredNode.x + hoveredNode.width / <span class="number">2</span>
+          center[<span class="number">1</span>] = hoveredNode.y
+
+        <span class="keyword">if</span> <span class="property">@el</span>.node().tagName == <span class="string">'circle'</span>
+          center[<span class="number">1</span>] += (hoveredNode.height / <span class="number">2</span> - <span class="number">1</span>)
+
+        center[<span class="number">0</span>] += <span class="property">@options</span>.graph.margin.left
+        center[<span class="number">0</span>] += <span class="property">@options</span>.graph.padding.left
+
+        center[<span class="number">1</span>] += <span class="property">@options</span>.graph.margin.top
+        center[<span class="number">1</span>] += <span class="property">@options</span>.graph.padding.top
+
+      <span class="keyword">if</span> <span class="property">@options</span>.displacement
+        center[<span class="number">0</span>] += <span class="property">@options</span>.displacement[<span class="number">0</span>]
+        center[<span class="number">1</span>] += <span class="property">@options</span>.displacement[<span class="number">1</span>]
+
+      tip
+        .style(<span class="string">"left"</span>,<span class="string">"<span class="subst">#{center[<span class="number">0</span>]}</span>px"</span>)
+        .style(<span class="string">"top"</span>,<span class="string">"<span class="subst">#{center[<span class="number">1</span>]}</span>px"</span>)
+        .style(<span class="string">"display"</span>,<span class="string">"block"</span>)
+
+    <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mouseover"</span>, () =&gt;
+      <span class="keyword">if</span> Tooltip._spotlightMode
+        <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@el</span>.node().classList.contains(<span class="string">"active"</span>)
+        
+      tip = <span class="property">@appendTooltip</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>puts small circle on the hovered node</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="property">@_appendTipCircle</span>() <span class="keyword">if</span> <span class="property">@options</span>.circleOnHover
+
+      tip.classed(<span class="string">"annotation"</span>, <span class="literal">true</span>)
+        .classed(<span class="property">@options</span>.gravity, <span class="literal">true</span>)
+        .style(<span class="string">"display"</span>,<span class="string">"none"</span>)
+
+      tip.classed(<span class="string">'fade'</span>, <span class="literal">true</span>) <span class="keyword">if</span> <span class="property">@options</span>.fade
+
+      tip.append(<span class="string">"div"</span>).attr(<span class="string">"class"</span>,<span class="string">"arrow"</span>)
+      tip.select(<span class="string">'.tooltip-inner'</span>).html(<span class="property">@options</span>.text)
+      inner = () -&gt; tip.classed(<span class="string">'in'</span>, <span class="literal">true</span>)
+
+      setTimeout(inner,<span class="number">10</span>)
       
-      <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;display&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-      <span class="nx">moveTip</span><span class="p">(</span><span class="nx">tip</span><span class="p">)</span>
-    <span class="p">)</span>
+      tip.style(<span class="string">"display"</span>,<span class="string">""</span>)
+      moveTip(tip)
+    )
 
-    <span class="nv">mouseMove = </span><span class="nf">() -&gt;</span>
-      <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;.annotation&quot;</span><span class="p">).</span><span class="nx">call</span><span class="p">(</span><span class="nx">moveTip</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="err">@</span><span class="p">))</span>
+    mouseMove = () -&gt;
+      d3.select(<span class="string">".annotation"</span>).call(moveTip.bind(@))
     
-    <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">mousemove</span>
-      <span class="nx">@el</span><span class="p">.</span><span class="kc">on</span><span class="p">(</span><span class="s2">&quot;mousemove&quot;</span><span class="p">,</span> <span class="nx">mouseMove</span><span class="p">)</span>
+    <span class="keyword">if</span> <span class="property">@options</span>.mousemove
+      <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mousemove"</span>, mouseMove)
 
-    <span class="nx">@el</span><span class="p">.</span><span class="kc">on</span><span class="p">(</span><span class="s2">&quot;mouseout&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span>
-      <span class="k">return</span> <span class="k">if</span> <span class="nx">Tooltip</span><span class="p">.</span><span class="nx">_spotlightMode</span> <span class="c1"># don&#39;t hide the tooltip if spotlight</span>
-      <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">@tooltipCircleContainer</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;circle.tooltip-circle&quot;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">remove</span><span class="p">()</span>
-      </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>bring back the original style of a circle</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;circle&#39;</span>
-        <span class="nx">@el</span><span class="p">.</span><span class="nx">classed</span><span class="p">(</span><span class="s1">&#39;tip-hovered&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
-        <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;stroke&#39;</span><span class="p">,</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-stroke-color&#39;</span><span class="p">))</span>
-        <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-fill-color&#39;</span><span class="p">))</span>
+    <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mouseout"</span>, () =&gt;
+      <span class="keyword">return</span> <span class="keyword">if</span> Tooltip._spotlightMode <span class="comment"># don't hide the tooltip if spotlight</span>
+      d3.select(<span class="property">@tooltipCircleContainer</span>).selectAll(<span class="string">"circle.tooltip-circle"</span>)
+        .remove()</pre></div></div>
+            
+        </li>
         
-      <span class="nv">tip = </span><span class="nx">d3</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;.annotation&quot;</span><span class="p">).</span><span class="nx">classed</span><span class="p">(</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
-      <span class="nv">remover = </span><span class="nf">() -&gt;</span> <span class="nx">tip</span><span class="p">.</span><span class="nx">remove</span><span class="p">()</span>
-      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">remover</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
-    <span class="p">)</span>
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>bring back the original style of a circle</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@el</span>.node().tagName == <span class="string">'circle'</span>
+        <span class="property">@el</span>.classed(<span class="string">'tip-hovered'</span>, <span class="literal">false</span>)
+        <span class="property">@el</span>.attr(<span class="string">'stroke'</span>, <span class="property">@el</span>.attr(<span class="string">'data-stroke-color'</span>))
+        <span class="property">@el</span>.attr(<span class="string">'fill'</span>, <span class="property">@el</span>.attr(<span class="string">'data-fill-color'</span>))
+        
+      tip = d3.selectAll(<span class="string">".annotation"</span>).classed(<span class="string">'in'</span>, <span class="literal">false</span>)
+      remover = () -&gt; tip.remove()
+      setTimeout(remover, <span class="number">150</span>)
+    )
     
-  <span class="nv">_appendTipCircle: </span><span class="o">-&gt;</span>
-    <span class="nv">hoveredNode = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">getBBox</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>if element is a circle we would overwrite it's style
-without appending another circle for tip</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;circle&#39;</span>
-      <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span>
-        <span class="s1">&#39;data-stroke-color&#39;</span><span class="p">,</span>
-        <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;stroke&#39;</span><span class="p">))</span> <span class="nx">unless</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-stroke-color&#39;</span>
-      <span class="p">)</span>
-      <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span>
-        <span class="s1">&#39;data-fill-color&#39;</span><span class="p">,</span>
-        <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span> <span class="nx">unless</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-fill-color&#39;</span>
-      <span class="p">)</span>
-      <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-stroke-color&#39;</span><span class="p">))</span>
-      <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;stroke&#39;</span><span class="p">,</span> <span class="nx">@el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-fill-color&#39;</span><span class="p">))</span>
-    <span class="k">else</span>
-      <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">@tooltipCircleContainer</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg:circle&quot;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">width</span> <span class="err">/ 2)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="nx">hoveredNode</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip-circle&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">circleColor</span> <span class="o">||</span> <span class="s1">&#39;orange&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke-width&quot;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+  _appendTipCircle: -&gt;
+    hoveredNode = <span class="property">@el</span>.node().getBBox()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>if element is a circle we would overwrite it&#39;s style
+without appending another circle for tip</p>
 
-<span class="nv">d3.selection.prototype.tooltip = </span><span class="nf">(f) -&gt;</span>
-  <span class="nv">selection = </span><span class="err">@</span>
-  <span class="nv">options = </span><span class="p">{}</span>
-  <span class="nx">selection</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(d,i) -&gt;</span>
-    <span class="nv">options = </span><span class="nx">f</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="err">@</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">)</span>
-    <span class="k">new</span> <span class="nx">Tactile</span><span class="p">.</span><span class="nx">Tooltip</span><span class="p">(</span><span class="err">@</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span>
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@el</span>.node().tagName == <span class="string">'circle'</span>
+      <span class="property">@el</span>.attr(
+        <span class="string">'data-stroke-color'</span>,
+        <span class="property">@el</span>.attr(<span class="string">'stroke'</span>)) <span class="keyword">unless</span> <span class="property">@el</span>.attr(<span class="string">'data-stroke-color'</span>
+      )
+      <span class="property">@el</span>.attr(
+        <span class="string">'data-fill-color'</span>,
+        <span class="property">@el</span>.attr(<span class="string">'fill'</span>)) <span class="keyword">unless</span> <span class="property">@el</span>.attr(<span class="string">'data-fill-color'</span>
+      )
+      <span class="property">@el</span>.attr(<span class="string">'fill'</span>, <span class="property">@el</span>.attr(<span class="string">'data-stroke-color'</span>))
+      <span class="property">@el</span>.attr(<span class="string">'stroke'</span>, <span class="property">@el</span>.attr(<span class="string">'data-fill-color'</span>))
+    <span class="keyword">else</span>
+      d3.select(<span class="property">@tooltipCircleContainer</span>)
+        .append(<span class="string">"svg:circle"</span>)
+        .attr(<span class="string">"cx"</span>, hoveredNode.x + hoveredNode.width / <span class="number">2</span>)
+        .attr(<span class="string">"cy"</span>, hoveredNode.y)
+        .attr(<span class="string">"r"</span>, <span class="number">4</span>)
+        .attr(<span class="string">'class'</span>, <span class="string">'tooltip-circle'</span>)
+        .attr(<span class="string">"stroke"</span>, <span class="property">@options</span>.circleColor || <span class="string">'orange'</span>)
+        .attr(<span class="string">"fill"</span>, <span class="string">'white'</span>)
+        .attr(<span class="string">"stroke-width"</span>, <span class="string">'1'</span>)
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+d3.selection.prototype.<span class="function"><span class="title">tooltip</span></span> = (f) -&gt;
+  selection = @
+  options = {}
+  selection.each (d,i) -&gt;
+    options = f.apply(@, arguments)
+    <span class="keyword">new</span> Tactile.Tooltip(@, options)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

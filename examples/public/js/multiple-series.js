@@ -55,10 +55,15 @@ data = [
   }
 ];
 
-chart = new Tactile.Chart().element($("#example_view")[0]).data(data).width(680).height(400).axes({
+chart = new Tactile.Chart().element($("#example_view")[0]).data(data).width(680).height(400);
+
+chart.axes({
   x: {
-    dimension: "time",
+    dimension: 'time',
     frame: frameVal
+  },
+  y: {
+    dimension: "linear"
   }
 });
 

@@ -1,69 +1,174 @@
-<!DOCTYPE html>  <html> <head>   <title>line_renderer.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               line_renderer.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.LineRenderer = </span><span class="k">class</span> <span class="nx">LineRenderer</span> <span class="k">extends</span> <span class="nx">RendererBase</span>
-  <span class="nv">name: </span><span class="s2">&quot;line&quot;</span>
+<!DOCTYPE html>
 
-  <span class="nv">specificDefaults:</span>
-    <span class="nv">unstack: </span><span class="kc">true</span>
-    <span class="nv">fill: </span><span class="kc">false</span>
-    <span class="nv">stroke: </span><span class="kc">true</span>
-    <span class="nv">dotSize: </span><span class="mi">5</span>
+<html>
+<head>
+  <title>line_renderer.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_y.html">
+                axis_y.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>line_renderer.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>Tactile.LineRenderer = <span class="class"><span class="keyword">class</span> <span class="title">LineRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
+  name: <span class="string">"line"</span>
 
-  <span class="nv">seriesPathFactory: </span><span class="o">-&gt;</span>
-    <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">line</span><span class="p">()</span>
-      <span class="p">.</span><span class="nx">x</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span> <span class="nx">d</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">y</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">interpolate</span><span class="p">(</span><span class="nx">@graph</span><span class="p">.</span><span class="nx">interpolation</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">tension</span> <span class="nx">@tension</span>
+  specificDefaults:
+    unstack: <span class="literal">true</span>
+    fill: <span class="literal">false</span>
+    stroke: <span class="literal">true</span>
+    dotSize: <span class="number">5</span>
 
-  <span class="nv">initialize: </span><span class="o">-&gt;</span>
-    <span class="vi">@dragger = </span><span class="k">new</span> <span class="nx">Dragger</span><span class="p">(</span><span class="nv">renderer: </span><span class="err">@</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">draggable</span>
-    <span class="vi">@timesRendered = </span><span class="mi">0</span>
+  seriesPathFactory: -&gt;
+    d3.svg.line()
+      .x((d) =&gt; <span class="property">@graph</span>.x d.x)
+      .y((d) =&gt; <span class="property">@graph</span>.y d.y)
+      .interpolate(<span class="property">@graph</span>.interpolation)
+      .tension <span class="property">@tension</span>
 
-  <span class="nv">render: </span><span class="o">=&gt;</span>
-    <span class="k">super</span><span class="p">()</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">disabled</span><span class="p">)</span>
-      <span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">remove</span><span class="p">()</span>
-      <span class="k">return</span>
-    <span class="nv">circ = </span><span class="nx">@seriesCanvas</span><span class="p">().</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@series</span><span class="p">.</span><span class="nx">stack</span><span class="p">)</span>
+  initialize: -&gt;
+    <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @) <span class="keyword">if</span> <span class="property">@series</span>.draggable
+    <span class="property">@timesRendered</span> = <span class="number">0</span>
 
-    <span class="nv">newCircs = </span><span class="nx">circ</span><span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg:circle&quot;</span><span class="p">)</span>
+  render: =&gt;
+    <span class="keyword">super</span>()
+    <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>)
+        .data(<span class="property">@series</span>.stack)
+        .remove()
+      <span class="keyword">return</span>
+    circ = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>)
+      .data(<span class="property">@series</span>.stack)
 
-    <span class="nx">@dragger</span><span class="o">?</span><span class="p">.</span><span class="nx">makeHandlers</span><span class="p">(</span><span class="nx">newCircs</span><span class="p">)</span>
-    <span class="nx">@dragger</span><span class="o">?</span><span class="p">.</span><span class="nx">updateDraggedNode</span><span class="p">()</span>
+    newCircs = circ.enter().append(<span class="string">"svg:circle"</span>)
 
-    <span class="nx">circ</span>
-      <span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
-      <span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="k">if</span> <span class="nx">@timesRendered</span><span class="o">++</span> <span class="o">is</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="nx">@transitionSpeed</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">x</span> <span class="nx">d</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span> <span class="nx">d</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
-        <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span>
-          <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="s2">&quot;r&quot;</span> <span class="k">of</span> <span class="nx">d</span><span class="p">)</span>
-            <span class="nx">d</span><span class="p">.</span><span class="nx">r</span>
-          <span class="k">else</span>
-            <span class="p">(</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">dragged</span> <span class="k">then</span> <span class="nx">@dotSize</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">else</span> <span class="nx">@dotSize</span><span class="p">))</span>
-      <span class="p">)</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;clip-path&quot;</span><span class="p">,</span> <span class="s2">&quot;url(#scatter-clip)&quot;</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;draggable-node&quot;</span> <span class="k">if</span> <span class="nx">@dragger</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;active&quot;</span> <span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">dragged</span><span class="p">)</span>
-      <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">dragged</span> <span class="k">then</span> <span class="s1">&#39;white&#39;</span> <span class="k">else</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">color</span><span class="p">))</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="k">if</span> <span class="nx">d</span><span class="p">.</span><span class="nx">dragged</span> <span class="k">then</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">color</span> <span class="k">else</span> <span class="s1">&#39;white&#39;</span><span class="p">))</span>
-      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;stroke-width&quot;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">)</span>
+    <span class="property">@dragger</span>?.makeHandlers(newCircs)
+    <span class="property">@dragger</span>?.updateDraggedNode()
 
-    <span class="nx">circ</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;cursor&quot;</span><span class="p">,</span> <span class="s2">&quot;ns-resize&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">draggable</span>
+    circ
+      .transition()
+      .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
+      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)
+      .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@graph</span>.y d.y)
+      .attr(<span class="string">"r"</span>,
+        (d) =&gt;
+          (<span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d)
+            d.r
+          <span class="keyword">else</span>
+            (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
+      )
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
+      .attr(<span class="string">"class"</span>, (d) =&gt; [
+        (<span class="string">"draggable-node"</span> <span class="keyword">if</span> <span class="property">@dragger</span>),
+        (<span class="string">"active"</span> <span class="keyword">if</span> d.dragged)
+      ].join(<span class="string">' '</span>))
+      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
+      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
+      .attr(<span class="string">"stroke-width"</span>, <span class="string">'2'</span>)
 
-    <span class="nx">circ</span><span class="p">.</span><span class="nx">exit</span><span class="p">().</span><span class="nx">remove</span><span class="p">()</span>
+    circ.style(<span class="string">"cursor"</span>, <span class="string">"ns-resize"</span>) <span class="keyword">if</span> <span class="property">@series</span>.draggable
+
+    circ.exit().remove()
 
 
-    <span class="k">if</span> <span class="nx">@series</span><span class="p">.</span><span class="nx">tooltip</span>
-      <span class="nx">circ</span><span class="p">.</span><span class="nx">tooltip</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nv">circleColor: </span><span class="nx">@series</span><span class="p">.</span><span class="nx">color</span>
-        <span class="nv">graph: </span><span class="nx">@graph</span>
-        <span class="nv">text: </span><span class="nx">@series</span><span class="p">.</span><span class="nx">tooltip</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
-        <span class="nv">circleOnHover: </span><span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>tooltipCircleContainer: @graph.vis.node()</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nv">gravity: </span><span class="s2">&quot;right&quot;</span>
-
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+    <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+      circ.tooltip (d, i) =&gt;
+        circleColor: <span class="property">@series</span>.color
+        graph: <span class="property">@graph</span>
+        text: <span class="property">@series</span>.tooltip(d)
+        circleOnHover: <span class="literal">true</span>
+        tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
+        gravity: <span class="string">"right"</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -43,12 +43,19 @@ data = [
   }
 ];
 
-chart = new Tactile.Chart().element($("#example_view")[0]).data(data).axes({
+chart = new Tactile.Chart();
+
+chart.axes({
   x: {
-    dimension: "time",
+    dimension: 'time',
     frame: frameVal
+  },
+  y: {
+    dimension: "linear"
   }
 });
+
+chart.element($("#example_view")[0]).data(data);
 
 chart.addSeries({
   name: "enemies",
@@ -67,6 +74,7 @@ chart.addSeries({
 
 chart.addSeries({
   name: "friends",
+  dotSize: 1,
   renderer: "line",
   sigfigs: 1,
   color: "#6060c0",

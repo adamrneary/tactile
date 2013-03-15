@@ -7,12 +7,11 @@ data = [
     actual: 14,
     plan: 5
   }, {
-    period: 1328054400,
-    actual: 16,
+    period: 1325496000,
+    actual: null,
     plan: 10
   }, {
     period: 1330560000,
-    actual: 12,
     plan: 19
   }, {
     period: 1333238400,
@@ -56,6 +55,12 @@ data = [
 chart = new Tactile.Chart({
   unstack: false
 }).element($("#example_view")[0]).data(data).width(680);
+
+chart.axes({
+  y: {
+    dimension: "linear"
+  }
+});
 
 chart.addSeries([
   {

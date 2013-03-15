@@ -1,37 +1,154 @@
-<!DOCTYPE html>  <html> <head>   <title>axis_y.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="area_renderer.html">                 area_renderer.coffee               </a>                                           <a class="source" href="axis_time.html">                 axis_time.coffee               </a>                                           <a class="source" href="axis_y.html">                 axis_y.coffee               </a>                                           <a class="source" href="column_renderer.html">                 column_renderer.coffee               </a>                                           <a class="source" href="donut_renderer.html">                 donut_renderer.coffee               </a>                                           <a class="source" href="dragger.html">                 dragger.coffee               </a>                                           <a class="source" href="fixtures_time.html">                 fixtures_time.coffee               </a>                                           <a class="source" href="gauge_renderer.html">                 gauge_renderer.coffee               </a>                                           <a class="source" href="line_renderer.html">                 line_renderer.coffee               </a>                                           <a class="source" href="range_slider.html">                 range_slider.coffee               </a>                                           <a class="source" href="scatter_renderer.html">                 scatter_renderer.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               axis_y.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Tactile.AxisY = </span><span class="k">class</span> <span class="nx">AxisY</span>
-  <span class="nv">constructor: </span><span class="nf">(options) -&gt;</span>
-    <span class="vi">@options = </span><span class="nx">options</span>
-    <span class="vi">@graph = </span><span class="nx">options</span><span class="p">.</span><span class="nx">graph</span>
-    <span class="vi">@orientation = </span><span class="nx">options</span><span class="p">.</span><span class="nx">orientation</span> <span class="o">or</span> <span class="s2">&quot;left&quot;</span>
-    <span class="nv">pixelsPerTick = </span><span class="nx">options</span><span class="p">.</span><span class="nx">pixelsPerTick</span> <span class="o">or</span> <span class="mi">75</span>
-    <span class="vi">@ticks = </span><span class="nx">options</span><span class="p">.</span><span class="nx">ticks</span> <span class="o">or</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">@graph</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">/</span> <span class="nx">pixelsPerTick</span><span class="p">)</span>
-    <span class="vi">@tickSize = </span><span class="nx">options</span><span class="p">.</span><span class="nx">tickSize</span> <span class="o">or</span> <span class="mi">4</span>
-    <span class="vi">@ticksTreatment = </span><span class="nx">options</span><span class="p">.</span><span class="nx">ticksTreatment</span> <span class="o">or</span> <span class="s2">&quot;plain&quot;</span>
-    <span class="vi">@grid = </span><span class="nx">options</span><span class="p">.</span><span class="nx">grid</span>
-    
-    <span class="nx">@graph</span><span class="p">.</span><span class="nx">onUpdate</span> <span class="o">=&gt;</span>
-      <span class="nx">@render</span><span class="p">()</span>
+<!DOCTYPE html>
 
-  <span class="nv">render: </span><span class="o">-&gt;</span>
-    <span class="k">return</span> <span class="nx">unless</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="o">?</span>
-    <span class="nv">y = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">vis</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;.y-ticks&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
-    <span class="nx">y</span><span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;y-ticks&quot;</span><span class="p">,</span> <span class="nx">@ticksTreatment</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
+<html>
+<head>
+  <title>axis_y.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
     
-    <span class="nv">axis = </span><span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">().</span><span class="nx">scale</span><span class="p">(</span><span class="nx">@graph</span><span class="p">.</span><span class="nx">y</span><span class="p">).</span><span class="nx">orient</span><span class="p">(</span><span class="nx">@orientation</span><span class="p">)</span>
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_y.html">
+                axis_y.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
     
-    <span class="nx">axis</span><span class="p">.</span><span class="nx">tickFormat</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">tickFormat</span> <span class="o">or</span> <span class="nf">(y) -&gt;</span> <span class="nx">y</span>
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>axis_y.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>Tactile.AxisY = <span class="class"><span class="keyword">class</span> <span class="title">AxisY</span></span>
+  constructor: (options) -&gt;
+    <span class="property">@options</span> = options
+    <span class="property">@graph</span> = options.graph
+    <span class="property">@orientation</span> = options.orientation <span class="keyword">or</span> <span class="string">"left"</span>
+    pixelsPerTick = options.pixelsPerTick <span class="keyword">or</span> <span class="number">75</span>
+    <span class="property">@ticks</span> = options.ticks <span class="keyword">or</span> Math.floor(<span class="property">@graph</span>.height() / pixelsPerTick)
+    <span class="property">@tickSize</span> = options.tickSize <span class="keyword">or</span> <span class="number">4</span>
+    <span class="property">@ticksTreatment</span> = options.ticksTreatment <span class="keyword">or</span> <span class="string">"plain"</span>
+    <span class="property">@grid</span> = options.grid
+    
+    <span class="property">@graph</span>.onUpdate =&gt;
+      <span class="property">@render</span>()
+
+  render: -&gt;
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>.y?
+    y = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.y-ticks'</span>).data([<span class="number">0</span>])
+    y.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, [<span class="string">"y-ticks"</span>, <span class="property">@ticksTreatment</span>].join(<span class="string">" "</span>))
+    
+    axis = d3.svg.axis().scale(<span class="property">@graph</span>.y).orient(<span class="property">@orientation</span>)
+    
+    axis.tickFormat <span class="property">@options</span>.tickFormat <span class="keyword">or</span> (y) -&gt; y
     
       
-    <span class="nv">yAxis = </span><span class="nx">axis</span><span class="p">.</span><span class="nx">ticks</span><span class="p">(</span><span class="nx">@ticks</span><span class="p">).</span><span class="nx">tickSubdivide</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tickSize</span><span class="p">(</span><span class="nx">@tickSize</span><span class="p">)</span>
+    yAxis = axis.ticks(<span class="property">@ticks</span>).tickSubdivide(<span class="number">0</span>).tickSize(<span class="property">@tickSize</span>)
     
-    <span class="nx">y</span><span class="p">.</span><span class="nx">transition</span><span class="p">().</span><span class="nx">duration</span><span class="p">(</span><span class="nx">@graph</span><span class="p">.</span><span class="nx">transitionSpeed</span><span class="p">).</span><span class="nx">call</span><span class="p">(</span><span class="nx">yAxis</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This should work. Untested though.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@grid</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;grid&quot;</span><span class="p">)</span>
-      <span class="nv">gridSize = </span><span class="p">((</span><span class="k">if</span> <span class="nx">@orientation</span> <span class="o">is</span> <span class="s2">&quot;right&quot;</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="nx">@graph</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span>
-      <span class="nv">grid = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">vis</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;.y-grid&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
-      <span class="nx">grid</span><span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg:g&quot;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;y-grid&quot;</span><span class="p">)</span>
-      <span class="nx">grid</span><span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
-        <span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">axis</span><span class="p">.</span><span class="nx">ticks</span><span class="p">(</span><span class="nx">@ticks</span><span class="p">).</span><span class="nx">tickSubdivide</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tickSize</span><span class="p">(</span><span class="nx">gridSize</span><span class="p">))</span>
-      
-    <span class="vi">@_renderHeight = </span><span class="nx">@graph</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+    y.transition().duration(<span class="property">@graph</span>.transitionSpeed).call(yAxis)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>This should work. Untested though.</p>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@grid</span>
+      gridSize = ((<span class="keyword">if</span> <span class="property">@orientation</span> <span class="keyword">is</span> <span class="string">"right"</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> -<span class="number">1</span>)) * <span class="property">@graph</span>.width()
+      grid = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.y-grid'</span>).data([<span class="number">0</span>])
+      grid.enter().append(<span class="string">"svg:g"</span>).attr(<span class="string">"class"</span>, <span class="string">"y-grid"</span>)
+      grid.transition()
+        .call(axis.ticks(<span class="property">@ticks</span>).tickSubdivide(<span class="number">0</span>).tickSize(gridSize))
+      
+    <span class="property">@_renderHeight</span> = <span class="property">@graph</span>.height()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
