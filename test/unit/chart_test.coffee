@@ -181,7 +181,7 @@ describe 'Chart', ->
       .width(680)
       .height(400)
       .axes (x:{dimension: "time", frame: frameVal})
-    assert typeof _chart.findAxis is 'function'
+    assert typeof _chart.initAxis is 'function'
     # assert typeof _chart.findAxis()
     done()
 

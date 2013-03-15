@@ -451,7 +451,7 @@ describe('Chart', function() {
         frame: frameVal
       }
     });
-    assert(typeof _chart.findAxis === 'function');
+    assert(typeof _chart.initAxis === 'function');
     return done();
   });
   it('Chart: dataDomain', function(done) {
