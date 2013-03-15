@@ -17,6 +17,9 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
   initialize: ->
     @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
+    if @series.dotSize?
+      @dotSize = @series.dotSize
+
 
   render: =>
     super()
@@ -32,6 +35,9 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
 
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
+
+
+
 
     circ
       .transition()

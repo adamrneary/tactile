@@ -49,7 +49,6 @@ Tactile.RendererBase = class RendererBase
     
     
   render: =>
-    console.log @seriesCanvas
     if (@series.disabled)
       @timesRendered = 0
       line = @seriesCanvas().selectAll("path")
@@ -91,7 +90,6 @@ Tactile.RendererBase = class RendererBase
     @_seriesCanvas
     
   configure: (options) ->
-    console.log options
     # merge base defaults with particular renderer's
     defaults = _.extend {}, @defaults, @specificDefaults if @specificDefaults?
     options = _.extend {}, defaults, options

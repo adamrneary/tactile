@@ -182,7 +182,7 @@ x1, y:10 y-axis will show up to y=30</p>
       .attr(<span class="string">"stroke-width"</span>, <span class="property">@strokeWidth</span>)
       .style(<span class="string">'opacity'</span>, <span class="property">@opacity</span>)
       .attr(<span class="string">"class"</span>, <span class="string">"<span class="subst">#{@series.className <span class="keyword">or</span> ''}</span>
-      <span class="subst">#{<span class="keyword">if</span> @series.color <span class="keyword">then</span> '' <span class="keyword">else</span> 'colorless'}</span>"</span>)
+ <span class="subst">#{<span class="keyword">if</span> @series.color <span class="keyword">then</span> '' <span class="keyword">else</span> 'colorless'}</span>"</span>)
 
     line.transition().duration(<span class="property">@transitionSpeed</span>).attr(<span class="string">"d"</span>, <span class="property">@seriesPathFactory</span>())</pre></div></div>
             

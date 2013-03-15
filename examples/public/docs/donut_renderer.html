@@ -104,7 +104,7 @@
     <span class="property">@donut</span> = d3.layout.pie().value((d) -&gt;
       d.val
     )
-    <span class="property">@arc</span> = d3.svg.arc().outerRadius(<span class="number">50</span>).innerRadius(<span class="number">30</span>)</pre></div></div>
+    <span class="property">@arc</span> = d3.svg.arc().innerRadius(<span class="number">60</span>).outerRadius(<span class="property">@series</span>.height)</pre></div></div>
             
         </li>
         
@@ -119,13 +119,39 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>DonutRenderer::<span class="function"><span class="title">render</span></span> = -&gt;
+            <div class="content"><div class="highlight"><pre>render: -&gt;
     donut = <span class="literal">undefined</span>
     donut = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".arc"</span>)
       .data(<span class="property">@donut</span>).enter().append(<span class="string">"path"</span>)
       .attr(<span class="string">"class"</span>, <span class="string">"donut-arc"</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@series.height - <span class="number">30</span>}</span>,<span class="subst">#{@series.height - <span class="number">30</span>}</span>)"</span>)
       .attr(<span class="string">"d"</span>, <span class="property">@arc</span>)
-      .style(<span class="string">"color"</span>, <span class="string">"black"</span>)
+      .attr(<span class="string">"stroke"</span>, <span class="string">"white"</span>)
+      .style(<span class="string">"fill"</span>, ((d)-&gt; d.data.color), <span class="string">"stroke"</span>)
+    <span class="property">@setupTooltips</span>()
+
+  setupTooltips: -&gt;
+    <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path"</span>).tooltip (d, i) =&gt;
+        color: <span class="property">@series</span>.color
+        graph: <span class="property">@graph</span>
+        text: <span class="property">@series</span>.tooltip(d)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>circleOnHover: true
+tooltipCircleContainer: @graph.vis.node()</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>gravity: <span class="string">"left"</span>
 
   DonutRenderer</pre></div></div>
             

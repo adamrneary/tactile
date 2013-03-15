@@ -160,6 +160,9 @@ sets the parent node by default</p>
           hoveredNode = <span class="property">@el</span>.node().getBBox()
           center[<span class="number">0</span>] = hoveredNode.x + hoveredNode.width / <span class="number">2</span>
           center[<span class="number">1</span>] = hoveredNode.y
+          <span class="keyword">if</span> <span class="property">@options</span>.graph.series[<span class="number">0</span>].renderer <span class="keyword">is</span> <span class="string">"donut"</span>
+            center[<span class="number">0</span>] = center[<span class="number">0</span>] + <span class="property">@options</span>.graph.series[<span class="number">0</span>].height-<span class="number">30</span>
+            center[<span class="number">1</span>] = center[<span class="number">1</span>] + <span class="property">@options</span>.graph.series[<span class="number">0</span>].height-<span class="number">30</span>
 
         <span class="keyword">if</span> <span class="property">@el</span>.node().tagName == <span class="string">'circle'</span>
           center[<span class="number">1</span>] += (hoveredNode.height / <span class="number">2</span> - <span class="number">1</span>)
@@ -180,7 +183,7 @@ sets the parent node by default</p>
         .style(<span class="string">"display"</span>,<span class="string">"block"</span>)
 
     <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mouseover"</span>, () =&gt;
-      <span class="keyword">if</span> Tooltip._spotlightMode
+     <span class="keyword">if</span> Tooltip._spotlightMode
         <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@el</span>.node().classList.contains(<span class="string">"active"</span>)
         
       tip = <span class="property">@appendTooltip</span>()</pre></div></div>

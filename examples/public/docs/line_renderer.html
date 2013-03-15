@@ -115,6 +115,9 @@
   initialize: -&gt;
     <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @) <span class="keyword">if</span> <span class="property">@series</span>.draggable
     <span class="property">@timesRendered</span> = <span class="number">0</span>
+    <span class="keyword">if</span> <span class="property">@series</span>.dotSize?
+      <span class="property">@dotSize</span> = <span class="property">@series</span>.dotSize
+
 
   render: =&gt;
     <span class="keyword">super</span>()
@@ -130,6 +133,9 @@
 
     <span class="property">@dragger</span>?.makeHandlers(newCircs)
     <span class="property">@dragger</span>?.updateDraggedNode()
+
+
+
 
     circ
       .transition()
@@ -162,9 +168,22 @@
         circleColor: <span class="property">@series</span>.color
         graph: <span class="property">@graph</span>
         text: <span class="property">@series</span>.tooltip(d)
-        circleOnHover: <span class="literal">true</span>
-        tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
-        gravity: <span class="string">"right"</span></pre></div></div>
+        circleOnHover: <span class="literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>tooltipCircleContainer: @graph.vis.node()</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>gravity: <span class="string">"right"</span></pre></div></div>
             
         </li>
         
