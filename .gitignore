@@ -18,3 +18,4 @@ examples/js/tactile.js
 test/cov/*
 test/reports/*
 test/docs/*
+npm-debug.log
