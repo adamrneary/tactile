@@ -1,6 +1,6 @@
 frameVal = [1325376000, 1354320000]
 data = [
-  
+
   # time (period here) is unix milliseconds/1000
   period: 1325376000
   actual: 4
@@ -50,11 +50,9 @@ data = [
   actual: 5
   plan: 2
 ]
-chart = new Tactile.Chart()
-  .element($("#example_view")[0]).data(data).width(680).height(400).axes(x:
-    dimension: "time"
-    frame: frameVal
-  )
+chart = new Tactile.Chart().element($("#example_view")[0]).data(data).width(680).height(400)
+chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+
 chart.addSeries [
   name: "reach actual"
   renderer: "column"

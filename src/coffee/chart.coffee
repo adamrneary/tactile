@@ -32,6 +32,7 @@ Tactile.Chart = class Chart
     @series = []
     @window = {}
     @updateCallbacks = []
+    @_axes = {}
 
     # chart size is handled with its own method
     @setSize
@@ -40,10 +41,6 @@ Tactile.Chart = class Chart
     delete args.width if args.width?
     delete args.height if args.height?
     
-    # axes are handled with their own method
-    @axes args.axes or @defaultAxes
-    delete args.axes if args.axes?
-      
     # the remaining chart properties can be applied to the object directly
     _.each args, (val, key) =>
       @[key] = val
@@ -139,12 +136,12 @@ Tactile.Chart = class Chart
         rangeEnd = @width() - barWidth
 
       xframe = [
-        (if @_axes.x.frame[0] then @_axes.x.frame[0] else domain.x[0])
-        (if @_axes.x.frame[1] then @_axes.x.frame[1] else domain.x[1])
+        (if @_axes.x?.frame?[0] then @_axes.x.frame[0] else domain.x[0])
+        (if @_axes.x?.frame?[1] then @_axes.x.frame[1] else domain.x[1])
       ]
       yframe = [
-        (if @_axes.y.frame[0] then @_axes.y.frame[0] else domain.y[0])
-        (if @_axes.y.frame[1] then @_axes.y.frame[1] else domain.y[1])
+        (if @_axes.y?.frame?[0] then @_axes.y.frame[0] else domain.y[0])
+        (if @_axes.y?.frame?[1] then @_axes.y.frame[1] else domain.y[1])
       ]
 
       @x = d3.scale.linear()
@@ -157,7 +154,7 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
-  findAxis: (axis) ->
+  initAxis: (axis) ->
     return unless @_allRenderersCartesian()
     switch axis.dimension
       when "linear"
@@ -259,23 +256,21 @@ Tactile.Chart = class Chart
     @dataInitialized = false
     @
 
+  # TODO:
+  # it should be possible to pass options to the axes
+  # so far they were
+  # for x: unit, ticksTreatment, grid
+  # for y: orientation, pixelsPerTick, ticks and few more.
   axes: (args, options) ->
     return @_axes unless args
-    @_axes =
-      x:
-        frame: (args.x?.frame or @defaultAxes.x.frame)
-        dimension: (args.x?.dimension or @defaultAxes.x.dimension)
-      y:
-        frame: (args.y?.frame or @defaultAxes.y.frame)
-        dimension: (args.y?.dimension or @defaultAxes.y.dimension)
 
-    # TODO:
-    # it should be possible to pass options to the axes
-    # so far they were
-    # for x: unit, ticksTreatment, grid
-    # for y: orientation, pixelsPerTick, ticks and few more.
-    @findAxis(@_axes.x)
-    @findAxis(@_axes.y)
+    _.each ['x','y'], (k) =>
+      if args[k]?
+        @_axes[k] =
+          frame: (args[k]?.frame or @defaultAxes[k].frame)
+          dimension: (args[k]?.dimension or @defaultAxes[k].dimension)
+        @initAxis(@_axes[k])
+
     @
 
   #############################################################################

@@ -36,10 +36,10 @@ data = [
   y: 332
   z: 490
 ]
-chart = new Tactile.Chart().element($("#example_view")[0]).data(data).axes(x:
-  dimension: "time"
-  frame: frameVal
-)
+chart = new Tactile.Chart()
+chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+chart.element($("#example_view")[0]).data(data)
+
 chart.addSeries
   name: "enemies"
   renderer: "line"
@@ -53,6 +53,7 @@ chart.addSeries
 
 chart.addSeries
   name: "friends"
+  dotSize: 1
   renderer: "line"
   sigfigs: 1
   color: "#6060c0"

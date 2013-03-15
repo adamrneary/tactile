@@ -50,6 +50,8 @@ data = [
 ]
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0]).data(data).width(680)
+chart.axes(y: dimension: "linear")
+
 chart.addSeries [
   name: "actual-planned-dots"
   renderer: "scatter"
