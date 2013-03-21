@@ -111,6 +111,8 @@
   initialize: -&gt;
     <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @) <span class="keyword">if</span> <span class="property">@series</span>.draggable
     <span class="property">@timesRendered</span> = <span class="number">0</span>
+    <span class="keyword">if</span> <span class="property">@series</span>.dotSize?
+      <span class="property">@dotSize</span> = <span class="property">@series</span>.dotSize
 
   seriesPathFactory: -&gt;
     d3.svg.area()
@@ -189,7 +191,7 @@
           ].join(<span class="string">' '</span>))
       .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
       .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
-      .attr(<span class="string">"stroke-width"</span>, <span class="string">'2'</span>)
+      .attr(<span class="string">"stroke-width"</span>, <span class="property">@dotSize</span> / <span class="number">2</span> || <span class="number">2</span>)
 
     circ.style(<span class="string">"cursor"</span>, <span class="string">"ns-resize"</span>) <span class="keyword">if</span> <span class="property">@series</span>.draggable
 

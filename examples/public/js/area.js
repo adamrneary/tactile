@@ -58,6 +58,7 @@ chart.addSeries([
   {
     name: "enemies",
     renderer: "area",
+    dotSize: 1,
     sigfigs: 0,
     draggable: true,
     afterDrag: function(d, y, i, draggedSeries, graph) {
