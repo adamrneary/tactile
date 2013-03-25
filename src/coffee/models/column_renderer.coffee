@@ -11,6 +11,13 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
   initialize: (options = {}) ->
     @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
     @gapSize = options.gapSize || @gapSize
+    @active = null
+
+    # Remove active class if click anywhere
+    window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
+      @active = null
+      @render()
+    ), true)
 
     @timesRendered = 0
 
@@ -26,6 +33,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
+      .on("click", @_click)# set active element if click on it
 
     @dragger?.makeHandlers(nodes)
     @dragger?.updateDraggedNode()
@@ -43,10 +51,11 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       .attr("class",
-        (d) =>
-          ["bar", ("colorless" unless @series.color)].join(' ')
-      )
-    
+        (d) =>[
+          "bar",
+          ("colorless" unless @series.color),
+          ("active" if d == @active)].join(' ')) # apply active class for active element
+
     @setupTooltips()
 
 
@@ -135,7 +144,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       width = stackWidth / (1 + @gapSize)
     else
       width = @graph.width() / (1 + @gapSize)
-      
+
     if @unstack
       width = width / @graph.series.filter(
         (d) =>
@@ -182,3 +191,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
+
+  _click: (d)=>
+    @active = d
+    @render()
+

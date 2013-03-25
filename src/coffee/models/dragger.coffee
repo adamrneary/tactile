@@ -45,7 +45,7 @@ Tactile.Dragger = class Dragger
     d = if _.isArray(d) then d[i] else d
     # lock the tooltip on the dragged element
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
-    @dragged = {d: d, i: i}
+    @dragged = {d: d, i: i, y: d.y}
     @update()
 
   _mouseMove: =>
@@ -80,7 +80,7 @@ Tactile.Dragger = class Dragger
           "draggable-node")
     d3.select("body").style "cursor", "auto"
     @dragged = null
-    
+
 
     # unlock the tooltip from the dragged element
     Tactile.Tooltip.turnOffspotlight() if @series.tooltip
@@ -136,3 +136,4 @@ Tactile.Dragger = class Dragger
       gravity: "right"
 
     renderer.seriesCanvas().selectAll('.draggable-node')
+

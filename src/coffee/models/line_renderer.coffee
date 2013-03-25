@@ -15,6 +15,14 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .tension @tension
 
   initialize: ->
+    @active = null
+
+    # Remove active class if click anywhere
+    window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
+      @active = null
+      @render()
+    ), true)
+
     @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
     if @series.dotSize?
@@ -32,6 +40,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
+      .on("click", @_click)# set active element if click on it
+
 
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
@@ -54,12 +64,11 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d) => [
         ("draggable-node" if @dragger),
-        ("active" if d.dragged)
+        ("active" if d == @active) # apply active class for active element
       ].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
       .attr("stroke-width", '2')
-
     circ.style("cursor", "ns-resize") if @series.draggable
 
     circ.exit().remove()
@@ -73,3 +82,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+
+  _click: (d)=>
+    @active = d
+    @render()
+
