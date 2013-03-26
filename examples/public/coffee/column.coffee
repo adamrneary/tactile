@@ -75,6 +75,8 @@ chart.addSeries [
   round: false
   color: "#6060c0"
   draggable: true
+  isEditable: (d, i) ->
+    d.x == 1325376000
   tooltip: (d) ->
     d.y + " planned"
 
@@ -97,3 +99,4 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
+

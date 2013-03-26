@@ -44,6 +44,7 @@ chart.addSeries
   name: "enemies"
   renderer: "line"
   color: "#c05020"
+  isEditable: true
   tooltip: (d) ->
     d.y + " enemies"
 
@@ -57,6 +58,8 @@ chart.addSeries
   renderer: "line"
   sigfigs: 1
   color: "#6060c0"
+  isEditable: (d, i) ->
+    d.x == 2
   draggable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->
     graph.data()[i].z = y
@@ -79,3 +82,4 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
+

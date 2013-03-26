@@ -13,6 +13,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     @gapSize = options.gapSize || @gapSize
     @active = null
 
+    @utils = new Tactile.Utils()
+
     # Remove active class if click anywhere
     window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
       @active = null
@@ -21,7 +23,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
 
     @timesRendered = 0
 
-  render: ->
+  render: =>
     if (@series.disabled)
       @timesRendered = 0
       @dragger.timesRendered = 0
@@ -51,10 +53,13 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       .attr("class",
-        (d) =>[
-          "bar",
+        (d, i) =>
+          ["bar",
           ("colorless" unless @series.color),
           ("active" if d == @active)].join(' ')) # apply active class for active element
+
+
+
 
     @setupTooltips()
 
@@ -192,7 +197,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
-  _click: (d)=>
+  _click: (d, i)=>
+    return unless @utils.ourFunctor(@series.isEditable, d, i)
     @active = d
     @render()
 

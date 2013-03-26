@@ -23,6 +23,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       @render()
     ), true)
 
+    @utils = new Tactile.Utils()
+
     @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
     if @series.dotSize?
@@ -83,7 +85,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
-  _click: (d)=>
+  _click: (d, i)=>
+    return unless @utils.ourFunctor(@series.isEditable, d, i)
     @active = d
     @render()
 
