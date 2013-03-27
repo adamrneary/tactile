@@ -1,4 +1,4 @@
-Tactile.LineRenderer = class LineRenderer extends RendererBase
+Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
   name: "line"
 
   specificDefaults:
@@ -15,16 +15,7 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .tension @tension
 
   initialize: ->
-    @active = null
-
-    # Remove active class if click anywhere
-    window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
-      @active = null
-      @render()
-    ), true)
-
-    @utils = new Tactile.Utils()
-
+    super
     @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
     if @series.dotSize?
@@ -64,9 +55,10 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
             (if d.dragged then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class", (d) => [
+      .attr("class", (d, i) => [
         ("draggable-node" if @dragger),
-        ("active" if d == @active) # apply active class for active element
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
       ].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
@@ -84,9 +76,4 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
-
-  _click: (d, i)=>
-    return unless @utils.ourFunctor(@series.isEditable, d, i)
-    @active = d
-    @render()
 

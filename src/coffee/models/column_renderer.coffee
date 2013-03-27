@@ -1,4 +1,4 @@
-Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
+Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
   name: "column"
 
   specificDefaults:
@@ -9,18 +9,9 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
 
 
   initialize: (options = {}) ->
+    super
     @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
     @gapSize = options.gapSize || @gapSize
-    @active = null
-
-    @utils = new Tactile.Utils()
-
-    # Remove active class if click anywhere
-    window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
-      @active = null
-      @render()
-    ), true)
-
     @timesRendered = 0
 
   render: =>
@@ -56,7 +47,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         (d, i) =>
           ["bar",
           ("colorless" unless @series.color),
-          ("active" if d == @active)].join(' ')) # apply active class for active element
+          ("active" if d is @active), # apply active class for active element
+          ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
 
 
@@ -196,9 +188,4 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-  _click: (d, i)=>
-    return unless @utils.ourFunctor(@series.isEditable, d, i)
-    @active = d
-    @render()
 

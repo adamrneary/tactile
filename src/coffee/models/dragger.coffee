@@ -106,7 +106,9 @@ Tactile.Dragger = class Dragger
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class",
         (d, i) =>
-          ["draggable-node", ("active" if d == renderer.active)].join(' '))
+          ["draggable-node",
+          ("active" if d is renderer.active), # apply active class for active element
+          ("editable" if renderer.utils.ourFunctor(renderer.isEditable, d, i))].join(' ')) # apply editable class for editable element
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
       .attr("stroke-width", '2')
