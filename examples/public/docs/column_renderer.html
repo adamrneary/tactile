@@ -115,7 +115,7 @@
   render: -&gt;
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@timesRendered</span> = <span class="number">0</span>
-      <span class="property">@dragger</span>.timesRendered = <span class="number">0</span>
+      <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack).remove()
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>).data(<span class="property">@series</span>.stack).remove()
       <span class="keyword">return</span>
