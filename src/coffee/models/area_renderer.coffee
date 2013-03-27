@@ -13,6 +13,8 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
   initialize: ->
     @dragger = new Dragger(renderer: @) if @series.draggable
     @timesRendered = 0
+    if @series.dotSize?
+      @dotSize = @series.dotSize
 
   seriesPathFactory: ->
     d3.svg.area()
@@ -79,7 +81,7 @@ Tactile.AreaRenderer = class AreaRenderer extends RendererBase
           ].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
-      .attr("stroke-width", '2')
+      .attr("stroke-width", @dotSize / 2 || 2)
 
     circ.style("cursor", "ns-resize") if @series.draggable
 

@@ -62,7 +62,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
       ].join(' '))
       .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
-      .attr("stroke-width", '2')
+      .attr("stroke-width", @dotSize / 2 || 2)
     circ.style("cursor", "ns-resize") if @series.draggable
 
     circ.exit().remove()

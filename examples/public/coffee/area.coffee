@@ -44,6 +44,7 @@ chart.data(data).width(680).height(400).axes x:
 chart.addSeries [
   name: "enemies"
   renderer: "area"
+  dotSize: 1
   sigfigs: 0
   draggable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->

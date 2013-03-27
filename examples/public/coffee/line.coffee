@@ -54,7 +54,7 @@ chart.addSeries
 
 chart.addSeries
   name: "friends"
-  dotSize: 7
+  dotSize: 2
   renderer: "line"
   sigfigs: 1
   color: "#6060c0"
