@@ -8,12 +8,30 @@ Tactile.DraggableRenderer = class DraggableRenderer extends RendererBase
       @render()
     ), true)
 
+    window.addEventListener("keyup", (e)=>
+      clearInterval(@id) if @id
+      @id = null
+    )
+
     window.addEventListener("keydown", (e)=>
+      #console.log("keydown")
       switch e.keyCode
         when 37 then @selectPerviousEditableValue()
         when 39 then @selectNextEditableValue()
-        when 38 then a="up"
-        when 40 then a="down"
+        when 38
+          increase = ()=>
+            @increaseEditableValue()
+          unless @id
+            @increaseEditableValue()
+            @id = setInterval(increase, 200) unless @id
+          e.preventDefault()
+        when 40
+          decrease = ()=>
+            @decreaseEditableValue()
+          unless @id
+            @decreaseEditableValue()
+            @id = setInterval(decrease, 200) unless @id
+          e.preventDefault()
     )
 
     @utils = new Tactile.Utils()
@@ -54,5 +72,18 @@ Tactile.DraggableRenderer = class DraggableRenderer extends RendererBase
   _click: (d, i)=>
     return unless @utils.ourFunctor(@series.isEditable, d, i)
     @active = d
+    @render()
+
+  increaseEditableValue: ()=>
+    console.log("increaseEditableValue")
+    return unless @active
+    @active.y++
+    @render()
+
+
+  decreaseEditableValue: ()=>
+    console.log("decreaseEditableValue")
+    return unless @active
+    @active.y--
     @render()
 
