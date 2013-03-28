@@ -108,9 +108,9 @@ Tactile.Dragger = class Dragger
         (d, i) =>
           ["draggable-node",
           ("active" if d is renderer.active), # apply active class for active element
-          ("editable" if renderer.utils.ourFunctor(renderer.isEditable, d, i))].join(' ')) # apply editable class for editable element
-      .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
-      .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
+          ("editable" if renderer.utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
+      .attr("fill", (d) => (if d.dragged or d is renderer.active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is renderer.active then @series.color else 'white'))
       .attr("stroke-width", '2')
       .attr('id', (d, i) -> "draggable-node-#{i}-#{d.x}")
       .style("cursor", "ns-resize")
@@ -123,7 +123,7 @@ Tactile.Dragger = class Dragger
 
     # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) ->
-      renderer.seriesCanvas().selectAll('.draggable-node')
+      renderer.seriesCanvas().selectAll('.draggable-node:not(.active)')
         .style('display', 'none')
       circ = renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}")
       # TODO: circle should be placed at the middle of a column

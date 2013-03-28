@@ -9,13 +9,13 @@ window.Tactile.Tooltip = class Tooltip
 
   @turnOffspotlight: () ->
     Tooltip._spotlightMode = false
-    
+
   @spotlightOn: (d) ->
     Tooltip._spotlightMode = true
-    
+
   @getSpotlight: () ->
     Tooltip._spotlightMode
-  
+
   constructor: (@el, @options) ->
     #console.log  @options, '@options'
     #console.log @el, '@el'
@@ -37,7 +37,7 @@ window.Tactile.Tooltip = class Tooltip
         .classed("tooltip-inner", true)
 
     return tip
-    
+
   annotate: () ->
     chartContainer = @el.node().nearestViewportElement
 
@@ -85,7 +85,7 @@ window.Tactile.Tooltip = class Tooltip
     @el.on("mouseover", () =>
      if Tooltip._spotlightMode
         return unless @el.node().classList.contains("active")
-        
+
       tip = @appendTooltip()
 
       # puts small circle on the hovered node
@@ -102,14 +102,14 @@ window.Tactile.Tooltip = class Tooltip
       inner = () -> tip.classed('in', true)
 
       setTimeout(inner,10)
-      
+
       tip.style("display","")
       moveTip(tip)
     )
 
     mouseMove = () ->
       d3.select(".annotation").call(moveTip.bind(@))
-    
+
     if @options.mousemove
       @el.on("mousemove", mouseMove)
 
@@ -117,34 +117,35 @@ window.Tactile.Tooltip = class Tooltip
       return if Tooltip._spotlightMode # don't hide the tooltip if spotlight
       d3.select(@tooltipCircleContainer).selectAll("circle.tooltip-circle")
         .remove()
-      
+
       # bring back the original style of a circle
-      if @el.node().tagName == 'circle'
+      if @el.node().tagName == 'circle' and @el.attr("class").search(/active/) == -1
         @el.classed('tip-hovered', false)
         @el.attr('stroke', @el.attr('data-stroke-color'))
         @el.attr('fill', @el.attr('data-fill-color'))
-        
+
       tip = d3.selectAll(".annotation").classed('in', false)
       remover = () -> tip.remove()
       setTimeout(remover, 150)
     )
-    
+
   _appendTipCircle: ->
     hoveredNode = @el.node().getBBox()
 
     # if element is a circle we would overwrite it's style
     # without appending another circle for tip
     if @el.node().tagName == 'circle'
-      @el.attr(
-        'data-stroke-color',
-        @el.attr('stroke')) unless @el.attr('data-stroke-color'
-      )
-      @el.attr(
-        'data-fill-color',
-        @el.attr('fill')) unless @el.attr('data-fill-color'
-      )
-      @el.attr('fill', @el.attr('data-stroke-color'))
-      @el.attr('stroke', @el.attr('data-fill-color'))
+      if @el.attr("class").search(/active/) == -1
+        @el.attr(
+          'data-stroke-color',
+          @el.attr('stroke')) unless @el.attr('data-stroke-color'
+        )
+        @el.attr(
+          'data-fill-color',
+          @el.attr('fill')) unless @el.attr('data-fill-color'
+        )
+        @el.attr('fill', @el.attr('data-stroke-color'))
+        @el.attr('stroke', @el.attr('data-fill-color'))
     else
       d3.select(@tooltipCircleContainer)
         .append("svg:circle")
@@ -162,3 +163,4 @@ d3.selection.prototype.tooltip = (f) ->
   selection.each (d,i) ->
     options = f.apply(@, arguments)
     new Tactile.Tooltip(@, options)
+

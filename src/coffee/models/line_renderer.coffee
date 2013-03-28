@@ -52,7 +52,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
           (if ("r" of d)
             d.r
           else
-            (if d.dragged then @dotSize + 1 else @dotSize))
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
@@ -60,8 +60,8 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
         ("active" if d is @active), # apply active class for active element
         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
       ].join(' '))
-      .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
-      .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
+      .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
     circ.style("cursor", "ns-resize") if @series.draggable
 
