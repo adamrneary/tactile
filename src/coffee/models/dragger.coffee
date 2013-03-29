@@ -33,8 +33,8 @@ Tactile.Dragger = class Dragger
   # so it's y-value will reflect currently dragged position
   updateDraggedNode: () ->
     if @dragged?.y?
-      @renderer.seriesCanvas().selectAll('.draggable-node')
-        .filter((d, i) => i is @dragged.i)
+      @renderer.seriesCanvas().selectAll('circle.editable')
+        .filter((d, i) => d is @dragged.d)
         .each (d) =>
           d.y = @dragged.y
           d.dragged = true
@@ -72,12 +72,12 @@ Tactile.Dragger = class Dragger
     return unless @dragged?.y?
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
-    @renderer.seriesCanvas().selectAll('circle.draggable-node')
+    @renderer.seriesCanvas().selectAll('circle.editable')
       .data(@series.stack)
       .attr("class",
         (d) =>
           d.dragged = false
-          "draggable-node")
+          "editable")
     d3.select("body").style "cursor", "auto"
     @dragged = null
 
@@ -95,7 +95,7 @@ Tactile.Dragger = class Dragger
   _appendCircles: (nodes) ->
     renderer = @renderer
 
-    circs = @renderer.seriesCanvas().selectAll('circle.draggable-node')
+    circs = @renderer.seriesCanvas().selectAll('circle')
       .data(@series.stack)
 
     # append the circles but make them invisible
@@ -106,14 +106,13 @@ Tactile.Dragger = class Dragger
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class",
         (d, i) =>
-          ["draggable-node",
-          ("active" if d is renderer.active), # apply active class for active element
+          [("active" if d is renderer.active), # apply active class for active element
           ("editable" if renderer.utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
       .attr("fill", (d) => (if d.dragged or d is renderer.active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is renderer.active then @series.color else 'white'))
       .attr("stroke-width", '2')
-      .attr('id', (d, i) -> "draggable-node-#{i}-#{d.x}")
-      .style("cursor", "ns-resize")
+      .attr('id', (d, i) -> "node-#{i}-#{d.x}")
+      .style("cursor", (d, i)=> if renderer.utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circs
       .transition()
@@ -123,9 +122,9 @@ Tactile.Dragger = class Dragger
 
     # show and hide the circle for the currently hovered element
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) ->
-      renderer.seriesCanvas().selectAll('.draggable-node:not(.active)')
+      renderer.seriesCanvas().selectAll('circle:not(.active)')
         .style('display', 'none')
-      circ = renderer.seriesCanvas().select("#draggable-node-#{i}-#{d.x}")
+      circ = renderer.seriesCanvas().select("#node-#{i}-#{d.x}")
       # TODO: circle should be placed at the middle of a column
       # hoveredNode = d3.select(@).node().getBBox()
       # circ.attr('cx', hoveredNode.x + hoveredNode.width / 2)
@@ -137,5 +136,5 @@ Tactile.Dragger = class Dragger
       circleOnHover: true
       gravity: "right"
 
-    renderer.seriesCanvas().selectAll('.draggable-node')
+    renderer.seriesCanvas().selectAll('circle.editable')
 

@@ -10,7 +10,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
   initialize: (options = {}) ->
     super
-    @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
+    @dragger = new Dragger(renderer: @, circles: true)
     @gapSize = options.gapSize || @gapSize
     @timesRendered = 0
 

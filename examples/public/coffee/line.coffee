@@ -60,7 +60,6 @@ chart.addSeries
   color: "#6060c0"
   isEditable: (d, i) ->
     d.x == 2
-  draggable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->
     graph.data()[i].z = y
 

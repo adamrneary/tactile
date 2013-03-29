@@ -46,7 +46,7 @@ chart.addSeries [
   renderer: "area"
   dotSize: 1
   sigfigs: 0
-  draggable: true
+  isEditable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->
     graph.data()[i].y = y
 
@@ -59,7 +59,7 @@ chart.addSeries [
   renderer: "area"
   sigfigs: 1
   color: "#6060c0"
-  draggable: true
+  isEditable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->
     graph.data()[i].z = y
 
