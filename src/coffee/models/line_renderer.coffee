@@ -16,7 +16,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
 
   initialize: ->
     super
-    @dragger = new Dragger(renderer: @) if @series.draggable
+    @dragger = new Dragger(renderer: @)
     @timesRendered = 0
     if @series.dotSize?
       @dotSize = @series.dotSize
@@ -33,7 +33,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
-      .on("click", @_click)# set active element if click on it
+      .on("click", @setActive)# set active element if click on it
 
 
     @dragger?.makeHandlers(newCircs)
@@ -52,18 +52,17 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
           (if ("r" of d)
             d.r
           else
-            (if d.dragged then @dotSize + 1 else @dotSize))
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
-        ("draggable-node" if @dragger),
         ("active" if d is @active), # apply active class for active element
         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
       ].join(' '))
-      .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
-      .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
+      .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
-    circ.style("cursor", "ns-resize") if @series.draggable
+    circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()
 

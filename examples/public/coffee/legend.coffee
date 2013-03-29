@@ -56,7 +56,7 @@ chart.addSeries
   renderer: "column"
   sigfigs: 1
   color: "#6060c0"
-  draggable: true
+  isEditable: true
   afterDrag: (d, y, i, draggedSeries, graph) ->
     graph.data()[i].z = y
 

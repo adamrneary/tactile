@@ -10,7 +10,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
   initialize: (options = {}) ->
     super
-    @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
+    @dragger = new Dragger(renderer: @)
     @gapSize = options.gapSize || @gapSize
     @timesRendered = 0
 
@@ -26,10 +26,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @_click)# set active element if click on it
-
-    @dragger?.makeHandlers(nodes)
-    @dragger?.updateDraggedNode()
+      .on("click", @setActive)# set active element if click on it
 
     nodes
       .transition()
@@ -50,11 +47,60 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
           ("active" if d is @active), # apply active class for active element
           ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
+    nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
+      @seriesCanvas().selectAll('circle:not(.active)')
+        .style('display', 'none')
+      circ = @seriesCanvas().select("#node-#{i}-#{d.x}")
+      circ.style('display', '')
+
+    circ = @seriesCanvas().selectAll('circle')
+      .data(@series.stack)
+
+    newCircs = circ.enter().append("svg:circle")
+      .on("click", @setActive)# set active element if click on it
+      .style('display', 'none')
+
+    @dragger?.makeHandlers(newCircs)
+    @dragger?.updateDraggedNode()
 
 
+    circ
+      .transition()
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+      .attr("cy", (d) => @_barY(d))
+      .attr("r",
+        (d) =>
+          (if ("r" of d)
+            d.r
+          else
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+      )
+      .attr("clip-path", "url(#scatter-clip)")
+      .attr("class", (d, i) => [
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
+      ].join(' '))
+      .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
+      .attr("stroke-width", 2)
+      .attr('id', (d, i) -> "node-#{i}-#{d.x}")
+      .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
+    circ.exit().remove()
+
+    # set tooltip for circles
+    if @series.tooltip
+      circ.tooltip (d, i) =>
+        circleColor: @series.color
+        graph: @graph
+        text: @series.tooltip(d)
+        circleOnHover: true
+        tooltipCircleContainer: @graph.vis.node()
+        gravity: "right"
+
+    # set tooltip for column
     @setupTooltips()
-
 
   setupTooltips: ->
     if @series.tooltip
@@ -62,7 +108,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
         circleColor: @series.color
         graph: @graph
         text: @series.tooltip(d)
-        circleOnHover: (if @series.draggable then false else true)
+        circleOnHover: false
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 

@@ -57,7 +57,7 @@ chart.addSeries [
   name: "reach actual"
   renderer: "column"
   wide: true
-  draggable: true
+  isEditable: true
   round: true
   color: "#6020c0"
   tooltip: (d) ->
@@ -74,7 +74,7 @@ chart.addSeries [
   renderer: "line"
   # sigfigs: 0
   color: "#c05020"
-  draggable: true
+  isEditable: true
   tooltip: (d) ->
     d.y + " customers planned"
 
