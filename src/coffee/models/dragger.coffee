@@ -44,6 +44,7 @@ Tactile.Dragger = class Dragger
     # an array with all the nodes of the series
     d = if _.isArray(d) then d[i] else d
     # lock the tooltip on the dragged element
+    return unless @renderer.utils.ourFunctor(@series.isEditable, d, i)
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
     @dragged = {d: d, i: i, y: d.y}
     @update()
@@ -58,7 +59,8 @@ Tactile.Dragger = class Dragger
       if @series.tooltip
         elementRelativeposition = d3.mouse(@graph._element)
         tip = d3.select(@graph._element).select('.tooltip')
-        offsetTop = @graph.padding.top + @graph.margin.top
+        svgNode = d3.select(@graph._element).select('svg').node()
+        offsetTop = @graph.padding.top + @graph.margin.top + svgNode.offsetTop
         tip.style("top", "#{@graph.y(@dragged.y) + offsetTop}px")
 
       @renderer.transitionSpeed = 0
@@ -107,7 +109,7 @@ Tactile.Dragger = class Dragger
       .attr("class",
         (d, i) =>
           [("active" if d is renderer.active), # apply active class for active element
-          ("editable" if renderer.utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
+          ("editable" if renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(' ')) # apply editable class for editable element
       .attr("fill", (d) => (if d.dragged or d is renderer.active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is renderer.active then @series.color else 'white'))
       .attr("stroke-width", '2')

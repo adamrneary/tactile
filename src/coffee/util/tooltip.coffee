@@ -57,9 +57,10 @@ window.Tactile.Tooltip = class Tooltip
           center[0] = @options.position[0]
           center[1] = @options.position[1]
         else
+          svgNode = d3.select(@options.graph._element).select('svg').node()
           hoveredNode = @el.node().getBBox()
-          center[0] = hoveredNode.x + hoveredNode.width / 2
-          center[1] = hoveredNode.y
+          center[0] = hoveredNode.x + svgNode.offsetLeft  + hoveredNode.width / 2
+          center[1] = hoveredNode.y + svgNode.offsetTop
           if @options.graph.series[0].renderer is "donut"
             center[0] = center[0] + @options.graph.series[0].height-30
             center[1] = center[1] + @options.graph.series[0].height-30
@@ -131,6 +132,7 @@ window.Tactile.Tooltip = class Tooltip
 
   _appendTipCircle: ->
     hoveredNode = @el.node().getBBox()
+    svgNode = d3.select(@options.graph._element).select('svg').node()
 
     # if element is a circle we would overwrite it's style
     # without appending another circle for tip
@@ -149,8 +151,8 @@ window.Tactile.Tooltip = class Tooltip
     else
       d3.select(@tooltipCircleContainer)
         .append("svg:circle")
-        .attr("cx", hoveredNode.x + hoveredNode.width / 2)
-        .attr("cy", hoveredNode.y)
+        .attr("cx", hoveredNode.x + svgNode.offsetLeft + hoveredNode.width / 2)
+        .attr("cy", hoveredNode.y + svgNode.offsetTop)
         .attr("r", 4)
         .attr('class', 'tooltip-circle')
         .attr("stroke", @options.circleColor || 'orange')
