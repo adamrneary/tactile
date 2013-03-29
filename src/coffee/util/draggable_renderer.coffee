@@ -10,7 +10,7 @@ Tactile.DraggableRenderer = class DraggableRenderer extends RendererBase
 
     @utils = new Tactile.Utils()
 
-  _click: (d, i)=>
+  setActive: (d, i)=>
     return unless @utils.ourFunctor(@series.isEditable, d, i)
     @active = d
     @render()

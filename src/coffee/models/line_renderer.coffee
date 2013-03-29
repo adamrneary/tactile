@@ -33,7 +33,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
-      .on("click", @_click)# set active element if click on it
+      .on("click", @setActive)# set active element if click on it
 
 
     @dragger?.makeHandlers(newCircs)

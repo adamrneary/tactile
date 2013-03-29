@@ -26,7 +26,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @_click)# set active element if click on it
+      .on("click", @setActive)# set active element if click on it
 
     nodes
       .transition()
@@ -57,7 +57,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
-      .on("click", @_click)# set active element if click on it
+      .on("click", @setActive)# set active element if click on it
       .style('display', 'none')
 
     @dragger?.makeHandlers(newCircs)
