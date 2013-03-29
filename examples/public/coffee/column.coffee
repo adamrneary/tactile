@@ -59,7 +59,7 @@ chart.addSeries [
   sigfigs: 0
   round: false
   color: "#c05020"
-  draggable: true
+  isEditable: true
   tooltip: (d) ->
     d.y + " customers"
 
@@ -74,7 +74,8 @@ chart.addSeries [
   renderer: "column"
   round: false
   color: "#6060c0"
-  draggable: true
+  isEditable: (d, i) ->
+    d.x == 1325376000
   tooltip: (d) ->
     d.y + " planned"
 
@@ -97,3 +98,4 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
+

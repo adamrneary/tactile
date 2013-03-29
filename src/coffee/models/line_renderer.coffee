@@ -1,4 +1,4 @@
-Tactile.LineRenderer = class LineRenderer extends RendererBase
+Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
   name: "line"
 
   specificDefaults:
@@ -15,7 +15,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .tension @tension
 
   initialize: ->
-    @dragger = new Dragger(renderer: @) if @series.draggable
+    super
+    @dragger = new Dragger(renderer: @)
     @timesRendered = 0
     if @series.dotSize?
       @dotSize = @series.dotSize
@@ -32,6 +33,8 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
+      .on("click", @setActive)# set active element if click on it
+
 
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
@@ -49,18 +52,17 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
           (if ("r" of d)
             d.r
           else
-            (if d.dragged then @dotSize + 1 else @dotSize))
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class", (d) => [
-        ("draggable-node" if @dragger),
-        ("active" if d.dragged)
+      .attr("class", (d, i) => [
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
       ].join(' '))
-      .attr("fill", (d) => (if d.dragged then 'white' else @series.color))
-      .attr("stroke", (d) => (if d.dragged then @series.color else 'white'))
+      .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
-
-    circ.style("cursor", "ns-resize") if @series.draggable
+    circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()
 
@@ -73,3 +75,4 @@ Tactile.LineRenderer = class LineRenderer extends RendererBase
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+

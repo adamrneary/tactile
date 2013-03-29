@@ -1,4 +1,4 @@
-Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
+Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
   name: "column"
 
   specificDefaults:
@@ -9,12 +9,12 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
 
 
   initialize: (options = {}) ->
-    @dragger = new Dragger(renderer: @, circles: true) if @series.draggable
+    super
+    @dragger = new Dragger(renderer: @)
     @gapSize = options.gapSize || @gapSize
-
     @timesRendered = 0
 
-  render: ->
+  render: =>
     if (@series.disabled)
       @timesRendered = 0
       @dragger.timesRendered = 0
@@ -26,9 +26,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-
-    @dragger?.makeHandlers(nodes)
-    @dragger?.updateDraggedNode()
+      .on("click", @setActive)# set active element if click on it
 
     nodes
       .transition()
@@ -43,12 +41,66 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       .attr("class",
-        (d) =>
-          ["bar", ("colorless" unless @series.color)].join(' ')
-      )
-    
-    @setupTooltips()
+        (d, i) =>
+          ["bar",
+          ("colorless" unless @series.color),
+          ("active" if d is @active), # apply active class for active element
+          ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
+    nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
+      @seriesCanvas().selectAll('circle:not(.active)')
+        .style('display', 'none')
+      circ = @seriesCanvas().select("#node-#{i}-#{d.x}")
+      circ.style('display', '')
+
+    circ = @seriesCanvas().selectAll('circle')
+      .data(@series.stack)
+
+    newCircs = circ.enter().append("svg:circle")
+      .on("click", @setActive)# set active element if click on it
+      .style('display', 'none')
+
+    @dragger?.makeHandlers(newCircs)
+    @dragger?.updateDraggedNode()
+
+
+    circ
+      .transition()
+      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+      .attr("cy", (d) => @_barY(d))
+      .attr("r",
+        (d) =>
+          (if ("r" of d)
+            d.r
+          else
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+      )
+      .attr("clip-path", "url(#scatter-clip)")
+      .attr("class", (d, i) => [
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
+      ].join(' '))
+      .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
+      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
+      .attr("stroke-width", 2)
+      .attr('id', (d, i) -> "node-#{i}-#{d.x}")
+      .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
+
+    circ.exit().remove()
+
+    # set tooltip for circles
+    if @series.tooltip
+      circ.tooltip (d, i) =>
+        circleColor: @series.color
+        graph: @graph
+        text: @series.tooltip(d)
+        circleOnHover: true
+        tooltipCircleContainer: @graph.vis.node()
+        gravity: "right"
+
+    # set tooltip for column
+    @setupTooltips()
 
   setupTooltips: ->
     if @series.tooltip
@@ -56,7 +108,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
         circleColor: @series.color
         graph: @graph
         text: @series.tooltip(d)
-        circleOnHover: (if @series.draggable then false else true)
+        circleOnHover: false
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
@@ -135,7 +187,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
       width = stackWidth / (1 + @gapSize)
     else
       width = @graph.width() / (1 + @gapSize)
-      
+
     if @unstack
       width = width / @graph.series.filter(
         (d) =>
@@ -182,3 +234,4 @@ Tactile.ColumnRenderer = class ColumnRenderer extends RendererBase
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
+

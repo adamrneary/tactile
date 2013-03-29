@@ -6,7 +6,7 @@ Tactile.RendererBase = class RendererBase
     unstack: true
     dotSize: 5
     opacity: 1
-    
+
     stroke: false
     fill: false
 
@@ -39,15 +39,15 @@ Tactile.RendererBase = class RendererBase
           values.push d.y
         else
           values.push d.y + d.y0
-          
+
     xMin = stackedData[0][0].x
     xMax = stackedData[0][stackedData[0].length - 1].x
     yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
     yMax = @graph.max or d3.max(values)
-    
+
     { x: [xMin, xMax], y: [yMin, yMax] }
-    
-    
+
+
   render: =>
     if (@series.disabled)
       @timesRendered = 0
@@ -58,7 +58,7 @@ Tactile.RendererBase = class RendererBase
     # drawing line by default
     line = @seriesCanvas().selectAll("path")
       .data([@series.stack])
-      
+
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")
       .attr("fill", (if @fill then @series.color else "none"))
@@ -86,9 +86,9 @@ Tactile.RendererBase = class RendererBase
       .append("g")
       .attr('id', @_nameToId())
       .attr('class', @name)
-      
+
     @_seriesCanvas
-    
+
   configure: (options) ->
     # merge base defaults with particular renderer's
     defaults = _.extend {}, @defaults, @specificDefaults if @specificDefaults?
@@ -99,3 +99,4 @@ Tactile.RendererBase = class RendererBase
   _nameToId: ->
     #TODO: handle empty name
     @series.name?.replace(/\s+/g, '-').toLowerCase()
+
