@@ -115,7 +115,7 @@
   render: -&gt;
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@timesRendered</span> = <span class="number">0</span>
-      <span class="property">@dragger</span>.timesRendered = <span class="number">0</span>
+      <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack).remove()
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>).data(<span class="property">@series</span>.stack).remove()
       <span class="keyword">return</span>
@@ -177,12 +177,14 @@
 
     <span class="function"><span class="title">slideTransition</span></span> = =&gt;
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>)
+        .filter((d) -&gt; d.y &gt; <span class="number">0</span>) <span class="comment"># don't waste time for 0 value nodes</span>
         .transition()
         .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
         .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>())
         .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>)
+      .filter((d) -&gt; d.y &gt; <span class="number">0</span>) <span class="comment"># don't waste time for 0 value nodes</span>
       .transition()
       .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
       .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
@@ -200,12 +202,14 @@
 
     <span class="function"><span class="title">growTransition</span></span> = =&gt;
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>)
+        .filter((d) -&gt; d.y &gt; <span class="number">0</span>) <span class="comment"># don't waste time for 0 value nodes</span>
         .transition()
         .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
         .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))
         .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>)
+      .filter((d) -&gt; d.y &gt; <span class="number">0</span>) <span class="comment"># don't waste time for 0 value nodes</span>
       .transition()
       .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
       .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)

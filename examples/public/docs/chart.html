@@ -673,9 +673,10 @@ done by following this example: <a href="http://bl.ocks.org/3019563">http://bl.o
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="property">@_findOrAppend</span>(what: <span class="string">'clipPath'</span>, selector: <span class="string">'#clip'</span>, <span class="keyword">in</span>: <span class="property">@vis</span>)
+            <div class="content"><div class="highlight"><pre>clip = <span class="property">@_findOrAppend</span>(what: <span class="string">'clipPath'</span>, selector: <span class="string">'#clip'</span>, <span class="keyword">in</span>: <span class="property">@vis</span>)
       .attr(<span class="string">"id"</span>, <span class="string">"clip"</span>)
-      .append(<span class="string">"rect"</span>)
+
+    <span class="property">@_findOrAppend</span>(what: <span class="string">'rect'</span>, <span class="keyword">in</span>: clip)
       .attr(<span class="string">"width"</span>, <span class="property">@width</span>())</pre></div></div>
             
         </li>
@@ -721,9 +722,10 @@ done by following this example: <a href="http://bl.ocks.org/3019563">http://bl.o
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="property">@_findOrAppend</span>(what: <span class="string">'clipPath'</span>, selector: <span class="string">'#scatter-clip'</span>, <span class="keyword">in</span>: <span class="property">@vis</span>)
+            <div class="content"><div class="highlight"><pre>scatterClip = <span class="property">@_findOrAppend</span>(what: <span class="string">'clipPath'</span>, selector: <span class="string">'#scatter-clip'</span>, <span class="keyword">in</span>: <span class="property">@vis</span>)
       .attr(<span class="string">"id"</span>, <span class="string">"scatter-clip"</span>)
-      .append(<span class="string">"rect"</span>)</pre></div></div>
+
+    <span class="property">@_findOrAppend</span>(what: <span class="string">'rect'</span>, <span class="keyword">in</span>: scatterClip)</pre></div></div>
             
         </li>
         

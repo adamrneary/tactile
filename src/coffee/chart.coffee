@@ -303,9 +303,10 @@ Tactile.Chart = class Chart
       .attr("class", "inner-canvas")
 
     # Add the default clip path.
-    @_findOrAppend(what: 'clipPath', selector: '#clip', in: @vis)
+    clip = @_findOrAppend(what: 'clipPath', selector: '#clip', in: @vis)
       .attr("id", "clip")
-      .append("rect")
+
+    @_findOrAppend(what: 'rect', in: clip)
       .attr("width", @width())
     # increase height to provide room vertically for line thickness
       .attr("height", @height() + 4)
@@ -313,9 +314,10 @@ Tactile.Chart = class Chart
       .attr("transform", "translate(0,-2)")
 
     # Add the clip path.
-    @_findOrAppend(what: 'clipPath', selector: '#scatter-clip', in: @vis)
+    scatterClip = @_findOrAppend(what: 'clipPath', selector: '#scatter-clip', in: @vis)
       .attr("id", "scatter-clip")
-      .append("rect")
+
+    @_findOrAppend(what: 'rect', in: scatterClip)
     # increase width to provide room vertically for circle radius
       .attr("width", @width() + 12)
     # increase height to provide room vertically for circle radius

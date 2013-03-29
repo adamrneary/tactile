@@ -17,7 +17,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
   render: =>
     if (@series.disabled)
       @timesRendered = 0
-      @dragger.timesRendered = 0
+      @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
       @seriesCanvas().selectAll('circle').data(@series.stack).remove()
       return
@@ -131,12 +131,14 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
     slideTransition = =>
       @seriesCanvas().selectAll("rect")
+        .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
         .transition()
         .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
         .attr("width", @_seriesBarWidth())
         .attr("x", @_barX)
 
     @seriesCanvas().selectAll("rect")
+      .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
       .transition()
       .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
       .attr("y", @_barY)
@@ -154,12 +156,14 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
     growTransition = =>
       @seriesCanvas().selectAll("rect")
+        .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
         .transition()
         .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
         .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
         .attr("y", @_barY)
 
     @seriesCanvas().selectAll("rect")
+      .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
       .transition()
       .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
       .attr("x", @_barX)
