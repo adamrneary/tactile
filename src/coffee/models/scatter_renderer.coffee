@@ -34,8 +34,7 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
         text: @series.tooltip(d)
         mousemove: true
         gravity: "right"
-        displacement: [5, d.r - 5]
-
+        displacement: [-10, 0]# because tooltip have left margin 10
     circ.exit().remove()
 
     
