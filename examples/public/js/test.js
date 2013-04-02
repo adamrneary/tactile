@@ -296,6 +296,10 @@ describe('Chart', function() {
       window = browser.window;
       $ = window.$;
       _ = window._;
+      global.browser = browser;
+      global.window = window;
+      global.d3 = browser.window.d3;
+      global._ = window._;
       return done();
     });
   });

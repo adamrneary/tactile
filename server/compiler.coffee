@@ -1,6 +1,5 @@
 fs = require 'fs'
 child_process = require 'child_process'
-sass = require 'node-sass'
 
 coffeePath = "#{__dirname}/../node_modules/coffee-script/bin/coffee"
 
@@ -13,8 +12,10 @@ module.exports.compile = (cb) ->
             compileLess ->
               cb()
           when 'scss'
-            # compileScss ->
-            cb()
+            if process.env.NODE_ENV is 'development'
+              compileScss(cb)
+            else
+              cb()
 
 compileCoffeeTests = (cb) ->
   testDest = "#{__dirname}/../examples/public/js/test.js"
@@ -73,6 +74,7 @@ compileCoffeeExamples = (cb) ->
       cb()
 
 compileScss = (cb) ->
+  sass = require 'node-sass'
   fs.readFile "#{__dirname}/../src/scss/tactile.scss", (err, scssFile) ->
     sass.render scssFile.toString(), (err, css) ->
       if err
@@ -92,6 +94,7 @@ compileLess = (cb) ->
       cb()
 
 compileExamplesScss = (cb)->
+  sass = require 'node-sass'
   fs.readFile "#{__dirname}/../examples/src/scss/examples.scss",
     (err, scssFile)->
       sass.render scssFile.toString(), (err, css)->
