@@ -117,7 +117,7 @@ and sliderClass if you wish to call
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.RangeSlider = <span class="class"><span class="keyword">class</span> <span class="title">RangeSlider</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.RangeSlider = <span class="class"><span class="keyword">class</span> <span class="title">RangeSlider</span></span>
   constructor: (options) -&gt;
     <span class="property">@element</span> = options.element
     <span class="property">@graph</span> = options.graph
@@ -139,7 +139,7 @@ and sliderClass if you wish to call
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>$ =&gt;
+            <div class="content"><div class='highlight'><pre>    $ =&gt;
       values = options.values || [
         <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>], <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>]
       ]
@@ -172,7 +172,7 @@ and sliderClass if you wish to call
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>] <span class="keyword">is</span> ui.values[<span class="number">0</span>]
+            <div class="content"><div class='highlight'><pre>          <span class="keyword">if</span> <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>] <span class="keyword">is</span> ui.values[<span class="number">0</span>]
             <span class="property">@graph</span>.window.xMin = <span class="literal">undefined</span>
           <span class="keyword">if</span> <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>] <span class="keyword">is</span> ui.values[<span class="number">1</span>]
             <span class="property">@graph</span>.window.xMax = <span class="literal">undefined</span>

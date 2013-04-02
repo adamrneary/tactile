@@ -96,7 +96,7 @@
               
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.ScatterRenderer = <span class="class"><span class="keyword">class</span> <span class="title">ScatterRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.ScatterRenderer = <span class="class"><span class="keyword">class</span> <span class="title">ScatterRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
   name: <span class="string">"scatter"</span>
   
   specificDefaults:
@@ -120,7 +120,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>circ.enter()
+            <div class="content"><div class='highlight'><pre>    circ.enter()
       .append(<span class="string">"svg:circle"</span>)
         .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)
         .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@graph</span>.y d.y)
@@ -144,8 +144,7 @@
         text: <span class="property">@series</span>.tooltip(d)
         mousemove: <span class="literal">true</span>
         gravity: <span class="string">"right"</span>
-        displacement: [<span class="number">5</span>, d.r - <span class="number">5</span>]
-
+        displacement: [-<span class="number">10</span>, <span class="number">0</span>]<span class="comment"># because tooltip have left margin 10</span>
     circ.exit().remove()</pre></div></div>
             
         </li>

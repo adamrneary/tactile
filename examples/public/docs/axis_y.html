@@ -96,7 +96,7 @@
               
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.AxisY = <span class="class"><span class="keyword">class</span> <span class="title">AxisY</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.AxisY = <span class="class"><span class="keyword">class</span> <span class="title">AxisY</span></span>
   constructor: (options) -&gt;
     <span class="property">@options</span> = options
     <span class="property">@graph</span> = options.graph
@@ -137,7 +137,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@grid</span>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> <span class="property">@grid</span>
       gridSize = ((<span class="keyword">if</span> <span class="property">@orientation</span> <span class="keyword">is</span> <span class="string">"right"</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> -<span class="number">1</span>)) * <span class="property">@graph</span>.width()
       grid = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.y-grid'</span>).data([<span class="number">0</span>])
       grid.enter().append(<span class="string">"svg:g"</span>).attr(<span class="string">"class"</span>, <span class="string">"y-grid"</span>)

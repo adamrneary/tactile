@@ -96,7 +96,7 @@
               
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.GaugeRenderer = <span class="class"><span class="keyword">class</span> <span class="title">GaugeRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.GaugeRenderer = <span class="class"><span class="keyword">class</span> <span class="title">GaugeRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
   name: <span class="string">"gauge"</span>
 
   specificDefaults:
@@ -135,7 +135,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>outerArc = d3.svg.arc()
+            <div class="content"><div class='highlight'><pre>    outerArc = d3.svg.arc()
       .outerRadius(r * ringWidth)
       .innerRadius(r * ringInset)
       .startAngle( <span class="property">@graph</span>._deg2rad(minAngle) )
@@ -158,7 +158,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>arcs.selectAll(<span class="string">"path"</span>)
+            <div class="content"><div class='highlight'><pre>    arcs.selectAll(<span class="string">"path"</span>)
     .data([<span class="number">1</span>])
     .enter()
     .append(<span class="string">"path"</span>)
@@ -177,7 +177,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>plotAngle = minAngle + (scale(plotValue) * angleRange)
+            <div class="content"><div class='highlight'><pre>    plotAngle = minAngle + (scale(plotValue) * angleRange)
     innerArc = d3.svg.arc()
       .outerRadius( r * ringWidth )
       .innerRadius( r * ringInset )
@@ -208,7 +208,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>lineData = [
+            <div class="content"><div class='highlight'><pre>    lineData = [
       [ (r * pointerWidth / <span class="number">2</span>) , <span class="number">0</span>                        ]
       [ <span class="number">0</span>                      , -(r * pointerHeadLength) ]
       [ -(r * pointerWidth / <span class="number">2</span>), <span class="number">0</span>                        ]
@@ -248,7 +248,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="property">@graph</span>.vis.append(<span class="string">"svg:circle"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@graph</span>.vis.append(<span class="string">"svg:circle"</span>)
       .attr(<span class="string">"r"</span>, <span class="property">@graph</span>.width() / <span class="number">90</span>)
       .attr(<span class="string">'class'</span>, <span class="string">'gauge pointer-nail'</span>)
       .style(<span class="string">"opacity"</span>, <span class="number">1</span>)

@@ -96,7 +96,7 @@
               
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.AreaRenderer = <span class="class"><span class="keyword">class</span> <span class="title">AreaRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.AreaRenderer = <span class="class"><span class="keyword">class</span> <span class="title">AreaRenderer</span> <span class="keyword">extends</span> <span class="title">DraggableRenderer</span></span>
   name: <span class="string">"area"</span>
   dotSize: <span class="number">5</span>
   
@@ -109,7 +109,8 @@
   _y0: (d) =&gt; <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> d.y0
 
   initialize: -&gt;
-    <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @) <span class="keyword">if</span> <span class="property">@series</span>.draggable
+    <span class="keyword">super</span>
+    <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @)
     <span class="property">@timesRendered</span> = <span class="number">0</span>
     <span class="keyword">if</span> <span class="property">@series</span>.dotSize?
       <span class="property">@dotSize</span> = <span class="property">@series</span>.dotSize
@@ -154,6 +155,7 @@
       .data(<span class="property">@series</span>.stack)
 
     newCircs = circ.enter().append(<span class="string">"svg:circle"</span>)
+      .<span class="literal">on</span>(<span class="string">"click"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
 
     <span class="property">@dragger</span>?.makeHandlers(newCircs)
     <span class="property">@dragger</span>?.updateDraggedNode(circ)</pre></div></div>
@@ -171,7 +173,7 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>circ
+            <div class="content"><div class='highlight'><pre>    circ
       .transition()
       .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
       .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)
@@ -180,20 +182,20 @@
         (d) =&gt;
           (
             <span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d) <span class="keyword">then</span> d.r
-            <span class="keyword">else</span> (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
+            <span class="keyword">else</span> (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
           )
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
       .attr(<span class="string">"class"</span>,
-        (d) =&gt;
+        (d, i) =&gt;
           [
-            (<span class="string">"draggable-node"</span> <span class="keyword">if</span> <span class="property">@series</span>.draggable),
-            (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="string">"active"</span> <span class="keyword">else</span> <span class="literal">null</span>)
+            (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
+            (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))<span class="comment"># apply editable class for editable element</span>
           ].join(<span class="string">' '</span>))
-      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
-      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
+      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
+      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
       .attr(<span class="string">"stroke-width"</span>, <span class="property">@dotSize</span> / <span class="number">2</span> || <span class="number">2</span>)
 
-    circ.style(<span class="string">"cursor"</span>, <span class="string">"ns-resize"</span>) <span class="keyword">if</span> <span class="property">@series</span>.draggable
+    circ.style(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)
 
     circ.exit().remove()</pre></div></div>
             

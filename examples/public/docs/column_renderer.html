@@ -96,7 +96,7 @@
               
             </div>
             
-            <div class="content"><div class="highlight"><pre>Tactile.ColumnRenderer = <span class="class"><span class="keyword">class</span> <span class="title">ColumnRenderer</span> <span class="keyword">extends</span> <span class="title">RendererBase</span></span>
+            <div class="content"><div class='highlight'><pre>Tactile.ColumnRenderer = <span class="class"><span class="keyword">class</span> <span class="title">ColumnRenderer</span> <span class="keyword">extends</span> <span class="title">DraggableRenderer</span></span>
   name: <span class="string">"column"</span>
 
   specificDefaults:
@@ -107,12 +107,12 @@
 
 
   initialize: (options = {}) -&gt;
-    <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @, circles: <span class="literal">true</span>) <span class="keyword">if</span> <span class="property">@series</span>.draggable
+    <span class="keyword">super</span>
+    <span class="property">@dragger</span> = <span class="keyword">new</span> Dragger(renderer: @)
     <span class="property">@gapSize</span> = options.gapSize || <span class="property">@gapSize</span>
-
     <span class="property">@timesRendered</span> = <span class="number">0</span>
 
-  render: -&gt;
+  render: =&gt;
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@timesRendered</span> = <span class="number">0</span>
       <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
@@ -124,9 +124,7 @@
     nodes.enter()
       .append(<span class="string">"svg:rect"</span>)
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
-
-    <span class="property">@dragger</span>?.makeHandlers(nodes)
-    <span class="property">@dragger</span>?.updateDraggedNode()
+      .<span class="literal">on</span>(<span class="string">"click"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
 
     nodes
       .transition()
@@ -141,12 +139,90 @@
       .attr(<span class="string">"rx"</span>, <span class="property">@_edgeRatio</span>)
       .attr(<span class="string">"ry"</span>, <span class="property">@_edgeRatio</span>)
       .attr(<span class="string">"class"</span>,
-        (d) =&gt;
-          [<span class="string">"bar"</span>, (<span class="string">"colorless"</span> <span class="keyword">unless</span> <span class="property">@series</span>.color)].join(<span class="string">' '</span>)
-      )
-    
-    <span class="property">@setupTooltips</span>()
+        (d, i) =&gt;
+          [<span class="string">"bar"</span>,
+          (<span class="string">"colorless"</span> <span class="keyword">unless</span> <span class="property">@series</span>.color),
+          (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
+          (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))].join(<span class="string">' '</span>)) <span class="comment"># apply editable class for editable element</span>
 
+    nodes.<span class="literal">on</span> <span class="string">'mouseover.show-dragging-circle'</span>, (d, i, el) =&gt;
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle:not(.active)'</span>)
+        .style(<span class="string">'display'</span>, <span class="string">'none'</span>)
+      circ = <span class="property">@seriesCanvas</span>().select(<span class="string">"#node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)
+      circ.style(<span class="string">'display'</span>, <span class="string">''</span>)
+
+    circ = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>)
+      .data(<span class="property">@series</span>.stack)
+
+    newCircs = circ.enter().append(<span class="string">"svg:circle"</span>)
+      .<span class="literal">on</span>(<span class="string">"click"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
+      .style(<span class="string">'display'</span>, <span class="string">'none'</span>)
+
+    <span class="property">@dragger</span>?.makeHandlers(newCircs)
+    <span class="property">@dragger</span>?.updateDraggedNode()
+
+
+    circ
+      .transition()
+      .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@transitionSpeed</span>)
+      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / <span class="number">2</span>)
+      .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@_barY</span>(d))
+      .attr(<span class="string">"r"</span>,
+        (d) =&gt;
+          (<span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d)
+            d.r
+          <span class="keyword">else</span>
+            (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
+      )
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
+      .attr(<span class="string">"class"</span>, (d, i) =&gt; [
+        (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
+        (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))<span class="comment"># apply editable class for editable element</span>
+      ].join(<span class="string">' '</span>))
+      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
+      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
+      .attr(<span class="string">"stroke-width"</span>, <span class="number">2</span>)
+      .attr(<span class="string">'id'</span>, (d, i) -&gt; <span class="string">"node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)
+      .style(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)
+
+    circ.exit().remove()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>set tooltip for circles</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+      circ.tooltip (d, i) =&gt;
+        circleColor: <span class="property">@series</span>.color
+        graph: <span class="property">@graph</span>
+        text: <span class="property">@series</span>.tooltip(d)
+        circleOnHover: <span class="literal">true</span>
+        tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
+        gravity: <span class="string">"right"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>set tooltip for column</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="property">@setupTooltips</span>()
 
   setupTooltips: -&gt;
     <span class="keyword">if</span> <span class="property">@series</span>.tooltip
@@ -154,7 +230,7 @@
         circleColor: <span class="property">@series</span>.color
         graph: <span class="property">@graph</span>
         text: <span class="property">@series</span>.tooltip(d)
-        circleOnHover: (<span class="keyword">if</span> <span class="property">@series</span>.draggable <span class="keyword">then</span> <span class="literal">false</span> <span class="keyword">else</span> <span class="literal">true</span>)
+        circleOnHover: <span class="literal">false</span>
         tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
         gravity: <span class="string">"right"</span>
 
@@ -226,17 +302,17 @@
         </li>
         
         
-        <li id="section-2">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>A matrix transform for handling negative values</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>matrix = [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, ((<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> -<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>)),
+            <div class="content"><div class='highlight'><pre>    matrix = [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, ((<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> -<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>)),
       <span class="number">0</span>, ((<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude(Math.abs(d.y)) * <span class="number">2</span> <span class="keyword">else</span> <span class="number">0</span>))
     ]
     <span class="string">"matrix("</span> + matrix.join(<span class="string">","</span>) + <span class="string">")"</span>
@@ -250,7 +326,7 @@
       width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
     <span class="keyword">else</span>
       width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
-      
+
     <span class="keyword">if</span> <span class="property">@unstack</span>
       width = width / <span class="property">@graph</span>.series.filter(
         (d) =&gt;
@@ -261,18 +337,18 @@
         </li>
         
         
-        <li id="section-3">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>when we have couple of series we want
 them all to be center-aligned around the x-value</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>_barXOffset: (seriesBarWidth) -&gt;
+            <div class="content"><div class='highlight'><pre>  _barXOffset: (seriesBarWidth) -&gt;
     count = <span class="property">@graph</span>.renderersByType(<span class="property">@name</span>).length
 
     <span class="keyword">if</span> count == <span class="number">1</span> || !<span class="property">@unstack</span>
@@ -286,17 +362,17 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-4">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>center the bar around the value it represents</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>seriesBarWidth = <span class="property">@_seriesBarWidth</span>()
+            <div class="content"><div class='highlight'><pre>    seriesBarWidth = <span class="property">@_seriesBarWidth</span>()
     initialX = x + <span class="property">@_barXOffset</span>(seriesBarWidth)
 
     <span class="keyword">if</span> <span class="property">@unstack</span>
@@ -309,17 +385,17 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>if we want to display stacked bars y should be added y0 value</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="keyword">if</span> <span class="property">@unstack</span>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> <span class="property">@unstack</span>
       <span class="property">@graph</span>.y(Math.abs(d.y)) * (<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> -<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>)
     <span class="keyword">else</span>
       <span class="property">@graph</span>.y(d.y0 + Math.abs(d.y)) * (<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> -<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>)</pre></div></div>
@@ -327,11 +403,11 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Returns the index of this column renderer
 For example: if this is the third renderer of
@@ -341,7 +417,7 @@ on what is the number of the currently rendered bars</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>_columnRendererIndex: -&gt;
+            <div class="content"><div class='highlight'><pre>  _columnRendererIndex: -&gt;
     <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> <span class="property">@rendererIndex</span> == <span class="number">0</span> || <span class="property">@rendererIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>
     renderers = <span class="property">@graph</span>.renderers.slice(<span class="number">0</span>, <span class="property">@rendererIndex</span>)
     _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length</pre></div></div>
