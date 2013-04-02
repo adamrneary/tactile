@@ -9,9 +9,8 @@ app.get '/pid', (req,res)->
   else
     res.send 401
 
-app.get '/', (req,res)->
-  res.render 'index'
-    page: 'index'
+app.get '/', (req,res) ->
+  res.render 'index', page: 'index'
 
 app.get '/documentation', (req,res)->
   docs = {}
@@ -24,7 +23,7 @@ app.get '/documentation', (req,res)->
       container = jsReg.exec(htmlBody)
       docs[docFile] = container[1]
 
-  res.render 'documentation'
+  res.render 'documentation',
     docs: docs
     page: 'documentation'
 
@@ -34,7 +33,7 @@ app.get '/coverage', (req,res)->
   htmlBody = modules.fs.readFileSync coverPath, 'utf-8'
   if htmlBody.length > 0
     cover = htmlBody.substr(htmlBody.indexOf("<body>")+6, htmlBody.length - 14)
-  res.render 'coverage'
+  res.render 'coverage',
     cover: cover
     page: 'coverage'
 
@@ -72,7 +71,7 @@ app.get '/test', (req,res)->
   #try
     #lint = glob.modules.fs.readFileSync __dirname+'/../test/reports/lint.txt'
 
-  res.render 'test'
+  res.render 'test',
     errors: errors
     page: 'mocha'
 
@@ -81,7 +80,7 @@ app.get '/styleguide', (req,res)->
     markdown: false
   modules.kss.traverse "#{__dirname}/../src/", options, (err, styleguide)->
     glob.getSections styleguide.section(), (sections)->
-      res.render 'styleguide'
+      res.render 'styleguide',
         sections: sections
         page: 'styleguide'
 
