@@ -109,6 +109,19 @@ describe 'Chart', ->
     done()
     # assert _chart.addSeries
 
+  it "Chart: check overwriting series", ->
+    series =
+      name: "reach actual"
+      renderer: "column"
+
+    _chart = new window.Tactile.Chart()
+    _chart.addSeries([series, series])
+
+    _chart.addSeries _.extend(series, {renderer: 'column'}), overwrite: true
+    assert _chart.series.length is 1
+    assert _chart.renderers.length is 1
+    assert _chart.renderers[0].name is 'column'
+
   it 'Chart: initSeriesStackData', (done) ->
     _chart = new window.Tactile.Chart()
       .data(data)
