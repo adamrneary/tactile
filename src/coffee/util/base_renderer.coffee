@@ -48,15 +48,15 @@ Tactile.RendererBase = class RendererBase
     { x: [xMin, xMax], y: [yMin, yMax] }
 
 
-  render: =>
+  render: (transition)=>
+    @transition = transition if transition
     if (@series.disabled)
-      @timesRendered = 0
-      line = @seriesCanvas().selectAll("path")
+      line = @seriesCanvas().selectAll("path.line")
       .data([@series.stack])
       .remove()
       return
     # drawing line by default
-    line = @seriesCanvas().selectAll("path")
+    line = @seriesCanvas().selectAll("path.baseline")
       .data([@series.stack])
 
     line.enter().append("svg:path")
@@ -65,11 +65,11 @@ Tactile.RendererBase = class RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
-      .attr("class", "#{@series.className or ''}
- #{if @series.color then '' else 'colorless'}")
+      .attr("class", "baseline #{@series.className or ''}
+       #{if @series.color then '' else 'colorless'}")
 
-    line.transition().duration(@transitionSpeed).attr("d", @seriesPathFactory())
-
+    @transition.selectAll("##{@_nameToId()} path.baseline")
+      .attr("d", @seriesPathFactory())
 
   # Creates separate g element for each series.
   # This gives us better control over each paths/rets/circles
