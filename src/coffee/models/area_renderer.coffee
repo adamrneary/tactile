@@ -13,7 +13,6 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
   initialize: ->
     super
     @dragger = new Dragger(renderer: @)
-    @timesRendered = 0
     if @series.dotSize?
       @dotSize = @series.dotSize
 
@@ -32,11 +31,11 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     .interpolate(@graph.interpolation)
     .tension @tension
 
-  render: ->
-    super()
+  render: (transition)->
+    @transition = transition if transition
+    super(@transition)
     if (@series.disabled)
-      @timesRendered = 0
-      @seriesCanvas().selectAll("path").remove()
+      @seriesCanvas().selectAll("path.stroke").remove()
       @seriesCanvas().selectAll('circle').remove()
       return
 
@@ -45,12 +44,12 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     stroke.enter()
       .append("svg:path")
       .attr("clip-path","url(#clip)")
+      .attr('class', 'stroke')
       .attr('fill', 'none')
       .attr("stroke-width", '2')
       .attr("stroke", @series.color)
-      .attr('class', 'stroke')
 
-    stroke.transition().duration(@transitionSpeed)
+    @transition.selectAll("##{@_nameToId()} path.stroke")
       .attr("d", @seriesStrokeFactory())
 
     circ = @seriesCanvas().selectAll('circle')
@@ -63,28 +62,24 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     @dragger?.updateDraggedNode(circ)
 
     #TODO: this block of code is the same in few places
-    circ
-      .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
-      .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
+    @transition.selectAll("##{@_nameToId()} circle")
       .attr("r",
         (d) =>
-          (
-            if ("r" of d) then d.r
-            else (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
-          )
+          (if ("r" of d)
+            d.r
+          else
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+        )
+      .attr("cx", (d) => @graph.x d.x)
+      .attr("cy", (d) => @graph.y d.y)
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class",
-        (d, i) =>
-          [
-            ("active" if d is @active), # apply active class for active element
-            ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
-          ].join(' '))
+      .attr("class", (d, i) => [
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
+      ].join(' '))
       .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
-
     circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()

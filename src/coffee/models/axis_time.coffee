@@ -7,8 +7,6 @@ Tactile.AxisTime = class AxisTime
     @marginTop = args.paddingBottom or 5
     @time = new FixturesTime()
     @grid = args.grid
-    @graph.onUpdate =>
-      @render()
 
   appropriateTimeUnit: ->
     unit = undefined
@@ -38,7 +36,7 @@ Tactile.AxisTime = class AxisTime
       i++
     offsets
 
-  render: ->
+  render: (transition)->
     return unless @graph.x?
     g = @graph.vis.selectAll('.x-ticks').data([0])
     g.enter().append('g').attr('class', 'x-ticks')

@@ -4,7 +4,8 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
   specificDefaults:
     cartesian: false
     
-  render: ->
+  render: (transition)->
+    @transition = transition if transition
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
     ringInset = 0.300
     ringWidth = 0.750
@@ -82,10 +83,9 @@ Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
       
       
     pointer = pg.append("path").attr("d", pointerLine)
-    pointer.transition()
-      .duration(250)
+    @transition.selectAll(".gauge.pointer path")
       .attr("transform", "rotate(#{plotAngle})")
-      
+
     @graph.vis.append("svg:circle")
       .attr("r", @graph.width() / 30)
       .attr("class", "gauge pointer-circle")

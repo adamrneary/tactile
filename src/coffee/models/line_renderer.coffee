@@ -17,13 +17,13 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
   initialize: ->
     super
     @dragger = new Dragger(renderer: @)
-    @timesRendered = 0
     if @series.dotSize?
       @dotSize = @series.dotSize
 
 
-  render: =>
-    super()
+  render: (transition)=>
+    @transition = transition if transition
+    super(@transition)
     if (@series.disabled)
       @seriesCanvas().selectAll('circle')
         .data(@series.stack)
@@ -39,20 +39,15 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
 
-
-
-
-    circ
-      .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+    @transition.selectAll("##{@_nameToId()} circle")
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r",
-        (d) =>
-          (if ("r" of d)
-            d.r
-          else
-            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+      (d) =>
+        (if ("r" of d)
+          d.r
+        else
+          (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
@@ -62,7 +57,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
       .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
-    circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
+      .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()
 
@@ -75,4 +70,3 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
-

@@ -9,15 +9,19 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     @arc = d3.svg.arc().innerRadius(60).outerRadius(@series.height)
   # DonutRenderer::_total = ->
 
-  render: ->
+  render: (transition)->
+    @transition = transition if transition
     donut = undefined
     donut = @seriesCanvas().selectAll(".arc")
       .data(@donut).enter().append("path")
+
+    @transition.selectAll("##{@_nameToId()} path")
       .attr("class", "donut-arc")
       .attr("transform", "translate(#{@series.height - 30},#{@series.height - 30})")
       .attr("d", @arc)
       .attr("stroke", "white")
       .style("fill", ((d)-> d.data.color), "stroke")
+
     @setupTooltips()
 
   setupTooltips: ->

@@ -15,7 +15,7 @@ Tactile.Chart = class Chart
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 200
+  transitionSpeed: 750
   defaultHeight: 400
   defaultWidth: 730
   defaultAxes:
@@ -29,10 +29,12 @@ Tactile.Chart = class Chart
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @renderers = []
+    @axesList = []
     @series = []
     @window = {}
     @updateCallbacks = []
     @_axes = {}
+    @timesRendered = 0
 
     # chart size is handled with its own method
     @setSize
@@ -105,20 +107,26 @@ Tactile.Chart = class Chart
     
     @dataInitialized = true
 
-  render: ->
+  render: (transitionSpeed)->
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
       return
     @initSeriesStackData()
     @_setupCanvas()
     stackedData = @stackData()
 
+    transitionSpeed = @transitionSpeed unless transitionSpeed
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
-      renderer.render()
+      renderer.render(t)
+
+    _.each  @axesList, (axis) =>
+      axis.render(t)
 
     @updateCallbacks.forEach (callback) ->
       callback()
+    @timesRendered++
 
   update: ->
     @render()
@@ -158,9 +166,9 @@ Tactile.Chart = class Chart
     return unless @_allRenderersCartesian()
     switch axis.dimension
       when "linear"
-        new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
+        @axesList.push new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
       when "time"
-        new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
+        @axesList.push new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
       else
         console.log("ERROR:#{axis.dimension} is not currently implemented")
 

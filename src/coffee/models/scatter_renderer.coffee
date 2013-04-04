@@ -5,26 +5,23 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
     fill: true
     stroke: false
 
-  render: ->
+  render: (transition)->
+    @transition = transition if transition
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
     
-    #TODO: this block of code is the same in few places
     circ.enter()
       .append("svg:circle")
-        .attr("cx", (d) => @graph.x d.x)
-        .attr("cy", (d) => @graph.y d.y)
-      
-    circ.transition()
-      .duration(@transitionSpeed)
+
+    @transition.selectAll("##{@_nameToId()} circle")
+      .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
       .attr("fill", @series.color)
       .attr("stroke", 'white')
       .attr("stroke-width", '2')
-      
-      
+
     if @series.cssConditions
       circ.attr('class', (d) => @series.cssConditions(d))
     
@@ -37,5 +34,4 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
         displacement: [-10, 0]# because tooltip have left margin 10
     circ.exit().remove()
 
-    
     
