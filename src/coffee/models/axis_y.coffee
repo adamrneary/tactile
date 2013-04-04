@@ -9,12 +9,9 @@ Tactile.AxisY = class AxisY
     @ticksTreatment = options.ticksTreatment or "plain"
     @grid = options.grid
     
-    @graph.onUpdate =>
-      @render()
-
-  render: ->
+  render: (transition)->
     return unless @graph.y?
-    y = @graph.vis.selectAll('.y-ticks').data([0])
+    y = @graph.vis.selectAll(".y-ticks").data([0])
     y.enter().append("g").attr("class", ["y-ticks", @ticksTreatment].join(" "))
     
     axis = d3.svg.axis().scale(@graph.y).orient(@orientation)
@@ -23,8 +20,8 @@ Tactile.AxisY = class AxisY
     
       
     yAxis = axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)
-    
-    y.transition().duration(@graph.transitionSpeed).call(yAxis)
+
+    transition.select(".y-ticks").call(yAxis)
 
     #This should work. Untested though.
     if @grid

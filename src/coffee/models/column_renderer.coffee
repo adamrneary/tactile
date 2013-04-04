@@ -12,11 +12,10 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     super
     @dragger = new Dragger(renderer: @)
     @gapSize = options.gapSize || @gapSize
-    @timesRendered = 0
 
-  render: =>
+  render: (transition)=>
+    @transition = transition if transition
     if (@series.disabled)
-      @timesRendered = 0
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
       @seriesCanvas().selectAll('circle').data(@series.stack).remove()
@@ -28,24 +27,23 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
       .attr("clip-path", "url(#clip)")
       .on("click", @setActive)# set active element if click on it
 
-    nodes
-      .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
-      .attr("x", @_barX)
-      .attr("y", @_barY)
-      .attr("width", @_seriesBarWidth())
+
+    @transition.selectAll("##{@_nameToId()} rect")
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .attr("y", @_barY)
+      .attr("x", @_barX)
+      .attr("width", @_seriesBarWidth())
       .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
       .attr("stroke", 'white')
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
       .attr("class",
-        (d, i) =>
-          ["bar",
-          ("colorless" unless @series.color),
-          ("active" if d is @active), # apply active class for active element
-          ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
+      (d, i) =>
+        ["bar",
+         ("colorless" unless @series.color),
+        ("active" if d is @active), # apply active class for active element
+        ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
       @seriesCanvas().selectAll('circle:not(.active)')
@@ -64,9 +62,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     @dragger?.updateDraggedNode()
 
 
-    circ
-      .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+    @transition.selectAll("##{@_nameToId()} circle")
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d))
       .attr("r",
@@ -130,17 +126,17 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
       .append("svg:rect")
 
     slideTransition = =>
-      @seriesCanvas().selectAll("rect")
+      @transition.selectAll("##{@_nameToId()} rect")
         .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
         .transition()
-        .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+        .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
         .attr("width", @_seriesBarWidth())
         .attr("x", @_barX)
 
-    @seriesCanvas().selectAll("rect")
+    @transition.selectAll("##{@_nameToId()} rect")
       .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
       .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+      .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
       .attr("y", @_barY)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .each('end', slideTransition)
@@ -155,17 +151,17 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     count = @series.stack.length
 
     growTransition = =>
-      @seriesCanvas().selectAll("rect")
+      @transition.selectAll("##{@_nameToId()} rect")
         .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
         .transition()
-        .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+        .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
         .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
         .attr("y", @_barY)
 
-    @seriesCanvas().selectAll("rect")
+    @transition.selectAll("##{@_nameToId()} rect")
       .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
       .transition()
-      .duration(if @timesRendered++ is 0 then 0 else @transitionSpeed)
+      .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
       .each('end', growTransition)

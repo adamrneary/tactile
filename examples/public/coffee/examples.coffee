@@ -45,6 +45,10 @@ components = [
 ,
   shortLink:"legend"
   title: "Legend"
+,
+  shortLink:"chart-update"
+  title: "Chart update"
+
 ]
 
 # core = [
