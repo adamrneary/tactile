@@ -84,6 +84,7 @@ Tactile.RendererBase = class RendererBase
       .data([@series.stack])
       .enter()
       .append("g")
+      .attr("clip-path", "url(#scatter-clip)")
       .attr('id', @_nameToId())
       .attr('class', @name)
 
