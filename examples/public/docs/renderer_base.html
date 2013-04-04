@@ -211,6 +211,7 @@ which is very not desired.</p>
       .data([<span class="property">@series</span>.stack])
       .enter()
       .append(<span class="string">"g"</span>)
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
       .attr(<span class="string">'id'</span>, <span class="property">@_nameToId</span>())
       .attr(<span class="string">'class'</span>, <span class="property">@name</span>)
       
