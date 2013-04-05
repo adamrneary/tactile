@@ -8,6 +8,7 @@ Tactile.LinearAxis = class LinearAxis
     @ticksTreatment = options.ticksTreatment or "plain"
     @tickSize = options.tickSize or 4
     @ticks = options.ticks
+    @frame = options.frame
     if @horizontal
       @orientation = 'bottom'
       @ticks ?= Math.floor(@graph.width() / pixelsPerTick)

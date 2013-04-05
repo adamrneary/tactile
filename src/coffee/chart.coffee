@@ -29,11 +29,10 @@ Tactile.Chart = class Chart
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @renderers = []
-    @axesList = []
+    @axesList = {}
     @series = []
     @window = {}
     @updateCallbacks = []
-    @_axes = {}
     @timesRendered = 0
 
     # chart size is handled with its own method
@@ -123,7 +122,7 @@ Tactile.Chart = class Chart
       @discoverRange(renderer)
       renderer.render(t)
 
-    _.each  @axesList, (axis) =>
+    _.each @axesList, (axis) =>
       axis.render(t)
 
     @updateCallbacks.forEach (callback) ->
@@ -146,12 +145,12 @@ Tactile.Chart = class Chart
         rangeEnd = @width() - barWidth
 
       xframe = [
-        (if @_axes.x?.frame?[0] then @_axes.x.frame[0] else domain.x[0])
-        (if @_axes.x?.frame?[1] then @_axes.x.frame[1] else domain.x[1])
+        (if @axes().x?.frame?[0] then @axes().x.frame[0] else domain.x[0])
+        (if @axes().x?.frame?[1] then @axes().x.frame[1] else domain.x[1])
       ]
       yframe = [
-        (if @_axes.y?.frame?[0] then @_axes.y.frame[0] else domain.y[0])
-        (if @_axes.y?.frame?[1] then @_axes.y.frame[1] else domain.y[1])
+        (if @axes().y?.frame?[0] then @axes().y.frame[0] else domain.y[0])
+        (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
       ]
 
       @x = d3.scale.linear()
@@ -164,13 +163,28 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
-  initAxis: (args, axis = 'x') ->
+  # TODO:
+  # it should be possible to pass options to the axes
+  # so far they were
+  # for x: unit, ticksTreatment, grid
+  # for y: orientation, pixelsPerTick, ticks and few more.
+  axes: (args) ->
+    return @axesList unless args
+
+    _.each ['x','y'], (k) =>
+      if args[k]?
+        defaults = {graph: @, dimension: @defaultAxes[k].dimension, frame: @defaultAxes[k].frame, axis: k}
+        @initAxis _.extend defaults, args[k]
+
+    @
+
+  initAxis: (args) ->
     return unless @_allRenderersCartesian()
     switch args.dimension
       when "linear"
-        @axesList.push new Tactile.LinearAxis(_.extend {}, args.options, {graph: @, axis: axis})
+        @axesList[args.axis] = new Tactile.LinearAxis args
       when "time"
-        @axesList.push new Tactile.AxisTime(_.extend {}, args.options, {graph: @})
+        @axesList[args.axis] = new Tactile.AxisTime args
       else
         console.log("ERROR:#{args.dimension} is not currently implemented")
 
@@ -266,22 +280,7 @@ Tactile.Chart = class Chart
     @dataInitialized = false
     @
 
-  # TODO:
-  # it should be possible to pass options to the axes
-  # so far they were
-  # for x: unit, ticksTreatment, grid
-  # for y: orientation, pixelsPerTick, ticks and few more.
-  axes: (args, options) ->
-    return @_axes unless args
 
-    _.each ['x','y'], (k) =>
-      if args[k]?
-        @_axes[k] =
-          frame: (args[k]?.frame or @defaultAxes[k].frame)
-          dimension: (args[k]?.dimension or @defaultAxes[k].dimension)
-        @initAxis(@_axes[k], k)
-
-    @
 
   #############################################################################
   # private methods

@@ -324,7 +324,7 @@ describe 'Chart', ->
       dimension: "time"
       frame: frameVal
     )
-    assert _chart._axes.x.frame is frameVal
+    assert _chart.axesList.x.frame is frameVal
     done()
 
   it "Chart: for all series don't disabled", (done) ->
