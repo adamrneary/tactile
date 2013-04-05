@@ -37,7 +37,7 @@ data = [
   z: 490
 ]
 chart = new Tactile.Chart()
-chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+chart.axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
 chart.element($("#example_view")[0]).data(data)
 
 chart.addSeries

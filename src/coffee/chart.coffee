@@ -164,15 +164,15 @@ Tactile.Chart = class Chart
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
-  initAxis: (axis) ->
+  initAxis: (args, axis = 'x') ->
     return unless @_allRenderersCartesian()
-    switch axis.dimension
+    switch args.dimension
       when "linear"
-        @axesList.push new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
+        @axesList.push new Tactile.LinearAxis(_.extend {}, args.options, {graph: @, axis: axis})
       when "time"
-        @axesList.push new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
+        @axesList.push new Tactile.AxisTime(_.extend {}, args.options, {graph: @})
       else
-        console.log("ERROR:#{axis.dimension} is not currently implemented")
+        console.log("ERROR:#{args.dimension} is not currently implemented")
 
   # Used by range slider
   dataDomain: ->
@@ -279,7 +279,7 @@ Tactile.Chart = class Chart
         @_axes[k] =
           frame: (args[k]?.frame or @defaultAxes[k].frame)
           dimension: (args[k]?.dimension or @defaultAxes[k].dimension)
-        @initAxis(@_axes[k])
+        @initAxis(@_axes[k], k)
 
     @
 
