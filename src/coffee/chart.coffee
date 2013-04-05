@@ -64,6 +64,8 @@ Tactile.Chart = class Chart
 
     if options.overwrite
       @series = newSeries
+      @renderers = []
+
     else
       @series = @series.concat(newSeries)
 
