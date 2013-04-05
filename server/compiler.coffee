@@ -76,21 +76,16 @@ compileCoffeeExamples = (cb) ->
 compileScss = (cb) ->
   sass = require 'node-sass'
   fs.readFile "#{__dirname}/../src/scss/tactile.scss", (err, scssFile) ->
-    console.log  'compiling scss'
-    console.log  'WSTRINGU': scssFile.toString()
-
     sass.render scssFile.toString(), (err, css) ->
       if err
-        console.log 'ERROR!'
         console.log err
         cb()
       else
         console.log  'zapisujemy do: ' + "#{__dirname}/../dist/#{glob.config.name}.css"
         fs.writeFile "#{__dirname}/../dist/#{glob.config.name}.css", css, (err) ->
           if err
-            console.log 'ERRRRRRROR'
+            console.log 'ERROR compiling scss: ' + err
           else
-            console.log 'ALESOK'
             cb()
 
 
