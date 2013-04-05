@@ -317,14 +317,39 @@ describe 'Chart', ->
     assert _chart._data is data
     done()
 
-  it 'Chart: axes function', (done) ->
+  it 'Chart: linear axis function', (done) ->
     frameVal = [0, 4]
     _chart = new window.Tactile.Chart()
+    tickFormat = (d) -> d + "%"
     _chart.axes(x:
-      dimension: "time"
+      dimension: "linear"
       frame: frameVal
+      tickFormat: tickFormat
     )
-    assert _chart.axesList.x.frame is frameVal
+    assert _chart.axesList.hasOwnProperty('x') is true
+    assert _chart.axesList.hasOwnProperty('y') is false
+
+    axis = _chart.axesList.x
+    assert axis.horizontal is true
+    assert axis.tickFormat is tickFormat
+    assert axis.frame is frameVal
+    assert axis.__proto__.constructor.name is "AxisLinear"
+
+    done()
+
+  it 'Chart: mixed axis function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart.axes
+      x:
+        dimension: "time"
+      y:
+        dimension: 'linear'
+
+    assert _chart.axesList.hasOwnProperty('x') is true
+    assert _chart.axesList.hasOwnProperty('y') is true
+    assert _chart.axesList.x.__proto__.constructor.name is "AxisTime"
+    assert _chart.axesList.y.__proto__.constructor.name is "AxisLinear"
+
     done()
 
   it "Chart: for all series don't disabled", (done) ->

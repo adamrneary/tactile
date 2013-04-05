@@ -1,4 +1,4 @@
-Tactile.LinearAxis = class LinearAxis
+Tactile.AxisLinear = class AxisLinear
   constructor: (options) ->
     @options = options
     @graph = options.graph
@@ -8,6 +8,7 @@ Tactile.LinearAxis = class LinearAxis
     @ticksTreatment = options.ticksTreatment or "plain"
     @tickSize = options.tickSize or 4
     @ticks = options.ticks
+    @tickFormat = options.tickFormat or (d) -> d
     @frame = options.frame
     if @horizontal
       @orientation = 'bottom'
@@ -28,7 +29,7 @@ Tactile.LinearAxis = class LinearAxis
 
     axis = d3.svg.axis().scale(@graph[@options.axis]).orient(@orientation)
 
-    axis.tickFormat @options.tickFormat or (d) -> d
+    axis.tickFormat @tickFormat
 
 
     xAxis = axis.ticks(@ticks).tickSubdivide(0).tickSize(@tickSize)

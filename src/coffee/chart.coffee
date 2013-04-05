@@ -182,7 +182,7 @@ Tactile.Chart = class Chart
     return unless @_allRenderersCartesian()
     switch args.dimension
       when "linear"
-        @axesList[args.axis] = new Tactile.LinearAxis args
+        @axesList[args.axis] = new Tactile.AxisLinear args
       when "time"
         @axesList[args.axis] = new Tactile.AxisTime args
       else
