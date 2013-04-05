@@ -57,22 +57,14 @@ window.Tactile.Tooltip = class Tooltip
           center[0] = @options.position[0]
           center[1] = @options.position[1]
         else
-          svgNode = d3.select(@options.graph._element).select('svg').node()
-          hoveredNode = @el.node().getBBox()
-          center[0] = hoveredNode.x + svgNode.offsetLeft  + hoveredNode.width / 2
-          center[1] = hoveredNode.y + svgNode.offsetTop
+          hoveredNode = @el.node().getBoundingClientRect()
+          center[0] = hoveredNode.left + hoveredNode.width / 2
+          center[1] = hoveredNode.top
           if @options.graph.series[0].renderer is "donut"
-            center[0] = center[0] + @options.graph.series[0].height-30
-            center[1] = center[1] + @options.graph.series[0].height-30
+            center[1] += (hoveredNode.height / 2 - 1)
 
         if @el.node().tagName == 'circle'
           center[1] += (hoveredNode.height / 2 - 1)
-
-        center[0] += @options.graph.margin.left
-        center[0] += @options.graph.padding.left
-
-        center[1] += @options.graph.margin.top
-        center[1] += @options.graph.padding.top
 
       if @options.displacement
         center[0] += @options.displacement[0]
@@ -82,6 +74,7 @@ window.Tactile.Tooltip = class Tooltip
         .style("left","#{center[0]}px")
         .style("top","#{center[1]}px")
         .style("display","block")
+        .style("position", "fixed")
 
     @el.on("mouseover", () =>
      if Tooltip._spotlightMode

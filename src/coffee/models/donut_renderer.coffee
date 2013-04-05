@@ -12,15 +12,15 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
   render: (transition)->
     @transition = transition if transition
     donut = undefined
-    donut = @seriesCanvas().selectAll(".arc")
+    donut = @seriesCanvas().selectAll("donut-arc")
       .data(@donut).enter().append("path")
 
     @transition.selectAll("##{@_nameToId()} path")
       .attr("class", "donut-arc")
-      .attr("transform", "translate(#{@series.height - 30},#{@series.height - 30})")
+      .attr("transform", "translate(#{@series.height},#{@series.height})")
       .attr("d", @arc)
       .attr("stroke", "white")
-      .style("fill", ((d)-> d.data.color), "stroke")
+      .attr("fill", ((d)-> d.data.color), "stroke")
 
     @setupTooltips()
 

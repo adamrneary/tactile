@@ -46,7 +46,7 @@ Tactile.Dragger = class Dragger
     # lock the tooltip on the dragged element
     return unless @renderer.utils.ourFunctor(@series.isEditable, d, i)
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
-    @dragged = {d: d, i: i, y: d.y}
+    @dragged = {d: d, i: i, y: d.y, x: d.x}
     @update()
 
   _mouseMove: =>
@@ -57,11 +57,18 @@ Tactile.Dragger = class Dragger
       # TODO: !! move this to tooltip
       # TODO: !! update tooltip text continuously on dragging
       if @series.tooltip
-        elementRelativeposition = d3.mouse(@graph._element)
         tip = d3.select(@graph._element).select('.tooltip')
-        svgNode = d3.select(@graph._element).select('svg').node()
-        offsetTop = @graph.padding.top + @graph.margin.top + svgNode.offsetTop
-        tip.style("top", "#{@graph.y(@dragged.y) + offsetTop}px")
+        hoveredNode = @renderer.seriesCanvas().selectAll('circle.editable')
+          .filter((d, i) =>
+            # fix for a weird behavior that d is sometimes
+            # an array with all the nodes of the series
+            d = if _.isArray(d) then d[i] else d
+            d is @dragged.d
+          )
+          .node()
+          .getBoundingClientRect()
+
+        tip.style("top", "#{hoveredNode.top}px")
 
       @renderer.transitionSpeed = 0
       inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height(), p[1])))
