@@ -35,6 +35,7 @@ chart.addSeries
   tooltip: (d) ->
     d.data.label + " " + d.data.val
   color: "#c05020"
-  height: 100
+  innerRadius: 50
+  outerRadius: 70
 
 chart.render()
