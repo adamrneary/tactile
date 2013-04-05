@@ -6,21 +6,21 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     @donut = d3.layout.pie().value((d) ->
       d.val
     )
-    @arc = d3.svg.arc().innerRadius(60).outerRadius(@series.height)
+    @arc = d3.svg.arc().innerRadius(@series.innerRadius).outerRadius(@series.outerRadius)
   # DonutRenderer::_total = ->
 
   render: (transition)->
     @transition = transition if transition
     donut = undefined
-    donut = @seriesCanvas().selectAll(".arc")
+    donut = @seriesCanvas().selectAll("donut-arc")
       .data(@donut).enter().append("path")
 
     @transition.selectAll("##{@_nameToId()} path")
       .attr("class", "donut-arc")
-      .attr("transform", "translate(#{@series.height - 30},#{@series.height - 30})")
+      .attr("transform", "translate(#{@series.outerRadius},#{@series.outerRadius})")
       .attr("d", @arc)
       .attr("stroke", "white")
-      .style("fill", ((d)-> d.data.color), "stroke")
+      .attr("fill", ((d)-> d.data.color), "stroke")
 
     @setupTooltips()
 
@@ -30,8 +30,5 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
         color: @series.color
         graph: @graph
         text: @series.tooltip(d)
-        #circleOnHover: true
-        #tooltipCircleContainer: @graph.vis.node()
-        gravity: "left"
-
-  DonutRenderer
+        gravity: "right"
+        displacement: [-10, 0]# because tooltip have left margin 10
