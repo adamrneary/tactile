@@ -234,21 +234,14 @@ Tactile.Chart = class Chart
   renderersByType: (name) ->
     @renderers.filter((r) -> r.name == name)
 
-  stackTransition: (transitionSpeed)->
+  stackTransition: (transitionSpeed)=>
     # Probably we'll want other types soon too
-    transitionSpeed = @transitionSpeed unless transitionSpeed
-    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
-    _.each(@renderersByType('column'), (r) -> r.stackTransition(t))
-    _.each  @axesList, (axis) =>
-      axis.render(t)
+    _.each(@renderersByType('column'), (r) -> r.stackTransition())
+    @render(transitionSpeed)
 
-
-  unstackTransition: (transitionSpeed)->
-    transitionSpeed = @transitionSpeed unless transitionSpeed
-    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
-    _.each(@renderersByType('column'), (r) -> r.unstackTransition(t))
-    _.each  @axesList, (axis) =>
-      axis.render(t)
+  unstackTransition: (transitionSpeed)=>
+    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
+    @render(transitionSpeed)
 
   #############################################################################
   # expose public variables
