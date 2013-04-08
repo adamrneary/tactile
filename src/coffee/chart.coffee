@@ -157,6 +157,7 @@ Tactile.Chart = class Chart
       @x = d3.scale.linear()
         .domain(xframe)
         .range([rangeStart || 0, rangeEnd || @width()])
+      console.log yframe
       @y = d3.scale.linear()
         .domain(yframe)
         .range([@height(), 0])
@@ -233,12 +234,21 @@ Tactile.Chart = class Chart
   renderersByType: (name) ->
     @renderers.filter((r) -> r.name == name)
 
-  stackTransition: ->
+  stackTransition: (transitionSpeed)->
     # Probably we'll want other types soon too
-    _.each(@renderersByType('column'), (r) -> r.stackTransition())
+    transitionSpeed = @transitionSpeed unless transitionSpeed
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    _.each(@renderersByType('column'), (r) -> r.stackTransition(t))
+    _.each  @axesList, (axis) =>
+      axis.render(t)
 
-  unstackTransition: ->
-    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
+
+  unstackTransition: (transitionSpeed)->
+    transitionSpeed = @transitionSpeed unless transitionSpeed
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    _.each(@renderersByType('column'), (r) -> r.unstackTransition(t))
+    _.each  @axesList, (axis) =>
+      axis.render(t)
 
   #############################################################################
   # expose public variables
