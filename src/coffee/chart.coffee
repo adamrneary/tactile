@@ -157,7 +157,6 @@ Tactile.Chart = class Chart
       @x = d3.scale.linear()
         .domain(xframe)
         .range([rangeStart || 0, rangeEnd || @width()])
-      console.log yframe
       @y = d3.scale.linear()
         .domain(yframe)
         .range([@height(), 0])
@@ -237,10 +236,12 @@ Tactile.Chart = class Chart
   stackTransition: (transitionSpeed)=>
     # Probably we'll want other types soon too
     _.each(@renderersByType('column'), (r) -> r.stackTransition())
+    _.each(@renderersByType('area'), (r) -> r.stackTransition())
     @render(transitionSpeed)
 
   unstackTransition: (transitionSpeed)=>
     _.each(@renderersByType('column'), (r) -> r.unstackTransition())
+    _.each(@renderersByType('area'), (r) -> r.unstackTransition())
     @render(transitionSpeed)
 
   #############################################################################

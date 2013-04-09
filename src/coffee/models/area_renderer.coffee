@@ -71,7 +71,7 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
             (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
         )
       .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
+      .attr("cy", (d) => @graph.y d.y + @_y0(d))
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
         ("active" if d is @active), # apply active class for active element
@@ -83,3 +83,10 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()
+
+
+  stackTransition: =>
+    @unstack = false
+
+  unstackTransition: =>
+    @unstack = true
