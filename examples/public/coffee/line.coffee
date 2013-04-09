@@ -37,7 +37,10 @@ data = [
   z: 490
 ]
 chart = new Tactile.Chart()
-chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+tickFormat = (d) ->
+  if d > 99 then d / 100 + "★" else "#{d*10}☢"
+
+chart.axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
 chart.element($("#example_view")[0]).data(data)
 
 chart.addSeries

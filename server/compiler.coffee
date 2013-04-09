@@ -81,8 +81,15 @@ compileScss = (cb) ->
         console.log err
         cb()
       else
-        fs.writeFile "#{__dirname}/../dist/#{glob.config.name}.css", css, ->
-          cb()
+        console.log  'zapisujemy do: ' + "#{__dirname}/../dist/#{glob.config.name}.css"
+        fs.writeFile "#{__dirname}/../dist/#{glob.config.name}.css", css, (err) ->
+          if err
+            console.log 'ERROR compiling scss: ' + err
+          else
+            cb()
+
+
+
     , { include_paths: [ "#{__dirname}/../src/scss/"] }
 
 compileLess = (cb) ->

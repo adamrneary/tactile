@@ -115,32 +115,32 @@
   text-transform: uppercase;
   font-weight: bold; }
 
-.x-tick {
+.x-ticks.plain path {
+  fill: none;
+  stroke: none; }
+
+.x-tick, .x-ticks {
   fill: black;
   position: absolute;
   top: 0;
   bottom: 0;
   width: 0px;
   pointer-events: none; }
-  .x-tick.grid {
+  .x-tick.grid, .x-ticks.grid {
     border-left: 1px dotted rgba(0, 0, 0, 0.2); }
-  .x-tick .title {
-    position: absolute;
+  .x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
     font-size: 11px;
     text-transform: uppercase;
     font-weight: bold;
     font-family: Arial, sans-serif;
     opacity: 0.5;
     white-space: nowrap;
-    margin-left: 3px;
-    bottom: -10px;
-    text-anchor: middle;
-    left: -12px; }
-  .x-tick.align-end .title {
+    text-anchor: middle; }
+  .x-tick.align-end .title, .x-ticks.align-end .title {
     text-anchor: end; }
-  .x-tick.align-start .title {
+  .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: start; }
-  .x-tick.align-start .title {
+  .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: middle; }
 
 .x-tick.glow .title, .y-ticks.glow text {
