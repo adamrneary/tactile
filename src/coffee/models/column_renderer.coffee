@@ -117,59 +117,9 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
   stackTransition: ->
     @unstack = false
-    @graph.discoverRange(@)
-    count = @series.stack.length
-
-    nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
-
-    nodes.enter()
-      .append("svg:rect")
-
-    slideTransition = =>
-      @transition.selectAll("##{@_nameToId()} rect")
-        .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
-        .transition()
-        .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
-        .attr("width", @_seriesBarWidth())
-        .attr("x", @_barX)
-
-    @transition.selectAll("##{@_nameToId()} rect")
-      .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
-      .transition()
-      .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
-      .attr("y", @_barY)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-      .each('end', slideTransition)
-
-    @setupTooltips()
-    @graph.updateCallbacks.forEach (callback) ->
-      callback()
 
   unstackTransition: ->
     @unstack = true
-    @graph.discoverRange(@)
-    count = @series.stack.length
-
-    growTransition = =>
-      @transition.selectAll("##{@_nameToId()} rect")
-        .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
-        .transition()
-        .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
-        .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-        .attr("y", @_barY)
-
-    @transition.selectAll("##{@_nameToId()} rect")
-      .filter((d) -> d.y > 0) # don't waste time for 0 value nodes
-      .transition()
-      .duration(if @timesRendered is 0 then 0 else @transitionSpeed)
-      .attr("x", @_barX)
-      .attr("width", @_seriesBarWidth())
-      .each('end', growTransition)
-
-    @setupTooltips()
-    @graph.updateCallbacks.forEach (callback) ->
-      callback()
-
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values

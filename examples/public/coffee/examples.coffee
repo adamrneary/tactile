@@ -15,6 +15,9 @@ cartesian = [
   shortLink: "area"
   title: "Area"
 ,
+  shortLink: "stacked-area"
+  title: "Stacked area"
+,
   shortLink: "multiple-series"
   title: "Multiple series types"
 ]
