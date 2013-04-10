@@ -34,7 +34,7 @@ Tactile.RendererBase = class RendererBase
         y_last = 0
         series.forEach (d) =>
           values.push d.y + y_last
-          y_last += d.y
+          y_last += d.y if d.y
       else
         series.forEach (d) =>
           # if we don't stack data we don't want to sum up the values

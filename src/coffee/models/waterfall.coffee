@@ -25,6 +25,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
 
     @y_last = 0
     @transition.selectAll("##{@_nameToId()} rect")
+      .filter((d) => d.y)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
@@ -34,6 +35,8 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
       .attr("stroke", 'white')
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
+
+    nodes.exit().remove()
 
     @setupTooltips()
 
@@ -55,8 +58,8 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values
-    matrix = [1, 0, 0, ((if d.y < 0 then -1 else 1)),
-              0, ((if d.y < 0 then @graph.y.magnitude(Math.abs(d.y)) * 2 else 0))
+    matrix = [1, 0, 0, ((if @y_last < 0 then -1 else 1)),
+              0, ((if @y_last < 0 then @graph.y.magnitude(Math.abs(@y_last)) * 2 else 0))
     ]
     "matrix(" + matrix.join(",") + ")"
 
@@ -75,7 +78,11 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     initialX = x - @_seriesBarWidth() / 2
 
   _barY: (d) =>
-      y = @graph.y(Math.abs(d.y + @y_last)) * (if d.y + @y_last < 0 then -1 else 1)
+    if d.y > 0
+      @y_last += d.y
+      @graph.y(Math.abs(@y_last)) * (if @y_last < 0 then -1 else 1)
+    else
+      y = @graph.y(Math.abs(@y_last)) * (if @y_last < 0 then -1 else 1)
       @y_last += d.y
       y
 
