@@ -18,11 +18,14 @@ Tactile.Chart = class Chart
   transitionSpeed: 750
   defaultHeight: 400
   defaultWidth: 730
-  defaultAxes:
+  defaultAxesOptions:
     x:
       dimension: "time"
       frame: [undefined, undefined]
     y:
+      dimension: "linear"
+      frame: [undefined, undefined]
+    y1:
       dimension: "linear"
       frame: [undefined, undefined]
 
@@ -30,7 +33,7 @@ Tactile.Chart = class Chart
   constructor: (args = {}) ->
     @renderers = []
     @axesList = {}
-    @series = []
+    @series = new SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
     @timesRendered = 0
@@ -56,28 +59,8 @@ Tactile.Chart = class Chart
     return unless series
     series = [series] unless _.isArray(series)
 
-    # TODO: Refactor this into series/renderer constructor
-    seriesDefaults =
-      dataTransform: (d) -> d
-    newSeries = _.map(series, (s) => _.extend({}, seriesDefaults, s))
-
-    if options.overwrite
-      @series = newSeries
-      @renderers = []
-
-    else
-      @series = @series.concat(newSeries)
-
-    _.each newSeries, (s) ->
-      # Add enable/disable/toggle serie functions
-      s.disable = () ->
-        @disabled = true
-
-      s.enable = () ->
-        @disabled = false
-
-      s.toggle = () ->
-        @disabled = not @disabled
+    newSeries = _.map(series, (options) -> new Series(options))
+    @series.add(newSeries, options.overwrite)
 
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
@@ -87,11 +70,6 @@ Tactile.Chart = class Chart
   initSeriesStackData: (options = {overwrite: false}) ->
     return if @dataInitialized and not options.overwrite
 
-    # TODO: Refactor this into series/renderer constructor
-    @series.active = =>
-      @series.filter (s) ->
-        not s.disabled
-  
     # Initialize each serie's stack data
     # BEGIN
     seriesData = @series.map((d) =>
@@ -113,9 +91,9 @@ Tactile.Chart = class Chart
       return
     @initSeriesStackData()
     @_setupCanvas()
-    stackedData = @stackData()
+    @stackData()
 
-    transitionSpeed = @transitionSpeed unless transitionSpeed
+    transitionSpeed ||= @transitionSpeed
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
@@ -162,18 +140,15 @@ Tactile.Chart = class Chart
       @y.magnitude = d3.scale.linear()
         .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
         .range([0, @height()])
+      @y0 = @y
 
-  # TODO:
-  # it should be possible to pass options to the axes
-  # so far they were
-  # for x: unit, ticksTreatment, grid
-  # for y: orientation, pixelsPerTick, ticks and few more.
+
   axes: (args) ->
     return @axesList unless args
 
-    _.each ['x','y'], (k) =>
+    _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxes[k].dimension, frame: @defaultAxes[k].frame, axis: k}
+        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k}
         @initAxis _.extend defaults, args[k]
 
     @
@@ -198,12 +173,10 @@ Tactile.Chart = class Chart
     # Read more about stacking data here:
     # https://github.com/mbostock/d3/wiki/Stack-Layout
     seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
-
     layout = d3.layout.stack()
     layout.offset(@offset)
-    stackedData = layout(seriesData)
+    @stackedData = layout(seriesData)
 
-    @stackedData = stackedData
 
   # Set's the size for the chart
   # please note you have to call render() or update()
@@ -362,7 +335,7 @@ Tactile.Chart = class Chart
     deg * Math.PI / 180
 
   _hasDifferentRenderers: ->
-    _.uniq(_.map(@series, (s) -> s.renderer)).length > 1
+    _.uniq(_.map(@series.array, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
     _.any(@renderers, (r) -> r.name == 'column')
@@ -371,4 +344,4 @@ Tactile.Chart = class Chart
     _.every(@renderers, (r) -> r.cartesian is true)
 
   _allSeriesDisabled: ->
-    _.every(@series, (s) -> s.disabled is true)
+    _.every(@series.array, (s) -> s.disabled is true)
