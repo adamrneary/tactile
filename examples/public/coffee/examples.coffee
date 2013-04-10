@@ -20,6 +20,9 @@ cartesian = [
 ,
   shortLink: "multiple-series"
   title: "Multiple series types"
+,
+  shortLink: "waterfall"
+  title: "Waterfall"
 ]
 
 noncartesian = [

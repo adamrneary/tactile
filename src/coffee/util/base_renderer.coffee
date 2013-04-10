@@ -30,15 +30,21 @@ Tactile.RendererBase = class RendererBase
       if @unstack then stackedData else [stackedData.slice(-1).shift()]
     )
     topSeriesData.forEach (series) =>
-      series.forEach (d) =>
-        # if we don't stack data we don't want to sum up the values
-        # as this causes the viewed window to be way to large
-        # for example if you have x:1, y:20 and
-        # x1, y:10 y-axis will show up to y=30
-        if @unstack
-          values.push d.y
-        else
-          values.push d.y + d.y0
+      if @name is "waterfall"
+        y_last = 0
+        series.forEach (d) =>
+          values.push d.y + y_last
+          y_last += d.y
+      else
+        series.forEach (d) =>
+          # if we don't stack data we don't want to sum up the values
+          # as this causes the viewed window to be way to large
+          # for example if you have x:1, y:20 and
+          # x1, y:10 y-axis will show up to y=30
+          if @unstack
+            values.push d.y
+          else
+            values.push d.y + d.y0
 
     xMin = stackedData[0][0].x
     xMax = stackedData[0][stackedData[0].length - 1].x

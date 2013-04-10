@@ -7,6 +7,7 @@ Tactile.Chart = class Chart
     'area': AreaRenderer
     'scatter': ScatterRenderer
     'donut': DonutRenderer
+    'waterfall': WaterfallRenderer
 
   # default values
   margin: {top: 20, right: 20, bottom: 20, left: 20}
@@ -366,7 +367,7 @@ Tactile.Chart = class Chart
     _.uniq(_.map(@series, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
-    _.any(@renderers, (r) -> r.name == 'column')
+    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
