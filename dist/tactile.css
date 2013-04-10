@@ -80,23 +80,30 @@
     overflow: hidden; }
 
 /* axes */
-.y-ticks {
+.y-ticks, .y1-ticks {
   /* Don't display first tick of Y-axis */ }
-  .y-ticks g:first-child {
+  .y-ticks g:first-child, .y1-ticks g:first-child {
     opacity: 0 !important; }
-  .y-ticks.plain path {
+  .y-ticks.plain path, .y1-ticks.plain path {
     fill: none;
     stroke: none; }
-  .y-ticks.plain .tick {
+  .y-ticks.plain .tick, .y1-ticks.plain .tick {
     stroke: none; }
-  .y-ticks path {
+  .y-ticks path, .y1-ticks path {
     fill: none;
     stroke: #808080; }
-  .y-ticks .tick {
+  .y-ticks .tick, .y1-ticks .tick {
     stroke: rgba(0, 0, 0, 0.16);
     stroke-width: 2px;
     shape-rendering: crisp-edges;
     pointer-events: none; }
+  .y-ticks text, .y1-ticks text {
+    opacity: 0.5;
+    pointer-events: none;
+    fill: black;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold; }
 
 .y-grid .tick {
   z-index: -1;
@@ -106,14 +113,6 @@
 .y-grid path {
   fill: none;
   stroke: none; }
-
-.y-ticks text {
-  opacity: 0.5;
-  pointer-events: none;
-  fill: black;
-  font-size: 11px;
-  text-transform: uppercase;
-  font-weight: bold; }
 
 .x-ticks.plain path {
   fill: none;

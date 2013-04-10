@@ -118,7 +118,7 @@
 
 /* axes */
 
-.y-ticks {
+.y-ticks,  .y1-ticks {
   /* Don't display first tick of Y-axis */
   g:first-child {
     opacity: 0 !important;
@@ -145,6 +145,15 @@
     shape-rendering: crisp-edges;
     pointer-events: none;
   }
+
+  text {
+    opacity: 0.5;
+    pointer-events: none;
+    fill: black;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 }
 
 .y-grid {
@@ -160,14 +169,6 @@
   }
 }
 
-.y-ticks text {
-  opacity: 0.5;
-  pointer-events: none;
-  fill: black;
-  font-size: 11px;
-  text-transform: uppercase;
-  font-weight: bold;
-}
 
 .x-ticks.plain {
   path {
