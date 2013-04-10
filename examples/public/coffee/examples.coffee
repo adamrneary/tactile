@@ -5,6 +5,9 @@ cartesian = [
   shortLink: "line"
   title: "Line"
 ,
+  shortLink: "dual-scaled"
+  title: "Dual scaled"
+,
   shortLink: "column"
   title: "Column"
 ,
