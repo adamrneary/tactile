@@ -51,6 +51,7 @@ chart.addSeries [
   name: "Customers"
   renderer: "waterfall"
   color: "#FFE4C4" # Alex: make this blue
+  fromBaseline: true
   tooltip: (d) ->
     d.y + " customers"
   dataTransform: (d) ->
