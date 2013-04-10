@@ -5,9 +5,6 @@ cartesian = [
   shortLink: "line"
   title: "Line"
 ,
-  shortLink: "dual-scaled"
-  title: "Dual scaled"
-,
   shortLink: "column"
   title: "Column"
 ,
@@ -43,6 +40,9 @@ noncartesian = [
 ]
 
 components = [
+  shortLink: "dual-scaled"
+  title: "Secondary y-axis"
+,
   shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,
