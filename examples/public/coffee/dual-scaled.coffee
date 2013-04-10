@@ -49,7 +49,7 @@ chart.addSeries
     d.y + " enemies"
 
 chart.addSeries
-  scaleAxis: 'y1'
+  yAxis: 'y1'
   name: "friends"
   renderer: "line"
   color: "#6060c0"

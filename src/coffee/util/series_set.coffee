@@ -6,13 +6,13 @@ Tactile.SeriesSet = class SeriesSet
     @filter (s) ->
       not s.disabled
 
-  ofDefaultScale: ->
+  ofDefaultAxis: ->
     @filter (s) ->
-      s.ofDefaultScale()
+      s.ofDefaultAxis()
 
   ofAlternateScale: ->
     @filter (s) ->
-      not s.ofDefaultScale()
+      not s.ofDefaultAxis()
 
   filter: (f) ->
     new SeriesSet @array.filter(f), @graph
