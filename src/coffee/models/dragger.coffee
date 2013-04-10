@@ -71,7 +71,7 @@ Tactile.Dragger = class Dragger
         tip.style("top", "#{hoveredNode.top}px")
 
       @renderer.transitionSpeed = 0
-      inverted = @graph.y.invert(Math.max(0, Math.min(@graph.height(), p[1])))
+      inverted = @renderer.yFunction().invert(Math.max(0, Math.min(@graph.height(), p[1])))
       value = Math.round(inverted * @power) / @power
       @dragged.y = value
       @onDrag(@dragged, @series, @graph)

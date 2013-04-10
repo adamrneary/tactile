@@ -47,6 +47,8 @@ Tactile.RendererBase = class RendererBase
 
     { x: [xMin, xMax], y: [yMin, yMax] }
 
+  yFunction: ->
+    @graph[@series.scaleAxis]
 
   render: (transition)=>
     @transition = transition if transition

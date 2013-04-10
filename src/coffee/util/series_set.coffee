@@ -6,8 +6,16 @@ Tactile.SeriesSet = class SeriesSet
     @filter (s) ->
       not s.disabled
 
+  ofDefaultScale: ->
+    @filter (s) ->
+      s.ofDefaultScale()
+
+  ofAlternateScale: ->
+    @filter (s) ->
+      not s.ofDefaultScale()
+
   filter: (f) ->
-    @array.filter(f)
+    new SeriesSet @array.filter(f), @graph
 
   add: (newSeries, overwrite = false) ->
     if overwrite
@@ -23,12 +31,23 @@ Tactile.SeriesSet = class SeriesSet
     _.each @array, (val, key) =>
       @[key] = val
 
+
+  # Extracts passed `key` values of all arrays into a single one. For example:
+  # s1: {x:2, y:33}, s2: {x0: y: 11}
+  # flat('y') gives:
+  # [33,11]
+  # Note that this works with using of dataTransform on the @graph._data
+  flat: (key) ->
+    transformed = _.flatten(@array.map((s) => @graph._data.map(s.dataTransform)), true)
+    transformed.map (d) ->
+      d[key]
+
+
   map: (f) =>
     @array.map(f)
 
   forEach: (f) =>
     @array.forEach(f)
-
 
   disableAll: ->
     _.each @array, (s) ->

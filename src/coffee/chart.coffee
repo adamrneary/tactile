@@ -138,9 +138,14 @@ Tactile.Chart = class Chart
         .domain(yframe)
         .range([@height(), 0])
       @y.magnitude = d3.scale.linear()
-        .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
+        .domain([0, domain.y[1] - domain.y[0]])
         .range([0, @height()])
-      @y0 = @y
+
+      console.log renderer.series.ofDefaultScale()
+      unless renderer.series.ofDefaultScale()
+        @y1 = d3.scale.linear()
+          .domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
+          .range([@height(), 0]);
 
 
   axes: (args) ->
@@ -172,10 +177,13 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here:
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-    seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
+
+    # select data of default scale only, so we can handle y1 axis data separately
+    defaultScaleSeriesData = @series.active().ofDefaultScale().array.map((s) => @_data.map(s.dataTransform))
+
     layout = d3.layout.stack()
     layout.offset(@offset)
-    @stackedData = layout(seriesData)
+    @stackedData = layout(defaultScaleSeriesData)
 
 
   # Set's the size for the chart
