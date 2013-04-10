@@ -141,7 +141,6 @@ Tactile.Chart = class Chart
         .domain([0, domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
-      console.log renderer.series.ofDefaultScale()
       unless renderer.series.ofDefaultScale()
         @y1 = d3.scale.linear()
           .domain([0, d3.max(@series.ofAlternateScale().flat('y'))])

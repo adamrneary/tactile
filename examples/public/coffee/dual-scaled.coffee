@@ -18,15 +18,15 @@ data = [
 ,
   x: 4
   y: 280
-  z: 80
+  z: 55
 ,
   x: 5
   y: 205
-  z: 82
+  z: 70
 ,
   x: 6
   y: 280
-  z: 90
+  z: 75
 ,
   x: 7
   y: 205
@@ -38,7 +38,7 @@ data = [
 ]
 chart = new Tactile.Chart()
 
-chart.axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}, y1: {dimension: 'linear', valuesKey: 'z'}})
+chart.axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
 chart.element($("#example_view")[0]).data(data)
 
 chart.addSeries
