@@ -38,12 +38,12 @@ data = [
 ]
 chart = new Tactile.Chart()
 
-chart.axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
+chart.axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
 chart.element($("#example_view")[0]).data(data)
 
 chart.addSeries
   name: "enemies"
-  renderer: "line"
+  renderer: "column"
   color: "#c05020"
   tooltip: (d) ->
     d.y + " enemies"
@@ -62,14 +62,12 @@ chart.addSeries
 
 chart.render()
 
-
-
 sl = $("<div>").attr("id", "slider")
 $("#example_view").append sl
 sl.slider
   min: 0
   max: 8
-  values: frameVal
+  values: [0, 8]
   range: true
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values

@@ -19,7 +19,7 @@ Tactile.SeriesSet = class SeriesSet
 
   add: (newSeries, overwrite = false) ->
     if overwrite
-      @array = new SeriesSet(newSeries)
+      @array = newSeries
       @graph.renderers = []
     else
       @array = @array.concat(newSeries)
