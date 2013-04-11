@@ -4,6 +4,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
   specificDefaults:
     gapSize: 0
     round: true
+    unstack: true
 
 
   initialize: (options = {}) ->
@@ -14,7 +15,6 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
-      @seriesCanvas().selectAll('circle').data(@series.stack).remove()
       return
 
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
@@ -23,7 +23,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
       .attr("clip-path", "url(#clip)")
       .on("click", @setActive)# set active element if click on it
 
-    @y_last = 0
+
     @transition.selectAll("##{@_nameToId()} rect")
       .filter((d) => d.y)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
@@ -58,8 +58,8 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values
-    matrix = [1, 0, 0, ((if @y_last < 0 then -1 else 1)),
-              0, ((if @y_last < 0 then @graph.y.magnitude(Math.abs(@y_last)) * 2 else 0))
+    matrix = [1, 0, 0, ((if d.y+ d.y00 < 0 then -1 else 1)),
+              0, ((if d.y+ d.y00 < 0 then @graph.y.magnitude(Math.abs(d.y+ d.y00)) * 2 else 0))
     ]
     "matrix(" + matrix.join(",") + ")"
 
@@ -73,18 +73,26 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     else
       width = @graph.width() / (1 + @gapSize)
 
+    width = width / @graph.series.filter(
+      (d) =>
+        d.renderer == 'waterfall'
+    ).length
+
+  _barXOffset: (seriesBarWidth) ->
+    count = @graph.renderersByType(@name).length
+    barXOffset = -seriesBarWidth * count / 2
+
   _barX: (d) =>
     x = @graph.x(d.x)
-    initialX = x - @_seriesBarWidth() / 2
+    seriesBarWidth = @_seriesBarWidth()
+    initialX = x + @_barXOffset(seriesBarWidth)
+    initialX + (@_columnRendererIndex() * seriesBarWidth)
 
-  _barY: (d) =>
+  _barY: (d, i) =>
     if d.y > 0
-      @y_last += d.y
-      @graph.y(Math.abs(@y_last)) * (if @y_last < 0 then -1 else 1)
+      @graph.y(Math.abs(d.y+d.y00)) * (if d.y+d.y00 < 0 then -1 else 1)
     else
-      y = @graph.y(Math.abs(@y_last)) * (if @y_last < 0 then -1 else 1)
-      @y_last += d.y
-      y
+      @graph.y(Math.abs(d.y00)) * (if d.y00 < 0 then -1 else 1)
 
   _columnRendererIndex: ->
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined

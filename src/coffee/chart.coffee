@@ -104,6 +104,23 @@ Tactile.Chart = class Chart
     stackedData = layout(seriesData)
 
     i = 0
+    maxLen = 0;
+    while i < stackedData.length
+      maxLen = Math.max(maxLen, stackedData[i].length)
+      i++
+
+    i = 0
+    y00 = 0
+    while i < maxLen
+      j = 0
+      while j < stackedData.length
+        if stackedData[j][i]
+          stackedData[j][i].y00 = y00;
+          y00 += stackedData[j][i].y
+        j++
+      i++
+
+    i = 0
     @series.forEach (series) ->
       series.stack = stackedData[i++]
     # END
@@ -186,11 +203,30 @@ Tactile.Chart = class Chart
     # https://github.com/mbostock/d3/wiki/Stack-Layout
     seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
 
+
+
     layout = d3.layout.stack()
     layout.offset(@offset)
     stackedData = layout(seriesData)
 
     @stackedData = stackedData
+
+    i = 0
+    maxLen = 0;
+    while i < stackedData.length
+      maxLen = Math.max(maxLen, stackedData[i].length)
+      i++
+
+    i = 0
+    y00 = 0
+    while i < maxLen
+      j = 0
+      while j < stackedData.length
+        if stackedData[j][i]
+          stackedData[j][i].y00 = y00;
+          y00 += stackedData[j][i].y
+        j++
+      i++
 
   # Set's the size for the chart
   # please note you have to call render() or update()

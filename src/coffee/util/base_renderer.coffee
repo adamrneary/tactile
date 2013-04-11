@@ -31,10 +31,8 @@ Tactile.RendererBase = class RendererBase
     )
     topSeriesData.forEach (series) =>
       if @name is "waterfall"
-        y_last = 0
         series.forEach (d) =>
-          values.push d.y + y_last
-          y_last += d.y if d.y
+          values.push d.y + d.y00
       else
         series.forEach (d) =>
           # if we don't stack data we don't want to sum up the values
