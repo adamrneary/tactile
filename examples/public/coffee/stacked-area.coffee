@@ -88,10 +88,12 @@ unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
 $("#example_view").prepend stackButton
 $("#example_view").prepend unstackButton
 
-unstackButton.click(()->
+unstackButton.click((e)->
   chart.unstackTransition()
+  e.stopPropagation()
 )
 
-stackButton.click(()->
+stackButton.click((e)->
   chart.stackTransition()
+  e.stopPropagation()
 )

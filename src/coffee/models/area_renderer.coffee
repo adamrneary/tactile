@@ -85,8 +85,12 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     circ.exit().remove()
 
 
-  stackTransition: =>
+  stackTransition: (transition, transitionSpeed)=>
     @unstack = false
+    @graph.discoverRange(@)
+    @render(transition)
 
-  unstackTransition: =>
+  unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
+    @graph.discoverRange(@)
+    @render(transition)
