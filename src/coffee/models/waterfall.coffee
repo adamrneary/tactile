@@ -32,7 +32,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
       .attr("width", @_seriesBarWidth()/ (1 + @gapSize))
       .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
-#      .attr("stroke", "#BEBEBE")
+      .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
 
