@@ -45,6 +45,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
         ("active" if d is @active), # apply active class for active element
         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
+    nodes.exit().remove()
+
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
       @seriesCanvas().selectAll('circle:not(.active)')
         .style('display', 'none')
