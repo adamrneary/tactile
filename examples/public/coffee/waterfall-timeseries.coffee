@@ -52,7 +52,8 @@ chart.addSeries [
   name: "Customers"
   renderer: "waterfall"
   color: "#009ACD" # Alex: make this blue
-  fromBaseline: true
+  fromBaseline: (d, i) ->
+    i%2
   tooltip: (d) ->
     d.y + " customers"
   dataTransform: (d) ->
@@ -64,6 +65,8 @@ chart.addSeries [
   color: "#008B00"
   tooltip: (d) ->
     d.y + " new customers"
+  fromBaseline: (d, i) ->
+    i is 3
   dataTransform: (d) ->
     x: d.period
     y: d.newCustomers
@@ -73,6 +76,7 @@ chart.addSeries [
   color: "#B22222"
   tooltip: (d) ->
     d.y + " churned customers"
+  fromBaseline: false
   dataTransform: (d) ->
     x: d.period
     y: d.churnedCustomers

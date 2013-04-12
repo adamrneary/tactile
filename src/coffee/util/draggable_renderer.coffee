@@ -34,8 +34,6 @@ Tactile.DraggableRenderer = class DraggableRenderer extends RendererBase
           e.preventDefault()
     )
 
-    @utils = new Tactile.Utils()
-
   selectNextEditableValue: =>
     return unless @active
     setNext = false

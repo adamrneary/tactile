@@ -36,6 +36,7 @@ Tactile.Chart = class Chart
     @updateCallbacks = []
     @_axes = {}
     @timesRendered = 0
+    @utils = new Tactile.Utils()
 
     # chart size is handled with its own method
     @setSize
@@ -93,7 +94,7 @@ Tactile.Chart = class Chart
     @series.active = =>
       @series.filter (s) ->
         not s.disabled
-  
+
     # Initialize each serie's stack data
     # BEGIN
     seriesData = @series.map((d) =>
@@ -115,6 +116,7 @@ Tactile.Chart = class Chart
       j = 0
       while j < stackedData.length
         if stackedData[j][i]
+          y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, stackedData[j][i], i)
           stackedData[j][i].y00 = y00;
           y00 += stackedData[j][i].y
         j++
@@ -204,7 +206,6 @@ Tactile.Chart = class Chart
     seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
 
 
-
     layout = d3.layout.stack()
     layout.offset(@offset)
     stackedData = layout(seriesData)
@@ -223,10 +224,12 @@ Tactile.Chart = class Chart
       j = 0
       while j < stackedData.length
         if stackedData[j][i]
+          y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, stackedData[j][i], i)
           stackedData[j][i].y00 = y00;
           y00 += stackedData[j][i].y
         j++
       i++
+
 
   # Set's the size for the chart
   # please note you have to call render() or update()

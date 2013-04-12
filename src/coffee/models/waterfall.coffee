@@ -2,7 +2,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
   name: "waterfall"
 
   specificDefaults:
-    gapSize: 0
+    gapSize: 0.15
     round: true
     unstack: true
 
@@ -29,14 +29,38 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
-      .attr("width", @_seriesBarWidth())
+      .attr("width", @_seriesBarWidth()/ (1 + @gapSize))
       .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
-      .attr("stroke", 'white')
+      .attr("stroke", "#BEBEBE")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
 
     nodes.exit().remove()
+
+    line = @seriesCanvas().selectAll("line").data(@series.stack)
+    line.enter()
+      .append("svg:line")
+      .attr("clip-path", "url(#clip)")
+
+    @transition.selectAll("##{@_nameToId()} line")
+      .filter((d) => d.y)
+      .attr("x1", @_barX)
+      .attr("x2", (d, i)=>
+        gapCount = @graph.series.filter(
+          (d) =>
+            d.renderer == 'waterfall'
+        ).length + 1
+        @_barX(d, i)-(if  @_waterfalRendererIndex() is 0 then @_seriesBarWidth()*@gapSize*gapCount else @_seriesBarWidth()*@gapSize)
+      )
+      .attr("y1", (d)=>@_barY(d)+(if d.y > 0 then @graph.y.magnitude Math.abs(d.y) else 0))
+      .attr("y2", (d)=>@_barY(d)+(if d.y > 0 then @graph.y.magnitude Math.abs(d.y) else 0))
+      .attr("stroke", "#BEBEBE")
+      .attr("stroke-width", (d, i)=>
+        if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
+
+
+
 
     @setupTooltips()
 
@@ -86,7 +110,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     x = @graph.x(d.x)
     seriesBarWidth = @_seriesBarWidth()
     initialX = x + @_barXOffset(seriesBarWidth)
-    initialX + (@_columnRendererIndex() * seriesBarWidth)
+    initialX + (@_waterfalRendererIndex() * seriesBarWidth)
 
   _barY: (d, i) =>
     if d.y > 0
@@ -94,7 +118,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     else
       @graph.y(Math.abs(d.y00)) * (if d.y00 < 0 then -1 else 1)
 
-  _columnRendererIndex: ->
+  _waterfalRendererIndex: ->
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length

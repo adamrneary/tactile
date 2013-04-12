@@ -16,6 +16,7 @@ Tactile.RendererBase = class RendererBase
     @configure options
     # call constructor of inherited renderers
     @initialize?(options)
+    @utils = new Tactile.Utils()
 
   seriesPathFactory: ->
     #implement in subclass
