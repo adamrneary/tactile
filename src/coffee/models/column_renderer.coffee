@@ -45,6 +45,8 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
         ("active" if d is @active), # apply active class for active element
         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(' ')) # apply editable class for editable element
 
+    nodes.exit().remove()
+
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
       @seriesCanvas().selectAll('circle:not(.active)')
         .style('display', 'none')
@@ -115,11 +117,49 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
     count = data.length
     barWidth = @graph.width() / count * (1 - @gapSize)
 
-  stackTransition: ->
+  stackTransition: (transition, transitionSpeed)=>
     @unstack = false
+    @graph.discoverRange(@)
+    transition.selectAll("##{@_nameToId()} rect")
+      .duration(transitionSpeed/2)
+      .attr("y", @_barY)
+      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
 
-  unstackTransition: ->
+    transition.selectAll("##{@_nameToId()} circle")
+      .duration(transitionSpeed/2)
+      .attr("cy", @_barY)
+
+    transition.selectAll("##{@_nameToId()} rect")
+      .delay(transitionSpeed/2)
+      .attr("width", @_seriesBarWidth())
+      .attr("x", @_barX)
+
+    transition.selectAll("##{@_nameToId()} circle")
+      .delay(transitionSpeed/2)
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+
+
+
+  unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
+    @graph.discoverRange(@)
+    transition.selectAll("##{@_nameToId()} rect")
+      .duration(transitionSpeed/2)
+      .attr("x", @_barX)
+      .attr("width", @_seriesBarWidth())
+
+    transition.selectAll("##{@_nameToId()} circle")
+      .duration(transitionSpeed/2)
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+
+    transition.selectAll("##{@_nameToId()} rect")
+      .delay(transitionSpeed/2)
+      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .attr("y", @_barY)
+
+    transition.selectAll("##{@_nameToId()} circle")
+      .delay(transitionSpeed/2)
+      .attr("cy", @_barY)
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values

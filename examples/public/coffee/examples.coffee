@@ -54,7 +54,9 @@ components = [
 ,
   shortLink:"chart-update"
   title: "Chart update"
-
+,
+  shortLink:"stacked-column-big-data"
+  title: "Stacked column big data"
 ]
 
 # core = [
