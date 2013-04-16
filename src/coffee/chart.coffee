@@ -252,6 +252,7 @@ Tactile.Chart = class Chart
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each  @axesList, (axis) =>
       axis.render(t)
 
@@ -261,6 +262,7 @@ Tactile.Chart = class Chart
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each  @axesList, (axis) =>
       axis.render(t)
 
