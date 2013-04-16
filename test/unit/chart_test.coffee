@@ -92,8 +92,8 @@ describe 'Chart', ->
         x: d.x
         y: d.z
     ]
-    enemies = _chart.series[_chart.series.length-2]
-    friends = _chart.series[_chart.series.length-1]
+    enemies = _chart.series[_chart.series.array.length-2]
+    friends = _chart.series[_chart.series.array.length-1]
     assert enemies.name is 'enemies'
     assert friends.name is 'friends'
     assert enemies.renderer is 'area'
@@ -118,7 +118,7 @@ describe 'Chart', ->
     _chart.addSeries([series, series])
 
     _chart.addSeries _.extend(series, {renderer: 'column'}), overwrite: true
-    assert _chart.series.length is 1
+    assert _chart.series.array.length is 1
     assert _chart.renderers.length is 1
     assert _chart.renderers[0].name is 'column'
 
@@ -365,8 +365,7 @@ describe 'Chart', ->
 
   it 'Chart: for disable all series', (done) ->
     _chart = new window.Tactile.Chart()
-    _.each _chart.series, (s) ->
-      s.disable()
+    _chart.series.disableAll()
     res = _chart._allSeriesDisabled()
     assert res is true
     done()

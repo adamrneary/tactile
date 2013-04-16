@@ -40,6 +40,9 @@ noncartesian = [
 ]
 
 components = [
+  shortLink: "dual-scaled"
+  title: "Secondary y-axis"
+,
   shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,
