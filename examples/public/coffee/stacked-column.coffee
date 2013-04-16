@@ -108,9 +108,10 @@ sl.slider
     chart._axes.x.frame = ui.values
     chart.render()
 
-$("#group").on "click", ->
+$("#group").on "click", (e)->
   chart.unstackTransition()
+  e.stopPropagation()
 
-$("#stack").on "click", ->
+$("#stack").on "click", (e)->
   chart.stackTransition()
-
+  e.stopPropagation()

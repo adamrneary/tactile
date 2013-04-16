@@ -7,6 +7,7 @@ Tactile.AxisTime = class AxisTime
     @marginTop = args.paddingBottom or 5
     @time = new FixturesTime()
     @grid = args.grid
+    @frame = args.frame
 
   appropriateTimeUnit: ->
     unit = undefined

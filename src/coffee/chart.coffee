@@ -19,22 +19,24 @@ Tactile.Chart = class Chart
   transitionSpeed: 750
   defaultHeight: 400
   defaultWidth: 730
-  defaultAxes:
+  defaultAxesOptions:
     x:
       dimension: "time"
       frame: [undefined, undefined]
     y:
       dimension: "linear"
       frame: [undefined, undefined]
+    y1:
+      dimension: "linear"
+      frame: [undefined, undefined]
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @renderers = []
-    @axesList = []
-    @series = []
+    @axesList = {}
+    @series = new SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
-    @_axes = {}
     @timesRendered = 0
     @utils = new Tactile.Utils()
 
@@ -44,7 +46,7 @@ Tactile.Chart = class Chart
       height: args.height or @defaultHeight
     delete args.width if args.width?
     delete args.height if args.height?
-    
+
     # the remaining chart properties can be applied to the object directly
     _.each args, (val, key) =>
       @[key] = val
@@ -59,28 +61,8 @@ Tactile.Chart = class Chart
     return unless series
     series = [series] unless _.isArray(series)
 
-    # TODO: Refactor this into series/renderer constructor
-    seriesDefaults =
-      dataTransform: (d) -> d
-    newSeries = _.map(series, (s) => _.extend({}, seriesDefaults, s))
-
-    if options.overwrite
-      @series = newSeries
-      @renderers = []
-
-    else
-      @series = @series.concat(newSeries)
-
-    _.each newSeries, (s) ->
-      # Add enable/disable/toggle serie functions
-      s.disable = () ->
-        @disabled = true
-
-      s.enable = () ->
-        @disabled = false
-
-      s.toggle = () ->
-        @disabled = not @disabled
+    newSeries = _.map(series, (options) -> new Series(options))
+    @series.add(newSeries, options.overwrite)
 
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
@@ -89,11 +71,6 @@ Tactile.Chart = class Chart
 
   initSeriesStackData: (options = {overwrite: false}) ->
     return if @dataInitialized and not options.overwrite
-
-    # TODO: Refactor this into series/renderer constructor
-    @series.active = =>
-      @series.filter (s) ->
-        not s.disabled
 
     # Initialize each serie's stack data
     # BEGIN
@@ -126,7 +103,7 @@ Tactile.Chart = class Chart
     @series.forEach (series) ->
       series.stack = stackedData[i++]
     # END
-    
+
     @dataInitialized = true
 
   render: (transitionSpeed)->
@@ -134,16 +111,16 @@ Tactile.Chart = class Chart
       return
     @initSeriesStackData()
     @_setupCanvas()
-    stackedData = @stackData()
+    @stackData()
 
-    transitionSpeed = @transitionSpeed unless transitionSpeed
+    transitionSpeed ||= @transitionSpeed
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
       renderer.render(t)
 
-    _.each  @axesList, (axis) =>
+    _.each @axesList, (axis) =>
       axis.render(t)
 
     @updateCallbacks.forEach (callback) ->
@@ -166,12 +143,12 @@ Tactile.Chart = class Chart
         rangeEnd = @width() - barWidth
 
       xframe = [
-        (if @_axes.x?.frame?[0] then @_axes.x.frame[0] else domain.x[0])
-        (if @_axes.x?.frame?[1] then @_axes.x.frame[1] else domain.x[1])
+        (if @axes().x?.frame?[0] then @axes().x.frame[0] else domain.x[0])
+        (if @axes().x?.frame?[1] then @axes().x.frame[1] else domain.x[1])
       ]
       yframe = [
-        (if @_axes.y?.frame?[0] then @_axes.y.frame[0] else domain.y[0])
-        (if @_axes.y?.frame?[1] then @_axes.y.frame[1] else domain.y[1])
+        (if @axes().y?.frame?[0] then @axes().y.frame[0] else domain.y[0])
+        (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
       ]
 
       @x = d3.scale.linear()
@@ -181,18 +158,34 @@ Tactile.Chart = class Chart
         .domain(yframe)
         .range([@height(), 0])
       @y.magnitude = d3.scale.linear()
-        .domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
+        .domain([0, domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
-  initAxis: (axis) ->
+      unless renderer.series.ofDefaultAxis()
+        @y1 = d3.scale.linear()
+          .domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
+          .range([@height(), 0]);
+
+
+  axes: (args) ->
+    return @axesList unless args
+
+    _.each ['x', 'y', 'y1'], (k) =>
+      if args[k]?
+        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k}
+        @initAxis _.extend defaults, args[k]
+
+    @
+
+  initAxis: (args) ->
     return unless @_allRenderersCartesian()
-    switch axis.dimension
+    switch args.dimension
       when "linear"
-        @axesList.push new Tactile.AxisY(_.extend {}, axis.options, {graph: @})
+        @axesList[args.axis] = new Tactile.AxisLinear args
       when "time"
-        @axesList.push new Tactile.AxisTime(_.extend {}, axis.options, {graph: @})
+        @axesList[args.axis] = new Tactile.AxisTime args
       else
-        console.log("ERROR:#{axis.dimension} is not currently implemented")
+        console.log("ERROR:#{args.dimension} is not currently implemented")
 
   # Used by range slider
   dataDomain: ->
@@ -203,14 +196,15 @@ Tactile.Chart = class Chart
   stackData: ->
     # Read more about stacking data here:
     # https://github.com/mbostock/d3/wiki/Stack-Layout
-    seriesData = @series.active().map((d) => @_data.map(d.dataTransform))
+
+    # select data of default scale only, so we can handle y1 axis data separately
+    defaultScaleSeriesData = @series.active().ofDefaultAxis().array.map((s) => @_data.map(s.dataTransform))
 
 
     layout = d3.layout.stack()
     layout.offset(@offset)
-    stackedData = layout(seriesData)
+    @stackedData = layout(defaultScaleSeriesData)
 
-    @stackedData = stackedData
 
     i = 0
     maxLen = 0;
@@ -274,15 +268,21 @@ Tactile.Chart = class Chart
     @renderers.filter((r) -> r.name == name)
 
   stackTransition: (transitionSpeed)=>
-    # Probably we'll want other types soon too
-    _.each(@renderersByType('column'), (r) -> r.stackTransition())
-    _.each(@renderersByType('area'), (r) -> r.stackTransition())
-    @render(transitionSpeed)
+    transitionSpeed = @transitionSpeed unless transitionSpeed
+    t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each  @axesList, (axis) =>
+      axis.render(t)
+
 
   unstackTransition: (transitionSpeed)=>
-    _.each(@renderersByType('column'), (r) -> r.unstackTransition())
-    _.each(@renderersByType('area'), (r) -> r.unstackTransition())
-    @render(transitionSpeed)
+    transitionSpeed = @transitionSpeed unless transitionSpeed
+    t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each  @axesList, (axis) =>
+      axis.render(t)
 
   #############################################################################
   # expose public variables
@@ -310,22 +310,7 @@ Tactile.Chart = class Chart
     @dataInitialized = false
     @
 
-  # TODO:
-  # it should be possible to pass options to the axes
-  # so far they were
-  # for x: unit, ticksTreatment, grid
-  # for y: orientation, pixelsPerTick, ticks and few more.
-  axes: (args, options) ->
-    return @_axes unless args
 
-    _.each ['x','y'], (k) =>
-      if args[k]?
-        @_axes[k] =
-          frame: (args[k]?.frame or @defaultAxes[k].frame)
-          dimension: (args[k]?.dimension or @defaultAxes[k].dimension)
-        @initAxis(@_axes[k])
-
-    @
 
   #############################################################################
   # private methods
@@ -403,7 +388,7 @@ Tactile.Chart = class Chart
     deg * Math.PI / 180
 
   _hasDifferentRenderers: ->
-    _.uniq(_.map(@series, (s) -> s.renderer)).length > 1
+    _.uniq(_.map(@series.array, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
     _.any(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
@@ -412,4 +397,5 @@ Tactile.Chart = class Chart
     _.every(@renderers, (r) -> r.cartesian is true)
 
   _allSeriesDisabled: ->
-    _.every(@series, (s) -> s.disabled is true)
+    _.every(@series.array, (s) -> s.disabled is true)
+

@@ -92,8 +92,8 @@ describe 'Chart', ->
         x: d.x
         y: d.z
     ]
-    enemies = _chart.series[_chart.series.length-2]
-    friends = _chart.series[_chart.series.length-1]
+    enemies = _chart.series[_chart.series.array.length-2]
+    friends = _chart.series[_chart.series.array.length-1]
     assert enemies.name is 'enemies'
     assert friends.name is 'friends'
     assert enemies.renderer is 'area'
@@ -118,7 +118,7 @@ describe 'Chart', ->
     _chart.addSeries([series, series])
 
     _chart.addSeries _.extend(series, {renderer: 'column'}), overwrite: true
-    assert _chart.series.length is 1
+    assert _chart.series.array.length is 1
     assert _chart.renderers.length is 1
     assert _chart.renderers[0].name is 'column'
 
@@ -317,14 +317,39 @@ describe 'Chart', ->
     assert _chart._data is data
     done()
 
-  it 'Chart: axes function', (done) ->
+  it 'Chart: linear axis function', (done) ->
     frameVal = [0, 4]
     _chart = new window.Tactile.Chart()
+    tickFormat = (d) -> d + "%"
     _chart.axes(x:
-      dimension: "time"
+      dimension: "linear"
       frame: frameVal
+      tickFormat: tickFormat
     )
-    assert _chart._axes.x.frame is frameVal
+    assert _chart.axesList.hasOwnProperty('x') is true
+    assert _chart.axesList.hasOwnProperty('y') is false
+
+    axis = _chart.axesList.x
+    assert axis.horizontal is true
+    assert axis.tickFormat is tickFormat
+    assert axis.frame is frameVal
+    assert axis.__proto__.constructor.name is "AxisLinear"
+
+    done()
+
+  it 'Chart: mixed axis function', (done) ->
+    _chart = new window.Tactile.Chart()
+    _chart.axes
+      x:
+        dimension: "time"
+      y:
+        dimension: 'linear'
+
+    assert _chart.axesList.hasOwnProperty('x') is true
+    assert _chart.axesList.hasOwnProperty('y') is true
+    assert _chart.axesList.x.__proto__.constructor.name is "AxisTime"
+    assert _chart.axesList.y.__proto__.constructor.name is "AxisLinear"
+
     done()
 
   it "Chart: for all series don't disabled", (done) ->
@@ -340,8 +365,7 @@ describe 'Chart', ->
 
   it 'Chart: for disable all series', (done) ->
     _chart = new window.Tactile.Chart()
-    _.each _chart.series, (s) ->
-      s.disable()
+    _chart.series.disableAll()
     res = _chart._allSeriesDisabled()
     assert res is true
     done()

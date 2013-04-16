@@ -6,80 +6,68 @@ data = [
 ,
   x: 1
   y: 170
-  z: 200
+  z: 20
 ,
   x: 2
   y: 280
-  z: 100
+  z: 50
 ,
   x: 3
   y: 205
-  z: 240
+  z: 35
 ,
   x: 4
   y: 280
-  z: 100
+  z: 55
 ,
   x: 5
   y: 205
-  z: 240
+  z: 70
 ,
   x: 6
   y: 280
-  z: 100
+  z: 75
 ,
   x: 7
   y: 205
-  z: 240
+  z: 95
 ,
   x: 8
   y: 332
-  z: 490
+  z: 100
 ]
 chart = new Tactile.Chart()
-tickFormat = (d) ->
-  if d > 99 then d / 100 + "★" else "#{d*10}☢"
 
-chart.axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
+chart.axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
 chart.element($("#example_view")[0]).data(data)
 
 chart.addSeries
   name: "enemies"
-  renderer: "line"
+  renderer: "column"
   color: "#c05020"
-  isEditable: true
   tooltip: (d) ->
     d.y + " enemies"
 
-  dataTransform: (d) ->
-    x: d.x
-    y: d.y
-
 chart.addSeries
+  yAxis: 'y1'
   name: "friends"
-  dotSize: 2
   renderer: "line"
-  sigfigs: 1
   color: "#6060c0"
-  isEditable: (d, i) ->
-    d.x == 2
-  afterDrag: (d, y, i, draggedSeries, graph) ->
-    graph.data()[i].z = y
-
   tooltip: (d) ->
-    d.y + " friends"
+    d.y + "%"
 
   dataTransform: (d) ->
     x: d.x
     y: d.z
 
 chart.render()
+
 sl = $("<div>").attr("id", "slider")
 $("#example_view").append sl
 sl.slider
   min: 0
   max: 8
-  values: frameVal
+  values: [0, 8]
   range: true
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values

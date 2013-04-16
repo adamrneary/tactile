@@ -46,6 +46,9 @@ noncartesian = [
 ]
 
 components = [
+  shortLink: "dual-scaled"
+  title: "Secondary y-axis"
+,
   shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,
@@ -57,7 +60,9 @@ components = [
 ,
   shortLink:"chart-update"
   title: "Chart update"
-
+,
+  shortLink:"stacked-column-big-data"
+  title: "Stacked column big data"
 ]
 
 # core = [

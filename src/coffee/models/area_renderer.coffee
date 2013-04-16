@@ -19,15 +19,15 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
   seriesPathFactory: ->
     d3.svg.area()
     .x((d) => @graph.x d.x)
-    .y0((d) => @graph.y @_y0(d))
-    .y1((d) => @graph.y d.y + @_y0(d))
+    .y0((d) => @yFunction() @_y0(d))
+    .y1((d) => @yFunction() d.y + @_y0(d))
     .interpolate(@graph.interpolation)
     .tension @tension
 
   seriesStrokeFactory: ->
     d3.svg.line()
     .x((d) => @graph.x d.x)
-    .y((d) => @graph.y d.y + @_y0(d))
+    .y((d) => @yFunction() d.y + @_y0(d))
     .interpolate(@graph.interpolation)
     .tension @tension
 
@@ -71,7 +71,7 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
             (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
         )
       .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y + @_y0(d))
+      .attr("cy", (d) => @yFunction() d.y + @_y0(d))
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
         ("active" if d is @active), # apply active class for active element
@@ -85,8 +85,12 @@ Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
     circ.exit().remove()
 
 
-  stackTransition: =>
+  stackTransition: (transition, transitionSpeed)=>
     @unstack = false
+    @graph.discoverRange(@)
+    @render(transition)
 
-  unstackTransition: =>
+  unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
+    @graph.discoverRange(@)
+    @render(transition)
