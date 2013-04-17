@@ -112,7 +112,6 @@ Tactile.Chart = class Chart
     @initSeriesStackData()
     @_setupCanvas()
     @stackData()
-
     transitionSpeed ||= @transitionSpeed
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
@@ -200,27 +199,25 @@ Tactile.Chart = class Chart
     # select data of default scale only, so we can handle y1 axis data separately
     defaultScaleSeriesData = @series.active().ofDefaultAxis().array.map((s) => @_data.map(s.dataTransform))
 
-
     layout = d3.layout.stack()
     layout.offset(@offset)
     @stackedData = layout(defaultScaleSeriesData)
 
-
     i = 0
     maxLen = 0;
-    while i < stackedData.length
-      maxLen = Math.max(maxLen, stackedData[i].length)
+    while i < @stackedData.length
+      maxLen = Math.max(maxLen, @stackedData[i].length)
       i++
 
     i = 0
     y00 = 0
     while i < maxLen
       j = 0
-      while j < stackedData.length
-        if stackedData[j][i]
-          y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, stackedData[j][i], i)
-          stackedData[j][i].y00 = y00;
-          y00 += stackedData[j][i].y
+      while j < @stackedData.length
+        if @stackedData[j][i]
+          y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, @stackedData[j][i], i)
+          @stackedData[j][i].y00 = y00;
+          y00 += @stackedData[j][i].y
         j++
       i++
 
