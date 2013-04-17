@@ -50,7 +50,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
         gapCount = @graph.series.filter(
           (d) =>
             d.renderer == 'waterfall'
-        ).length
+        ).length()
         @_barX(d, i)-(if  @_waterfalRendererIndex() is 0 then @_seriesBarWidth()*@gapSize*gapCount else @_seriesBarWidth()*@gapSize)
       )
       .attr("y1", (d)=>@_barY(d)+(if d.y > 0 then @graph.y.magnitude Math.abs(d.y) else 0))
@@ -100,7 +100,7 @@ Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
     width = width / @graph.series.filter(
       (d) =>
         d.renderer == 'waterfall'
-    ).length
+    ).length()
 
   _barXOffset: (seriesBarWidth) ->
     count = @graph.renderersByType(@name).length
