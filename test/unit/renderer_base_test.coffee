@@ -17,12 +17,23 @@ describe 'Renderer base', ->
     assert _rendererBase
     done()
 
-  it 'Renderer base: domain', (done) ->
-    _rendererBase = new window.Tactile.RendererBase()
-    obj = [{x: 1, y: 5}, {x:2, y:5}]
-    _rendererBase['graph'] = {stackedData: [obj, obj, obj]}
-    assert _rendererBase.domain()
-    done()
+  describe 'Renderer base: domain', ->
+    it 'when data given', (done) ->
+      _rendererBase = new window.Tactile.RendererBase()
+      obj = [{x: 1, y: 5}, {x:2, y:5}]
+      _rendererBase['graph'] = {stackedData: [obj, obj, obj]}
+      assert _rendererBase.domain()
+      done()
+
+    it 'without any data', (done) ->
+      _rendererBase = new window.Tactile.RendererBase()
+      # [[]] is passed when chart has no data at all
+      stackedData = [[]]
+      _rendererBase['graph'] = {stackedData: stackedData}
+      assert _rendererBase.domain()
+      done()
+
+
 
   it 'Renderer base: render', (done) ->
     _rendererBase = new window.Tactile.RendererBase()
