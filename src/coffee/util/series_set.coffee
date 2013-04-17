@@ -17,6 +17,9 @@ Tactile.SeriesSet = class SeriesSet
   filter: (f) ->
     new SeriesSet @array.filter(f), @graph
 
+  length: () =>
+    @array.length
+
   add: (newSeries, overwrite = false) ->
     if overwrite
       @array = newSeries
