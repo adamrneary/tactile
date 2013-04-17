@@ -21,9 +21,9 @@ cartesian = [
   shortLink: "multiple-series"
   title: "Multiple series types"
 ,
-  shortLink: "waterfall-grouped"
-  title: "Waterfall (grouped)"
-,
+#   shortLink: "waterfall-grouped"
+#   title: "Waterfall (grouped)"
+# ,
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
 ]
