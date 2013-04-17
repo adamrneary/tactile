@@ -51,9 +51,8 @@ chart = new Tactile.Chart()
 chart.addSeries [
   name: "Customers"
   renderer: "waterfall"
-  color: "#009ACD" # Alex: make this blue
-  fromBaseline: (d, i) ->
-    i%2
+  color: "#30878F"
+  fromBaseline: true
   tooltip: (d) ->
     d.y + " customers"
   dataTransform: (d) ->
@@ -62,21 +61,18 @@ chart.addSeries [
 ,
   name: "New customers"
   renderer: "waterfall"
-  color: "#008B00"
+  color: "#8ac16f"
   tooltip: (d) ->
     d.y + " new customers"
-  fromBaseline: (d, i) ->
-    i is 3
   dataTransform: (d) ->
     x: d.period
     y: d.newCustomers
 ,
   name: "Churned customers"
   renderer: "waterfall"
-  color: "#B22222"
+  color: "#dc6e59"
   tooltip: (d) ->
     d.y + " churned customers"
-  fromBaseline: false
   dataTransform: (d) ->
     x: d.period
     y: d.churnedCustomers
