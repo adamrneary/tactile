@@ -16,6 +16,7 @@ Tactile.RendererBase = class RendererBase
     @configure options
     # call constructor of inherited renderers
     @initialize?(options)
+    @utils = new Tactile.Utils()
 
   seriesPathFactory: ->
     #implement in subclass
@@ -30,15 +31,19 @@ Tactile.RendererBase = class RendererBase
       if @unstack then stackedData else [stackedData.slice(-1).shift()]
     )
     topSeriesData.forEach (series) =>
-      series.forEach (d) =>
-        # if we don't stack data we don't want to sum up the values
-        # as this causes the viewed window to be way to large
-        # for example if you have x:1, y:20 and
-        # x1, y:10 y-axis will show up to y=30
-        if @unstack
-          values.push d.y
-        else
-          values.push d.y + d.y0
+      if @name is "waterfall"
+        series.forEach (d) =>
+          values.push d.y + d.y00
+      else
+        series.forEach (d) =>
+          # if we don't stack data we don't want to sum up the values
+          # as this causes the viewed window to be way to large
+          # for example if you have x:1, y:20 and
+          # x1, y:10 y-axis will show up to y=30
+          if @unstack
+            values.push d.y
+          else
+            values.push d.y + d.y0
 
     if stackedData[0].length == 0
       return { x: [0, 0], y: [0, 0] }
