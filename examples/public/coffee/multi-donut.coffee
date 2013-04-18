@@ -5,11 +5,13 @@ data = [
   val3: 6000
   val4: 7000
   val5: 8000
-  color1: "#C6DBEF"
-  color2: "#D9D9D9"
-  color3: "#FCBBA1"
-  color4: "#FED976"
-  color5: "#C7E9C0"
+  val6: 9000
+  color1: "#254E5D"
+  color2: "#671E20"
+  color3: "#8A8A8A"
+  color4: "#2058C8"
+  color5: "#C98621"
+  color6: "#79593D"
 ,
   label: "CA"
   val1: 8000
@@ -17,11 +19,13 @@ data = [
   val3: 6000
   val4: 5000
   val5: 4000
-  color1: "#9ECAE1"
-  color2: "#BDBDBD"
-  color3: "#FC9272"
-  color4: "#FEB24C"
-  color5: "#A1D99B"
+  val6: 3000
+  color1: "#3F6672"
+  color2: "#813D3F"
+  color3: "#9D9D9D"
+  color4: "#4072D0"
+  color5: "#D39A42"
+  color6: "#90765F"
 ,
   label: "NY"
   val1: 2000
@@ -29,17 +33,19 @@ data = [
   val3: 1000
   val4: 3000
   val5: 2000
-  color1: "#6BAED6"
-  color2: "#969696"
-  color3: "#FB6A4A"
-  color4: "#FD8D3C"
-  color5: "#74C476"
+  val6: 1000
+  color1: "#597D88"
+  color2: "#9A5C5D"
+  color3: "#B1B1B1"
+  color4: "#608BD7"
+  color5: "#DDAF63"
+  color6: "#A79380"
 ]
 chart = new Tactile.Chart()
   .element($("#example_view")[0]).width(1000).height(720).data(data)
 
 chart.addSeries [
-  name: "donut-1"
+  name: "grapefruit"
   renderer: "donut"
   tooltip: (d) ->
     d.label + " " + d.val
@@ -51,10 +57,10 @@ chart.addSeries [
   outerRadius: 120
   stackedInnerRadius: 200
   stackedOuterRadius: 330
-  stackedIndex: 4
+  stackedIndex: 0
 
 ,
-  name: "donut-2"
+  name: "kiwis"
   renderer: "donut"
   tooltip: (d) ->
     d.label + " " + d.val
@@ -66,9 +72,9 @@ chart.addSeries [
   outerRadius: 120
   stackedInnerRadius: 200
   stackedOuterRadius: 330
-  stackedIndex: 0
+  stackedIndex: 1
 ,
-  name: "donut-3"
+  name: "cherries"
   renderer: "donut"
   tooltip: (d) ->
     d.label + " " + d.val
@@ -80,9 +86,9 @@ chart.addSeries [
   outerRadius: 120
   stackedInnerRadius: 200
   stackedOuterRadius: 330
-  stackedIndex: 1
+  stackedIndex: 2
 ,
-  name: "donut-4"
+  name: "oranges"
   renderer: "donut"
   tooltip: (d) ->
     d.label + " " + d.val
@@ -96,7 +102,7 @@ chart.addSeries [
   stackedOuterRadius: 330
   stackedIndex: 3
 ,
-  name: "donut-5"
+  name: "apples"
   renderer: "donut"
   tooltip: (d) ->
     d.label + " " + d.val
@@ -108,7 +114,21 @@ chart.addSeries [
   outerRadius: 120
   stackedInnerRadius: 200
   stackedOuterRadius: 330
-  stackedIndex: 2
+  stackedIndex: 4
+,
+  name: "peaches"
+  renderer: "donut"
+  tooltip: (d) ->
+    d.label + " " + d.val
+  dataTransform: (d) ->
+    color: d.color6
+    val: d.val6
+    label: d.label
+  innerRadius: 70
+  outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 5
 ]
 chart.render()
 
@@ -118,11 +138,11 @@ $("#example_view").prepend stackButton
 $("#example_view").prepend unstackButton
 
 unstackButton.click((e)->
-  chart.unstackTransition(3000)
+  chart.unstackTransition(2000)
   e.stopPropagation()
 )
 
 stackButton.click((e)->
-  chart.stackTransition(3000)
+  chart.stackTransition(2000)
   e.stopPropagation()
 )
