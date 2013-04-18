@@ -75,15 +75,16 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
 
   getMaxOuterRadius: =>
     max = 0;
-    @graph.series.filter(
-      (d) =>
-        d.renderer == @name
-    ).forEach((d) =>
-      max = d.outerRadius if max < d.outerRadius
+    @graph.renderers.filter(
+      (r) =>
+        r.name == @name
+    ).forEach((r) =>
+      max = r.outerRadius if max < r.outerRadius
     )
     max
 
   stackTransition: (transition, transitionSpeed) =>
+    return unless @unstack
     @unstack = false
     xMargin = (@graph.width() - @getMaxStackedOuterRadius() * 2) / 2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius() * 2) / 2
@@ -124,6 +125,7 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
 
 
   unstackTransition: (transition, transitionSpeed) =>
+    return if @unstack
     @unstack = true
     xMargin = (@graph.width() - @getMaxStackedOuterRadius() * 2) / 2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius() * 2) / 2
