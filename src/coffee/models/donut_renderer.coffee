@@ -4,14 +4,17 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
   specificDefaults:
     cartesian: false
     unstack: true
-    minMargin: 0
+    minMargin: 20
     unstack: true
     stackedInnerRadius: 200
     stackedOuterRadius: 300
+    legendHeight: 20
+    legendWidth: 150
+
 
   initialize: =>
 
-  render: (transition)=>
+  render: (transition, transitionSpeed)=>
     @transition = transition if transition
     @seriesCanvas().selectAll("donut-arc")
       .data(@series.stack).enter().append("path")
@@ -50,12 +53,17 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
 
     @seriesCanvas().append("svg:text")
       .text(@series.name)
+      .attr("class", "donut-label")
       .attr("text-anchor", "middle")
       .attr("fill", "black")
       .attr("font-size", 15)
       .attr("x", @_xOffset())
       .attr("y", @_yOffset())
       .attr("opacity", 1)
+
+    y0 = @graph.height() - @minMargin - @_donutsCount()*@legendHeight
+    x0 = (@graph.width() - @legendWidth)/2
+    @_drawLegend(@transition, transitionSpeed, 0, x0, y0, false)
 
 
     @setupTooltips()
@@ -96,9 +104,20 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     )
     max
 
+  getLegendWidth: =>
+    @legendWidth + @seriesCanvas().selectAll("text.donut-legend").node().getBBox().width
+
+  getMaxLegendWidth: =>
+    max = 0;
+    renderers = @graph.renderers
+    _.filter(renderers,(r) => r.name == @name).forEach((r)=>
+      max = r.getLegendWidth() if max < r.getLegendWidth()
+    )
+    max
+
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
-    xMargin = (@graph.width() - @getMaxStackedOuterRadius()*2)/2
+    xMargin = (@graph.width() - @getMaxStackedOuterRadius()*2 - @getMaxLegendWidth())/2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius()*2)/2
 
     xOffset = xMargin + @getMaxStackedOuterRadius() + @getMaxStackedOuterRadius()*Math.cos(Math.PI+(2*Math.PI/@_donutsCount())*@_donutIndex())
@@ -108,16 +127,19 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
       .duration(transitionSpeed/3)
       .attr("transform", "translate(#{xOffset},#{yOffset})")
 
-    transition.selectAll("##{@_nameToId()} text")
+    transition.selectAll("##{@_nameToId()} text.donut-label")
       .duration(transitionSpeed/3)
       .attr("x", xOffset)
       .attr("y", yOffset)
 
-    transition.selectAll("##{@_nameToId()} text")
+    @_drawLegend(transition, transitionSpeed/3, 0, @graph.width()-@legendWidth, (@graph.height()-@_donutsCount()*@legendHeight)/2, false)
+
+    transition.selectAll("##{@_nameToId()} text.donut-label")
       .delay(transitionSpeed/3)
       .duration(transitionSpeed/3)
       .attr("opacity", 0)
 
+    @_drawLegend(transition, transitionSpeed/3, transitionSpeed/3, @graph.width()-@legendWidth, (@graph.height()-@_donutsCount()*@legendHeight)/2, true)
 
     xOffset = xMargin + @getMaxStackedOuterRadius()
     yOffset = yMargin + @getMaxStackedOuterRadius()
@@ -205,27 +227,31 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
             .innerRadius(iInnerRadius(t))
             .outerRadius(iOuterRadius(t))()
       )
-    transition.selectAll("##{@_nameToId()} text")
+    transition.selectAll("##{@_nameToId()} text.donut-label")
       .duration(transitionSpeed/3)
       .attr("x", xOffset)
       .attr("y", yOffset)
 
-    transition.selectAll("##{@_nameToId()} text")
+    transition.selectAll("##{@_nameToId()} text.donut-label")
       .delay(transitionSpeed/3)
       .duration(transitionSpeed/3)
       .attr("opacity", 1)
+
+    @_drawLegend(transition, transitionSpeed/3, transitionSpeed/3, @graph.width()-@legendWidth, (@graph.height()-@_donutsCount()*@legendHeight)/2, false)
+
 
     transition.selectAll("##{@_nameToId()} path")
       .delay(transitionSpeed*2/3)
       .duration(transitionSpeed/3)
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
 
-    transition.selectAll("##{@_nameToId()} text")
+    transition.selectAll("##{@_nameToId()} text.donut-label")
       .delay(transitionSpeed*2/3)
       .duration(transitionSpeed/3)
       .attr("x", @_xOffset())
       .attr("y", @_yOffset())
 
+    @_drawLegend(transition, transitionSpeed/3, transitionSpeed*2/3, (@graph.width() - @legendWidth)/2, @graph.height() - @minMargin - @_donutsCount()*@legendHeight, false)
 
   _donutsPerLine: =>
     Math.floor (@graph.width()-@minMargin) / (@getMaxOuterRadius()*2+@minMargin)
@@ -270,3 +296,38 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
 
   _indexInLine: =>
     Math.floor @_donutIndex()  - @_lineIndex()*@_donutsPerLine()
+
+  _drawLegend: (transition, transitinoSpeed, delay, x0, y0, showText)=>
+
+    @seriesCanvas().selectAll("rect")
+      .data(@series.stack).enter().append("rect")
+
+    y0 += @_donutIndex()*@legendHeight
+
+    transition.selectAll("##{@_nameToId()} rect")
+      .delay(delay)
+      .duration(transitinoSpeed)
+      .attr("x", (d, i)=>
+        x0 + i*@legendWidth/@series.stack.length
+      )
+      .attr("y", y0)
+      .attr("height", @legendHeight)
+      .attr("width", @legendWidth/@series.stack.length)
+      .attr("fill", ((d)-> d.color))
+      .attr("stroke-width", 1)
+      .attr("stroke", "#FEFEFE")
+
+    @seriesCanvas().selectAll("text.donut-legend")
+      .data([@series]).enter().append("svg:text")
+      .attr("class", "donut-legend")
+
+    transition.selectAll("##{@_nameToId()} text.donut-legend")
+      .delay(delay)
+      .duration(transitinoSpeed)
+      .text(@series.name)
+      .attr("class", "donut-legend")
+      .attr("text-anchor", "end")
+      .attr("font-size", 15)
+      .attr("x", x0 - 5)
+      .attr("y", y0 + @legendHeight - 3)
+      .attr("opacity", if showText then 1 else 0)

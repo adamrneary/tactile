@@ -120,7 +120,7 @@ Tactile.Chart = class Chart
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
-      renderer.render(t)
+      renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
       axis.render(t)
