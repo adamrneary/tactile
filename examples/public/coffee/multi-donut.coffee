@@ -53,12 +53,6 @@ chart.addSeries [
     color: d.color1
     val: d.val1
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 0
-
 ,
   name: "kiwis"
   renderer: "donut"
@@ -68,11 +62,6 @@ chart.addSeries [
     color: d.color2
     val: d.val2
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 1
 ,
   name: "cherries"
   renderer: "donut"
@@ -82,11 +71,6 @@ chart.addSeries [
     color: d.color3
     val: d.val3
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 2
 ,
   name: "oranges"
   renderer: "donut"
@@ -96,11 +80,6 @@ chart.addSeries [
     color: d.color4
     val: d.val4
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 3
 ,
   name: "apples"
   renderer: "donut"
@@ -110,11 +89,6 @@ chart.addSeries [
     color: d.color5
     val: d.val5
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 4
 ,
   name: "peaches"
   renderer: "donut"
@@ -124,11 +98,6 @@ chart.addSeries [
     color: d.color6
     val: d.val6
     label: d.label
-  innerRadius: 70
-  outerRadius: 120
-  stackedInnerRadius: 200
-  stackedOuterRadius: 330
-  stackedIndex: 5
 ]
 chart.render()
 
@@ -138,11 +107,11 @@ $("#example_view").prepend stackButton
 $("#example_view").prepend unstackButton
 
 unstackButton.click((e)->
-  chart.unstackTransition(2000)
+  chart.unstackTransition(1500)
   e.stopPropagation()
 )
 
 stackButton.click((e)->
-  chart.stackTransition(2000)
+  chart.stackTransition(1500)
   e.stopPropagation()
 )
