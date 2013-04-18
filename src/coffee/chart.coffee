@@ -117,7 +117,7 @@ Tactile.Chart = class Chart
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer)
-      renderer.render(t)
+      renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
       axis.render(t)
@@ -269,6 +269,7 @@ Tactile.Chart = class Chart
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each  @axesList, (axis) =>
       axis.render(t)
 
@@ -278,6 +279,7 @@ Tactile.Chart = class Chart
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each  @axesList, (axis) =>
       axis.render(t)
 
