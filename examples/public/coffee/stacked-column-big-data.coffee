@@ -91,7 +91,7 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart._axes.x.frame = ui.values
+    chart.axes().x.frame = ui.values
     chart.render()
 
 
