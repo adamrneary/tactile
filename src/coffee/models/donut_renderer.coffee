@@ -3,47 +3,34 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
   name: "donut"
   specificDefaults:
     cartesian: false
-    unstack: true
     minMargin: 20
     unstack: true
     stackedInnerRadius: 200
-    stackedOuterRadius: 300
+    stackedOuterRadius: 330
+    innerRadius: 70
+    outerRadius: 120
 
   initialize: =>
+    @stackedInnerRadius = @series.stackedInnerRadius unless @series.stackedInnerRadius is undefined
+    @stackedOuterRadius = @series.stackedOuterRadius unless @series.stackedOuterRadius is undefined
+    @innerRadius = @series.innerRadius unless @series.innerRadius is undefined
+    @outerRadius = @series.outerRadius unless @series.outerRadius is undefined
+    @stackedIndex = @series.stackedIndex unless @series.stackedIndex is undefined
 
   render: (transition, transitionSpeed)=>
     @transition = transition if transition
     @seriesCanvas().selectAll("donut-arc")
       .data(@series.stack).enter().append("path")
 
-    @dataAmount = 0
-    @series.stack.forEach((d)=>
-      @dataAmount += d.val
-    )
-
-    scal = d3.scale.linear()
-      .domain([0, @dataAmount])
-      .range([0, 2*Math.PI])
-
-    arcStartAngle = 0
-    i = 0
-    startAnglesList = []
-    while i < @series.stack.length
-      startAnglesList[i] = arcStartAngle
-      arcStartAngle += scal(@series.stack[i].val)
-      i++
-
     @transition.selectAll("##{@_nameToId()} path")
       .attr("class", "donut-arc")
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
       .attr("d", (d, i)=>
         arc = d3.svg.arc()
-          .startAngle(startAnglesList[i])
-          .endAngle(startAnglesList[i]+scal(d.val))
-          .innerRadius(@series.innerRadius)
-          .outerRadius(@series.outerRadius)()
-        arcStartAngle += scal(d.val)
-        arc
+          .startAngle(@_startAngle(d, i))
+          .endAngle(@_endAngle(d, i))
+          .innerRadius(if @unstack then @innerRadius else @stackedInnerRadius)
+          .outerRadius(if @unstack then @outerRadius else @stackedOuterRadius)()
       )
       .attr("stroke", "white")
       .attr("fill", ((d)-> d.color), "stroke")
@@ -56,7 +43,7 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
       .attr("font-size", 15)
       .attr("x", @_xOffset())
       .attr("y", @_yOffset())
-      .attr("opacity", 1)
+      .attr("opacity", if @unstack then 1 else 0)
 
     @setupTooltips()
 
@@ -70,10 +57,10 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
         displacement: [-10, 0]# because tooltip have left margin 10
 
   getInnerRadius: =>
-    @series.innerRadius
+    @innerRadius
 
   getOuterRadius: =>
-    @series.outerRadius
+    @outerRadius
 
   getStackedRadius: =>
     @stackedOuterRadius
@@ -101,8 +88,8 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     xMargin = (@graph.width() - @getMaxStackedOuterRadius()*2)/2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius()*2)/2
 
-    xOffset = xMargin + @getMaxStackedOuterRadius() + @getMaxStackedOuterRadius()*Math.cos(Math.PI+(2*Math.PI/@_donutsCount())*@_donutIndex())
-    yOffset = yMargin + @getMaxStackedOuterRadius() + @getMaxStackedOuterRadius()*Math.sin(Math.PI+(2*Math.PI/@_donutsCount())*@_donutIndex())
+    xOffset = xMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius()-@getMaxOuterRadius())*Math.cos((2*Math.PI/@_donutsCount())*@_donutIndex() - Math.PI/2)
+    yOffset = yMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius()-@getMaxOuterRadius())*Math.sin((2*Math.PI/@_donutsCount())*@_donutIndex() - Math.PI/2)
 
     transition.selectAll("##{@_nameToId()} path")
       .duration(transitionSpeed/3)
@@ -118,45 +105,15 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
       .duration(transitionSpeed/3)
       .attr("opacity", 0)
 
-    xOffset = xMargin + @getMaxStackedOuterRadius()
-    yOffset = yMargin + @getMaxStackedOuterRadius()
-    startAngle = Math.PI*1.5+(2*Math.PI/@_donutsCount())*@_donutIndex() - Math.PI/@_donutsCount()
-    endAngle = Math.PI*1.5+(2*Math.PI/@_donutsCount())*@_donutIndex() + Math.PI/@_donutsCount() - 0.04
-
-    scalOld = d3.scale.linear()
-      .domain([0, @dataAmount])
-      .range([0, 2*Math.PI])
-
-    scalNew = d3.scale.linear()
-      .domain([0, @dataAmount])
-      .range([0, 2*Math.PI/@_donutsCount() - 0.04])
-
-
-
-    arcStartAngleOld = 0
-    arcStartAngleNew = startAngle
-    i = 0
-    startAnglesListOld = []
-    startAnglesListNew = []
-    while i < @series.stack.length
-      startAnglesListOld[i] = arcStartAngleOld
-      startAnglesListNew[i] = arcStartAngleNew
-      arcStartAngleOld += scalOld(@series.stack[i].val)
-      arcStartAngleNew += scalNew(@series.stack[i].val)
-      i++
-
-
-    arcStartAngleOld = 0
-    arcStartAngleNew = startAngle
     transition.selectAll("##{@_nameToId()} path")
       .delay(transitionSpeed*2/3)
       .duration(transitionSpeed/3)
-      .attr("transform", "translate(#{xOffset},#{yOffset})")
+      .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
       .attrTween("d", (d, i)=>
-        iInnerRadius = d3.interpolate(@series.innerRadius, @stackedInnerRadius)
-        iOuterRadius = d3.interpolate(@series.outerRadius, @stackedOuterRadius)
-        iStartAngle = d3.interpolate(startAnglesListOld[i], startAnglesListNew[i])
-        iEndAngle = d3.interpolate(startAnglesListOld[i]+scalOld(d.val), startAnglesListNew[i]+scalNew(d.val))
+        iInnerRadius = d3.interpolate(@innerRadius, @stackedInnerRadius)
+        iOuterRadius = d3.interpolate(@outerRadius, @stackedOuterRadius)
+        iStartAngle = d3.interpolate(@_startAngle(d, i, true), @_startAngle(d, i, false))
+        iEndAngle = d3.interpolate(@_endAngle(d, i, true), @_endAngle(d, i, false))
         (t)=>
           d3.svg.arc()
             .startAngle(iStartAngle(t))
@@ -171,32 +128,17 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     xMargin = (@graph.width() - @getMaxStackedOuterRadius()*2)/2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius()*2)/2
 
-    xOffset = xMargin + @getMaxStackedOuterRadius() + @getMaxStackedOuterRadius()*Math.cos(Math.PI+(2*Math.PI/@_donutsCount())*@_donutIndex())
-    yOffset = yMargin + @getMaxStackedOuterRadius() + @getMaxStackedOuterRadius()*Math.sin(Math.PI+(2*Math.PI/@_donutsCount())*@_donutIndex())
+    xOffset = xMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius()-@getMaxOuterRadius())*Math.cos((2*Math.PI/@_donutsCount())*@_donutIndex(false) - Math.PI/2)
+    yOffset = yMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius()-@getMaxOuterRadius())*Math.sin((2*Math.PI/@_donutsCount())*@_donutIndex(false) - Math.PI/2)
 
-    startAngle = Math.PI*1.5+(2*Math.PI/@_donutsCount())*@_donutIndex() - Math.PI/@_donutsCount()
-    endAngle = Math.PI*1.5+(2*Math.PI/@_donutsCount())*@_donutIndex() + Math.PI/@_donutsCount() - 0.04
-
-    scalNew = d3.scale.linear()
-      .domain([0, @dataAmount])
-      .range([0, 2*Math.PI])
-
-    scalOld = d3.scale.linear()
-      .domain([0, @dataAmount])
-      .range([0, 2*Math.PI/@_donutsCount() - 0.04])
-
-    arcStartAngleNew = 0
-    arcStartAngleOld = startAngle
     transition.selectAll("##{@_nameToId()} path")
       .duration(transitionSpeed/3)
       .attr("transform", "translate(#{xOffset},#{yOffset})")
       .attrTween("d", (d, i)=>
-        iInnerRadius = d3.interpolate(@stackedInnerRadius, @series.innerRadius)
-        iOuterRadius = d3.interpolate(@stackedOuterRadius, @series.outerRadius)
-        iStartAngle = d3.interpolate(arcStartAngleOld, arcStartAngleNew)
-        iEndAngle = d3.interpolate(arcStartAngleOld+scalOld(d.val), arcStartAngleNew+scalNew(d.val))
-        arcStartAngleOld += scalOld(d.val)
-        arcStartAngleNew += scalNew(d.val)
+        iInnerRadius = d3.interpolate(@stackedInnerRadius, @innerRadius)
+        iOuterRadius = d3.interpolate(@stackedOuterRadius, @outerRadius)
+        iStartAngle = d3.interpolate(@_startAngle(d, i, false), @_startAngle(d, i, true))
+        iEndAngle = d3.interpolate(@_endAngle(d, i, false), @_endAngle(d, i, true))
         (t)=>
           d3.svg.arc()
             .startAngle(iStartAngle(t))
@@ -213,7 +155,6 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
       .delay(transitionSpeed/3)
       .duration(transitionSpeed/3)
       .attr("opacity", 1)
-
 
     transition.selectAll("##{@_nameToId()} path")
       .delay(transitionSpeed*2/3)
@@ -240,17 +181,68 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
   _yOffset: =>
     if @unstack
       yMargin = (@graph.height() - @_linesCount()*@getMaxOuterRadius()*2) / (@_linesCount()+1)
-      console.log @_linesCount()
-      console.log yMargin
       yOffset = @_lineIndex()*(yMargin + @getMaxOuterRadius()*2) + yMargin + @getMaxOuterRadius()
     else
       yMargin = (@graph.height() - @getMaxStackedOuterRadius()*2)/2
       yOffset = yMargin + @getMaxStackedOuterRadius()
 
-  _donutIndex: ->
-    return 0 if @rendererIndex == 0 || @rendererIndex is undefined
-    renderers = @graph.renderers.slice(0, @rendererIndex)
-    _.filter(renderers,(r) => r.name == @name).length
+  _startAngle: (d, i, unstack) =>
+    unstack = @unstack if unstack is undefined
+    dataAmount = 0
+    @series.stack.forEach((d)=>
+      dataAmount += d.val
+    )
+
+    if unstack
+      scal = d3.scale.linear()
+        .domain([0, dataAmount])
+        .range([0, 2*Math.PI])
+      arcStartAngle = 0
+    else
+      scal = d3.scale.linear()
+        .domain([0, dataAmount])
+        .range([0, 2*Math.PI/@_donutsCount() - 0.04])
+      arcStartAngle = (2*Math.PI/@_donutsCount())*@_donutIndex(unstack) - Math.PI/@_donutsCount()
+
+    k = 0
+    while k < i
+      arcStartAngle += scal(@series.stack[k].val)
+      k++
+    arcStartAngle
+
+  _endAngle: (d, i, unstack) =>
+    unstack = @unstack if unstack is undefined
+    dataAmount = 0
+    @series.stack.forEach((d)=>
+      dataAmount += d.val
+    )
+
+    if unstack
+      scal = d3.scale.linear()
+        .domain([0, dataAmount])
+        .range([0, 2*Math.PI])
+      arcEndAngle = 0
+    else
+      scal = d3.scale.linear()
+        .domain([0, dataAmount])
+        .range([0, 2*Math.PI/@_donutsCount() - 0.04])
+      arcEndAngle = (2*Math.PI/@_donutsCount())*@_donutIndex(unstack) - Math.PI/@_donutsCount()
+
+    k = 0
+    while k <= i
+      arcEndAngle += scal(@series.stack[k].val)
+      k++
+    arcEndAngle
+
+  _donutIndex: (unstack)=>
+    unstack = @unstack if unstack is undefined
+    if unstack || (@stackedIndex is undefined)
+      return 0 if @rendererIndex == 0 || @rendererIndex is undefined
+      renderers = @graph.renderers.slice(0, @rendererIndex)
+      _.filter(renderers,(r) => r.name == @name).length
+    else
+      @stackedIndex
+
 
   _lineIndex: =>
     Math.floor @_donutIndex() / @_donutsPerLine()

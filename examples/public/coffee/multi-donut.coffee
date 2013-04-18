@@ -36,7 +36,7 @@ data = [
   color5: "#74C476"
 ]
 chart = new Tactile.Chart()
-  .element($("#example_view")[0]).width(1000).height(700).data(data)
+  .element($("#example_view")[0]).width(1000).height(720).data(data)
 
 chart.addSeries [
   name: "donut-1"
@@ -48,6 +48,10 @@ chart.addSeries [
     val: d.val1
   innerRadius: 70
   outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 4
+
 ,
   name: "donut-2"
   renderer: "donut"
@@ -58,6 +62,9 @@ chart.addSeries [
     val: d.val2
   innerRadius: 70
   outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 0
 ,
   name: "donut-3"
   renderer: "donut"
@@ -68,6 +75,9 @@ chart.addSeries [
     val: d.val3
   innerRadius: 70
   outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 1
 ,
   name: "donut-4"
   renderer: "donut"
@@ -78,6 +88,9 @@ chart.addSeries [
     val: d.val4
   innerRadius: 70
   outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 3
 ,
   name: "donut-5"
   renderer: "donut"
@@ -88,6 +101,9 @@ chart.addSeries [
     val: d.val5
   innerRadius: 70
   outerRadius: 120
+  stackedInnerRadius: 200
+  stackedOuterRadius: 330
+  stackedIndex: 2
 ]
 chart.render()
 
