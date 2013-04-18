@@ -46,6 +46,7 @@ chart.addSeries [
   dataTransform: (d) ->
     color: d.color1
     val: d.val1
+    label: d.label
   innerRadius: 70
   outerRadius: 120
   stackedInnerRadius: 200
@@ -60,6 +61,7 @@ chart.addSeries [
   dataTransform: (d) ->
     color: d.color2
     val: d.val2
+    label: d.label
   innerRadius: 70
   outerRadius: 120
   stackedInnerRadius: 200
@@ -73,6 +75,7 @@ chart.addSeries [
   dataTransform: (d) ->
     color: d.color3
     val: d.val3
+    label: d.label
   innerRadius: 70
   outerRadius: 120
   stackedInnerRadius: 200
@@ -86,6 +89,7 @@ chart.addSeries [
   dataTransform: (d) ->
     color: d.color4
     val: d.val4
+    label: d.label
   innerRadius: 70
   outerRadius: 120
   stackedInnerRadius: 200
@@ -99,6 +103,7 @@ chart.addSeries [
   dataTransform: (d) ->
     color: d.color5
     val: d.val5
+    label: d.label
   innerRadius: 70
   outerRadius: 120
   stackedInnerRadius: 200
