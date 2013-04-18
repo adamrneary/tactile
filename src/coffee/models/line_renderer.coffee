@@ -10,7 +10,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
   seriesPathFactory: ->
     d3.svg.line()
       .x((d) => @graph.x d.x)
-      .y((d) => @graph.y d.y)
+      .y((d) => @yFunction() d.y)
       .interpolate(@graph.interpolation)
       .tension @tension
 
@@ -41,7 +41,7 @@ Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
 
     @transition.selectAll("##{@_nameToId()} circle")
       .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
+      .attr("cy", (d) => @yFunction() d.y)
       .attr("r",
       (d) =>
         (if ("r" of d)

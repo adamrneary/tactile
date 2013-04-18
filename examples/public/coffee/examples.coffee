@@ -20,6 +20,12 @@ cartesian = [
 ,
   shortLink: "multiple-series"
   title: "Multiple series types"
+,
+#   shortLink: "waterfall-grouped"
+#   title: "Waterfall (grouped)"
+# ,
+  shortLink: "waterfall-timeseries"
+  title: "Waterfall (time series)"
 ]
 
 noncartesian = [
@@ -40,6 +46,9 @@ noncartesian = [
 ]
 
 components = [
+  shortLink: "dual-scaled"
+  title: "Secondary y-axis"
+,
   shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,

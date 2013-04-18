@@ -16,7 +16,7 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
     @transition.selectAll("##{@_nameToId()} circle")
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
       .attr("cx", (d) => @graph.x d.x)
-      .attr("cy", (d) => @graph.y d.y)
+      .attr("cy", (d) => @yFunction() d.y)
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
       .attr("fill", @series.color)
       .attr("stroke", 'white')

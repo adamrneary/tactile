@@ -81,7 +81,6 @@ compileScss = (cb) ->
         console.log err
         cb()
       else
-        console.log  'zapisujemy do: ' + "#{__dirname}/../dist/#{glob.config.name}.css"
         fs.writeFile "#{__dirname}/../dist/#{glob.config.name}.css", css, (err) ->
           if err
             console.log 'ERROR compiling scss: ' + err
