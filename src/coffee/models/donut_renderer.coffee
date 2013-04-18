@@ -254,7 +254,7 @@ Tactile.DonutRenderer = class DonutRenderer extends RendererBase
     @graph.series.filter(
       (d) =>
         d.renderer == @name
-    ).length
+    ).length()
 
   _donutsInLine: (lineIndex)=>
     lineCount = Math.ceil @_donutsCount()/@_donutsPerLine()
