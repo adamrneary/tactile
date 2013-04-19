@@ -8,6 +8,7 @@ Tactile.Chart = class Chart
     'scatter': ScatterRenderer
     'donut': DonutRenderer
     'waterfall': WaterfallRenderer
+    'leaderboard': LeaderboardRenderer
 
   # default values
   margin: {top: 20, right: 20, bottom: 20, left: 20}
