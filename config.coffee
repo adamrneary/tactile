@@ -8,6 +8,7 @@ exports.config = defaultConfig
         'assets/tactile.js':  path('src/coffee/*')
       order:
         before: ['src/coffee/index.coffee']
+        after: ['src/coffee/chart.coffee']
 
     stylesheets:
       joinTo:
