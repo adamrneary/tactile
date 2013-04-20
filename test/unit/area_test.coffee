@@ -1,18 +1,5 @@
 describe 'Donut series', ->
-  before (done)->
-    glob.zombie.visit glob.url, (e, _browser) ->
-      browser = _browser
-      window = browser.window
-      $ = window.$
-      _ = window._
-
-      global.browser = browser
-      global.window = window
-      global.d3 = browser.window.d3
-      global._ = window._
-      done()
-
-  it 'example', (done) ->
+  it 'example', ->
     data = [
       label: "FL"
       val: 40000
@@ -42,9 +29,6 @@ describe 'Donut series', ->
       renderer: "donut"
       color: "#c05020"
     chart.render()
-    console.log chart
-    done()
+    $("#example_view").empty()
 
-  it 'appendTooltip', (done) ->
-    #console.log window.Tactile.Tooltip()
-    done()
+  it 'appendTooltip'

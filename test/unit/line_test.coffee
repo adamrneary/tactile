@@ -1,18 +1,5 @@
 describe 'Line series', ->
-  before (done)->
-    glob.zombie.visit glob.url, (e, _browser) ->
-      browser = _browser
-      window = browser.window
-      $ = window.$
-      _ = window._
-
-      global.browser = browser
-      global.window = window
-      global.d3 = browser.window.d3
-      global._ = window._
-      done()
-
-  it 'example', (done) ->
+  it 'example', ->
     frameVal = [0, 4]
     data = [
       x: 0
@@ -83,5 +70,5 @@ describe 'Line series', ->
         y: d.z
 
     chart.render()
-    done()
+    $("#example_view").empty()
 

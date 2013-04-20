@@ -16,7 +16,7 @@ describe 'Gauge series', ->
     assert Chart._element is ($("#example_view")[0])
 
 
-  it 'addSeries'#, ->
+  it 'addSeries', ->
     # Chart.addSeries
     #   name: 'gauge',
     #   renderer: "gauge",
