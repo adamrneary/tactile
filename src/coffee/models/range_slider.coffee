@@ -27,15 +27,15 @@
 #    values: initialValuesForSlider
 #  )
 
-Tactile.RangeSlider = class RangeSlider
+class Tactile.RangeSlider
   constructor: (options) ->
     @element = options.element
     @graph = options.graph
     @timeSliderClass = options.sliderClass
-    
+
     @updateCallback = options.updateCallback || ->
     @initCallback = options.updateCallback || ->
-    
+
     # initiates the slider
     $ =>
       values = options.values || [
@@ -43,7 +43,7 @@ Tactile.RangeSlider = class RangeSlider
       ]
       @initCallback(values, @element)
       @updateGraph(values)
-      
+
       if @timeSliderClass
         sliderContainer = @element.find(@timeSliderClass)
       else
@@ -77,4 +77,4 @@ Tactile.RangeSlider = class RangeSlider
     @graph.window.xMax = values[1]
     @updateCallback(values, @element)
     @graph.update()
-    
+

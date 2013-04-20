@@ -1,4 +1,4 @@
-Tactile.SeriesSet = class SeriesSet
+class Tactile.SeriesSet
   constructor: (@array = [], @graph) ->
     @_exposeArray()
 

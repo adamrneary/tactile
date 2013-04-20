@@ -1,4 +1,4 @@
-Tactile.WaterfallRenderer = class WaterfallRenderer extends RendererBase
+class Tactile.WaterfallRenderer extends Tactile.RendererBase
   name: "waterfall"
 
   specificDefaults:

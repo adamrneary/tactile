@@ -1,5 +1,4 @@
-window.Utils = {} unless window.Utils
-class window.Tactile.Utils
+class Tactile.Utils
 
   # similar in spirit to d3.functor()
   # https://github.com/mbostock/d3/wiki/Internals

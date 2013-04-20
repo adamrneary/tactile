@@ -1,2 +1,1 @@
-Tactile = window.Tactile or {}
-window.Tactile = Tactile
+window.Tactile = {}

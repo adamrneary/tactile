@@ -1,4 +1,4 @@
-Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
+class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   name: "column"
 
   specificDefaults:

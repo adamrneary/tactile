@@ -1,5 +1,4 @@
-Tactile.AxisTime = class AxisTime
-
+class Tactile.AxisTime
   constructor: (args) ->
     @graph = args.graph
     @ticksTreatment = args.ticksTreatment or "plain"
@@ -41,7 +40,7 @@ Tactile.AxisTime = class AxisTime
     return unless @graph.x?
     g = @graph.vis.selectAll('.x-ticks').data([0])
     g.enter().append('g').attr('class', 'x-ticks')
-                
+
     tickData = @tickOffsets().filter((tick) =>
       @graph.x.range()[0] <= @graph.x(tick.value) <= @graph.x.range()[1])
 
@@ -67,4 +66,4 @@ Tactile.AxisTime = class AxisTime
     ticks.exit().remove()
 
 
-  
+

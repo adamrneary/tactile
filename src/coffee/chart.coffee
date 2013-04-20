@@ -1,13 +1,13 @@
-Tactile.Chart = class Chart
+class Tactile.Chart
   # Hash to map renderer name to class name. Used in looking up series type
   _renderers:
-    'gauge': GaugeRenderer
-    'column': ColumnRenderer
-    'line': LineRenderer
-    'area': AreaRenderer
-    'scatter': ScatterRenderer
-    'donut': DonutRenderer
-    'waterfall': WaterfallRenderer
+    'gauge': Tactile.GaugeRenderer
+    'column': Tactile.ColumnRenderer
+    'line': Tactile.LineRenderer
+    'area': Tactile.AreaRenderer
+    'scatter': Tactile.ScatterRenderer
+    'donut': Tactile.DonutRenderer
+    'waterfall': Tactile.WaterfallRenderer
 
   # default values
   margin: {top: 20, right: 20, bottom: 20, left: 20}

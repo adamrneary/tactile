@@ -1,7 +1,7 @@
-Tactile.AreaRenderer = class AreaRenderer extends DraggableRenderer
+class Tactile.AreaRenderer extends Tactile.DraggableRenderer
   name: "area"
   dotSize: 5
-  
+
   specificDefaults:
     unstack: true
     fill: true

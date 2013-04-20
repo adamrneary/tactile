@@ -1,4 +1,4 @@
-Tactile.DraggableRenderer = class DraggableRenderer extends RendererBase
+class Tactile.DraggableRenderer extends Tactile.RendererBase
   initialize: ->
     @active = null
 

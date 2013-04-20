@@ -1,4 +1,4 @@
-Tactile.Series = class Series
+class Tactile.Series
   constructor: (options = {}) ->
     defaults =
       dataTransform: (d) -> d

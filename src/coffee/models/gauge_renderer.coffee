@@ -1,4 +1,4 @@
-Tactile.GaugeRenderer = class GaugeRenderer extends RendererBase
+class Tactile.GaugeRenderer extends Tactile.RendererBase
   name: "gauge"
 
   specificDefaults:

@@ -1,6 +1,6 @@
-Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
+class Tactile.ScatterRenderer extends Tactile.RendererBase
   name: "scatter"
-  
+
   specificDefaults:
     fill: true
     stroke: false
@@ -9,7 +9,7 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
     @transition = transition if transition
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
-    
+
     circ.enter()
       .append("svg:circle")
 
@@ -24,7 +24,7 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
 
     if @series.cssConditions
       circ.attr('class', (d) => @series.cssConditions(d))
-    
+
     if @series.tooltip
       @seriesCanvas().selectAll("circle").tooltip (d,i) =>
         graph: @graph
@@ -34,4 +34,3 @@ Tactile.ScatterRenderer = class ScatterRenderer extends RendererBase
         displacement: [-10, 0]# because tooltip have left margin 10
     circ.exit().remove()
 
-    

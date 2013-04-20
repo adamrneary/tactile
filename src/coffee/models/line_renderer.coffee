@@ -1,4 +1,4 @@
-Tactile.LineRenderer = class LineRenderer extends DraggableRenderer
+class Tactile.LineRenderer extends Tactile.DraggableRenderer
   name: "line"
 
   specificDefaults:
