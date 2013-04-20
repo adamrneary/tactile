@@ -17,7 +17,7 @@ app.get '/tests', isAuth, (req, res) ->
   res.render 'examples/iframe', url: '/test_runner.html'
 
 app.get '/documentation', isAuth, (req, res) ->
-  res.render 'examples/iframe', url: '/docs/tablestakes.html'
+  res.render 'examples/iframe', url: '/docs/chart.html'
 
 app.get '/styleguide', isAuth, (req, res) ->
   kss.traverse "#{__dirname}/src/scss", { markdown: false }, (err, styleguide) ->
@@ -28,4 +28,4 @@ app.get '/styleguide', isAuth, (req, res) ->
 app.start()
 
 # Generate docco documenation
-docco(files: '/src/coffee/*', output: '/public/docs', root: __dirname, layout: 'linear')
+docco(files: '/src/coffee/**/*.coffee', output: '/public/docs', root: __dirname, layout: 'linear')
