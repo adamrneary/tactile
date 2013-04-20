@@ -79,19 +79,26 @@ Tactile.LeaderboardRenderer = class LeaderboardRenderer extends RendererBase
 
     @transition.selectAll("##{@_nameToId()} text.leaderboard.value")
       .duration(transitionSpeed / 2)
-      .text((d)=>@format(d.value))
+      .tween("text", (d) ->
+        i = d3.interpolate(@textContent, d.value)
+        (t) ->
+          @textContent = _this.format Math.floor i(t)
+      )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()-50} -8)")
 
     @transition.selectAll("##{@_nameToId()} text.leaderboard.change")
       .duration(transitionSpeed / 2)
-      .text((d)=>@format(d.change))
+      .tween("text", (d) ->
+        i = d3.interpolate(@textContent, d.change)
+        (t) ->
+          @textContent = _this.format Math.floor i(t)
+      )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()} -8)")
 
     @transition.selectAll("##{@_nameToId()} path")
       .duration(transitionSpeed / 2)
-      .attr("transform", (d,i)=> "translate(#{@graph.width()-10},"+(@_yOffset(d, i)-22)+")")
       .attr("d", d3.svg.symbol().size(18).type((d) ->
         if d.change > 0 then "triangle-up"
         else if d.change < 0 then "triangle-down"

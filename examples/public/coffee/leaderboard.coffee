@@ -20,8 +20,6 @@ data = [
   barPosition: 0
 ]
 
-
-
 generateData = (count)=>
   i = 0
   while i < count
@@ -40,7 +38,7 @@ generateData = (count)=>
       j++
     data[i].index = index
     i++
-  console.log data
+
   data
 
 
