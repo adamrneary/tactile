@@ -83,6 +83,9 @@ prepareLinks = (route, el) ->
     urlCoffee = "examples/" + route.shortLink + ".coffee"
     url       = "examples/" + route.shortLink + ".js"
 
+    $(".stack-unstack-buttons").hide()
+    $(".stack-unstack-buttons").show()  if route.groupingButtons
+
     $.get urlCoffee, (data) ->
       $("#example_view").empty()
       $("#example_js").text(data).removeClass("rainbow")
@@ -90,23 +93,6 @@ prepareLinks = (route, el) ->
       source = CoffeeScript.compile(data)
       $("#example_code").remove()
       $('body').append $("<script id='example_code'>#{source}</script>")
-      $(".stack-unstack-buttons").hide()
-      $(".stack-unstack-buttons").show()  if route.groupingButtons
-
-    # $("#example_header").text route.title
-    # urlCoffee = "coffee/" + route.shortLink + ".coffee"
-    # url = "js/" + route.shortLink + ".js"
-    # script = $("<script>").attr("src", url)
-    # $("#example_view").empty()
-    # $("#example_js").empty().append script
-
-    # $(".stack-unstack-buttons").hide()
-    # $(".stack-unstack-buttons").show()  if route.groupingButtons
-
-    # $("#example_js").load urlCoffee, ->
-    #   $(@).removeClass("rainbow")
-    #   Rainbow.color()
-    # Rainbow.color()
 
 $(document).ready ->
   _.map cartesian, (route) ->

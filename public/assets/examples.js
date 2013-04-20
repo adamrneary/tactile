@@ -87,6 +87,10 @@ prepareLinks = function(route, el) {
     $("#example_header").text(route.title);
     urlCoffee = "examples/" + route.shortLink + ".coffee";
     url = "examples/" + route.shortLink + ".js";
+    $(".stack-unstack-buttons").hide();
+    if (route.groupingButtons) {
+      $(".stack-unstack-buttons").show();
+    }
     return $.get(urlCoffee, function(data) {
       var source;
 
@@ -95,11 +99,7 @@ prepareLinks = function(route, el) {
       Rainbow.color();
       source = CoffeeScript.compile(data);
       $("#example_code").remove();
-      $('body').append($("<script id='example_code'>" + source + "</script>"));
-      $(".stack-unstack-buttons").hide();
-      if (route.groupingButtons) {
-        return $(".stack-unstack-buttons").show();
-      }
+      return $('body').append($("<script id='example_code'>" + source + "</script>"));
     });
   };
 };
