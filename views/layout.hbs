@@ -12,7 +12,7 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="/img/favicon.ico">
 
     <style type="text/css">
-      .container, .navbar-fixed-top .container { width: 1170px; }
+      {{! .container, .navbar-fixed-top .container { width: 1170px; } }}
       .icon-white { background-image: url("img/glyphicons-halflings-white.png") }
     </style>
   </head>
@@ -59,7 +59,7 @@
     <script src="/vendor/js/jquery.js"></script>
     <script src="/vendor/js/underscore.js"></script>
     <script src="/vendor/js/backbone.js"></script>
-    <script src="/vendor/js/d3.js"></script>
+    <script src="/vendor/js/d3-tactile.js"></script> {{! strange hell from old code }}
     <script src="/vendor/js/bootstrap.js"></script>
     <script src="/vendor/js/coffee-script.js"></script>
     <script src="/vendor/js/jquery-ui.js"></script>
@@ -68,6 +68,6 @@
     <script src="/vendor/rainbow/language/coffeescript.js"></script>
 
     <script src="/assets/tactile.js" defer></script>
-    {{! <script src="/assets/examples.js" defer></script> }}
+    <script src="/assets/examples.js" defer></script>
   </body>
 </html>

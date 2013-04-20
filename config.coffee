@@ -6,6 +6,7 @@ exports.config = defaultConfig
     javascripts:
       joinTo:
         'assets/tactile.js':    path('src/coffee/*')
+        'assets/examples.js':   path('src/examples/*')
         'assets/unit_tests.js': path('test/client/*', 'test/unit/*')
       order:
         before: ['src/coffee/index.coffee']
