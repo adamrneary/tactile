@@ -5,4 +5,4 @@ deployment:
       appname: tactile-showcase
 machine:
   node:
-    version: 0.10.2
+    version: 0.10.4
