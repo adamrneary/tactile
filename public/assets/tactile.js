@@ -347,7 +347,7 @@ Tactile.SeriesSet = (function() {
   };
 
   SeriesSet.prototype.filter = function(f) {
-    return new SeriesSet(this.array.filter(f), this.graph);
+    return new Tactile.SeriesSet(this.array.filter(f), this.graph);
   };
 
   SeriesSet.prototype.length = function() {
@@ -807,7 +807,7 @@ Tactile.AreaRenderer = (function(_super) {
     this.ticksTreatment = args.ticksTreatment || "plain";
     this.fixedTimeUnit = args.timeUnit;
     this.marginTop = args.paddingBottom || 5;
-    this.time = new FixturesTime();
+    this.time = new Tactile.FixturesTime();
     this.grid = args.grid;
     this.frame = args.frame;
   }
@@ -2368,7 +2368,7 @@ Tactile.Chart = (function() {
     this.discoverRange = __bind(this.discoverRange, this);
     this.renderers = [];
     this.axesList = {};
-    this.series = new SeriesSet([], this);
+    this.series = new Tactile.SeriesSet([], this);
     this.window = {};
     this.updateCallbacks = [];
     this.timesRendered = 0;

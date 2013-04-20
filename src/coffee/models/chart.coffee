@@ -34,7 +34,7 @@ class Tactile.Chart
   constructor: (args = {}) ->
     @renderers = []
     @axesList = {}
-    @series = new SeriesSet([], @)
+    @series = new Tactile.SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
     @timesRendered = 0

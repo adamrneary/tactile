@@ -15,7 +15,7 @@ class Tactile.SeriesSet
       not s.ofDefaultAxis()
 
   filter: (f) ->
-    new SeriesSet @array.filter(f), @graph
+    new Tactile.SeriesSet @array.filter(f), @graph
 
   length: () =>
     @array.length

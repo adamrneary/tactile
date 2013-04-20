@@ -4,7 +4,7 @@ class Tactile.AxisTime
     @ticksTreatment = args.ticksTreatment or "plain"
     @fixedTimeUnit = args.timeUnit
     @marginTop = args.paddingBottom or 5
-    @time = new FixturesTime()
+    @time = new Tactile.FixturesTime()
     @grid = args.grid
     @frame = args.frame
 
