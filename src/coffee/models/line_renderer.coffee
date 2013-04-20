@@ -16,7 +16,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
   initialize: ->
     super
-    @dragger = new Dragger(renderer: @)
+    @dragger = new Tactile.Dragger(renderer: @)
     if @series.dotSize?
       @dotSize = @series.dotSize
 

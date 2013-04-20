@@ -61,7 +61,7 @@ class Tactile.Chart
     return unless series
     series = [series] unless _.isArray(series)
 
-    newSeries = _.map(series, (options) -> new Series(options))
+    newSeries = _.map(series, (options) -> new Tactile.Series(options))
     @series.add(newSeries, options.overwrite)
 
     # only init the renderers for just added series

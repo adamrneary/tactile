@@ -626,7 +626,7 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.initialize = function() {
     AreaRenderer.__super__.initialize.apply(this, arguments);
-    this.dragger = new Dragger({
+    this.dragger = new Tactile.Dragger({
       renderer: this
     });
     if (this.series.dotSize != null) {
@@ -917,7 +917,7 @@ Tactile.ColumnRenderer = (function(_super) {
       options = {};
     }
     ColumnRenderer.__super__.initialize.apply(this, arguments);
-    this.dragger = new Dragger({
+    this.dragger = new Tactile.Dragger({
       renderer: this
     });
     return this.gapSize = options.gapSize || this.gapSize;
@@ -1897,7 +1897,7 @@ Tactile.LineRenderer = (function(_super) {
 
   LineRenderer.prototype.initialize = function() {
     LineRenderer.__super__.initialize.apply(this, arguments);
-    this.dragger = new Dragger({
+    this.dragger = new Tactile.Dragger({
       renderer: this
     });
     if (this.series.dotSize != null) {
@@ -2406,7 +2406,7 @@ Tactile.Chart = (function() {
       series = [series];
     }
     newSeries = _.map(series, function(options) {
-      return new Series(options);
+      return new Tactile.Series(options);
     });
     this.series.add(newSeries, options.overwrite);
     this.initRenderers(newSeries);
