@@ -7,8 +7,8 @@ app.configure 'development', ->
   require('brunch').watch({})
 
 app.configure 'production', ->
-  # app.set('github-client-id', '25505fffcba6c3f4b29e')
-  # app.set('github-client-secret', '434fbe2831a94b1c9a7931734e769cf2ac25ee09')
+  app.set('github-client-id', 'dc66e7c410bccfebe856')
+  app.set('github-client-secret', '3a723d02515f8224693457739262b74a0688d5df')
 
 app.get '/', isAuth, (req, res) ->
   res.render 'examples/index'
