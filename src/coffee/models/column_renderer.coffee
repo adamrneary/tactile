@@ -1,4 +1,4 @@
-Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
+class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   name: "column"
 
   specificDefaults:
@@ -10,7 +10,7 @@ Tactile.ColumnRenderer = class ColumnRenderer extends DraggableRenderer
 
   initialize: (options = {}) ->
     super
-    @dragger = new Dragger(renderer: @)
+    @dragger = new Tactile.Dragger(renderer: @)
     @gapSize = options.gapSize || @gapSize
 
   render: (transition)=>

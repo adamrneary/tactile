@@ -1,33 +1,16 @@
 describe 'Axis time', ->
-  before (done)->
-    glob.zombie.visit glob.url, (e, _browser) ->
-      browser = _browser
-      window = browser.window
-      $ = window.$
-      _ = window._
-
-      global.browser = browser
-      global.window = window
-      global.d3 = browser.window.d3
-      global._ = window._
-      done()
-
-  it 'Axis time: constructor', (done) ->
+  it 'Axis time: constructor'#, ->
     # _axisTime = new window.Tactile.AxisTime()
     # assert _axisTime
-    done()
 
-  it 'Axis time: appropriateTimeUnit', (done) ->
+  it 'Axis time: appropriateTimeUnit'#, ->
     # _axisTime = new window.Tactile.AxisTime()
     # assert _axisTime.appropriateTimeUnit()
-    done()
 
-  it 'Axis time: tickOffsets', (done) ->
+  it 'Axis time: tickOffsets'#, ->
     # _axisTime = new window.Tactile.AxisTime()
     # assert _axisTime.tickOffsets()
-    done()
 
-  it 'Axis time: render', (done) ->
+  it 'Axis time: render'#, ->
     # _axisTime = new window.Tactile.AxisTime()
     # assert _axisTime.render()
-    done()

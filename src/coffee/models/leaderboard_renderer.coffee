@@ -1,4 +1,4 @@
-Tactile.LeaderboardRenderer = class LeaderboardRenderer extends RendererBase
+class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   name: "leaderboard"
 
   specificDefaults:

@@ -1,4 +1,4 @@
-Tactile.FixturesTime = class FixturesTime
+class Tactile.FixturesTime
 
   constructor: ->
     @tzOffset = new Date().getTimezoneOffset() * 60

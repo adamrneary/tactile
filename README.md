@@ -14,9 +14,10 @@ Run the project locally (with tests and watcher):
 
     npm start
 
-Then navigate to the [showcase](http://localhost:5000).
+Then navigate to the [localhost:5000](http://localhost:5000).
 
 ## Contributing
+
 Please (please please please) read the following sections on our wiki:
 
 * [Welcome to Activecell](https://github.com/activecell/activecell/wiki)
@@ -28,13 +29,19 @@ Please (please please please) read the following sections on our wiki:
 
 There's so much good information in there! You'll learn so much! :-)
 
-### Hacking on the showcase examples
-All functionality added to the source code should be showcased in our examples. To update examples, simply follow these guidelines:
+### Hacking on the code
 
-1. To update an existing example, simply update code in examples/js, testing to make sure it works (!)
-1. To add a new route, simply create a new example js file in examples/js/ and then add the route to the appropriate link list array in index.js with a shortLink to your new js file
+All code store in /src folder, that has a stucture:
 
-The main index.html page is generated dynamically, and the result of the js in your example file will be showcased directly above the pretty source code.
+* /src/coffee   - scripts
+* /src/scss     - styles
+* /src/examples - scripts for example page
+
+**Use tests** to write better code. In order to run interactive test server, that rerun tests on every change use
+
+    npm run test-server
+
+Tests use [mocha](http://visionmedia.github.io/mocha/), [chai](http://chaijs.com/) and [testem](https://github.com/airportyh/testem) as runner.
 
 ## Data Philosophy
 

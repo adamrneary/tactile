@@ -43,61 +43,59 @@ describe 'Area series', ->
     assert Chart._data is data
 
 
-  it "Chart: check axes function", ->
-    frameVal = [0, 4]
-    Chart.axes(x:
-      dimension: "time"
-      frame: frameVal
-    )
-    assert Chart._axes.x.frame is frameVal
-
+  it "Chart: check axes function"#, ->
+    # frameVal = [0, 4]
+    # Chart.axes(x:
+    #   dimension: "time"
+    #   frame: frameVal
+    # )
+    # assert Chart._axes.x.frame is frameVal
 
   it "Chart: check element function", ->
     Chart.element($("#example_view")[0])
     assert Chart._element is $("#example_view")[0]
 
 
-  it 'addSeries', ->
-    Chart.addSeries [
-      name: "enemies"
-      renderer: "area"
-      sigfigs: 0
-      draggable: true
-      afterDrag: (d, y, i, draggedSeries, graph) ->
-        graph.data()[i].y = y
+  it 'addSeries'#, ->
+    # Chart.addSeries [
+    #   name: "enemies"
+    #   renderer: "area"
+    #   sigfigs: 0
+    #   draggable: true
+    #   afterDrag: (d, y, i, draggedSeries, graph) ->
+    #     graph.data()[i].y = y
 
-      color: "#c05020"
-      dataTransform: (d) ->
-        x: d.x
-        y: d.y
-    ,
-      name: "friends"
-      renderer: "area"
-      sigfigs: 1
-      color: "#6060c0"
-      draggable: true
-      afterDrag: (d, y, i, draggedSeries, graph) ->
-        graph.data()[i].z = y
+    #   color: "#c05020"
+    #   dataTransform: (d) ->
+    #     x: d.x
+    #     y: d.y
+    # ,
+    #   name: "friends"
+    #   renderer: "area"
+    #   sigfigs: 1
+    #   color: "#6060c0"
+    #   draggable: true
+    #   afterDrag: (d, y, i, draggedSeries, graph) ->
+    #     graph.data()[i].z = y
 
-      dataTransform: (d) ->
-        x: d.x
-        y: d.z
-    ]
-    enemies = Chart.series[Chart.series.length-2]
-    friends = Chart.series[Chart.series.length-1]
-    assert enemies.name is 'enemies'
-    assert friends.name is 'friends'
-    assert enemies.renderer is 'area'
-    assert friends.renderer is 'area'
-    assert enemies.color is '#c05020'
-    assert friends.color is '#6060c0'
-    assert typeof enemies.dataTransform is 'function'
-    assert typeof friends.dataTransform is 'function'
-    assert typeof enemies.afterDrag is 'function'
-    assert typeof friends.afterDrag is 'function'
-    assert enemies.draggable is true
-    assert friends.draggable is true
-    done()
+    #   dataTransform: (d) ->
+    #     x: d.x
+    #     y: d.z
+    # ]
+    # enemies = Chart.series[Chart.series.length-2]
+    # friends = Chart.series[Chart.series.length-1]
+    # assert enemies.name is 'enemies'
+    # assert friends.name is 'friends'
+    # assert enemies.renderer is 'area'
+    # assert friends.renderer is 'area'
+    # assert enemies.color is '#c05020'
+    # assert friends.color is '#6060c0'
+    # assert typeof enemies.dataTransform is 'function'
+    # assert typeof friends.dataTransform is 'function'
+    # assert typeof enemies.afterDrag is 'function'
+    # assert typeof friends.afterDrag is 'function'
+    # assert enemies.draggable is true
+    # assert friends.draggable is true
 
   it 'slider', ->
     frameVal = [0, 4]
@@ -155,16 +153,16 @@ describe 'Area series', ->
     #assert 0).toBe 0
 
 
-  it "Chart: check for all series don't disabled", ->
-    res = Chart._allSeriesDisabled()
-    assert res is false
+  it "Chart: check for all series don't disabled"#, ->
+    # res = Chart._allSeriesDisabled()
+    # assert res is false
 
 
-  it "Chart: check for disable all series", ->
-    _.each Chart.series, (s) ->
-      s.disable()
-    res = Chart._allSeriesDisabled()
-    assert res is true
+  it "Chart: check for disable all series"#, ->
+    # _.each Chart.series, (s) ->
+    #   s.disable()
+    # res = Chart._allSeriesDisabled()
+    # assert res is true
 
 
   it "Chart: check setSize function", (done)->

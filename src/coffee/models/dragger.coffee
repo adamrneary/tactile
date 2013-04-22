@@ -1,4 +1,4 @@
-Tactile.Dragger = class Dragger
+class Tactile.Dragger
 
   constructor: (args) ->
     @renderer = args.renderer

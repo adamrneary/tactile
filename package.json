@@ -1,28 +1,27 @@
 {
-    "name": "Tactile",
-    "version": "0.0.10",
-    "private": true,
-    "scripts": {
-        "test": "node test/test.js",
-        "start": "node test/watcher.js"
-    },
-    "engines": {
-        "node": "0.10.x"
-    },
-    "dependencies": {
-        "express": "3.0.6",
-        "jade": "",
-        "coffee-script": "~1.6.2",
-        "node-sass": "~0.4.0",
-        "kss": "",
-        "mocha": "",
-        "request": "2.14.0",
-        "coffeelint": "",
-        "coffeestand": "",
-        "docco":"",
-        "pygments":"",
-        "zombie":"",
-        "chai":"",
-        "jscoverage": ""
-    }
+  "name": "tactile",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "test": "./node_modules/testem/testem.js ci",
+    "test-server": "./node_modules/testem/testem.js",
+    "start": "node index.js",
+    "build": "./node_modules/brunch/bin/brunch build"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6.2",
+    "showcase": "~0.2.9",
+    "kss": "~0.3.6"
+  },
+  "devDependencies": {
+    "brunch": "~1.6.2",
+    "javascript-brunch": "~1.5.1",
+    "coffee-script-brunch": "~1.5.1",
+    "css-brunch": "~1.5.1",
+    "sass-brunch": "~1.5.1",
+    "testem": "~0.2.83"
+  }
 }

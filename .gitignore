@@ -1,24 +1,8 @@
-.rvmrc
-.powrc
-.log
-*.orig
-npm-debug.log
-.project
-*.swp
 .DS_Store
-.sass-cache/
-.idea/
-
-
-build/
-dist/
 node_modules/
-/nbproject/
+npm-debug.log
 
-examples/public/css/
-examples/public/docs/
-examples/public/js/
+.sass-cache/
+public/docs
 
-test/cov/*
-test/reports/*
-test/docs/*
+.idea

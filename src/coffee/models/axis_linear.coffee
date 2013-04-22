@@ -1,4 +1,4 @@
-Tactile.AxisLinear = class AxisLinear
+class Tactile.AxisLinear
   constructor: (options) ->
     @options = options
     @graph = options.graph

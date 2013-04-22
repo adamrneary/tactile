@@ -1,4 +1,4 @@
-Tactile.DonutRenderer = class DonutRenderer extends RendererBase
+class Tactile.DonutRenderer extends Tactile.RendererBase
   Tactile = window.Tactile or {}
   name: "donut"
   specificDefaults:

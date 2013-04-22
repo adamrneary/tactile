@@ -1,28 +1,12 @@
 describe 'Line renderer', ->
-  before (done)->
-    glob.zombie.visit glob.url, (e, _browser) ->
-      browser = _browser
-      window = browser.window
-      $ = window.$
-      _ = window._
-
-      global.browser = browser
-      global.window = window
-      global.d3 = browser.window.d3
-      global._ = window._
-      done()
-
-  it 'Line renderer: seriesPathFactory', (done) ->
+  it 'Line renderer: seriesPathFactory'#, ->
     # _lineRenderer = new window.Tactile.LineRenderer()
     # assert _lineRenderer.seriesPathFactory()
-    done()
 
-  it 'Line renderer: initialize', (done) ->
+  it 'Line renderer: initialize'#, ->
     # _lineRenderer = new window.Tactile.LineRenderer()
     # assert _lineRenderer.initialize()
-    done()
 
-  it 'Line renderer: render', (done) ->
+  it 'Line renderer: render'#, ->
     # _lineRenderer = new window.Tactile.LineRenderer()
     # assert _lineRenderer.render()
-    done()
