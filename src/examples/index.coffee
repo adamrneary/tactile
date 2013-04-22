@@ -33,7 +33,7 @@ noncartesian = [
   title: "Gauge"
 ,
   shortLink: "leaderboard"
-  title: "Leaderboard (future)"
+  title: "Leaderboard"
 ,
   shortLink: "sankey"
   title: "Sankey (future)"
@@ -42,7 +42,7 @@ noncartesian = [
   title: "Donut"
 ,
   shortLink: "multi-donut"
-  title: "Multiple donuts (future)"
+  title: "Multiple donuts"
 ]
 
 components = [
