@@ -1,5 +1,5 @@
 # Tactile
-A bad-ass interactive charting platform.
+Bad-ass interactive charts.
 
 ## The five-minute setup.
 Check your system for local requirements (run until it passes!):
