@@ -192,7 +192,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     unstack = @unstack if unstack is undefined
     dataAmount = 0
     @series.stack.forEach((d) =>
-      dataAmount += d.val
+      dataAmount += d.val if !isNaN(d.val) and d.val?
     )
 
     if unstack
@@ -208,7 +208,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
     k = 0
     while k < i
-      arcStartAngle += scal(@series.stack[k].val)
+      arcStartAngle += scal(@series.stack[k].val) if !isNaN(@series.stack[k].val) and @series.stack[k].val?
       k++
     arcStartAngle
 
@@ -216,7 +216,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     unstack = @unstack if unstack is undefined
     dataAmount = 0
     @series.stack.forEach((d) =>
-      dataAmount += d.val
+      dataAmount += d.val if !isNaN(d.val) and d.val?
     )
 
     if unstack
@@ -232,7 +232,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
     k = 0
     while k <= i
-      arcEndAngle += scal(@series.stack[k].val)
+      arcEndAngle += scal(@series.stack[k].val) if !isNaN(@series.stack[k].val) and @series.stack[k].val?
       k++
     arcEndAngle
 

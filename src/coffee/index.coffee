@@ -1,1 +1,1 @@
-window.Tactile = {}
+window.Tactile ||= {}

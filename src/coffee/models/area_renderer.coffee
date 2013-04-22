@@ -16,16 +16,18 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     if @series.dotSize?
       @dotSize = @series.dotSize
 
-  seriesPathFactory: ->
+  seriesPathFactory: =>
     d3.svg.area()
+    .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
     .x((d) => @graph.x d.x)
     .y0((d) => @yFunction() @_y0(d))
     .y1((d) => @yFunction() d.y + @_y0(d))
     .interpolate(@graph.interpolation)
     .tension @tension
 
-  seriesStrokeFactory: ->
+  seriesStrokeFactory: =>
     d3.svg.line()
+    .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
     .x((d) => @graph.x d.x)
     .y((d) => @yFunction() d.y + @_y0(d))
     .interpolate(@graph.interpolation)
@@ -63,6 +65,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
     #TODO: this block of code is the same in few places
     @transition.selectAll("##{@_nameToId()} circle")
+      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
       .attr("r",
         (d) =>
           (if ("r" of d)
@@ -80,7 +83,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .attr("fill", (d) => (if d.dragged or d is @active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
-    circ.style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
+      .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
 
     circ.exit().remove()
 
