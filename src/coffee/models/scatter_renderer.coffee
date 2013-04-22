@@ -14,6 +14,7 @@ class Tactile.ScatterRenderer extends Tactile.RendererBase
       .append("svg:circle")
 
     @transition.selectAll("##{@_nameToId()} circle")
+      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.r) and d.y? and d.x? and d.r?)
       .attr("r", (d) => (if ("r" of d) then d.r else @dotSize))
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @yFunction() d.y)
