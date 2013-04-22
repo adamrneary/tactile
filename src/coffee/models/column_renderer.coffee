@@ -29,6 +29,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
 
     @transition.selectAll("##{@_nameToId()} rect")
+      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y0) and d.y? and d.x? and d.y0?)
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
@@ -65,6 +66,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
 
     @transition.selectAll("##{@_nameToId()} circle")
+      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y0) and d.y? and d.x? and d.y0?)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d))
       .attr("r",

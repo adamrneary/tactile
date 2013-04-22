@@ -9,6 +9,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
   seriesPathFactory: ->
     d3.svg.line()
+      .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and d.y? and d.x?)
       .x((d) => @graph.x d.x)
       .y((d) => @yFunction() d.y)
       .interpolate(@graph.interpolation)
@@ -40,6 +41,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode()
 
     @transition.selectAll("##{@_nameToId()} circle")
+      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and d.y? and d.x?)
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @yFunction() d.y)
       .attr("r",
