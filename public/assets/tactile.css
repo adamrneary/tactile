@@ -4,24 +4,258 @@
 -------------------------------------------------- */
 /* Alert palette
 -------------------------------------------------- */
-/* Primary palette
--------------------------------------------------- */
-/* Chart palette
--------------------------------------------------- */
-/* Alert palette
--------------------------------------------------- */
-/* line 17 */
+/* line 69, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-10 {
+  fill: #0b3748; }
+
+/* line 70, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-20 {
+  fill: #254e5d; }
+
+/* line 71, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-30 {
+  fill: #3f6672; }
+
+/* line 72, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-40 {
+  fill: #597d88; }
+
+/* line 73, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-50 {
+  fill: #73959d; }
+
+/* line 74, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-blue-60 {
+  fill: #8eadb3; }
+
+/* line 77, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-10 {
+  fill: #0c1b75; }
+
+/* line 78, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-20 {
+  fill: #263683; }
+
+/* line 79, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-30 {
+  fill: #405192; }
+
+/* line 80, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-40 {
+  fill: #5a6ca1; }
+
+/* line 81, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-50 {
+  fill: #7487b0; }
+
+/* line 82, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-blue-60 {
+  fill: #8fa3bf; }
+
+/* line 85, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-10 {
+  fill: #003fc1; }
+
+/* line 86, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-20 {
+  fill: #2058c8; }
+
+/* line 87, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-30 {
+  fill: #4072d0; }
+
+/* line 88, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-40 {
+  fill: #608bd7; }
+
+/* line 89, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-50 {
+  fill: #80a5df; }
+
+/* line 90, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-azure-60 {
+  fill: #a0bfe7; }
+
+/* line 93, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-10 {
+  fill: #4727c0; }
+
+/* line 94, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-20 {
+  fill: #6043c8; }
+
+/* line 95, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-30 {
+  fill: #795fd0; }
+
+/* line 96, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-40 {
+  fill: #927bd8; }
+
+/* line 97, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-50 {
+  fill: #ab87e0; }
+
+/* line 98, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-light-blue-60 {
+  fill: #c5b3e9; }
+
+/* line 101, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-10 {
+  fill: #4e0002; }
+
+/* line 102, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-20 {
+  fill: #671e20; }
+
+/* line 103, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-30 {
+  fill: #813d3f; }
+
+/* line 104, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-40 {
+  fill: #9a5c5d; }
+
+/* line 105, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-50 {
+  fill: #b47b7c; }
+
+/* line 106, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-barn-red-60 {
+  fill: #ce9a9b; }
+
+/* line 109, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-10 {
+  fill: #d21e17; }
+
+/* line 110, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-20 {
+  fill: #d83c36; }
+
+/* line 111, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-30 {
+  fill: #de5a55; }
+
+/* line 112, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-40 {
+  fill: #e47975; }
+
+/* line 113, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-50 {
+  fill: #ea9794; }
+
+/* line 114, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-scarlet-red-60 {
+  fill: #f0b6b4; }
+
+/* line 117, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-10 {
+  fill: #c07200; }
+
+/* line 118, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-20 {
+  fill: #c98621; }
+
+/* line 119, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-30 {
+  fill: #d39a42; }
+
+/* line 120, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-40 {
+  fill: #ddaf63; }
+
+/* line 121, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-50 {
+  fill: #e7c384; }
+
+/* line 122, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-alloy-orange-60 {
+  fill: #f1d8a6; }
+
+/* line 125, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-10 {
+  fill: #623c1c; }
+
+/* line 126, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-20 {
+  fill: #79593d; }
+
+/* line 127, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-30 {
+  fill: #90765f; }
+
+/* line 128, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-40 {
+  fill: #a79380; }
+
+/* line 129, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-50 {
+  fill: #beb0a2; }
+
+/* line 130, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-brown-60 {
+  fill: #d6cdc4; }
+
+/* line 133, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-10 {
+  fill: #777777; }
+
+/* line 134, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-20 {
+  fill: #8a8a8a; }
+
+/* line 135, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-30 {
+  fill: #9d9d9d; }
+
+/* line 136, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-40 {
+  fill: #b1b1b1; }
+
+/* line 137, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-50 {
+  fill: #c4c4c4; }
+
+/* line 138, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-silver-grey-60 {
+  fill: #d8d8d8; }
+
+/* line 141, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-10 {
+  fill: #414343; }
+
+/* line 142, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-20 {
+  fill: #4d4f4f; }
+
+/* line 143, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-30 {
+  fill: #5a5b5b; }
+
+/* line 144, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-40 {
+  fill: #676868; }
+
+/* line 145, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-50 {
+  fill: #747474; }
+
+/* line 146, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_tactile_colors.scss */
+.tactile-dark-grey-60 {
+  fill: #818181; }
+
+/* line 9 */
 #chart {
   width: 938px;
   height: 300px;
   overflow: hidden; }
 
-/* line 23 */
+/* line 15 */
 #chart-container {
   border: 1px solid #e6e6e6;
   margin-top: 20px;
   position: relative; }
-  /* line 27 */
+  /* line 19 */
   #chart-container .uncategorized {
     position: absolute;
     top: 0;
@@ -31,7 +265,7 @@
     border-left: 1px solid #e6e6e6;
     border-bottom: 1px solid #e6e6e6;
     background: #fff; }
-  /* line 37 */
+  /* line 29 */
   #chart-container .empty {
     background: #F2F2F3;
     color: #9B9DA1;
@@ -44,19 +278,19 @@
     width: 938px; }
 
 /* graph */
-/* line 51 */
+/* line 43 */
 .chart-container {
   position: relative; }
 
-/* line 55 */
+/* line 47 */
 .chart-widget {
   padding-left: 0; }
 
-/* line 59 */
+/* line 51 */
 .main-d3-chart.graph-container {
   left: 15px; }
 
-/* line 63 */
+/* line 55 */
 .graph-container svg * {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -69,63 +303,63 @@
   user-select: none; }
 
 /* Specific rules for mini-charts */
-/* line 78 */
+/* line 70 */
 .mini-chart-container.graph-container .gauge path {
   stroke: none; }
-/* line 83 */
+/* line 75 */
 .mini-chart-container.graph-container path {
   stroke: #30878f;
   stroke-width: 2; }
-/* line 87 */
+/* line 79 */
 .mini-chart-container.graph-container rect {
   stroke-width: .3;
   stroke: white;
   fill: #30878f; }
 
-/* line 94 */
+/* line 86 */
 .mini-chart-container {
   height: 38px; }
 
-/* line 98 */
+/* line 90 */
 .metric-inner-container {
   height: 225px; }
-  /* line 101 */
+  /* line 93 */
   .metric-inner-container .bar {
     fill: #30878f; }
 
-/* line 106 */
+/* line 98 */
 .metric-inner-container, .graph-container {
   position: relative; }
-  /* line 109 */
+  /* line 101 */
   .metric-inner-container svg, .graph-container svg {
     display: block;
     overflow: hidden; }
 
 /* axes */
-/* line 121 */
+/* line 113 */
 .y-ticks, .y1-ticks {
   /* Don't display first tick of Y-axis */ }
-  /* line 123 */
+  /* line 115 */
   .y-ticks g:first-child, .y1-ticks g:first-child {
     opacity: 0 !important; }
-  /* line 128 */
+  /* line 120 */
   .y-ticks.plain path, .y1-ticks.plain path {
     fill: none;
     stroke: none; }
-  /* line 133 */
+  /* line 125 */
   .y-ticks.plain .tick, .y1-ticks.plain .tick {
     stroke: none; }
-  /* line 137 */
+  /* line 129 */
   .y-ticks path, .y1-ticks path {
     fill: none;
     stroke: #808080; }
-  /* line 142 */
+  /* line 134 */
   .y-ticks .tick, .y1-ticks .tick {
     stroke: rgba(0, 0, 0, 0.16);
     stroke-width: 2px;
     shape-rendering: crisp-edges;
     pointer-events: none; }
-  /* line 149 */
+  /* line 141 */
   .y-ticks text, .y1-ticks text {
     opacity: 0.5;
     pointer-events: none;
@@ -134,23 +368,23 @@
     text-transform: uppercase;
     font-weight: bold; }
 
-/* line 160 */
+/* line 152 */
 .y-grid .tick {
   z-index: -1;
   stroke: rgba(0, 0, 0, 0.2);
   stroke-width: 1px;
   stroke-dasharray: 1 1; }
-/* line 166 */
+/* line 158 */
 .y-grid path {
   fill: none;
   stroke: none; }
 
-/* line 174 */
+/* line 166 */
 .x-ticks.plain path {
   fill: none;
   stroke: none; }
 
-/* line 180 */
+/* line 172 */
 .x-tick, .x-ticks {
   fill: black;
   position: absolute;
@@ -158,10 +392,10 @@
   bottom: 0;
   width: 0px;
   pointer-events: none; }
-  /* line 181 */
+  /* line 173 */
   .x-tick.grid, .x-ticks.grid {
     border-left: 1px dotted rgba(0, 0, 0, 0.2); }
-  /* line 192 */
+  /* line 184 */
   .x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
     font-size: 11px;
     text-transform: uppercase;
@@ -170,96 +404,96 @@
     opacity: 0.5;
     white-space: nowrap;
     text-anchor: middle; }
-  /* line 202 */
+  /* line 194 */
   .x-tick.align-end .title, .x-ticks.align-end .title {
     text-anchor: end; }
-  /* line 206 */
+  /* line 198 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: start; }
-  /* line 210 */
+  /* line 202 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: middle; }
 
-/* line 215 */
+/* line 207 */
 .x-tick.glow .title, .y-ticks.glow text {
   fill: black;
   color: black;
   text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1); }
 
-/* line 225 */
+/* line 217 */
 .x-tick.inverse .title, .y-ticks.inverse text {
   fill: white;
   color: white;
   text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8); }
 
-/* line 235 */
+/* line 227 */
 #y-axis {
   position: absolute;
   bottom: 0;
   width: 20px;
   left: 5px; }
 
-/* line 242 */
+/* line 234 */
 .y-axis {
   fill: none; }
 
-/* line 247 */
+/* line 239 */
 .axis.yAxis, .axis.xAxis {
   text-transform: uppercase !important;
   font-size: 11px;
   font-weight: bold;
   fill: #a69b9e; }
-/* line 252 */
+/* line 244 */
 .axis.yAxis line, .axis.yAxis path {
   stroke: #a69b9e;
   stroke-width: 2px; }
-/* line 257 */
+/* line 249 */
 .axis.yAxis .domain {
   stroke: none; }
 
-/* line 263 */
+/* line 255 */
 .axis {
   shape-rendering: crispEdges; }
 
-/* line 268 */
+/* line 260 */
 .xAxis.axis line {
   stroke: #fff; }
-/* line 272 */
+/* line 264 */
 .xAxis.axis .minor {
   stroke-opacity: .5; }
-/* line 276 */
+/* line 268 */
 .xAxis.axis path {
   display: none; }
 
-/* line 281 */
+/* line 273 */
 .yAxis.axis line, .yAxis.axis path {
   fill: none;
   stroke: #000; }
 
 /* legend */
-/* line 289 */
+/* line 281 */
 #main-chart-legend .well {
   display: inline-block;
   padding: 5px; }
-/* line 294 */
+/* line 286 */
 #main-chart-legend .chart-legend {
   margin: 1px 0 0 15px;
   padding: 5px 0 0 0;
   list-style: none;
   *zoom: 1; }
-  /* line 261, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
+  /* line 261, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_mixins.scss */
   #main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
     display: table;
     content: ""; }
-  /* line 265, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
+  /* line 265, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/_mixins.scss */
   #main-chart-legend .chart-legend:after {
     clear: both; }
-  /* line 300 */
+  /* line 292 */
   #main-chart-legend .chart-legend li {
     float: left;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
     margin: 0 15px 5px 0; }
-    /* line 305 */
+    /* line 297 */
     #main-chart-legend .chart-legend li span {
       display: inline-block;
       position: relative;
@@ -269,40 +503,40 @@
       height: 6px;
       border-radius: 1em;
       box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2); }
-      /* line 314 */
+      /* line 306 */
       #main-chart-legend .chart-legend li span.point-noise {
         background-color: #a69b9e; }
-      /* line 315 */
+      /* line 307 */
       #main-chart-legend .chart-legend li span.point-dogs {
         background-color: #dc6e59; }
-      /* line 316 */
+      /* line 308 */
       #main-chart-legend .chart-legend li span.point-sprouts {
         background-color: #19affe; }
-      /* line 317 */
+      /* line 309 */
       #main-chart-legend .chart-legend li span.point-stars {
         background-color: #8ac16f; }
 
-/* line 323 */
+/* line 315 */
 .chart-legend {
   margin: 0 0 10px 10px;
   color: #404040;
   overflow: hidden; }
-  /* line 328 */
+  /* line 320 */
   .chart-legend .legend-item {
     float: left;
     list-style: none;
     overflow: hidden;
     margin-right: 10px; }
-    /* line 335 */
+    /* line 327 */
     .chart-legend .legend-item.off .text {
       color: #ccc; }
-    /* line 340 */
+    /* line 332 */
     .chart-legend .legend-item:hover {
       cursor: pointer; }
-    /* line 344 */
+    /* line 336 */
     .chart-legend .legend-item .color, .chart-legend .legend-item .text {
       float: left; }
-    /* line 348 */
+    /* line 340 */
     .chart-legend .legend-item .color {
       border-radius: 3px;
       width: 6px;
@@ -310,13 +544,13 @@
       border: 1px solid #e6e6e6;
       margin-right: 8px;
       margin-top: 5px; }
-    /* line 357 */
+    /* line 349 */
     .chart-legend .legend-item .text {
       font-size: 14px;
       line-height: 16px; }
 
 /* hover detail */
-/* line 366 */
+/* line 358 */
 .metric-inner-container .detail, .graph-container .detail {
   pointer-events: none;
   position: absolute;
@@ -330,16 +564,16 @@
   -ms-transition: opacity 0.25s linear;
   -o-transition: opacity 0.25s linear;
   transition: opacity 0.25s linear; }
-  /* line 375 */
+  /* line 367 */
   .metric-inner-container .detail.inactive, .graph-container .detail.inactive {
     opacity: 0; }
-  /* line 379 */
+  /* line 371 */
   .metric-inner-container .detail.no-line, .graph-container .detail.no-line {
     background: none; }
-  /* line 383 */
+  /* line 375 */
   .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
     opacity: 1; }
-  /* line 387 */
+  /* line 379 */
   .metric-inner-container .detail .x_label, .graph-container .detail .x_label {
     font-family: Arial, sans-serif;
     border-radius: 3px;
@@ -350,7 +584,7 @@
     position: absolute;
     background: white;
     white-space: nowrap; }
-  /* line 398 */
+  /* line 390 */
   .metric-inner-container .detail .item, .graph-container .detail .item {
     text-transform: none;
     position: absolute;
@@ -366,18 +600,18 @@
     margin-left: 1em;
     margin-top: -1em;
     white-space: nowrap; }
-    /* line 413 */
+    /* line 405 */
     .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
       opacity: 1;
       background: rgba(0, 0, 0, 0.8); }
-    /* line 417 */
+    /* line 409 */
     .metric-inner-container .detail .item:before, .graph-container .detail .item:before {
       content: "\25c2";
       position: absolute;
       left: -0.5em;
       color: rgba(0, 0, 0, 0.7);
       width: 0; }
-  /* line 425 */
+  /* line 417 */
   .metric-inner-container .detail .dot, .graph-container .detail .dot {
     width: 4px;
     height: 4px;
@@ -391,36 +625,36 @@
     border-style: solid;
     display: none;
     background-clip: padding-box; }
-    /* line 438 */
+    /* line 430 */
     .metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
       display: block; }
 
-/* line 445 */
+/* line 437 */
 .graph-container .tooltip {
   padding: 0;
   margin: 0;
   white-space: nowrap; }
-/* line 451 */
+/* line 443 */
 .graph-container .tooltip.right {
   padding-left: 5px;
   margin-left: 10px;
   margin-top: -11px; }
 
 /* sankey */
-/* line 465 */
+/* line 457 */
 .sankey-chart .node {
   stroke: #fff;
   stroke-width: 2px; }
-/* line 470 */
+/* line 462 */
 .sankey-chart .link {
   fill: none;
   stroke: #000;
   opacity: .3; }
-/* line 475 */
+/* line 467 */
 .sankey-chart .link.on {
   stroke: #F00;
   opacity: .7; }
-/* line 480 */
+/* line 472 */
 .sankey-chart .node {
   stroke: none; }
 
@@ -429,60 +663,60 @@
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-/* line 495 */
+/* line 487 */
 .scatter circle.low {
   fill: #dc6e59; }
-/* line 496 */
+/* line 488 */
 .scatter circle.mid {
   fill: #19affe; }
-/* line 497 */
+/* line 489 */
 .scatter circle.high {
   fill: #8ac16f; }
 
-/* line 501 */
+/* line 493 */
 .graph-container circle.tip-hovered {
   stroke-width: 1; }
 
-/* line 506 */
+/* line 498 */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6; }
 
-/* line 511 */
+/* line 503 */
 rect.colorless {
   fill: #5a6ca1; }
 
-/* line 517 */
+/* line 509 */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px; }
 
-/* line 523 */
+/* line 515 */
 path.colorless {
   stroke: #405192; }
-/* line 527 */
+/* line 519 */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none; }
-/* line 532 */
+/* line 524 */
 path.line {
   fill: none;
   stroke-width: 2px; }
-/* line 536 */
+/* line 528 */
 path.area {
   fill: #e7e7e7; }
 
-/* line 541 */
+/* line 533 */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px; }
 
 /* Leaderboard */
-/* line 548 */
+/* line 540 */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold; }
-/* line 554 */
+/* line 546 */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -490,46 +724,46 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase; }
-/* line 561 */
+/* line 553 */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
   font-family: "ProximaNova", sans-serif;
   font-weight: bold;
   text-transform: uppercase; }
-/* line 567 */
+/* line 559 */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none; }
-/* line 572 */
+/* line 564 */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none; }
-/* line 577 */
+/* line 569 */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none; }
-/* line 582 */
+/* line 574 */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none; }
 
 /* Gauge */
-/* line 591 */
+/* line 583 */
 .gauge.arc {
   fill: #e2dedf; }
-/* line 595 */
+/* line 587 */
 .gauge.arc-value {
   fill: #30878f; }
-/* line 599 */
+/* line 591 */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf; }
-/* line 604 */
+/* line 596 */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345; }
-/* line 609 */
+/* line 601 */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;
