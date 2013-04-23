@@ -109,5 +109,5 @@ class Tactile.RendererBase
 
   _nameToId: ->
     #TODO: handle empty name
-    @series.name?.replace(/\s+/g, '-').toLowerCase()
+    @series.name?.replace(/[^\w]/g, '-').toLowerCase()
 

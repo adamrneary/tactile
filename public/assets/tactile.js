@@ -114,7 +114,7 @@ Tactile.RendererBase = (function() {
   RendererBase.prototype._nameToId = function() {
     var _ref;
 
-    return (_ref = this.series.name) != null ? _ref.replace(/\s+/g, '-').toLowerCase() : void 0;
+    return (_ref = this.series.name) != null ? _ref.replace(/[^\w]/g, '-').toLowerCase() : void 0;
   };
 
   return RendererBase;
