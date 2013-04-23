@@ -1834,11 +1834,13 @@ Tactile.GaugeRenderer = (function(_super) {
   GaugeRenderer.prototype.name = "gauge";
 
   GaugeRenderer.prototype.specificDefaults = {
-    cartesian: false
+    cartesian: false,
+    oldValueAngle: 0
   };
 
-  GaugeRenderer.prototype.render = function(transition) {
-    var angleRange, arcs, arcsInner, innerArc, lineData, maxAngle, minAngle, originTranslate, outerArc, pg, plotAngle, plotValue, pointer, pointerHeadLength, pointerLine, pointerTailLength, pointerWidth, r, ringInset, ringWidth, scale, totalSizeDivide, translateHeight, translateWidth;
+  GaugeRenderer.prototype.render = function(transition, transitionSpeed) {
+    var angleRange, lineData, maxAngle, minAngle, originTranslate, outerArc, plotAngle, plotValue, pointerHeadLength, pointerLine, pointerTailLength, pointerWidth, r, ringInset, ringWidth, scale, totalSizeDivide, translateHeight, translateWidth,
+      _this = this;
 
     if (transition) {
       this.transition = transition;
@@ -1859,29 +1861,55 @@ Tactile.GaugeRenderer = (function(_super) {
     translateWidth = (this.graph.width()) / 2;
     translateHeight = r;
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
+    this.seriesCanvas().each(function(d, i) {
+      var arc, arc_value, max_label, min_label, pointer, pointer_circle, pointer_nail, value_label;
+
+      arc = d3.select(this).selectAll("path.gauge.arc").data([d]);
+      arc.enter().append("svg:path").attr("class", "gauge arc");
+      arc.exit().remove();
+      arc_value = d3.select(this).selectAll("path.gauge.arc-value").data([d]);
+      arc_value.enter().append("svg:path").attr("class", "gauge arc-value");
+      arc_value.exit().remove();
+      pointer = d3.select(this).selectAll("path.gauge.pointer").data([d]);
+      pointer.enter().append("svg:path").attr("class", "gauge pointer");
+      pointer.exit().remove();
+      pointer_circle = d3.select(this).selectAll("circle.gauge.pointer-circle").data([d]);
+      pointer_circle.enter().append("svg:circle").attr("class", "gauge pointer-circle");
+      pointer_circle.exit().remove();
+      pointer_nail = d3.select(this).selectAll("circle.gauge.pointer-nail").data([d]);
+      pointer_nail.enter().append("svg:circle").attr("class", "gauge pointer-nail");
+      pointer_nail.exit().remove();
+      min_label = d3.select(this).selectAll("text.gauge.label.min-label").data([d]);
+      min_label.enter().append("text").attr("class", "gauge label min-label");
+      min_label.exit().remove();
+      max_label = d3.select(this).selectAll("text.gauge.label.max-label").data([d]);
+      max_label.enter().append("text").attr("class", "gauge label max-label");
+      max_label.exit().remove();
+      value_label = d3.select(this).selectAll("text.gauge.label.value-label").data([d]);
+      value_label.enter().append("text").attr("class", "gauge label value-label");
+      return value_label.exit().remove();
+    });
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
-    arcs = this.graph.vis.append("g").attr("class", "gauge arc").attr("transform", originTranslate);
-    arcs.selectAll("path").data([1]).enter().append("path").attr("d", outerArc);
+    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.arc").attr("transform", originTranslate).attr("d", outerArc);
     plotAngle = minAngle + (scale(plotValue) * angleRange);
-    innerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(plotAngle));
-    arcsInner = this.graph.vis.append("g").attr("class", "gauge arc-value").attr("transform", originTranslate);
-    arcsInner.selectAll("path").data([1]).enter().append("path").attr("d", innerArc);
+    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.arc-value").attr("transform", originTranslate).attrTween("d", function(d, i) {
+      var iEndAngle;
+
+      iEndAngle = d3.interpolate(_this.graph._deg2rad(_this.oldValueAngle), _this.graph._deg2rad(plotAngle));
+      _this.oldValueAngle = plotAngle;
+      return function(t) {
+        return d3.svg.arc().startAngle(_this.graph._deg2rad(minAngle)).endAngle(iEndAngle(t)).innerRadius(r * ringInset).outerRadius(r * ringWidth)();
+      };
+    });
     lineData = [[r * pointerWidth / 2, 0], [0, -(r * pointerHeadLength)], [-(r * pointerWidth / 2), 0], [0, r * pointerTailLength], [r * pointerWidth / 2, 0]];
     pointerLine = d3.svg.line().interpolate("monotone");
-    pg = this.graph.vis.append("g").data([lineData]).attr("class", "gauge pointer").attr("transform", originTranslate);
-    pointer = pg.append("path").attr("d", pointerLine);
-    this.transition.selectAll(".gauge.pointer path").attr("transform", "rotate(" + plotAngle + ")");
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 30).attr("class", "gauge pointer-circle").style("opacity", 1).attr("transform", originTranslate);
-    this.graph.vis.append("svg:circle").attr("r", this.graph.width() / 90).attr('class', 'gauge pointer-nail').style("opacity", 1).attr('transform', originTranslate);
-    if (this.series.labels) {
-      return this.renderLabels();
-    }
-  };
-
-  GaugeRenderer.prototype.renderLabels = function() {
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",      " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    this.graph.vis.append("text").attr("class", "gauge label").text(this.value).attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
-    return this.graph.vis.append("text").attr("class", "gauge label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",      " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    this.seriesCanvas().selectAll("path.gauge.pointer").data([lineData]);
+    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.pointer").attr("transform", "" + originTranslate + " rotate(" + plotAngle + ")").attr("d", pointerLine);
+    this.transition.selectAll("#" + (this._nameToId()) + " circle.gauge.pointer-circle").attr("transform", originTranslate).attr("r", this.graph.width() / 30);
+    this.transition.selectAll("#" + (this._nameToId()) + " circle.gauge.pointer-nail").attr("transform", originTranslate).attr("r", this.graph.width() / 90);
+    this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.min-label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",          " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    return this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.value-label").text(this.max).attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
   };
 
   GaugeRenderer.prototype.domain = function() {
@@ -2330,7 +2358,6 @@ Tactile.WaterfallRenderer = (function(_super) {
     this._barY = __bind(this._barY, this);
     this._barX = __bind(this._barX, this);
     this._seriesBarWidth = __bind(this._seriesBarWidth, this);
-    this._edgeRatio = __bind(this._edgeRatio, this);
     this._transformMatrix = __bind(this._transformMatrix, this);
     this.render = __bind(this.render, this);    _ref = WaterfallRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
@@ -2370,20 +2397,29 @@ Tactile.WaterfallRenderer = (function(_super) {
     this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
       return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y00) && (d.y != null) && (d.x != null) && (d.y00 != null);
     }).attr("height", function(d) {
-      return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth() / (1 + this.gapSize)).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+      return (_this.graph.y.magnitude(Math.abs(d.y))) - 1;
+    }).attr("y", function(d) {
+      return _this._barY(d) + 0.5;
+    }).attr("x", this._barX).attr("width", this._seriesBarWidth() / (1 + this.gapSize)).attr("transform", this._transformMatrix).attr("fill", this.series.color);
     nodes.exit().remove();
     line = this.seriesCanvas().selectAll("line").data(this.series.stack);
     line.enter().append("svg:line").attr("clip-path", "url(#clip)");
     this.transition.selectAll("#" + (this._nameToId()) + " line").filter(function(d) {
       return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y00) && (d.y != null) && (d.x != null) && (d.y00 != null);
-    }).attr("x1", this._barX).attr("x2", function(d, i) {
-      var gapCount;
+    }).attr("x1", function(d) {
+      return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
+    }).attr("x2", function(d, i) {
+      var gapCount, stackWidthCur;
 
       gapCount = _this.graph.series.filter(function(d) {
         return d.renderer === 'waterfall';
       }).length();
-      return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? _this._seriesBarWidth() * _this.gapSize * gapCount : _this._seriesBarWidth() * _this.gapSize);
+      if (i === 0) {
+        return _this._barX(d, i) - _this._seriesBarWidth();
+      } else {
+        stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x);
+        return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? stackWidthCur - _this._seriesBarWidth() * gapCount : 0) - _this._seriesBarWidth();
+      }
     }).attr("y1", function(d) {
       return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
     }).attr("y2", function(d) {
@@ -2428,14 +2464,6 @@ Tactile.WaterfallRenderer = (function(_super) {
 
     matrix = [1, 0, 0, (d.y + d.y00 < 0 ? -1 : 1), 0, (d.y + d.y00 < 0 ? this.graph.y.magnitude(Math.abs(d.y + d.y00)) * 2 : 0)];
     return "matrix(" + matrix.join(",") + ")";
-  };
-
-  WaterfallRenderer.prototype._edgeRatio = function() {
-    if (this.series.round) {
-      return Math.round(0.05783 * this._seriesBarWidth() + 1);
-    } else {
-      return 0;
-    }
   };
 
   WaterfallRenderer.prototype._seriesBarWidth = function() {
