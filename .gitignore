@@ -6,3 +6,8 @@ npm-debug.log
 public/docs
 
 .idea
+
+.rvmrc
+build/
+test/cov/
+test/reports/

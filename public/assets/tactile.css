@@ -10,28 +10,28 @@
 -------------------------------------------------- */
 /* Alert palette
 -------------------------------------------------- */
-@media -sass-debug-info{filename{}line{font-family:\0000317}}
+/* line 17 */
 #chart {
   width: 938px;
   height: 300px;
   overflow: hidden; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000323}}
+/* line 23 */
 #chart-container {
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   margin-top: 20px;
   position: relative; }
-@media -sass-debug-info{filename{}line{font-family:\0000327}}
+  /* line 27 */
   #chart-container .uncategorized {
     position: absolute;
     top: 0;
     right: 0;
     padding: 4px;
     z-index: 1;
-    border-left: 1px solid #E6E6E6;
-    border-bottom: 1px solid #E6E6E6;
+    border-left: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
     background: #fff; }
-@media -sass-debug-info{filename{}line{font-family:\0000337}}
+  /* line 37 */
   #chart-container .empty {
     background: #F2F2F3;
     color: #9B9DA1;
@@ -44,19 +44,19 @@
     width: 938px; }
 
 /* graph */
-@media -sass-debug-info{filename{}line{font-family:\0000351}}
+/* line 51 */
 .chart-container {
   position: relative; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000355}}
+/* line 55 */
 .chart-widget {
   padding-left: 0; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000359}}
+/* line 59 */
 .main-d3-chart.graph-container {
   left: 15px; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000363}}
+/* line 63 */
 .graph-container svg * {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -69,63 +69,63 @@
   user-select: none; }
 
 /* Specific rules for mini-charts */
-@media -sass-debug-info{filename{}line{font-family:\0000378}}
+/* line 78 */
 .mini-chart-container.graph-container .gauge path {
   stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\0000383}}
+/* line 83 */
 .mini-chart-container.graph-container path {
   stroke: #30878f;
   stroke-width: 2; }
-@media -sass-debug-info{filename{}line{font-family:\0000387}}
+/* line 87 */
 .mini-chart-container.graph-container rect {
   stroke-width: .3;
   stroke: white;
   fill: #30878f; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000394}}
+/* line 94 */
 .mini-chart-container {
   height: 38px; }
 
-@media -sass-debug-info{filename{}line{font-family:\0000398}}
+/* line 98 */
 .metric-inner-container {
   height: 225px; }
-@media -sass-debug-info{filename{}line{font-family:\00003101}}
+  /* line 101 */
   .metric-inner-container .bar {
     fill: #30878f; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003106}}
+/* line 106 */
 .metric-inner-container, .graph-container {
   position: relative; }
-@media -sass-debug-info{filename{}line{font-family:\00003109}}
+  /* line 109 */
   .metric-inner-container svg, .graph-container svg {
     display: block;
     overflow: hidden; }
 
 /* axes */
-@media -sass-debug-info{filename{}line{font-family:\00003121}}
+/* line 121 */
 .y-ticks, .y1-ticks {
   /* Don't display first tick of Y-axis */ }
-@media -sass-debug-info{filename{}line{font-family:\00003123}}
+  /* line 123 */
   .y-ticks g:first-child, .y1-ticks g:first-child {
     opacity: 0 !important; }
-@media -sass-debug-info{filename{}line{font-family:\00003128}}
+  /* line 128 */
   .y-ticks.plain path, .y1-ticks.plain path {
     fill: none;
     stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003133}}
+  /* line 133 */
   .y-ticks.plain .tick, .y1-ticks.plain .tick {
     stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003137}}
+  /* line 137 */
   .y-ticks path, .y1-ticks path {
     fill: none;
     stroke: #808080; }
-@media -sass-debug-info{filename{}line{font-family:\00003142}}
+  /* line 142 */
   .y-ticks .tick, .y1-ticks .tick {
     stroke: rgba(0, 0, 0, 0.16);
     stroke-width: 2px;
     shape-rendering: crisp-edges;
     pointer-events: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003149}}
+  /* line 149 */
   .y-ticks text, .y1-ticks text {
     opacity: 0.5;
     pointer-events: none;
@@ -134,23 +134,23 @@
     text-transform: uppercase;
     font-weight: bold; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003160}}
+/* line 160 */
 .y-grid .tick {
   z-index: -1;
   stroke: rgba(0, 0, 0, 0.2);
   stroke-width: 1px;
   stroke-dasharray: 1 1; }
-@media -sass-debug-info{filename{}line{font-family:\00003166}}
+/* line 166 */
 .y-grid path {
   fill: none;
   stroke: none; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003174}}
+/* line 174 */
 .x-ticks.plain path {
   fill: none;
   stroke: none; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003180}}
+/* line 180 */
 .x-tick, .x-ticks {
   fill: black;
   position: absolute;
@@ -158,10 +158,10 @@
   bottom: 0;
   width: 0px;
   pointer-events: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003181}}
+  /* line 181 */
   .x-tick.grid, .x-ticks.grid {
     border-left: 1px dotted rgba(0, 0, 0, 0.2); }
-@media -sass-debug-info{filename{}line{font-family:\00003192}}
+  /* line 192 */
   .x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
     font-size: 11px;
     text-transform: uppercase;
@@ -170,96 +170,96 @@
     opacity: 0.5;
     white-space: nowrap;
     text-anchor: middle; }
-@media -sass-debug-info{filename{}line{font-family:\00003202}}
+  /* line 202 */
   .x-tick.align-end .title, .x-ticks.align-end .title {
     text-anchor: end; }
-@media -sass-debug-info{filename{}line{font-family:\00003206}}
+  /* line 206 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: start; }
-@media -sass-debug-info{filename{}line{font-family:\00003210}}
+  /* line 210 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: middle; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003215}}
+/* line 215 */
 .x-tick.glow .title, .y-ticks.glow text {
   fill: black;
   color: black;
   text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1); }
 
-@media -sass-debug-info{filename{}line{font-family:\00003225}}
+/* line 225 */
 .x-tick.inverse .title, .y-ticks.inverse text {
   fill: white;
   color: white;
   text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8); }
 
-@media -sass-debug-info{filename{}line{font-family:\00003235}}
+/* line 235 */
 #y-axis {
   position: absolute;
   bottom: 0;
   width: 20px;
   left: 5px; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003242}}
+/* line 242 */
 .y-axis {
   fill: none; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003247}}
+/* line 247 */
 .axis.yAxis, .axis.xAxis {
   text-transform: uppercase !important;
   font-size: 11px;
   font-weight: bold;
   fill: #a69b9e; }
-@media -sass-debug-info{filename{}line{font-family:\00003252}}
+/* line 252 */
 .axis.yAxis line, .axis.yAxis path {
   stroke: #a69b9e;
   stroke-width: 2px; }
-@media -sass-debug-info{filename{}line{font-family:\00003257}}
+/* line 257 */
 .axis.yAxis .domain {
   stroke: none; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003263}}
+/* line 263 */
 .axis {
   shape-rendering: crispEdges; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003268}}
+/* line 268 */
 .xAxis.axis line {
   stroke: #fff; }
-@media -sass-debug-info{filename{}line{font-family:\00003272}}
+/* line 272 */
 .xAxis.axis .minor {
   stroke-opacity: .5; }
-@media -sass-debug-info{filename{}line{font-family:\00003276}}
+/* line 276 */
 .xAxis.axis path {
   display: none; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003281}}
+/* line 281 */
 .yAxis.axis line, .yAxis.axis path {
   fill: none;
   stroke: #000; }
 
 /* legend */
-@media -sass-debug-info{filename{}line{font-family:\00003289}}
+/* line 289 */
 #main-chart-legend .well {
   display: inline-block;
   padding: 5px; }
-@media -sass-debug-info{filename{}line{font-family:\00003294}}
+/* line 294 */
 #main-chart-legend .chart-legend {
   margin: 1px 0 0 15px;
   padding: 5px 0 0 0;
   list-style: none;
   *zoom: 1; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/dunice\/work\/activecell\/tmp\/tactile\/src\/scss\/mixins\.scss}line{font-family:\00003261}}
+  /* line 261, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
     display: table;
     content: ""; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/dunice\/work\/activecell\/tmp\/tactile\/src\/scss\/mixins\.scss}line{font-family:\00003265}}
+  /* line 265, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:after {
     clear: both; }
-@media -sass-debug-info{filename{}line{font-family:\00003300}}
+  /* line 300 */
   #main-chart-legend .chart-legend li {
     float: left;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
     margin: 0 15px 5px 0; }
-@media -sass-debug-info{filename{}line{font-family:\00003305}}
+    /* line 305 */
     #main-chart-legend .chart-legend li span {
       display: inline-block;
       position: relative;
@@ -269,54 +269,54 @@
       height: 6px;
       border-radius: 1em;
       box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2); }
-@media -sass-debug-info{filename{}line{font-family:\00003314}}
+      /* line 314 */
       #main-chart-legend .chart-legend li span.point-noise {
         background-color: #a69b9e; }
-@media -sass-debug-info{filename{}line{font-family:\00003315}}
+      /* line 315 */
       #main-chart-legend .chart-legend li span.point-dogs {
         background-color: #dc6e59; }
-@media -sass-debug-info{filename{}line{font-family:\00003316}}
+      /* line 316 */
       #main-chart-legend .chart-legend li span.point-sprouts {
         background-color: #19affe; }
-@media -sass-debug-info{filename{}line{font-family:\00003317}}
+      /* line 317 */
       #main-chart-legend .chart-legend li span.point-stars {
         background-color: #8ac16f; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003323}}
+/* line 323 */
 .chart-legend {
   margin: 0 0 10px 10px;
   color: #404040;
   overflow: hidden; }
-@media -sass-debug-info{filename{}line{font-family:\00003328}}
+  /* line 328 */
   .chart-legend .legend-item {
     float: left;
     list-style: none;
     overflow: hidden;
     margin-right: 10px; }
-@media -sass-debug-info{filename{}line{font-family:\00003335}}
+    /* line 335 */
     .chart-legend .legend-item.off .text {
       color: #ccc; }
-@media -sass-debug-info{filename{}line{font-family:\00003340}}
+    /* line 340 */
     .chart-legend .legend-item:hover {
       cursor: pointer; }
-@media -sass-debug-info{filename{}line{font-family:\00003344}}
+    /* line 344 */
     .chart-legend .legend-item .color, .chart-legend .legend-item .text {
       float: left; }
-@media -sass-debug-info{filename{}line{font-family:\00003348}}
+    /* line 348 */
     .chart-legend .legend-item .color {
       border-radius: 3px;
       width: 6px;
       height: 6px;
-      border: 1px solid #E6E6E6;
+      border: 1px solid #e6e6e6;
       margin-right: 8px;
       margin-top: 5px; }
-@media -sass-debug-info{filename{}line{font-family:\00003357}}
+    /* line 357 */
     .chart-legend .legend-item .text {
       font-size: 14px;
       line-height: 16px; }
 
 /* hover detail */
-@media -sass-debug-info{filename{}line{font-family:\00003366}}
+/* line 366 */
 .metric-inner-container .detail, .graph-container .detail {
   pointer-events: none;
   position: absolute;
@@ -330,16 +330,16 @@
   -ms-transition: opacity 0.25s linear;
   -o-transition: opacity 0.25s linear;
   transition: opacity 0.25s linear; }
-@media -sass-debug-info{filename{}line{font-family:\00003375}}
+  /* line 375 */
   .metric-inner-container .detail.inactive, .graph-container .detail.inactive {
     opacity: 0; }
-@media -sass-debug-info{filename{}line{font-family:\00003379}}
+  /* line 379 */
   .metric-inner-container .detail.no-line, .graph-container .detail.no-line {
     background: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003383}}
+  /* line 383 */
   .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
     opacity: 1; }
-@media -sass-debug-info{filename{}line{font-family:\00003387}}
+  /* line 387 */
   .metric-inner-container .detail .x_label, .graph-container .detail .x_label {
     font-family: Arial, sans-serif;
     border-radius: 3px;
@@ -350,7 +350,7 @@
     position: absolute;
     background: white;
     white-space: nowrap; }
-@media -sass-debug-info{filename{}line{font-family:\00003398}}
+  /* line 398 */
   .metric-inner-container .detail .item, .graph-container .detail .item {
     text-transform: none;
     position: absolute;
@@ -366,18 +366,18 @@
     margin-left: 1em;
     margin-top: -1em;
     white-space: nowrap; }
-@media -sass-debug-info{filename{}line{font-family:\00003413}}
+    /* line 413 */
     .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
       opacity: 1;
       background: rgba(0, 0, 0, 0.8); }
-@media -sass-debug-info{filename{}line{font-family:\00003417}}
+    /* line 417 */
     .metric-inner-container .detail .item:before, .graph-container .detail .item:before {
       content: "\25c2";
       position: absolute;
       left: -0.5em;
       color: rgba(0, 0, 0, 0.7);
       width: 0; }
-@media -sass-debug-info{filename{}line{font-family:\00003425}}
+  /* line 425 */
   .metric-inner-container .detail .dot, .graph-container .detail .dot {
     width: 4px;
     height: 4px;
@@ -391,36 +391,36 @@
     border-style: solid;
     display: none;
     background-clip: padding-box; }
-@media -sass-debug-info{filename{}line{font-family:\00003438}}
+    /* line 438 */
     .metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
       display: block; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003445}}
+/* line 445 */
 .graph-container .tooltip {
   padding: 0;
   margin: 0;
   white-space: nowrap; }
-@media -sass-debug-info{filename{}line{font-family:\00003451}}
+/* line 451 */
 .graph-container .tooltip.right {
   padding-left: 5px;
   margin-left: 10px;
   margin-top: -11px; }
 
 /* sankey */
-@media -sass-debug-info{filename{}line{font-family:\00003465}}
+/* line 465 */
 .sankey-chart .node {
   stroke: #fff;
   stroke-width: 2px; }
-@media -sass-debug-info{filename{}line{font-family:\00003470}}
+/* line 470 */
 .sankey-chart .link {
   fill: none;
   stroke: #000;
   opacity: .3; }
-@media -sass-debug-info{filename{}line{font-family:\00003475}}
+/* line 475 */
 .sankey-chart .link.on {
   stroke: #F00;
   opacity: .7; }
-@media -sass-debug-info{filename{}line{font-family:\00003480}}
+/* line 480 */
 .sankey-chart .node {
   stroke: none; }
 
@@ -429,111 +429,111 @@
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-@media -sass-debug-info{filename{}line{font-family:\00003495}}
+/* line 495 */
 .scatter circle.low {
   fill: #dc6e59; }
-@media -sass-debug-info{filename{}line{font-family:\00003496}}
+/* line 496 */
 .scatter circle.mid {
   fill: #19affe; }
-@media -sass-debug-info{filename{}line{font-family:\00003497}}
+/* line 497 */
 .scatter circle.high {
   fill: #8ac16f; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003501}}
+/* line 501 */
 .graph-container circle.tip-hovered {
   stroke-width: 1; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003506}}
+/* line 506 */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003511}}
+/* line 511 */
 rect.colorless {
   fill: #5a6ca1; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003517}}
+/* line 517 */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003523}}
+/* line 523 */
 path.colorless {
   stroke: #405192; }
-@media -sass-debug-info{filename{}line{font-family:\00003527}}
+/* line 527 */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003532}}
+/* line 532 */
 path.line {
   fill: none;
   stroke-width: 2px; }
-@media -sass-debug-info{filename{}line{font-family:\00003536}}
+/* line 536 */
 path.area {
   fill: #e7e7e7; }
 
-@media -sass-debug-info{filename{}line{font-family:\00003541}}
+/* line 541 */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px; }
 
 /* Leaderboard */
-@media -sass-debug-info{filename{}line{font-family:\00003548}}
+/* line 548 */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold; }
-@media -sass-debug-info{filename{}line{font-family:\00003554}}
+/* line 554 */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
   text-anchor: end;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase; }
-@media -sass-debug-info{filename{}line{font-family:\00003561}}
+/* line 561 */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: bold;
   text-transform: uppercase; }
-@media -sass-debug-info{filename{}line{font-family:\00003567}}
+/* line 567 */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003572}}
+/* line 572 */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003577}}
+/* line 577 */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none; }
-@media -sass-debug-info{filename{}line{font-family:\00003582}}
+/* line 582 */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none; }
 
 /* Gauge */
-@media -sass-debug-info{filename{}line{font-family:\00003591}}
+/* line 591 */
 .gauge.arc {
   fill: #e2dedf; }
-@media -sass-debug-info{filename{}line{font-family:\00003595}}
+/* line 595 */
 .gauge.arc-value {
   fill: #30878f; }
-@media -sass-debug-info{filename{}line{font-family:\00003599}}
+/* line 599 */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf; }
-@media -sass-debug-info{filename{}line{font-family:\00003604}}
+/* line 604 */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345; }
-@media -sass-debug-info{filename{}line{font-family:\00003609}}
+/* line 609 */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;
   text-anchor: middle;
-  font-family: 'ProximaNova', sans-serif;
+  font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase; }
