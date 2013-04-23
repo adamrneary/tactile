@@ -265,6 +265,14 @@ class Tactile.Chart
   renderersByType: (name) ->
     @renderers.filter((r) -> r.name == name)
 
+  clearRenderers: ->
+    return if _.isEmpty(@renderers)
+    _.each @renderers, (r) ->
+      r.delete()
+
+    @renderers = []
+    @timesRendered = 0
+
   stackTransition: (transitionSpeed)=>
     transitionSpeed = @transitionSpeed unless transitionSpeed
     t = @svg.transition().duration(transitionSpeed)

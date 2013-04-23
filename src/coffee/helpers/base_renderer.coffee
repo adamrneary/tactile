@@ -93,8 +93,7 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
-    @_seriesCanvas ||= @graph.vis
-      .selectAll("g##{@_nameToId()}")
+    @_seriesCanvas ||= @graph.vis?.selectAll("g##{@_nameToId()}")
       .data([@series.stack])
       .enter()
       .append("g")
@@ -110,6 +109,9 @@ class Tactile.RendererBase
     options = _.extend {}, defaults, options
     _.each options, (val, key) =>
       @[key] = val
+
+  delete: ->
+    @seriesCanvas()?.remove()
 
   _nameToId: ->
     #TODO: handle empty name

@@ -14,6 +14,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @gapSize = options.gapSize || @gapSize
 
   render: (transition)=>
+    debugger
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0

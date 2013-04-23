@@ -1208,10 +1208,13 @@
       name: "reach actual",
       renderer: "column"
     };
-    _chart = new window.Tactile.Chart();
+    _chart = new window.Tactile.Chart({
+      unstack: false
+    }).data(data).width(680).height(400);
     _chart.addSeries([series, series]);
     _chart.addSeries(_.extend(series, {
-      renderer: 'column'
+      renderer: 'column',
+      name: 'new series'
     }), {
       overwrite: true
     });

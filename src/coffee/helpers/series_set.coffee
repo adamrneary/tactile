@@ -23,7 +23,8 @@ class Tactile.SeriesSet
   add: (newSeries, overwrite = false) ->
     if overwrite
       @array = newSeries
-      @graph.renderers = []
+      @graph.clearRenderers()
+
     else
       @array = @array.concat(newSeries)
 
