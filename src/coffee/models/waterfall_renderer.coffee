@@ -26,15 +26,12 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     @transition.selectAll("##{@_nameToId()} rect")
       .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y00) and d.y? and d.x? and d.y00?)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-      .attr("y", @_barY)
+      .attr("height", (d) => (@graph.y.magnitude Math.abs(d.y)) - 1)
+      .attr("y", (d)=> @_barY(d) + 0.5)
       .attr("x", @_barX)
-      .attr("width", @_seriesBarWidth()/ (1 + @gapSize))
+      .attr("width", @_seriesBarWidth() / (1 + @gapSize))
       .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
-      .attr("stroke", "white")
-      .attr("rx", @_edgeRatio)
-      .attr("ry", @_edgeRatio)
 
     nodes.exit().remove()
 
@@ -45,21 +42,23 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     @transition.selectAll("##{@_nameToId()} line")
       .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y00) and d.y? and d.x? and d.y00?)
-      .attr("x1", @_barX)
+      .attr("x1", (d)=>@_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i)=>
         gapCount = @graph.series.filter(
           (d) =>
             d.renderer == 'waterfall'
         ).length()
-        @_barX(d, i)-(if  @_waterfalRendererIndex() is 0 then @_seriesBarWidth()*@gapSize*gapCount else @_seriesBarWidth()*@gapSize)
+        if i is 0
+          @_barX(d, i) - @_seriesBarWidth()
+        else
+          stackWidthCur = @graph.x(@series.stack[i].x) - @graph.x(@series.stack[i-1].x)
+          @_barX(d, i)-(if  @_waterfalRendererIndex() is 0 then stackWidthCur - @_seriesBarWidth()*gapCount else 0) - @_seriesBarWidth()
       )
       .attr("y1", (d)=>@_barY(d)+(if d.y > 0 then @graph.y.magnitude Math.abs(d.y) else 0))
       .attr("y2", (d)=>@_barY(d)+(if d.y > 0 then @graph.y.magnitude Math.abs(d.y) else 0))
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
-
-
 
 
     @setupTooltips()
@@ -86,9 +85,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
               0, ((if d.y+ d.y00 < 0 then @graph.y.magnitude(Math.abs(d.y+ d.y00)) * 2 else 0))
     ]
     "matrix(" + matrix.join(",") + ")"
-
-  _edgeRatio: =>
-    if @series.round then Math.round(0.05783 * @_seriesBarWidth() + 1) else 0
 
   _seriesBarWidth: =>
     if @series.stack.length >= 2
