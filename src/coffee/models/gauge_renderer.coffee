@@ -3,8 +3,9 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
 
   specificDefaults:
     cartesian: false
+    oldValueAngle: 0
 
-  render: (transition)->
+  render: (transition, transitionSpeed)->
     @transition = transition if transition
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
     ringInset = 0.300
@@ -26,46 +27,85 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     originTranslate = "translate(#{translateWidth}, #{translateHeight})"
 
 
+    @seriesCanvas().each((d, i)->
+      arc = d3.select(@).selectAll("path.gauge.arc").data([d])
+      arc.enter()
+        .append("svg:path")
+        .attr("class", "gauge arc")
+      arc.exit().remove()
 
-    # outer full scale arc
+      arc_value = d3.select(@).selectAll("path.gauge.arc-value").data([d])
+      arc_value.enter()
+        .append("svg:path")
+        .attr("class", "gauge arc-value")
+      arc_value.exit().remove()
+
+      pointer = d3.select(@).selectAll("path.gauge.pointer").data([d])
+      pointer.enter()
+        .append("svg:path")
+        .attr("class", "gauge pointer")
+      pointer.exit().remove()
+
+      pointer_circle = d3.select(@).selectAll("circle.gauge.pointer-circle").data([d])
+      pointer_circle.enter()
+        .append("svg:circle")
+        .attr("class", "gauge pointer-circle")
+      pointer_circle.exit().remove()
+
+      pointer_nail = d3.select(@).selectAll("circle.gauge.pointer-nail").data([d])
+      pointer_nail.enter()
+        .append("svg:circle")
+        .attr("class", "gauge pointer-nail")
+      pointer_nail.exit().remove()
+
+      min_label = d3.select(@).selectAll("text.gauge.label.min-label").data([d])
+      min_label.enter()
+        .append("text")
+        .attr("class", "gauge label min-label")
+      min_label.exit().remove()
+
+      max_label = d3.select(@).selectAll("text.gauge.label.max-label").data([d])
+      max_label.enter()
+        .append("text")
+        .attr("class", "gauge label max-label")
+      max_label.exit().remove()
+
+      value_label = d3.select(@).selectAll("text.gauge.label.value-label").data([d])
+      value_label.enter()
+        .append("text")
+        .attr("class", "gauge label value-label")
+      value_label.exit().remove()
+
+    )
+#      # outer full scale arc
     outerArc = d3.svg.arc()
       .outerRadius(r * ringWidth)
       .innerRadius(r * ringInset)
       .startAngle( @graph._deg2rad(minAngle) )
       .endAngle( @graph._deg2rad(minAngle + angleRange) )
 
-    arcs = @graph.vis.append("g")
-    .attr("class", "gauge arc")
-    .attr("transform", originTranslate)
-
     # main arc
-    arcs.selectAll("path")
-    .data([1])
-    .enter()
-    .append("path")
-    .attr "d", outerArc
-
+    @transition.selectAll("##{@_nameToId()} path.gauge.arc")
+      .attr( "transform", originTranslate )
+      .attr( "d", outerArc )
 
     # arc representing plot value
     plotAngle = minAngle + (scale(plotValue) * angleRange)
-    innerArc = d3.svg.arc()
-      .outerRadius( r * ringWidth )
-      .innerRadius( r * ringInset )
-      .startAngle( @graph._deg2rad(minAngle) )
-      .endAngle( @graph._deg2rad(plotAngle) )
+    @transition.selectAll("##{@_nameToId()} path.gauge.arc-value")
+      .attr("transform", originTranslate)
+      .attrTween("d", (d, i) =>
+        iEndAngle = d3.interpolate(@graph._deg2rad(@oldValueAngle), @graph._deg2rad(plotAngle) )
+        @oldValueAngle = plotAngle
+        (t) =>
+          d3.svg.arc()
+            .startAngle(@graph._deg2rad(minAngle))
+            .endAngle(iEndAngle(t))
+            .innerRadius( r * ringInset )
+            .outerRadius( r * ringWidth )()
+      )
 
 
-    arcsInner = @graph.vis.append("g")
-    .attr("class", "gauge arc-value")
-    .attr("transform", originTranslate)
-
-    arcsInner.selectAll("path")
-      .data([1])
-      .enter()
-      .append("path")
-      .attr "d", innerArc
-
-  # pointer
+    # pointer
     lineData = [
       [ (r * pointerWidth / 2) , 0                        ]
       [ 0                      , -(r * pointerHeadLength) ]
@@ -76,46 +116,39 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
 
     pointerLine = d3.svg.line().interpolate("monotone")
 
-    pg = @graph.vis.append("g")
-      .data([lineData])
-      .attr("class", "gauge pointer")
+    @seriesCanvas().selectAll("path.gauge.pointer").data([lineData])
+
+    @transition.selectAll("##{@_nameToId()} path.gauge.pointer")
+      .attr("transform", "#{originTranslate} rotate(#{plotAngle})")
+      .attr( "d", pointerLine)
+
+
+    @transition.selectAll("##{@_nameToId()} circle.gauge.pointer-circle")
       .attr("transform", originTranslate)
-
-
-    pointer = pg.append("path").attr("d", pointerLine)
-    @transition.selectAll(".gauge.pointer path")
-      .attr("transform", "rotate(#{plotAngle})")
-
-    @graph.vis.append("svg:circle")
       .attr("r", @graph.width() / 30)
-      .attr("class", "gauge pointer-circle")
-      .style("opacity", 1)
-      .attr "transform", originTranslate
+
     # pointer circle then inner-circle (nail)
-    @graph.vis.append("svg:circle")
+    @transition.selectAll("##{@_nameToId()} circle.gauge.pointer-nail")
+      .attr("transform", originTranslate)
       .attr("r", @graph.width() / 90)
-      .attr('class', 'gauge pointer-nail')
-      .style("opacity", 1)
-      .attr('transform', originTranslate)
 
-    @renderLabels() if @series.labels
+    # min label
+    @transition.selectAll("##{@_nameToId()} text.gauge.label.min-label")
+    .text(@min)
+    .attr("transform", "translate(#{0.1 * @graph.width()},
+          #{1.15 * @graph.height() * @bottomOffset})")
 
-  renderLabels: ->
-    @graph.vis.append("text")
-      .attr("class", "gauge label")
-      .text(@min)
-      .attr("transform", "translate(#{0.1 * @graph.width()},
-      #{1.15 * @graph.height() * @bottomOffset})")
-    @graph.vis.append("text")
-      .attr("class", "gauge label")
-      .text(@value)
-      .attr("transform", "translate(#{( @graph.width() -
-@graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
-    @graph.vis.append("text")
-      .attr("class", "gauge label")
+    # max label
+    @transition.selectAll("##{@_nameToId()} text.gauge.label.max-label")
       .text(@max)
       .attr("transform", "translate(#{0.90 * @graph.width()},
-      #{1.15 * @graph.height() * @bottomOffset})")
+            #{1.15 * @graph.height() * @bottomOffset})")
+
+    # value label
+    @transition.selectAll("##{@_nameToId()} text.gauge.label.value-label")
+      .text(@max)
+      .attr("transform", "translate(#{( @graph.width() -
+        @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
 
   domain: ->
     @value = @series.stack[0].value
