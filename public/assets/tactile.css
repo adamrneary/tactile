@@ -247,11 +247,11 @@
   padding: 5px 0 0 0;
   list-style: none;
   *zoom: 1; }
-  /* line 261, /Users/ask/Sites/work/activecell/tactile/src/scss/mixins.scss */
+  /* line 261, /home/dunice/work/ActiveCell/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
     display: table;
     content: ""; }
-  /* line 265, /Users/ask/Sites/work/activecell/tactile/src/scss/mixins.scss */
+  /* line 265, /home/dunice/work/ActiveCell/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:after {
     clear: both; }
   /* line 300 */

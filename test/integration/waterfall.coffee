@@ -1,8 +1,8 @@
 {scenario, next, pending} = require('./test/casper_helper')
 
-scenario '#column', 'column chart render', ->
+scenario '#waterfall-timeseries', 'waterfall chart', ->
   next 'renders example page', ->
-    @test.assertSelectorHasText '#example_header', 'Column'
+    @test.assertSelectorHasText '#example_header', 'Waterfall (time series)'
 
   next 'renders view', ->
     @test.assertExists 'div#example_view svg'
