@@ -18,7 +18,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
   seriesPathFactory: =>
     d3.svg.area()
-    .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
+    .defined((d) => @_filterNaNs(d, 'x', 'y'))
     .x((d) => @graph.x d.x)
     .y0((d) => @yFunction() @_y0(d))
     .y1((d) => @yFunction() d.y + @_y0(d))
@@ -27,7 +27,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
   seriesStrokeFactory: =>
     d3.svg.line()
-    .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
+    .defined((d) => @_filterNaNs(d, 'x', 'y'))
     .x((d) => @graph.x d.x)
     .y((d) => @yFunction() d.y + @_y0(d))
     .interpolate(@graph.interpolation)
@@ -65,7 +65,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
     #TODO: this block of code is the same in few places
     @transition.selectAll("##{@_nameToId()} circle")
-      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(@_y0(d)) and  d.y? and d.x? and @_y0(d)?)
+      .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("r",
         (d) =>
           (if ("r" of d)
