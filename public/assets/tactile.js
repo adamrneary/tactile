@@ -4,7 +4,8 @@
 }).call(this);
 
 (function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __slice = [].slice;
 
 Tactile.RendererBase = (function() {
   RendererBase.prototype.defaults = {
@@ -22,6 +23,7 @@ Tactile.RendererBase = (function() {
     if (options == null) {
       options = {};
     }
+    this._filterNaNs = __bind(this._filterNaNs, this);
     this.render = __bind(this.render, this);
     this.graph = options.graph;
     this.tension = options.tension || this.tension;
@@ -115,6 +117,15 @@ Tactile.RendererBase = (function() {
     var _ref;
 
     return (_ref = this.series.name) != null ? _ref.replace(/[^\w]/g, '-').toLowerCase() : void 0;
+  };
+
+  RendererBase.prototype._filterNaNs = function() {
+    var args, d;
+
+    d = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return _.all(args, function(attr) {
+      return !isNaN(d[attr]) && (d[attr] != null);
+    });
   };
 
   return RendererBase;
@@ -948,7 +959,7 @@ Tactile.ColumnRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
     this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
     }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
@@ -971,7 +982,7 @@ Tactile.ColumnRenderer = (function(_super) {
       _ref3.updateDraggedNode();
     }
     this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     }).attr("cy", function(d) {
@@ -1056,18 +1067,18 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = false;
     this.graph.discoverRange(this);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     });
     transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).duration(transitionSpeed / 2).attr("cy", this._barY);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
     return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).delay(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
@@ -1079,20 +1090,20 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = true;
     this.graph.discoverRange(this);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
     transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).duration(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).delay(transitionSpeed / 2).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("y", this._barY);
     return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y0) && (d.y != null) && (d.x != null) && (d.y0 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).delay(transitionSpeed / 2).attr("cy", this._barY);
   };
 
@@ -2147,7 +2158,7 @@ Tactile.LineRenderer = (function(_super) {
       _ref2.updateDraggedNode();
     }
     this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && (d.y != null) && (d.x != null);
+      return _this._filterNaNs(d, 'x', 'y');
     }).attr("cx", function(d) {
       return _this.graph.x(d.x);
     }).attr("cy", function(d) {
@@ -2302,7 +2313,7 @@ Tactile.ScatterRenderer = (function(_super) {
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     circ.enter().append("svg:circle");
     this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.r) && (d.y != null) && (d.x != null) && (d.r != null);
+      return _this._filterNaNs(d, 'x', 'y', 'r');
     }).attr("r", function(d) {
       if ("r" in d) {
         return d.r;
@@ -2395,7 +2406,7 @@ Tactile.WaterfallRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
     this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y00) && (d.y != null) && (d.x != null) && (d.y00 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("height", function(d) {
       return (_this.graph.y.magnitude(Math.abs(d.y))) - 1;
     }).attr("y", function(d) {
@@ -2405,7 +2416,7 @@ Tactile.WaterfallRenderer = (function(_super) {
     line = this.seriesCanvas().selectAll("line").data(this.series.stack);
     line.enter().append("svg:line").attr("clip-path", "url(#clip)");
     this.transition.selectAll("#" + (this._nameToId()) + " line").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(d.y00) && (d.y != null) && (d.x != null) && (d.y00 != null);
+      return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("x1", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
     }).attr("x2", function(d, i) {

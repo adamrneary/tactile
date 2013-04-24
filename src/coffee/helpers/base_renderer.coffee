@@ -111,3 +111,6 @@ class Tactile.RendererBase
     #TODO: handle empty name
     @series.name?.replace(/[^\w]/g, '-').toLowerCase()
 
+  _filterNaNs: (d, args...) =>
+    _.all args, (attr) ->
+      !isNaN(d[attr]) and d[attr]?
