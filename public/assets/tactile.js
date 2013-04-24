@@ -963,7 +963,7 @@ Tactile.ColumnRenderer = (function(_super) {
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
     this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
     }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
@@ -986,7 +986,7 @@ Tactile.ColumnRenderer = (function(_super) {
       _ref3.updateDraggedNode();
     }
     this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     }).attr("cy", function(d) {
@@ -1071,18 +1071,18 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = false;
     this.graph.discoverRange(this);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     });
     transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("cy", this._barY);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
     return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
@@ -1094,20 +1094,20 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = true;
     this.graph.discoverRange(this);
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
     transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
     transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("y", this._barY);
     return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y', 'y0');
+      return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("cy", this._barY);
   };
 
@@ -1924,7 +1924,14 @@ Tactile.GaugeRenderer = (function(_super) {
     this.transition.selectAll("#" + (this._nameToId()) + " circle.gauge.pointer-nail").attr("transform", originTranslate).attr("r", this.graph.width() / 90);
     this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.min-label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",          " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
     this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    return this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.value-label").text(this.max).attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")");
+    return this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
+      var i;
+
+      i = d3.interpolate(this.textContent, _this.value);
+      return function(t) {
+        return this.textContent = Math.floor(i(t));
+      };
+    });
   };
 
   GaugeRenderer.prototype.domain = function() {
