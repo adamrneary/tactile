@@ -38,6 +38,7 @@ class Tactile.Chart
     @series = new Tactile.SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
+    @elementChangeCallbacks = []
     @timesRendered = 0
     @utils = new Tactile.Utils()
 
@@ -248,6 +249,9 @@ class Tactile.Chart
   onUpdate: (callback) ->
     @updateCallbacks.push callback
 
+  onElementChange: (callback) ->
+    @elementChangeCallbacks.push callback
+
   initRenderers: (series) ->
     renderersSize = @renderers.length
     _.each series, (s, index) =>
@@ -300,6 +304,7 @@ class Tactile.Chart
     return @_element unless val
     @_element = val
     @_setupCanvas()
+    @elementChangeCallbacks.forEach (callback) -> callback()
     @
 
   height: (val) ->

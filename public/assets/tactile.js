@@ -168,10 +168,12 @@ Tactile.DraggableRenderer = (function(_super) {
     var _this = this;
 
     this.active = null;
-    window.addEventListener("click", (function() {
-      _this.active = null;
-      return _this.render();
-    }), true);
+    this.graph.onElementChange(function() {
+      return _this.graph.element().addEventListener("click", (function() {
+        _this.active = null;
+        return _this.render();
+      }), true);
+    });
     window.addEventListener("keyup", function(e) {
       if (_this.id) {
         clearInterval(_this.id);
@@ -2627,6 +2629,7 @@ Tactile.Chart = (function() {
     this.series = new Tactile.SeriesSet([], this);
     this.window = {};
     this.updateCallbacks = [];
+    this.elementChangeCallbacks = [];
     this.timesRendered = 0;
     this.utils = new Tactile.Utils();
     this.setSize({
@@ -2866,6 +2869,10 @@ Tactile.Chart = (function() {
     return this.updateCallbacks.push(callback);
   };
 
+  Chart.prototype.onElementChange = function(callback) {
+    return this.elementChangeCallbacks.push(callback);
+  };
+
   Chart.prototype.initRenderers = function(series) {
     var renderersSize,
       _this = this;
@@ -2957,6 +2964,9 @@ Tactile.Chart = (function() {
     }
     this._element = val;
     this._setupCanvas();
+    this.elementChangeCallbacks.forEach(function(callback) {
+      return callback();
+    });
     return this;
   };
 
