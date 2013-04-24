@@ -66,6 +66,10 @@ class Tactile.RendererBase
       .remove()
       return
     # drawing line by default
+
+    # filter out the values with undefined x or y's
+    # saves the line plot from having holes
+    @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
       .data([@series.stack])
 

@@ -81,7 +81,8 @@ Tactile.RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function(transition) {
-    var line;
+    var line,
+      _this = this;
 
     if (transition) {
       this.transition = transition;
@@ -90,6 +91,9 @@ Tactile.RendererBase = (function() {
       line = this.seriesCanvas().selectAll("path.line").data([this.series.stack]).remove();
       return;
     }
+    this.series.stack = this.series.stack.filter(function(el) {
+      return _this._filterNaNs(el, 'x', 'y');
+    });
     line = this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "baseline " + (this.series.className || '') + "       " + (this.series.color ? '' : 'colorless'));
     return this.transition.selectAll("#" + (this._nameToId()) + " path.baseline").attr("d", this.seriesPathFactory());
@@ -651,7 +655,7 @@ Tactile.AreaRenderer = (function(_super) {
     var _this = this;
 
     return d3.svg.area().defined(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(_this._y0(d)) && (d.y != null) && (d.x != null) && (_this._y0(d) != null);
+      return _this._filterNaNs(d, 'x', 'y');
     }).x(function(d) {
       return _this.graph.x(d.x);
     }).y0(function(d) {
@@ -665,7 +669,7 @@ Tactile.AreaRenderer = (function(_super) {
     var _this = this;
 
     return d3.svg.line().defined(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(_this._y0(d)) && (d.y != null) && (d.x != null) && (_this._y0(d) != null);
+      return _this._filterNaNs(d, 'x', 'y');
     }).x(function(d) {
       return _this.graph.x(d.x);
     }).y(function(d) {
@@ -698,7 +702,7 @@ Tactile.AreaRenderer = (function(_super) {
       _ref2.updateDraggedNode(circ);
     }
     this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
-      return !isNaN(d.y) && !isNaN(d.x) && !isNaN(_this._y0(d)) && (d.y != null) && (d.x != null) && (_this._y0(d) != null);
+      return _this._filterNaNs(d, 'x', 'y');
     }).attr("r", function(d) {
       if ("r" in d) {
         return d.r;
