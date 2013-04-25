@@ -41,7 +41,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode()
 
     @transition.selectAll("##{@_nameToId()} circle")
-      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and d.y? and d.x?)
+      .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @yFunction() d.y)
       .attr("r",
