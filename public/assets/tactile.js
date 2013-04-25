@@ -100,7 +100,9 @@ Tactile.RendererBase = (function() {
   };
 
   RendererBase.prototype.seriesCanvas = function() {
-    this._seriesCanvas || (this._seriesCanvas = this.graph.vis.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('id', this._nameToId()).attr('class', this.name));
+    var _ref;
+
+    this._seriesCanvas || (this._seriesCanvas = (_ref = this.graph.vis) != null ? _ref.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('id', this._nameToId()).attr('class', this.name) : void 0);
     return this._seriesCanvas;
   };
 
@@ -115,6 +117,12 @@ Tactile.RendererBase = (function() {
     return _.each(options, function(val, key) {
       return _this[key] = val;
     });
+  };
+
+  RendererBase.prototype["delete"] = function() {
+    var _ref;
+
+    return (_ref = this.seriesCanvas()) != null ? _ref.remove() : void 0;
   };
 
   RendererBase.prototype._nameToId = function() {
@@ -160,10 +168,12 @@ Tactile.DraggableRenderer = (function(_super) {
     var _this = this;
 
     this.active = null;
-    window.addEventListener("click", (function() {
-      _this.active = null;
-      return _this.render();
-    }), true);
+    this.graph.onElementChange(function() {
+      return _this.graph.element().addEventListener("click", (function() {
+        _this.active = null;
+        return _this.render();
+      }), true);
+    });
     window.addEventListener("keyup", function(e) {
       if (_this.id) {
         clearInterval(_this.id);
@@ -375,7 +385,7 @@ Tactile.SeriesSet = (function() {
     }
     if (overwrite) {
       this.array = newSeries;
-      this.graph.renderers = [];
+      this.graph.clearRenderers();
     } else {
       this.array = this.array.concat(newSeries);
     }
@@ -2619,6 +2629,7 @@ Tactile.Chart = (function() {
     this.series = new Tactile.SeriesSet([], this);
     this.window = {};
     this.updateCallbacks = [];
+    this.elementChangeCallbacks = [];
     this.timesRendered = 0;
     this.utils = new Tactile.Utils();
     this.setSize({
@@ -2858,6 +2869,10 @@ Tactile.Chart = (function() {
     return this.updateCallbacks.push(callback);
   };
 
+  Chart.prototype.onElementChange = function(callback) {
+    return this.elementChangeCallbacks.push(callback);
+  };
+
   Chart.prototype.initRenderers = function(series) {
     var renderersSize,
       _this = this;
@@ -2886,6 +2901,17 @@ Tactile.Chart = (function() {
     return this.renderers.filter(function(r) {
       return r.name === name;
     });
+  };
+
+  Chart.prototype.clearRenderers = function() {
+    if (_.isEmpty(this.renderers)) {
+      return;
+    }
+    _.each(this.renderers, function(r) {
+      return r["delete"]();
+    });
+    this.renderers = [];
+    return this.timesRendered = 0;
   };
 
   Chart.prototype.stackTransition = function(transitionSpeed) {
@@ -2938,6 +2964,9 @@ Tactile.Chart = (function() {
     }
     this._element = val;
     this._setupCanvas();
+    this.elementChangeCallbacks.forEach(function(callback) {
+      return callback();
+    });
     return this;
   };
 

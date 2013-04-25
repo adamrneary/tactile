@@ -98,10 +98,13 @@ describe 'Chart', ->
       name: "reach actual"
       renderer: "column"
 
-    _chart = new window.Tactile.Chart()
-    _chart.addSeries([series, series])
+    _chart = new window.Tactile.Chart(unstack: false)
+      .data(data)
+      .width(680)
+      .height(400)
 
-    _chart.addSeries _.extend(series, {renderer: 'column'}), overwrite: true
+    _chart.addSeries([series, series])
+    _chart.addSeries _.extend(series, {renderer: 'column', name: 'new series'}), overwrite: true
     assert _chart.series.array.length is 1
     assert _chart.renderers.length is 1
     assert _chart.renderers[0].name is 'column'
