@@ -247,11 +247,11 @@
   padding: 5px 0 0 0;
   list-style: none;
   *zoom: 1; }
-  /* line 261, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
+  /* line 261, /Users/adamrneary/Developer/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
     display: table;
     content: ""; }
-  /* line 265, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/mixins.scss */
+  /* line 265, /Users/adamrneary/Developer/tactile/src/scss/mixins.scss */
   #main-chart-legend .chart-legend:after {
     clear: both; }
   /* line 300 */

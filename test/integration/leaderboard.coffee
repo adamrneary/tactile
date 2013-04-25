@@ -1,8 +1,8 @@
 {scenario, next, pending} = require('./test/casper_helper')
 
-scenario '#donut', 'donut chart', ->
+scenario '#leaderboard', 'leaderboard', ->
   next 'renders example page', ->
-    @test.assertSelectorHasText '#example_header', 'Donut'
+    @test.assertSelectorHasText '#example_header', 'Leaderboard'
 
   next 'renders view', ->
     @test.assertExists 'div#example_view svg'
