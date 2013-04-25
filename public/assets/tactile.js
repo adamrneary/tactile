@@ -2114,6 +2114,449 @@ Tactile.LeaderboardRenderer = (function(_super) {
 }).call(this);
 
 (function() {
+  var _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.LineRenderer = (function(_super) {
+  __extends(LineRenderer, _super);
+
+  function LineRenderer() {
+    this.render = __bind(this.render, this);    _ref = LineRenderer.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  LineRenderer.prototype.name = "line";
+
+  LineRenderer.prototype.specificDefaults = {
+    unstack: true,
+    fill: false,
+    stroke: true,
+    dotSize: 5
+  };
+
+  LineRenderer.prototype.seriesPathFactory = function() {
+    var _this = this;
+
+    return d3.svg.line().defined(function(d) {
+      return !isNaN(d.y) && !isNaN(d.x) && (d.y != null) && (d.x != null);
+    }).x(function(d) {
+      return _this.graph.x(d.x);
+    }).y(function(d) {
+      return _this.yFunction()(d.y);
+    }).interpolate(this.graph.interpolation).tension(this.tension);
+  };
+
+  LineRenderer.prototype.initialize = function() {
+    LineRenderer.__super__.initialize.apply(this, arguments);
+    this.dragger = new Tactile.Dragger({
+      renderer: this
+    });
+    if (this.series.dotSize != null) {
+      return this.dotSize = this.series.dotSize;
+    }
+  };
+
+  LineRenderer.prototype.render = function(transition) {
+    var circ, newCircs, _ref1, _ref2,
+      _this = this;
+
+    if (transition) {
+      this.transition = transition;
+    }
+    LineRenderer.__super__.render.call(this, this.transition);
+    if (this.series.disabled) {
+      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      return;
+    }
+    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    newCircs = circ.enter().append("svg:circle").on("click", this.setActive);
+    if ((_ref1 = this.dragger) != null) {
+      _ref1.makeHandlers(newCircs);
+    }
+    if ((_ref2 = this.dragger) != null) {
+      _ref2.updateDraggedNode();
+    }
+    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+      return _this._filterNaNs(d, 'x', 'y');
+    }).attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.yFunction()(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        if (d.dragged || d === _this.active) {
+          return _this.dotSize + 1;
+        } else {
+          return _this.dotSize;
+        }
+      }
+    }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
+      return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(' ');
+    }).attr("fill", function(d) {
+      if (d.dragged || d === _this.active) {
+        return 'white';
+      } else {
+        return _this.series.color;
+      }
+    }).attr("stroke", function(d) {
+      if (d.dragged || d === _this.active) {
+        return _this.series.color;
+      } else {
+        return 'white';
+      }
+    }).attr("stroke-width", this.dotSize / 2 || 2).style("cursor", function(d, i) {
+      if (_this.utils.ourFunctor(_this.series.isEditable, d, i)) {
+        return "ns-resize";
+      } else {
+        return "auto";
+      }
+    });
+    circ.exit().remove();
+    if (this.series.tooltip) {
+      return circ.tooltip(function(d, i) {
+        return {
+          circleColor: _this.series.color,
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          circleOnHover: true,
+          gravity: "right"
+        };
+      });
+    }
+  };
+
+  return LineRenderer;
+
+})(Tactile.DraggableRenderer);
+
+}).call(this);
+
+(function() {
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Tactile.RangeSlider = (function() {
+  function RangeSlider(options) {
+    this.updateGraph = __bind(this.updateGraph, this);
+    var _this = this;
+
+    this.element = options.element;
+    this.graph = options.graph;
+    this.timeSliderClass = options.sliderClass;
+    this.updateCallback = options.updateCallback || function() {};
+    this.initCallback = options.updateCallback || function() {};
+    $(function() {
+      var sliderContainer, values;
+
+      values = options.values || [_this.graph.dataDomain()[0], _this.graph.dataDomain()[1]];
+      _this.initCallback(values, _this.element);
+      _this.updateGraph(values);
+      if (_this.timeSliderClass) {
+        sliderContainer = _this.element.find(_this.timeSliderClass);
+      } else {
+        sliderContainer = _this.element;
+      }
+      return sliderContainer.slider({
+        range: true,
+        min: _this.graph.dataDomain()[0],
+        max: _this.graph.dataDomain()[1],
+        values: values,
+        slide: function(event, ui) {
+          _this.updateGraph(ui.values);
+          if (_this.graph.dataDomain()[0] === ui.values[0]) {
+            _this.graph.window.xMin = void 0;
+          }
+          if (_this.graph.dataDomain()[1] === ui.values[1]) {
+            return _this.graph.window.xMax = void 0;
+          }
+        }
+      });
+    });
+    this.graph.onUpdate(function() {
+      var values;
+
+      values = $(_this.element).slider("option", "values");
+      $(_this.element).slider("option", "min", _this.graph.dataDomain()[0]);
+      $(_this.element).slider("option", "max", _this.graph.dataDomain()[1]);
+      if (_this.graph.window.xMin === void 0) {
+        values[0] = _this.graph.dataDomain()[0];
+      }
+      if (_this.graph.window.xMax === void 0) {
+        values[1] = _this.graph.dataDomain()[1];
+      }
+      return $(_this.element).slider("option", "values", values);
+    });
+  }
+
+  RangeSlider.prototype.updateGraph = function(values) {
+    this.graph.window.xMin = values[0];
+    this.graph.window.xMax = values[1];
+    this.updateCallback(values, this.element);
+    return this.graph.update();
+  };
+
+  return RangeSlider;
+
+})();
+
+}).call(this);
+
+(function() {
+  var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.ScatterRenderer = (function(_super) {
+  __extends(ScatterRenderer, _super);
+
+  function ScatterRenderer() {
+    _ref = ScatterRenderer.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ScatterRenderer.prototype.name = "scatter";
+
+  ScatterRenderer.prototype.specificDefaults = {
+    fill: true,
+    stroke: false
+  };
+
+  ScatterRenderer.prototype.render = function(transition) {
+    var circ,
+      _this = this;
+
+    if (transition) {
+      this.transition = transition;
+    }
+    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ.enter().append("svg:circle");
+    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+      return _this._filterNaNs(d, 'x', 'y', 'r');
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("cx", function(d) {
+      return _this.graph.x(d.x);
+    }).attr("cy", function(d) {
+      return _this.yFunction()(d.y);
+    }).attr("r", function(d) {
+      if ("r" in d) {
+        return d.r;
+      } else {
+        return _this.dotSize;
+      }
+    }).attr("fill", this.series.color).attr("stroke", 'white').attr("stroke-width", '2');
+    if (this.series.cssConditions) {
+      circ.attr('class', function(d) {
+        return _this.series.cssConditions(d);
+      });
+    }
+    if (this.series.tooltip) {
+      this.seriesCanvas().selectAll("circle").tooltip(function(d, i) {
+        return {
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          mousemove: true,
+          gravity: "right",
+          displacement: [-10, 0]
+        };
+      });
+    }
+    return circ.exit().remove();
+  };
+
+  return ScatterRenderer;
+
+})(Tactile.RendererBase);
+
+}).call(this);
+
+(function() {
+  var _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.WaterfallRenderer = (function(_super) {
+  __extends(WaterfallRenderer, _super);
+
+  function WaterfallRenderer() {
+    this._barY = __bind(this._barY, this);
+    this._barX = __bind(this._barX, this);
+    this._seriesBarWidth = __bind(this._seriesBarWidth, this);
+    this._transformMatrix = __bind(this._transformMatrix, this);
+    this.render = __bind(this.render, this);    _ref = WaterfallRenderer.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  WaterfallRenderer.prototype.name = "waterfall";
+
+  WaterfallRenderer.prototype.specificDefaults = {
+    gapSize: 0.15,
+    round: true,
+    unstack: true
+  };
+
+  WaterfallRenderer.prototype.initialize = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    return this.gapSize = options.gapSize || this.gapSize;
+  };
+
+  WaterfallRenderer.prototype.render = function(transition) {
+    var line, nodes, _ref1,
+      _this = this;
+
+    if (transition) {
+      this.transition = transition;
+    }
+    if (this.series.disabled) {
+      if ((_ref1 = this.dragger) != null) {
+        _ref1.timesRendered = 0;
+      }
+      this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
+      return;
+    }
+    nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
+    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
+    this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+      return _this._filterNaNs(d, 'x', 'y', 'y00');
+    }).attr("height", function(d) {
+      return (_this.graph.y.magnitude(Math.abs(d.y))) - 1;
+    }).attr("y", function(d) {
+      return _this._barY(d) + 0.5;
+    }).attr("x", this._barX).attr("width", this._seriesBarWidth() / (1 + this.gapSize)).attr("transform", this._transformMatrix).attr("fill", this.series.color);
+    nodes.exit().remove();
+    line = this.seriesCanvas().selectAll("line").data(this.series.stack);
+    line.enter().append("svg:line").attr("clip-path", "url(#clip)");
+    this.transition.selectAll("#" + (this._nameToId()) + " line").filter(function(d) {
+      return _this._filterNaNs(d, 'x', 'y', 'y00');
+    }).attr("x1", function(d) {
+      return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
+    }).attr("x2", function(d, i) {
+      var gapCount, stackWidthCur;
+
+      gapCount = _this.graph.series.filter(function(d) {
+        return d.renderer === 'waterfall';
+      }).length();
+      if (i === 0) {
+        return _this._barX(d, i) - _this._seriesBarWidth();
+      } else {
+        stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x);
+        return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? stackWidthCur - _this._seriesBarWidth() * gapCount : 0) - _this._seriesBarWidth();
+      }
+    }).attr("y1", function(d) {
+      return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
+    }).attr("y2", function(d) {
+      return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
+    }).attr("stroke", "#BEBEBE").attr("stroke-width", function(d, i) {
+      if ((_this._waterfalRendererIndex() === 0 && i === 0) || (_this.utils.ourFunctor(_this.series.fromBaseline, d, i))) {
+        return 0;
+      } else {
+        return 1;
+      }
+    });
+    return this.setupTooltips();
+  };
+
+  WaterfallRenderer.prototype.setupTooltips = function() {
+    var _this = this;
+
+    if (this.series.tooltip) {
+      return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
+        return {
+          circleColor: _this.series.color,
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          circleOnHover: false,
+          tooltipCircleContainer: _this.graph.vis.node(),
+          gravity: "right"
+        };
+      });
+    }
+  };
+
+  WaterfallRenderer.prototype.barWidth = function() {
+    var barWidth, count, data;
+
+    data = this.series.stack;
+    count = data.length;
+    return barWidth = this.graph.width() / count * (1 - this.gapSize);
+  };
+
+  WaterfallRenderer.prototype._transformMatrix = function(d) {
+    var matrix;
+
+    matrix = [1, 0, 0, (d.y + d.y00 < 0 ? -1 : 1), 0, (d.y + d.y00 < 0 ? this.graph.y.magnitude(Math.abs(d.y + d.y00)) * 2 : 0)];
+    return "matrix(" + matrix.join(",") + ")";
+  };
+
+  WaterfallRenderer.prototype._seriesBarWidth = function() {
+    var stackWidth, width,
+      _this = this;
+
+    if (this.series.stack.length >= 2) {
+      stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
+      width = stackWidth / (1 + this.gapSize);
+    } else {
+      width = this.graph.width() / (1 + this.gapSize);
+    }
+    return width = width / this.graph.series.filter(function(d) {
+      return d.renderer === 'waterfall';
+    }).length();
+  };
+
+  WaterfallRenderer.prototype._barXOffset = function(seriesBarWidth) {
+    var barXOffset, count;
+
+    count = this.graph.renderersByType(this.name).length;
+    return barXOffset = -seriesBarWidth * count / 2;
+  };
+
+  WaterfallRenderer.prototype._barX = function(d) {
+    var initialX, seriesBarWidth, x;
+
+    x = this.graph.x(d.x);
+    seriesBarWidth = this._seriesBarWidth();
+    initialX = x + this._barXOffset(seriesBarWidth);
+    return initialX + (this._waterfalRendererIndex() * seriesBarWidth);
+  };
+
+  WaterfallRenderer.prototype._barY = function(d, i) {
+    if (d.y > 0) {
+      return this.graph.y(Math.abs(d.y + d.y00)) * (d.y + d.y00 < 0 ? -1 : 1);
+    } else {
+      return this.graph.y(Math.abs(d.y00)) * (d.y00 < 0 ? -1 : 1);
+    }
+  };
+
+  WaterfallRenderer.prototype._waterfalRendererIndex = function() {
+    var renderers,
+      _this = this;
+
+    if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
+      return 0;
+    }
+    renderers = this.graph.renderers.slice(0, this.rendererIndex);
+    return _.filter(renderers, function(r) {
+      return r.name === _this.name;
+    }).length;
+  };
+
+  return WaterfallRenderer;
+
+})(Tactile.RendererBase);
+
+}).call(this);
+
+(function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Tactile.Chart = (function() {
