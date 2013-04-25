@@ -87,11 +87,25 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           .attr("class", "bullet measures")
 
         d3.select(@).selectAll("g.bullet.measures").each((d, i) ->
-          measure = d3.select(@).selectAll("rect.bullet.measures").data(d)
+          measure = d3.select(@).selectAll("rect.bullet.measure").data(d)
           measure.enter()
             .append("svg:rect")
-            .attr("class", "bullet measures")
+            .attr("class", "bullet measure")
           measure.exit().remove()
+        )
+
+        #append markers
+        markers = d3.select(@).selectAll("g.bullet.markers").data([d.markers])
+        markers.enter()
+          .append("svg:g")
+          .attr("class", "bullet markers")
+
+        d3.select(@).selectAll("g.bullet.markers").each((d, i) ->
+          marker = d3.select(@).selectAll("line.bullet.marker").data(d)
+          marker.enter()
+            .append("svg:line")
+            .attr("class", "bullet marker")
+          marker.exit().remove()
         )
     )
 
@@ -117,7 +131,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     render = @
     @seriesCanvas().selectAll("g.bullet.bars").each((d, i) ->
       scal = d3.scale.linear()
-        .domain([0, d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value)])])
+        .domain([0, d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value), d3.max(d.markers, (d) -> d.value)])])
         .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
       element = @
@@ -139,13 +153,27 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
       render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.measures")
         .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
 
-      curEl.selectAll("##{render._nameToId()} rect.bullet.measures")
+      curEl.selectAll("##{render._nameToId()} rect.bullet.measure")
 #      .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
         .duration(transitionSpeed / 2)
         .attr("height", render.barHeight / 2 / 3)
         .attr("transform", "translate(0, #{render.barHeight / 2 / 3})")
         .attr("width", (d) => scal(d.value))
         .attr("fill", (d) -> d.color)
+
+      # draw markers
+      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.markers")
+        .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
+
+      curEl.selectAll("##{render._nameToId()} line.bullet.marker")
+#      .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
+        .duration(transitionSpeed / 2)
+        .attr("x1", (d) -> scal(d.value))
+        .attr("x2", (d) -> scal(d.value))
+        .attr("y1", 2)
+        .attr("y2", render.barHeight/2 - 2)
+        .attr("stroke", (d) -> d.color)
+        .attr("stroke-width", 2)
     )
 
   _xOffset: (d, i)=>
