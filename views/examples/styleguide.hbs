@@ -1,45 +1,42 @@
 <div class="container">
-  <div class="row-fluid">
+  <div class="row">
     <div class="span3">
-      <div class="well" style="position: fixed;">
-        <ul class="nav nav-list">
-          {{#each sections}}
+      <ul class="nav nav-list">
+        <li class="nav-header">Styleguide sections</li>
+        {{#each sections}}
           <li><a href="#{{data.reference}}">{{data.reference}} {{data.header}}</a></li>
-          {{/each}}
-        </ul>
-      </div>
+        {{/each}}
+      </ul>
     </div>
     <div class="span9">
       {{#each sections}}
-      <a name="{{data.reference}}">&nbsp;</a>
-      <br>
+        <div class="styleguide-example">
+          <a name="{{data.reference}}"></a>
+          <h3>{{data.reference}} {{data.header}} <em>{{data.filename}}</em></h3>
 
-      <div class="styleguide-example">
-        <h3>{{data.reference}} {{data.header}} <em>{{data.filename}}</em></h3>
+          <div class="styleguide-description">
+            <p>{{{data.description}}}</p>
+            {{#if data.modifiers}}
+            <ul class="styleguide-modifier">
+              {{#each modifiers}}
+              <li><strong>{{name}}</strong> - <text>{{description}}</text></li>
+              {{/each}}
+            </ul>
+            {{/if}}
+          </div>
 
-        <div class="styleguide-description">
-          <p>{{{data.description}}}</p>
-          {{#if data.modifiers}}
-          <ul class="styleguide-modifier">
-            {{#each modifiers}}
-            <li><strong>{{name}}</strong> - <text>{{description}}</text></li>
-            {{/each}}
-          </ul>
-          {{/if}}
-        </div>
+          <div class="styleguide-element">{{{data.example}}}</div>
+          {{#each data.modifiers}}
+            <div class="styleguide-element styleguide-modifier">
+              <span class="styleguide-modifier-name">{{name}}</span>
+              <section>{{{data.example}}}</section>
+            </div>
+          {{/each}}
 
-        <div class="styleguide-element">{{{data.example}}}</div>
-        {{#each data.modifiers}}
-        <div class="styleguide-element styleguide-modifier">
-          <span class="styleguide-modifier-name">{{name}}</span>
-          <section>{{{data.example}}}</section>
-        </div>
-        {{/each}}
-
-        <pre class="styleguide-code">
-          <code data-language='html' style="margin-left: -78px;">{{data.example}}</code>
-        </pre>
-      </div>{{! div.styleguide-example }}
+          <pre class="styleguide-code">
+            <code data-language='html' style="margin-left: -78px;">{{data.example}}</code>
+          </pre>
+        </div>{{! div.styleguide-example }}
       {{/each}}
     </div>
   </div>

@@ -1,6 +1,4 @@
-/* Primary palette
--------------------------------------------------- */
-
+// Primary palette
 $primary:         #30878F;
 $primary-light:   #DAE1E9;
 $primary-dark:    #00455B;
@@ -26,9 +24,7 @@ $link-color: #006B75;
 $plan: lighten($primary-light, 15%);
 $border-grey: #e6e6e6;
 
-/* Chart palette
--------------------------------------------------- */
-
+// Chart palette
 $dark-blue-10: #0B3748;
 $dark-blue-20: #254E5D;
 $dark-blue-30: #3F6672;
@@ -99,15 +95,9 @@ $dark-grey-40: #676868;
 $dark-grey-50: #747474;
 $dark-grey-60: #818181;
 
-/* Alert palette
--------------------------------------------------- */
-
-// dimitriy: we need to pull the alert palette from the air. i don't have 
-
+// Alert palette
 $success:         #8ac16f; // sampled from air psd
 $success-light:   #e7ffdc; // sampled from air psd
-//$success-stroke:  #50982c;
-//$success-dark:    #4c8b2d;
 $warning:         #eedc94; // sampled from air psd
 $warning-light:   #fce5b1; // sampled from air psd
 $danger:          #dc6e59; // sampled from air psd
