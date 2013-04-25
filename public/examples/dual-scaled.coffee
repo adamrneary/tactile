@@ -39,7 +39,7 @@ data = [
 chart = new Tactile.Chart()
 
 chart.axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
-chart.element($("#example_view")[0]).data(data)
+chart.element($("#example_view")[0]).width(680).height(400).data(data)
 
 chart.addSeries
   name: "enemies"
