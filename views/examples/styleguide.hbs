@@ -11,15 +11,14 @@
     <div class="span9">
       {{#each sections}}
         <div class="styleguide-example">
-          <a name="{{data.reference}}"></a>
-          <h3>{{data.reference}} {{data.header}} <em>{{data.filename}}</em></h3>
+          <h1 id="{{data.reference}}">{{data.reference}} {{data.header}} <small>{{data.filename}}</small></h1>
 
           <div class="styleguide-description">
-            <p>{{{data.description}}}</p>
+            <p class="lead">{{{data.description}}}</p>
             {{#if data.modifiers}}
             <ul class="styleguide-modifier">
               {{#each modifiers}}
-              <li><strong>{{name}}</strong> - <text>{{description}}</text></li>
+                <li><code>{{name}}</code> - {{description}}</li>
               {{/each}}
             </ul>
             {{/if}}
@@ -34,7 +33,7 @@
           {{/each}}
 
           <pre class="styleguide-code">
-            <code data-language='html' style="margin-left: -78px;">{{data.example}}</code>
+            <code data-language='html'>{{data.example}}</code>
           </pre>
         </div>{{! div.styleguide-example }}
       {{/each}}
