@@ -83,20 +83,16 @@ data = [
 
 chart = new Tactile.Chart()
   .element($("#example_view")[0])
-  .width(680)
-  .height(400)
   .data(data)
   .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
-
-chart.addSeries [
-  name: "waterfall-grouped example"
-  renderer: "waterfall"
-  fromBaseline: (d) -> d.fromBaseline
-  color: (d) -> d.color
-  tooltip: (d) -> "#{d.name}: $#{d.y}"
-  dataTransform: (d) ->
-    x: d.period
-    y: d.amount
-]
+  .addSeries
+    name: "waterfall-grouped example"
+    renderer: "waterfall"
+    fromBaseline: (d) -> d.fromBaseline
+    color: (d) -> d.color
+    tooltip: (d) -> "#{d.name}: $#{d.y}"
+    dataTransform: (d) ->
+      x: d.period
+      y: d.amount
 
 chart.render()

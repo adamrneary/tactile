@@ -41,46 +41,46 @@ data = [
   z: undefined
 ]
 
-chart = new Tactile.Chart()
 tickFormat = (d) ->
   if d > 99 then d / 100 + "★" else "#{d*10}☢"
 
-chart.axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
-chart.element($("#example_view")[0]).width(680).height(400).data(data)
-
-chart.addSeries
-  name: "enemies"
-  renderer: "line"
-  color: "#c05020"
-  isEditable: true
-  tooltip: (d) ->
-    d.y + " enemies"
-
-  dataTransform: (d) ->
-    x: d.x
-    y: d.y
-
-chart.addSeries
-  name: "friends"
-  dotSize: 2
-  renderer: "line"
-  sigfigs: 1
-  color: "#6060c0"
-  isEditable: (d, i) ->
-    d.x == 2
-  afterDrag: (d, y, i, draggedSeries, graph) ->
-    graph.data()[i].z = y
-
-  tooltip: (d) ->
-    d.y + " friends"
-
-  dataTransform: (d) ->
-    x: d.x
-    y: d.z
+chart = new Tactile.Chart()
+  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
+  .element($("#example_view")[0])
+  .data(data)
+  .addSeries [
+    name: "enemies"
+    renderer: "line"
+    color: "#c05020"
+    isEditable: true
+    tooltip: (d) ->
+      d.y + " enemies"
+    dataTransform: (d) ->
+      x: d.x
+      y: d.y
+  ,
+    name: "friends"
+    dotSize: 2
+    renderer: "line"
+    sigfigs: 1
+    color: "#6060c0"
+    isEditable: (d, i) ->
+      d.x == 2
+    afterDrag: (d, y, i, draggedSeries, graph) ->
+      graph.data()[i].z = y
+    tooltip: (d) ->
+      d.y + " friends"
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z
+  ]
 
 chart.render()
+
+$("#above-chart").html ''
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 8
@@ -89,4 +89,3 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
-

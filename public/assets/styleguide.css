@@ -33,7 +33,7 @@
   font-weight: 800;
   font-style: normal; }
 
-/* line 57, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 57, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 body {
   color: #675b5e;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -41,37 +41,37 @@ body {
   line-height: 18px;
   height: 100%; }
 
-/* line 63, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 63, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 a {
   outline: none;
   color: #006b75;
   text-decoration: none;
   line-height: inherit;
   font-weight: inherit; }
-  /* line 70, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+  /* line 70, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
   a:hover {
     color: #00455b;
     text-decoration: none; }
 
-/* line 76, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 76, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 p {
   line-height: 18px;
   margin-bottom: 9px; }
 
-/* line 81, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 81, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 em {
   font-family: Georgia, "Times New Roman", Times, serif; }
 
-/* line 85, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 85, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h1, h2, h3, h4, h5, h6 {
   color: #404040;
   margin-top: 0;
   line-height: 36px; }
-  /* line 90, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+  /* line 90, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
   h1.inset, h2.inset, h3.inset, h4.inset, h5.inset, h6.inset {
     color: rgba(51, 51, 51, 0.85);
     text-shadow: -1px 2px 1px #f2f2f3, 0 0 0 #231f20, -1px 2px 1px #f2f2f3; }
-  /* line 95, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+  /* line 95, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
   h1.bordered:after, h2.bordered:after, h3.bordered:after, h4.bordered:after, h5.bordered:after, h6.bordered:after {
     content: "";
     display: block;
@@ -80,94 +80,94 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
     border-top: solid 1px #a69b9e;
     border-bottom: solid 1px white; }
-  /* line 106, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+  /* line 106, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
   h1 [class^="icon-"], h1 [class*=" icon-"], h2 [class^="icon-"], h2 [class*=" icon-"], h3 [class^="icon-"], h3 [class*=" icon-"], h4 [class^="icon-"], h4 [class*=" icon-"], h5 [class^="icon-"], h5 [class*=" icon-"], h6 [class^="icon-"], h6 [class*=" icon-"] {
     margin: 0 10px 0 0; }
 
-/* line 111, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 111, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #bfbfbf;
   font-weight: normal; }
 
-/* line 116, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 116, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h1, h2 {
   font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase; }
 
-/* line 120, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 120, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h3, h4, h5, h6 {
   font-family: "ProximaNova", sans-serif;
   font-weight: bold;
   text-transform: uppercase; }
 
-/* line 124, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 124, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h1 {
   font-size: 30px;
   margin-bottom: 18px; }
 
-/* line 129, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 129, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h1 small {
   font-size: 24px; }
 
-/* line 133, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 133, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h2 {
   font-size: 24px; }
 
-/* line 137, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 137, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h2 small {
   font-size: 18px; }
 
-/* line 141, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 141, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h3 {
   font-size: 18px; }
 
-/* line 145, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 145, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h3 small {
   font-size: 16px; }
 
-/* line 149, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 149, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h4 {
   font-size: 16px; }
 
-/* line 153, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 153, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h4 small {
   font-size: 14px; }
 
-/* line 157, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 157, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h5 {
   font-size: 14px; }
 
-/* line 161, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 161, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 h6 {
   color: #bfbfbf;
   font-size: 13px; }
 
-/* line 169, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 169, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 ul ul,
 ul ol,
 ol ol,
 ol ul {
   margin-bottom: 0; }
 
-/* line 173, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 173, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 ul {
   list-style: disc; }
 
-/* line 177, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 177, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 ol {
   list-style: decimal; }
 
-/* line 181, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 181, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 li {
   line-height: 18px; }
 
-/* line 185, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 185, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 ul.unstyled {
   list-style: none;
   margin-left: 0; }
 
-/* line 190, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_typography.scss */
+/* line 190, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_typography.scss */
 .xtra {
   font-family: "ProximaNova", sans-serif;
   font-weight: 800;
@@ -186,7 +186,7 @@ ul.unstyled {
 
 /*  Font Awesome styles
     ------------------------------------------------------- */
-/* line 22, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 22, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 [class^="icon-"],
 [class*=" icon-"] {
   font-family: FontAwesome;
@@ -204,29 +204,29 @@ ul.unstyled {
   background-position: 0% 0%;
   background-repeat: repeat;
   margin-top: 0; }
-  /* line 39, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 39, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   [class^="icon-"].icon-primary,
   [class*=" icon-"].icon-primary {
     color: #30878f; }
-  /* line 43, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 43, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   [class^="icon-"].icon-success,
   [class*=" icon-"].icon-success {
     color: #8ac16f; }
-  /* line 47, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 47, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   [class^="icon-"].icon-info,
   [class*=" icon-"].icon-info {
     color: #19affe; }
-  /* line 51, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 51, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   [class^="icon-"].icon-warning,
   [class*=" icon-"].icon-warning {
     color: #eedc94; }
-  /* line 55, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 55, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   [class^="icon-"].icon-danger,
   [class*=" icon-"].icon-danger {
     color: #dc6e59; }
 
 /* more sprites.less reset */
-/* line 73, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 73, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-white,
 .nav-pills > .active > a > [class^="icon-"],
 .nav-pills > .active > a > [class*=" icon-"],
@@ -242,7 +242,7 @@ ul.unstyled {
 .dropdown-submenu:hover > a > [class*=" icon-"] {
   background-image: none; }
 
-/* line 78, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 78, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
   text-decoration: inherit;
@@ -250,40 +250,40 @@ ul.unstyled {
   speak: none; }
 
 /* makes sure icons active on rollover in links */
-/* line 87, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 87, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 a [class^="icon-"],
 a [class*=" icon-"] {
   display: inline-block; }
 
 /* makes the font 33% larger relative to the icon container */
-/* line 93, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 93, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-large:before {
   vertical-align: -10%;
   font-size: 1.3333333333333333em; }
 
-/* line 100, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 100, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .btn [class^="icon-"],
 .btn [class*=" icon-"], .nav [class^="icon-"],
 .nav [class*=" icon-"] {
   display: inline;
   /* keeps button heights with and without icons the same */ }
-  /* line 103, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 103, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn [class^="icon-"].icon-large,
   .btn [class*=" icon-"].icon-large, .nav [class^="icon-"].icon-large,
   .nav [class*=" icon-"].icon-large {
     line-height: .9em; }
-  /* line 104, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 104, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn [class^="icon-"].icon-spin,
   .btn [class*=" icon-"].icon-spin, .nav [class^="icon-"].icon-spin,
   .nav [class*=" icon-"].icon-spin {
     display: inline-block; }
 
-/* line 110, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 110, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .nav-tabs [class^="icon-"],
 .nav-tabs [class*=" icon-"], .nav-pills [class^="icon-"],
 .nav-pills [class*=" icon-"] {
   /* keeps button heights with and without icons the same */ }
-  /* line 112, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 112, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .nav-tabs [class^="icon-"], .nav-tabs [class^="icon-"].icon-large,
   .nav-tabs [class*=" icon-"],
   .nav-tabs [class*=" icon-"].icon-large, .nav-pills [class^="icon-"], .nav-pills [class^="icon-"].icon-large,
@@ -291,34 +291,34 @@ a [class*=" icon-"] {
   .nav-pills [class*=" icon-"].icon-large {
     line-height: .9em; }
 
-/* line 118, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 118, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 li [class^="icon-"],
 li [class*=" icon-"], .nav li [class^="icon-"],
 .nav li [class*=" icon-"] {
   display: inline-block;
   width: 1.25em;
   text-align: center; }
-  /* line 122, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 122, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   li [class^="icon-"].icon-large,
   li [class*=" icon-"].icon-large, .nav li [class^="icon-"].icon-large,
   .nav li [class*=" icon-"].icon-large {
     /* increased font size for icon-large */
     width: 1.5625em; }
 
-/* line 129, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 129, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 ul.icons {
   list-style-type: none;
   text-indent: -.75em; }
-  /* line 135, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 135, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   ul.icons li [class^="icon-"],
   ul.icons li [class*=" icon-"] {
     width: .75em; }
 
-/* line 141, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 141, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-muted {
   color: #eeeeee; }
 
-/* line 148, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 148, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-border {
   border: solid 1px #eeeeee;
   padding: 0.2em 0.25em 0.15em;
@@ -326,88 +326,88 @@ ul.icons {
   -moz-border-radius: 3px;
   border-radius: 3px; }
 
-/* line 157, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 157, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-2x {
   font-size: 2em; }
-  /* line 159, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 159, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .icon-2x.icon-border {
     border-width: 2px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px; }
 
-/* line 164, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 164, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-3x {
   font-size: 3em; }
-  /* line 166, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 166, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .icon-3x.icon-border {
     border-width: 3px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px; }
 
-/* line 171, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 171, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-4x {
   font-size: 4em; }
-  /* line 173, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 173, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .icon-4x.icon-border {
     border-width: 4px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px; }
 
-/* line 183, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 183, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .pull-right {
   float: right; }
 
-/* line 184, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 184, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .pull-left {
   float: left; }
 
-/* line 188, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 188, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 [class^="icon-"].pull-left,
 [class*=" icon-"].pull-left {
   margin-right: .3em; }
-/* line 191, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 191, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 [class^="icon-"].pull-right,
 [class*=" icon-"].pull-right {
   margin-left: .3em; }
 
-/* line 200, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 200, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .btn [class^="icon-"].pull-left.icon-2x, .btn [class^="icon-"].pull-right.icon-2x,
 .btn [class*=" icon-"].pull-left.icon-2x,
 .btn [class*=" icon-"].pull-right.icon-2x {
   margin-top: .18em; }
-/* line 202, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 202, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .btn [class^="icon-"].icon-spin.icon-large,
 .btn [class*=" icon-"].icon-spin.icon-large {
   line-height: .8em; }
 
-/* line 210, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 210, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .btn.btn-small [class^="icon-"].pull-left.icon-2x, .btn.btn-small [class^="icon-"].pull-right.icon-2x,
 .btn.btn-small [class*=" icon-"].pull-left.icon-2x,
 .btn.btn-small [class*=" icon-"].pull-right.icon-2x {
   margin-top: .25em; }
 
-/* line 217, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 217, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .btn.btn-large [class^="icon-"],
 .btn.btn-large [class*=" icon-"] {
   margin-top: 0; }
-  /* line 220, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 220, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn.btn-large [class^="icon-"].pull-left.icon-2x, .btn.btn-large [class^="icon-"].pull-right.icon-2x,
   .btn.btn-large [class*=" icon-"].pull-left.icon-2x,
   .btn.btn-large [class*=" icon-"].pull-right.icon-2x {
     margin-top: .05em; }
-  /* line 222, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 222, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn.btn-large [class^="icon-"].pull-left.icon-2x,
   .btn.btn-large [class*=" icon-"].pull-left.icon-2x {
     margin-right: .2em; }
-  /* line 223, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 223, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn.btn-large [class^="icon-"].pull-right.icon-2x,
   .btn.btn-large [class*=" icon-"].pull-right.icon-2x {
     margin-left: .2em; }
 
-/* line 228, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 228, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-spin {
   display: inline-block;
   -moz-animation: spin 2s infinite linear;
@@ -416,1069 +416,1069 @@ ul.icons {
   animation: spin 2s infinite linear; }
 
 @-moz-keyframes spin {
-  /* line 237, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 237, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   0% {
     -moz-transform: rotate(0deg); }
 
-  /* line 238, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 238, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   100% {
     -moz-transform: rotate(359deg); } }
 
 @-webkit-keyframes spin {
-  /* line 241, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 241, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   0% {
     -webkit-transform: rotate(0deg); }
 
-  /* line 242, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 242, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   100% {
     -webkit-transform: rotate(359deg); } }
 
 @-o-keyframes spin {
-  /* line 245, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 245, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   0% {
     -o-transform: rotate(0deg); }
 
-  /* line 246, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 246, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   100% {
     -o-transform: rotate(359deg); } }
 
 @-ms-keyframes spin {
-  /* line 249, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 249, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   0% {
     -ms-transform: rotate(0deg); }
 
-  /* line 250, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 250, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   100% {
     -ms-transform: rotate(359deg); } }
 
 @keyframes spin {
-  /* line 253, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 253, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   0% {
     transform: rotate(0deg); }
 
-  /* line 254, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 254, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   100% {
     transform: rotate(359deg); } }
 
 @-moz-document url-prefix() {
-  /* line 258, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 258, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .icon-spin {
     height: .9em; }
 
-  /* line 259, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 259, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn .icon-spin {
     height: auto; }
 
-  /* line 260, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 260, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .icon-spin.icon-large {
     height: 1.25em; }
 
-  /* line 261, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 261, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .btn .icon-spin.icon-large {
     height: .75em; } }
 
-/* line 265, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 265, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-glass:before {
   content: "\f000"; }
 
-/* line 266, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 266, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-music:before {
   content: "\f001"; }
 
-/* line 267, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 267, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-search:before {
   content: "\f002"; }
 
-/* line 268, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 268, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-envelope:before {
   content: "\f003"; }
 
-/* line 269, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 269, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-heart:before {
   content: "\f004"; }
 
-/* line 270, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 270, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-star:before {
   content: "\f005"; }
 
-/* line 271, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 271, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-star-empty:before {
   content: "\f006"; }
 
-/* line 272, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 272, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-user:before {
   content: "\f007"; }
 
-/* line 273, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 273, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-film:before {
   content: "\f008"; }
 
-/* line 274, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 274, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-th-large:before {
   content: "\f009"; }
 
-/* line 275, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 275, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-th:before {
   content: "\f00a"; }
 
-/* line 276, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 276, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-th-list:before {
   content: "\f00b"; }
 
-/* line 277, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 277, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-ok:before {
   content: "\f00c"; }
 
-/* line 278, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 278, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-remove:before {
   content: "\f00d"; }
 
-/* line 279, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 279, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-zoom-in:before {
   content: "\f00e"; }
 
-/* line 281, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 281, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-zoom-out:before {
   content: "\f010"; }
 
-/* line 282, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 282, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-off:before {
   content: "\f011"; }
 
-/* line 283, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 283, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-signal:before {
   content: "\f012"; }
 
-/* line 284, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 284, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cog:before {
   content: "\f013"; }
 
-/* line 285, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 285, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-trash:before {
   content: "\f014"; }
 
-/* line 286, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 286, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-home:before {
   content: "\f015"; }
 
-/* line 287, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 287, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-file:before {
   content: "\f016"; }
 
-/* line 288, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 288, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-time:before {
   content: "\f017"; }
 
-/* line 289, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 289, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-road:before {
   content: "\f018"; }
 
-/* line 290, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 290, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-download-alt:before {
   content: "\f019"; }
 
-/* line 291, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 291, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-download:before {
   content: "\f01a"; }
 
-/* line 292, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 292, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-upload:before {
   content: "\f01b"; }
 
-/* line 293, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 293, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-inbox:before {
   content: "\f01c"; }
 
-/* line 294, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 294, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-play-circle:before {
   content: "\f01d"; }
 
-/* line 295, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 295, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-repeat:before {
   content: "\f01e"; }
 
 /* \f020 doesn't work in Safari. all shifted one down */
-/* line 298, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 298, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-refresh:before {
   content: "\f021"; }
 
-/* line 299, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 299, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-list-alt:before {
   content: "\f022"; }
 
-/* line 300, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 300, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-lock:before {
   content: "\f023"; }
 
-/* line 301, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 301, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-flag:before {
   content: "\f024"; }
 
-/* line 302, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 302, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-headphones:before {
   content: "\f025"; }
 
-/* line 303, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 303, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-volume-off:before {
   content: "\f026"; }
 
-/* line 304, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 304, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-volume-down:before {
   content: "\f027"; }
 
-/* line 305, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 305, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-volume-up:before {
   content: "\f028"; }
 
-/* line 306, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 306, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-qrcode:before {
   content: "\f029"; }
 
-/* line 307, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 307, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-barcode:before {
   content: "\f02a"; }
 
-/* line 308, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 308, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-tag:before {
   content: "\f02b"; }
 
-/* line 309, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 309, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-tags:before {
   content: "\f02c"; }
 
-/* line 310, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 310, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-book:before {
   content: "\f02d"; }
 
-/* line 311, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 311, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bookmark:before {
   content: "\f02e"; }
 
-/* line 312, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 312, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-print:before {
   content: "\f02f"; }
 
-/* line 314, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 314, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-camera:before {
   content: "\f030"; }
 
-/* line 315, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 315, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-font:before {
   content: "\f031"; }
 
-/* line 316, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 316, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bold:before {
   content: "\f032"; }
 
-/* line 317, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 317, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-italic:before {
   content: "\f033"; }
 
-/* line 318, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 318, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-text-height:before {
   content: "\f034"; }
 
-/* line 319, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 319, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-text-width:before {
   content: "\f035"; }
 
-/* line 320, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 320, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-align-left:before {
   content: "\f036"; }
 
-/* line 321, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 321, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-align-center:before {
   content: "\f037"; }
 
-/* line 322, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 322, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-align-right:before {
   content: "\f038"; }
 
-/* line 323, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 323, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-align-justify:before {
   content: "\f039"; }
 
-/* line 324, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 324, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-list:before {
   content: "\f03a"; }
 
-/* line 325, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 325, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-indent-left:before {
   content: "\f03b"; }
 
-/* line 326, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 326, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-indent-right:before {
   content: "\f03c"; }
 
-/* line 327, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 327, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-facetime-video:before {
   content: "\f03d"; }
 
-/* line 328, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 328, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-picture:before {
   content: "\f03e"; }
 
-/* line 330, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 330, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-pencil:before {
   content: "\f040"; }
 
-/* line 331, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 331, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-map-marker:before {
   content: "\f041"; }
 
-/* line 332, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 332, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-adjust:before {
   content: "\f042"; }
 
-/* line 333, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 333, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-tint:before {
   content: "\f043"; }
 
-/* line 334, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 334, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-edit:before {
   content: "\f044"; }
 
-/* line 335, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 335, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-share:before {
   content: "\f045"; }
 
-/* line 336, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 336, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-check:before {
   content: "\f046"; }
 
-/* line 337, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 337, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-move:before {
   content: "\f047"; }
 
-/* line 338, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 338, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-step-backward:before {
   content: "\f048"; }
 
-/* line 339, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 339, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-fast-backward:before {
   content: "\f049"; }
 
-/* line 340, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 340, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-backward:before {
   content: "\f04a"; }
 
-/* line 341, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 341, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-play:before {
   content: "\f04b"; }
 
-/* line 342, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 342, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-pause:before {
   content: "\f04c"; }
 
-/* line 343, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 343, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-stop:before {
   content: "\f04d"; }
 
-/* line 344, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 344, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-forward:before {
   content: "\f04e"; }
 
-/* line 346, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 346, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-fast-forward:before {
   content: "\f050"; }
 
-/* line 347, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 347, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-step-forward:before {
   content: "\f051"; }
 
-/* line 348, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 348, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-eject:before {
   content: "\f052"; }
 
-/* line 349, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 349, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-chevron-left:before {
   content: "\f053"; }
 
-/* line 350, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 350, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-chevron-right:before {
   content: "\f054"; }
 
-/* line 351, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 351, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-plus-sign:before {
   content: "\f055"; }
 
-/* line 352, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 352, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-minus-sign:before {
   content: "\f056"; }
 
-/* line 353, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 353, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-remove-sign:before {
   content: "\f057"; }
 
-/* line 354, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 354, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-ok-sign:before {
   content: "\f058"; }
 
-/* line 355, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 355, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-question-sign:before {
   content: "\f059"; }
 
-/* line 356, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 356, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-info-sign:before {
   content: "\f05a"; }
 
-/* line 357, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 357, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-screenshot:before {
   content: "\f05b"; }
 
-/* line 358, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 358, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-remove-circle:before {
   content: "\f05c"; }
 
-/* line 359, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 359, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-ok-circle:before {
   content: "\f05d"; }
 
-/* line 360, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 360, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-ban-circle:before {
   content: "\f05e"; }
 
-/* line 362, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 362, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-arrow-left:before {
   content: "\f060"; }
 
-/* line 363, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 363, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-arrow-right:before {
   content: "\f061"; }
 
-/* line 364, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 364, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-arrow-up:before {
   content: "\f062"; }
 
-/* line 365, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 365, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-arrow-down:before {
   content: "\f063"; }
 
-/* line 366, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 366, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-share-alt:before {
   content: "\f064"; }
 
-/* line 367, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 367, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-resize-full:before {
   content: "\f065"; }
 
-/* line 368, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 368, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-resize-small:before {
   content: "\f066"; }
 
-/* line 369, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 369, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-plus:before {
   content: "\f067"; }
 
-/* line 370, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 370, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-minus:before {
   content: "\f068"; }
 
-/* line 371, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 371, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-asterisk:before {
   content: "\f069"; }
 
-/* line 372, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 372, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-exclamation-sign:before {
   content: "\f06a"; }
 
-/* line 373, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 373, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-gift:before {
   content: "\f06b"; }
 
-/* line 374, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 374, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-leaf:before {
   content: "\f06c"; }
 
-/* line 375, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 375, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-fire:before {
   content: "\f06d"; }
 
-/* line 376, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 376, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-eye-open:before {
   content: "\f06e"; }
 
-/* line 378, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 378, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-eye-close:before {
   content: "\f070"; }
 
-/* line 379, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 379, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-warning-sign:before {
   content: "\f071"; }
 
-/* line 380, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 380, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-plane:before {
   content: "\f072"; }
 
-/* line 381, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 381, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-calendar:before {
   content: "\f073"; }
 
-/* line 382, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 382, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-random:before {
   content: "\f074"; }
 
-/* line 383, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 383, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-comment:before {
   content: "\f075"; }
 
-/* line 384, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 384, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-magnet:before {
   content: "\f076"; }
 
-/* line 385, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 385, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-chevron-up:before {
   content: "\f077"; }
 
-/* line 386, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 386, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-chevron-down:before {
   content: "\f078"; }
 
-/* line 387, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 387, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-retweet:before {
   content: "\f079"; }
 
-/* line 388, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 388, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-shopping-cart:before {
   content: "\f07a"; }
 
-/* line 389, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 389, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-folder-close:before {
   content: "\f07b"; }
 
-/* line 390, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 390, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-folder-open:before {
   content: "\f07c"; }
 
-/* line 391, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 391, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-resize-vertical:before {
   content: "\f07d"; }
 
-/* line 392, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 392, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-resize-horizontal:before {
   content: "\f07e"; }
 
-/* line 394, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 394, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bar-chart:before {
   content: "\f080"; }
 
-/* line 395, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 395, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-twitter-sign:before {
   content: "\f081"; }
 
-/* line 396, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 396, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-facebook-sign:before {
   content: "\f082"; }
 
-/* line 397, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 397, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-camera-retro:before {
   content: "\f083"; }
 
-/* line 398, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 398, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-key:before {
   content: "\f084"; }
 
-/* line 399, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 399, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cogs:before {
   content: "\f085"; }
 
-/* line 400, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 400, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-comments:before {
   content: "\f086"; }
 
-/* line 401, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 401, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-thumbs-up:before {
   content: "\f087"; }
 
-/* line 402, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 402, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-thumbs-down:before {
   content: "\f088"; }
 
-/* line 403, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 403, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-star-half:before {
   content: "\f089"; }
 
-/* line 404, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 404, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-heart-empty:before {
   content: "\f08a"; }
 
-/* line 405, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 405, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-signout:before {
   content: "\f08b"; }
 
-/* line 406, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 406, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-linkedin-sign:before {
   content: "\f08c"; }
 
-/* line 407, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 407, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-pushpin:before {
   content: "\f08d"; }
 
-/* line 408, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 408, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-external-link:before {
   content: "\f08e"; }
 
-/* line 410, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 410, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-signin:before {
   content: "\f090"; }
 
-/* line 411, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 411, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-trophy:before {
   content: "\f091"; }
 
-/* line 412, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 412, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-github-sign:before {
   content: "\f092"; }
 
-/* line 413, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 413, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-upload-alt:before {
   content: "\f093"; }
 
-/* line 414, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 414, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-lemon:before {
   content: "\f094"; }
 
-/* line 415, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 415, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-phone:before {
   content: "\f095"; }
 
-/* line 416, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 416, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-check-empty:before {
   content: "\f096"; }
 
-/* line 417, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 417, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bookmark-empty:before {
   content: "\f097"; }
 
-/* line 418, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 418, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-phone-sign:before {
   content: "\f098"; }
 
-/* line 419, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 419, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-twitter:before {
   content: "\f099"; }
 
-/* line 420, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 420, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-facebook:before {
   content: "\f09a"; }
 
-/* line 421, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 421, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-github:before {
   content: "\f09b"; }
 
-/* line 422, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 422, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-unlock:before {
   content: "\f09c"; }
 
-/* line 423, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 423, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-credit-card:before {
   content: "\f09d"; }
 
-/* line 424, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 424, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-rss:before {
   content: "\f09e"; }
 
-/* line 426, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 426, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hdd:before {
   content: "\f0a0"; }
 
-/* line 427, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 427, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bullhorn:before {
   content: "\f0a1"; }
 
-/* line 428, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 428, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bell:before {
   content: "\f0a2"; }
 
-/* line 429, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 429, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-certificate:before {
   content: "\f0a3"; }
 
-/* line 430, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 430, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hand-right:before {
   content: "\f0a4"; }
 
-/* line 431, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 431, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hand-left:before {
   content: "\f0a5"; }
 
-/* line 432, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 432, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hand-up:before {
   content: "\f0a6"; }
 
-/* line 433, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 433, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hand-down:before {
   content: "\f0a7"; }
 
-/* line 434, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 434, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle-arrow-left:before {
   content: "\f0a8"; }
 
-/* line 435, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 435, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle-arrow-right:before {
   content: "\f0a9"; }
 
-/* line 436, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 436, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle-arrow-up:before {
   content: "\f0aa"; }
 
-/* line 437, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 437, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle-arrow-down:before {
   content: "\f0ab"; }
 
-/* line 438, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 438, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-globe:before {
   content: "\f0ac"; }
 
-/* line 439, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 439, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-wrench:before {
   content: "\f0ad"; }
 
-/* line 440, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 440, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-tasks:before {
   content: "\f0ae"; }
 
-/* line 442, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 442, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-filter:before {
   content: "\f0b0"; }
 
-/* line 443, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 443, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-briefcase:before {
   content: "\f0b1"; }
 
-/* line 444, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 444, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-fullscreen:before {
   content: "\f0b2"; }
 
-/* line 446, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 446, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-group:before {
   content: "\f0c0"; }
 
-/* line 447, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 447, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-link:before {
   content: "\f0c1"; }
 
-/* line 448, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 448, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cloud:before {
   content: "\f0c2"; }
 
-/* line 449, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 449, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-beaker:before {
   content: "\f0c3"; }
 
-/* line 450, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 450, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cut:before {
   content: "\f0c4"; }
 
-/* line 451, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 451, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-copy:before {
   content: "\f0c5"; }
 
-/* line 452, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 452, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-paper-clip:before {
   content: "\f0c6"; }
 
-/* line 453, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 453, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-save:before {
   content: "\f0c7"; }
 
-/* line 454, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 454, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-sign-blank:before {
   content: "\f0c8"; }
 
-/* line 455, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 455, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-reorder:before {
   content: "\f0c9"; }
 
-/* line 456, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 456, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-list-ul:before {
   content: "\f0ca"; }
 
-/* line 457, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 457, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-list-ol:before {
   content: "\f0cb"; }
 
-/* line 458, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 458, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-strikethrough:before {
   content: "\f0cc"; }
 
-/* line 459, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 459, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-underline:before {
   content: "\f0cd"; }
 
-/* line 460, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 460, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-table:before {
   content: "\f0ce"; }
 
-/* line 462, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 462, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-magic:before {
   content: "\f0d0"; }
 
-/* line 463, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 463, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-truck:before {
   content: "\f0d1"; }
 
-/* line 464, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 464, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-pinterest:before {
   content: "\f0d2"; }
 
-/* line 465, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 465, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-pinterest-sign:before {
   content: "\f0d3"; }
 
-/* line 466, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 466, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-google-plus-sign:before {
   content: "\f0d4"; }
 
-/* line 467, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 467, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-google-plus:before {
   content: "\f0d5"; }
 
-/* line 468, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 468, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-money:before {
   content: "\f0d6"; }
 
-/* line 469, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 469, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-caret-down:before {
   content: "\f0d7"; }
 
-/* line 470, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 470, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-caret-up:before {
   content: "\f0d8"; }
 
-/* line 471, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 471, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-caret-left:before {
   content: "\f0d9"; }
 
-/* line 472, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 472, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-caret-right:before {
   content: "\f0da"; }
 
-/* line 473, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 473, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-columns:before {
   content: "\f0db"; }
 
-/* line 474, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 474, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-sort:before {
   content: "\f0dc"; }
 
-/* line 475, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 475, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-sort-down:before {
   content: "\f0dd"; }
 
-/* line 476, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 476, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-sort-up:before {
   content: "\f0de"; }
 
-/* line 478, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 478, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-envelope-alt:before {
   content: "\f0e0"; }
 
-/* line 479, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 479, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-linkedin:before {
   content: "\f0e1"; }
 
-/* line 480, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 480, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-undo:before {
   content: "\f0e2"; }
 
-/* line 481, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 481, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-legal:before {
   content: "\f0e3"; }
 
-/* line 482, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 482, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-dashboard:before {
   content: "\f0e4"; }
 
-/* line 483, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 483, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-comment-alt:before {
   content: "\f0e5"; }
 
-/* line 484, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 484, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-comments-alt:before {
   content: "\f0e6"; }
 
-/* line 485, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 485, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bolt:before {
   content: "\f0e7"; }
 
-/* line 486, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 486, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-sitemap:before {
   content: "\f0e8"; }
 
-/* line 487, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 487, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-umbrella:before {
   content: "\f0e9"; }
 
-/* line 488, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 488, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-paste:before {
   content: "\f0ea"; }
 
-/* line 489, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 489, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-lightbulb:before {
   content: "\f0eb"; }
 
-/* line 490, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 490, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-exchange:before {
   content: "\f0ec"; }
 
-/* line 491, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 491, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cloud-download:before {
   content: "\f0ed"; }
 
-/* line 492, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 492, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-cloud-upload:before {
   content: "\f0ee"; }
 
-/* line 494, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 494, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-user-md:before {
   content: "\f0f0"; }
 
-/* line 495, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 495, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-stethoscope:before {
   content: "\f0f1"; }
 
-/* line 496, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 496, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-suitcase:before {
   content: "\f0f2"; }
 
-/* line 497, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 497, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-bell-alt:before {
   content: "\f0f3"; }
 
-/* line 498, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 498, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-coffee:before {
   content: "\f0f4"; }
 
-/* line 499, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 499, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-food:before {
   content: "\f0f5"; }
 
-/* line 500, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 500, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-file-alt:before {
   content: "\f0f6"; }
 
-/* line 501, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 501, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-building:before {
   content: "\f0f7"; }
 
-/* line 502, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 502, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-hospital:before {
   content: "\f0f8"; }
 
-/* line 503, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 503, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-ambulance:before {
   content: "\f0f9"; }
 
-/* line 504, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 504, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-medkit:before {
   content: "\f0fa"; }
 
-/* line 505, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 505, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-fighter-jet:before {
   content: "\f0fb"; }
 
-/* line 506, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 506, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-beer:before {
   content: "\f0fc"; }
 
-/* line 507, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 507, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-h-sign:before {
   content: "\f0fd"; }
 
-/* line 508, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 508, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-plus-sign-alt:before {
   content: "\f0fe"; }
 
-/* line 510, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 510, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-double-angle-left:before {
   content: "\f100"; }
 
-/* line 511, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 511, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-double-angle-right:before {
   content: "\f101"; }
 
-/* line 512, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 512, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-double-angle-up:before {
   content: "\f102"; }
 
-/* line 513, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 513, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-double-angle-down:before {
   content: "\f103"; }
 
-/* line 514, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 514, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-angle-left:before {
   content: "\f104"; }
 
-/* line 515, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 515, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-angle-right:before {
   content: "\f105"; }
 
-/* line 516, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 516, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-angle-up:before {
   content: "\f106"; }
 
-/* line 517, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 517, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-angle-down:before {
   content: "\f107"; }
 
-/* line 518, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 518, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-desktop:before {
   content: "\f108"; }
 
-/* line 519, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 519, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-laptop:before {
   content: "\f109"; }
 
-/* line 520, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 520, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-tablet:before {
   content: "\f10a"; }
 
-/* line 521, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 521, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-mobile-phone:before {
   content: "\f10b"; }
 
-/* line 522, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 522, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle-blank:before {
   content: "\f10c"; }
 
-/* line 523, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 523, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-quote-left:before {
   content: "\f10d"; }
 
-/* line 524, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 524, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-quote-right:before {
   content: "\f10e"; }
 
-/* line 526, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 526, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-spinner:before {
   content: "\f110"; }
 
-/* line 527, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 527, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-circle:before {
   content: "\f111"; }
 
-/* line 528, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 528, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-reply:before {
   content: "\f112"; }
 
-/* line 529, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 529, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-github-alt:before {
   content: "\f113"; }
 
-/* line 530, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 530, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-folder-close-alt:before {
   content: "\f114"; }
 
-/* line 531, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 531, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .icon-folder-open-alt:before {
   content: "\f115"; }
 
-/* line 544, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 544, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .counter-icon {
   display: inline-block;
   margin: 0 5px 7px 15px; }
-  /* line 548, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 548, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .counter-icon span {
     display: inline-block;
     width: 24px;
@@ -1500,7 +1500,7 @@ ul.icons {
     background-image: linear-gradient(top, #30878f, #236369);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF30878F', endColorstr='#FF236369', GradientType=0)"; }
-  /* line 565, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 565, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .counter-icon.danger span {
     background-color: #d85f48;
     background-image: -moz-linear-gradient(top, #dc6e59 0%, #d3492f 99%);
@@ -1511,7 +1511,7 @@ ul.icons {
     background-image: linear-gradient(top, #dc6e59, #d3492f);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFDC6E59', endColorstr='#FFD3492F', GradientType=0)"; }
-  /* line 571, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 571, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .counter-icon.warning span {
     background-color: #ebd682;
     background-image: -moz-linear-gradient(top, #eedc94 0%, #e7ce68 99%);
@@ -1522,7 +1522,7 @@ ul.icons {
     background-image: linear-gradient(top, #eedc94, #e7ce68);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEDC94', endColorstr='#FFE7CE68', GradientType=0)"; }
-  /* line 577, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 577, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .counter-icon.info span {
     background-color: #0fa4f3;
     background-image: -moz-linear-gradient(top, #19affe 0%, #0195e3 99%);
@@ -1533,7 +1533,7 @@ ul.icons {
     background-image: linear-gradient(top, #19affe, #0195e3);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF19AFFE', endColorstr='#FF0195E3', GradientType=0)"; }
-  /* line 583, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+  /* line 583, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
   .counter-icon.success span {
     background-color: #7eba61;
     background-image: -moz-linear-gradient(top, #8ac16f 0%, #6db14c 99%);
@@ -1545,12 +1545,12 @@ ul.icons {
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF8AC16F', endColorstr='#FF6DB14C', GradientType=0)"; }
 
-/* line 590, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_icons.scss */
+/* line 590, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_icons.scss */
 .browser img {
   width: 64px;
   height: 64px; }
 
-/* line 1, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_navigation.scss */
+/* line 1, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_navigation.scss */
 .navbar-inner {
   min-height: 40px !important;
   padding-left: 20px !important;
@@ -1571,7 +1571,7 @@ ul.icons {
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065) !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065) !important; }
 
-/* line 22, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_navigation.scss */
+/* line 22, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_navigation.scss */
 .navbar .brand {
   float: left;
   display: block;
@@ -1582,13 +1582,13 @@ ul.icons {
   color: #777777;
   text-shadow: 0 1px 0 white; }
 
-/* line 33, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_navigation.scss */
+/* line 33, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_navigation.scss */
 .navbar .brand:hover, .navbar .brand:focus {
   background-color: transparent;
   color: #333333;
   text-decoration: none; }
 
-/* line 40, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_navigation.scss */
+/* line 40, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_navigation.scss */
 .navbar .nav > li > a {
   float: none;
   padding: 10px 15px 10px;
@@ -1596,38 +1596,38 @@ ul.icons {
   text-decoration: none;
   text-shadow: 0 1px 0 white; }
 
-/* line 48, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_navigation.scss */
+/* line 48, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_navigation.scss */
 .navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
   background-color: transparent;
   color: #333333;
   text-decoration: none; }
 
-/* line 1, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 1, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-description {
   background: #f1f1f1;
   border-bottom: 1px solid #dddddd;
   padding: 10px 5px; }
 
-/* line 7, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 7, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-description p:first-child {
   margin-top: 0; }
 
-/* line 11, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 11, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-description p:last-child {
   margin-bottom: 0; }
 
-/* line 15, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 15, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-element {
   position: relative;
   padding: 20px; }
 
-/* line 20, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 20, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-element + .styleguide-element {
   margin-top: -5px;
   padding-top: 15px;
   border-top: 1px solid #eeeeee; }
 
-/* line 26, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 26, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-element .styleguide-modifier-name {
   display: block;
   position: absolute;
@@ -1640,27 +1640,27 @@ ul.icons {
   border-top: none;
   padding: 5px 8px; }
 
-/* line 39, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 39, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-html {
   background: #edf6f8;
   border-top: 1px solid #dde7ea;
   overflow: auto;
   padding: 5px 10px; }
 
-/* line 46, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 46, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example .styleguide-html .highlight {
   background: none; }
 
-/* line 50, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 50, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example ul.styleguide-modifiers {
   margin: 0 0 0 10px; }
 
-/* line 54, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 54, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example ul.styleguide-modifiers li {
   list-style-type: none;
   margin-left: 0; }
 
-/* line 59, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_kss.scss */
+/* line 59, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_kss.scss */
 .styleguide-example ul.styleguide-modifiers li strong {
   font-family: Monaco, monospace;
   font-size: 12px;
@@ -1673,7 +1673,7 @@ ul.icons {
  * @author Craig Campbell
  * @version 1.0.4
  */
-/* line 7, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 7, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre {
   border: 1px solid #cccccc;
   word-wrap: break-word;
@@ -1681,14 +1681,14 @@ pre {
   line-height: 19px;
   margin-bottom: 20px; }
 
-/* line 15, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 15, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 code {
   border: 1px solid #eaeaea;
   margin: 0px 2px;
   padding: 0px 5px;
   font-size: 12px; }
 
-/* line 22, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 22, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre code {
   border: 0px;
   padding: 0px;
@@ -1698,7 +1698,7 @@ pre code {
   border-radius: 0px;
   display: block; }
 
-/* line 32, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 32, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre, code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   color: #333;
@@ -1707,57 +1707,57 @@ pre, code {
   -webkit-border-radius: 3px;
   border-radius: 3px; }
 
-/* line 41, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 41, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre, pre code {
   font-size: 13px; }
 
-/* line 45, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 45, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .comment {
   color: #998; }
 
-/* line 49, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 49, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .support {
   color: #0086B3; }
 
-/* line 53, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 53, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .tag, pre .tag-name {
   color: navy; }
 
-/* line 57, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 57, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .keyword, pre .css-property, pre .vendor-prefix, pre .sass, pre .class, pre .id, pre .css-value, pre .entity.function, pre .storage.function {
   font-weight: bold; }
 
-/* line 61, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 61, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .css-property, pre .css-value, pre .vendor-prefix, pre .support.namespace {
   color: #333; }
 
-/* line 65, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 65, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .constant.numeric, pre .keyword.unit, pre .hex-color {
   font-weight: normal;
   color: #099; }
 
-/* line 70, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 70, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .entity.class {
   color: #458; }
 
-/* line 74, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 74, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .entity.id, pre .entity.function {
   color: #900; }
 
-/* line 78, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 78, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .attribute, pre .variable {
   color: teal; }
 
-/* line 82, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 82, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .string, pre .support.value {
   font-weight: normal;
   color: #d14; }
 
-/* line 87, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 87, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .regexp {
   color: #009926; }
 
-/* line 91, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 91, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .close {
   float: none !important;
   font-size: inherit !important;
@@ -1768,7 +1768,7 @@ pre .close {
   opacity: 1;
   filter: none; }
 
-/* line 102, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_github.scss */
+/* line 102, /Users/adamrneary/Developer/tactile/src/scss/styleguide/_github.scss */
 pre .close:hover {
   float: none !important;
   font-size: inherit !important;

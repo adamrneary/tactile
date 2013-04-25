@@ -36,34 +36,38 @@ data = [
   y: 332
   z: 100
 ]
+
 chart = new Tactile.Chart()
+  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
+  .element($("#example_view")[0])
+  .data(data)
+  .addSeries [
+    name: "enemies"
+    renderer: "column"
+    color: "#c05020"
+    tooltip: (d) ->
+      d.y + " enemies"
+  ,
+    yAxis: 'y1'
+    name: "friends"
+    renderer: "line"
+    color: "#6060c0"
+    tooltip: (d) ->
+      d.y + "%"
 
-chart.axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
-chart.element($("#example_view")[0]).width(680).height(400).data(data)
-
-chart.addSeries
-  name: "enemies"
-  renderer: "column"
-  color: "#c05020"
-  tooltip: (d) ->
-    d.y + " enemies"
-
-chart.addSeries
-  yAxis: 'y1'
-  name: "friends"
-  renderer: "line"
-  color: "#6060c0"
-  tooltip: (d) ->
-    d.y + "%"
-
-  dataTransform: (d) ->
-    x: d.x
-    y: d.z
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z
+  ]
 
 chart.render()
 
+# interactions
+
+$("#above-chart").html ''
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 8
@@ -72,4 +76,3 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
-

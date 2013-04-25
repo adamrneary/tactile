@@ -6,7 +6,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     round: true
     unstack: true
 
-
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
 
@@ -22,7 +21,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
       .on("click", @setActive)# set active element if click on it
-
 
     @transition.selectAll("##{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
@@ -59,7 +57,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
-
 
     @setupTooltips()
 

@@ -257,6 +257,7 @@ class Tactile.Chart
     renderersSize = @renderers.length
     _.each series, (s, index) =>
       name = s.renderer
+      console.log @_renderers
       throw "couldn't find renderer #{name}" if (!@_renderers[name])
       rendererClass = @_renderers[name]
       rendererOptions = _.extend {},

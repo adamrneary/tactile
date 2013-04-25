@@ -36,41 +36,42 @@ data = [
   y: 332
   z: 490
 ]
-chart = new Tactile.Chart().element($("#example_view")[0]).width(680).height(400).data(data).axes(x:
-  dimension: "time"
-  frame: frameVal
-)
-chart.addSeries
-  name: "enemies"
-  renderer: "line"
-  color: "#c05020"
-  tooltip: (d) ->
-    d.y + " enemies"
 
-  dataTransform: (d) ->
-    x: d.x
-    y: d.y
+chart = new Tactile.Chart()
+  .element($("#example_view")[0])
+  .data(data)
+  .axes({x:{dimension: "time",frame: frameVal}})
+  .addSeries [
+    name: "enemies"
+    renderer: "line"
+    color: "#c05020"
+    tooltip: (d) ->
+      d.y + " enemies"
+    dataTransform: (d) ->
+      x: d.x
+      y: d.y
+  ,
+    name: "friends"
+    renderer: "column"
+    sigfigs: 1
+    color: "#6060c0"
+    isEditable: true
+    afterDrag: (d, y, i, draggedSeries, graph) ->
+      graph.data()[i].z = y
 
-chart.addSeries
-  name: "friends"
-  renderer: "column"
-  sigfigs: 1
-  color: "#6060c0"
-  isEditable: true
-  afterDrag: (d, y, i, draggedSeries, graph) ->
-    graph.data()[i].z = y
+    tooltip: (d) ->
+      d.y + " friends"
 
-  tooltip: (d) ->
-    d.y + " friends"
-
-  dataTransform: (d) ->
-    x: d.x
-    y: d.z
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z
+  ]
 
 chart.render()
-sl = $("<div>").attr("id", "slider")
-legends = $("<div>").attr("id", "legends")
 
+# interactions
+
+legends = $("<div>").attr("id", "legends")
 chart.series.forEach (val, idx) ->
   input = $("<input>").attr("type", "checkbox")
     .attr("name", "legend")
@@ -81,9 +82,10 @@ chart.series.forEach (val, idx) ->
   legends.find("input").last().click ->
     chart.series[idx].toggle()
     chart.render()
+$("#above-chart").html legends
 
-$("#example_view").prepend legends
-$("#example_view").append sl
+sl = $("<div>").attr("id", "slider")
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 8
@@ -92,4 +94,3 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
-

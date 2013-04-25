@@ -1,5 +1,4 @@
 data = [
-  
   # time (period here) is unix milliseconds/1000
   period: 1325376000
   actual: 14
@@ -52,32 +51,28 @@ data = [
   actual: undefined
   plan: null
 ]
+
 chart = new Tactile.Chart(unstack: false)
-  .element($("#example_view")[0]).data(data).width(680).height(400)
-chart.axes(y: dimension: "linear")
+  .element($("#example_view")[0])
+  .data(data)
+  .axes(y: dimension: "linear")
+  .addSeries
+    name: "actual-planned-dots"
+    renderer: "scatter"
+    color: "#F52A2D"
+    cssConditions: (d) ->
+      return "low" if d.r < d.y   # less than planned
+      return "mid" if d.r is d.y  # same as planned
+      return "high"  if d.r > d.y # more than planned
+      ""                          # else
+    tooltip: (d) ->
+      d.y + " planned, got " + d.r
+    dataTransform: (d) ->
+      x: d.period
+      y: d.plan
+      r: d.actual
 
-chart.addSeries [
-  name: "actual-planned-dots"
-  renderer: "scatter"
-  color: "#F52A2D"
-  cssConditions: (d) ->
-    
-    # less than planned
-    return "low"  if d.r < d.y
-    
-    # same as planned
-    return "mid"  if d.r is d.y
-    
-    # more than planned
-    return "high"  if d.r > d.y
-    ""
-
-  tooltip: (d) ->
-    d.y + " planned, got " + d.r
-
-  dataTransform: (d) ->
-    x: d.period
-    y: d.plan
-    r: d.actual
-]
 chart.render()
+
+$('#above-chart').html ''
+$('#below-chart').html ''

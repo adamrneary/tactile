@@ -1,6 +1,5 @@
 frameVal = [1330560000, 1354320000]
 data = [
-  
   # time (period here) is unix milliseconds/1000
   period: 1325376000
   actual: 4
@@ -50,37 +49,35 @@ data = [
   actual: 5
   plan: 2
 ]
-chart = new Tactile.Chart(unstack: false)
-  .element($("#example_view")[0]).data(data)
-chart.width(680).height(400)
-chart.axes
-  y: "linear"
-  x:
-    dimension: "time"
-    frame: frameVal
-    options:
-      ticksTreatment: "align-middle"
 
-chart.addSeries
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0])
+  .data(data)
+  .axes
+    y: "linear"
+    x:
+      dimension: "time"
+      frame: frameVal
+      options:
+        ticksTreatment: "align-middle"
+
+chart.addSeries [
   name: "reach actual"
   renderer: "column"
   round: false
   color: "#c05020"
   tooltip: (d) ->
     d.y + " customers"
-
   dataTransform: (d) ->
     x: d.period
     y: d.actual
-
-chart.addSeries [
+,
   name: "planned"
   renderer: "column"
   round: false
   color: "#6060c0"
   tooltip: (d) ->
     d.y + " planned"
-
   dataTransform: (d) ->
     x: d.period
     y: d.plan
@@ -96,9 +93,25 @@ chart.addSeries [
     x: d.period
     y: parseInt(d.plan + d.actual)
 ]
+
 chart.render()
+
+# interactions
+
+groupButton = $("<button class='btn btn-mini'>Grouped</button>")
+stackButton = $("<button class='btn btn-mini' style='margin-left: 10px'>Stacked</button>")
+$("#above-chart").html ''
+$("#above-chart").prepend groupButton
+$("#above-chart").prepend stackButton
+stackButton.click (e) ->
+  chart.stackTransition()
+  e.stopPropagation()
+groupButton.click (e) ->
+  chart.unstackTransition()
+  e.stopPropagation()
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 1325376000
   max: 1354320000
@@ -107,11 +120,3 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
-
-$("#group").on "click", (e)->
-  chart.unstackTransition()
-  e.stopPropagation()
-
-$("#stack").on "click", (e)->
-  chart.stackTransition()
-  e.stopPropagation()

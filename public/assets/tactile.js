@@ -136,7 +136,12 @@ Tactile.RendererBase = (function() {
 
     d = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     return _.all(args, function(attr) {
-      return !isNaN(d[attr]) && (d[attr] != null);
+      switch (typeof d[attr]) {
+        case "number":
+          return !isNaN(d[attr]) && (d[attr] != null);
+        case "string":
+          return d[attr] != null;
+      }
     });
   };
 
@@ -911,6 +916,250 @@ Tactile.AreaRenderer = (function(_super) {
   return AxisTime;
 
 })();
+
+}).call(this);
+
+(function() {
+  var _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Tactile.BulletRenderer = (function(_super) {
+  __extends(BulletRenderer, _super);
+
+  function BulletRenderer() {
+    this._index = __bind(this._index, this);
+    this._yOffset = __bind(this._yOffset, this);
+    this._xOffset = __bind(this._xOffset, this);
+    this.initialize = __bind(this.initialize, this);    _ref = BulletRenderer.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  BulletRenderer.prototype.name = "bullet";
+
+  BulletRenderer.prototype.specificDefaults = {
+    format: d3.format("p"),
+    barHeight: 50,
+    margin: {
+      top: 5,
+      right: 40,
+      bottom: 20,
+      left: 120
+    }
+  };
+
+  BulletRenderer.prototype.initialize = function() {
+    if (this.series.format !== void 0) {
+      return this.format = this.series.format;
+    }
+  };
+
+  BulletRenderer.prototype.render = function(transition, transitionSpeed) {
+    var bars, oldData, render,
+      _this = this;
+
+    ({
+      width: this.margin.width - this.margin.left - this.margin.right,
+      height: this.barHeight - this.margin.top - this.margin.bottom
+    });
+    if (transition) {
+      this.transition = transition;
+    }
+    oldData = this.seriesCanvas().selectAll("g.bullet.bars").data();
+    this.series.stack.forEach(function(d, i) {
+      var _ref1;
+
+      d.maxValue = d3.max([
+        d3.max(d.ranges, function(d) {
+          return d.value;
+        }), d3.max(d.measures, function(d) {
+          return d.value;
+        }), d3.max(d.markers, function(d) {
+          return d.value;
+        })
+      ]);
+      return d.maxValueOld = (_ref1 = oldData[i]) != null ? _ref1.maxValue : void 0;
+    });
+    bars = this.seriesCanvas().selectAll("g.bullet.bars").data(this.series.stack);
+    bars.enter().append("svg:g").attr("class", "bullet bars");
+    bars.exit().remove();
+    this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
+      var markers, measures, measuresData, ranges, rengesData, titles;
+
+      titles = d3.select(this).selectAll("g.bullet.titles").data([d]);
+      titles.enter().append("svg:g").attr("class", "bullet titles");
+      d3.select(this).selectAll("g.bullet.titles").each(function(d, i) {
+        var subtitle, title;
+
+        title = d3.select(this).selectAll("text.bullet.title").data([d]);
+        title.enter().append("text").attr("class", "bullet title");
+        title.exit().remove();
+        subtitle = d3.select(this).selectAll("text.bullet.subtitle").data([d]);
+        subtitle.enter().append("text").attr("class", "bullet subtitle");
+        return subtitle.exit().remove();
+      });
+      rengesData = d.ranges.slice();
+      rengesData.sort(function(a, b) {
+        if (a.value > b.value) {
+          return -1;
+        } else if (a.value < b.value) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      ranges = d3.select(this).selectAll("g.bullet.ranges").data([rengesData]);
+      ranges.enter().append("svg:g").attr("class", "bullet ranges");
+      d3.select(this).selectAll("g.bullet.ranges").each(function(d, i) {
+        var range;
+
+        range = d3.select(this).selectAll("rect.bullet.range").data(d);
+        range.enter().append("svg:rect").attr("class", "bullet range");
+        return range.exit().remove();
+      });
+      measuresData = d.measures.slice();
+      measuresData.sort(function(a, b) {
+        if (a.value > b.value) {
+          return -1;
+        } else if (a.value < b.value) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      measures = d3.select(this).selectAll("g.bullet.measures").data([measuresData]);
+      measures.enter().append("svg:g").attr("class", "bullet measures");
+      d3.select(this).selectAll("g.bullet.measures").each(function(d, i) {
+        var measure;
+
+        measure = d3.select(this).selectAll("rect.bullet.measure").data(d);
+        measure.enter().append("svg:rect").attr("class", "bullet measure");
+        return measure.exit().remove();
+      });
+      markers = d3.select(this).selectAll("g.bullet.markers").data([d.markers]);
+      markers.enter().append("svg:g").attr("class", "bullet markers");
+      return d3.select(this).selectAll("g.bullet.markers").each(function(d, i) {
+        var marker;
+
+        marker = d3.select(this).selectAll("line.bullet.marker").data(d);
+        marker.enter().append("svg:line").attr("class", "bullet marker");
+        return marker.exit().remove();
+      });
+    });
+    this.seriesCanvas().selectAll("#" + (this._nameToId()) + " g.bullet.titles").attr("transform", function(d, i) {
+      return "translate(" + (_this._xOffset(d, i) - 6) + ", " + (_this._yOffset(d, i) + _this.barHeight / 2 - 5) + ")";
+    });
+    this.transition.selectAll("#" + (this._nameToId()) + " text.bullet.title").filter(function(d) {
+      return _this._filterNaNs(d, 'title');
+    }).duration(transitionSpeed).text(function(d) {
+      return d.title;
+    }).attr("transform", "translate(3 -8)").attr("text-anchor", "end");
+    this.transition.selectAll("#" + (this._nameToId()) + " text.bullet.subtitle").filter(function(d) {
+      return _this._filterNaNs(d, 'subtitle');
+    }).duration(transitionSpeed).text(function(d) {
+      return d.subtitle;
+    }).attr("transform", "translate(3 -8)").attr("dy", "1em").attr("text-anchor", "end");
+    render = this;
+    return this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
+      var curEl, element, scal, scalOld, ticks,
+        _this = this;
+
+      scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      element = this;
+      curEl = render.transition.selectAll("#" + (render._nameToId()) + " g.bullet.bars").filter(function() {
+        return this === element;
+      });
+      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.ranges").attr("transform", function(d, i) {
+        return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
+      });
+      curEl.selectAll("#" + (render._nameToId()) + " rect.bullet.range").filter(function(d) {
+        return render._filterNaNs(d, 'value', 'color');
+      }).duration(transitionSpeed).attr("height", render.barHeight / 2).attr("width", function(d) {
+        return scal(d.value);
+      }).attr("fill", function(d) {
+        return d.color;
+      });
+      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.measures").attr("transform", function(d, i) {
+        return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
+      });
+      curEl.selectAll("#" + (render._nameToId()) + " rect.bullet.measure").filter(function(d) {
+        return render._filterNaNs(d, 'value', 'color');
+      }).duration(transitionSpeed).attr("height", render.barHeight / 2 / 3).attr("transform", "translate(0, " + (render.barHeight / 2 / 3) + ")").attr("width", function(d) {
+        return scal(d.value);
+      }).attr("fill", function(d) {
+        return d.color;
+      });
+      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.markers").attr("transform", function(d, i) {
+        return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
+      });
+      curEl.selectAll("#" + (render._nameToId()) + " line.bullet.marker").filter(function(d) {
+        return render._filterNaNs(d, 'value', 'color');
+      }).duration(transitionSpeed).attr("x1", function(d) {
+        return scal(d.value);
+      }).attr("x2", function(d) {
+        return scal(d.value);
+      }).attr("y1", 2).attr("y2", render.barHeight / 2 - 2).attr("stroke", function(d) {
+        return d.color;
+      }).attr("stroke-width", 2);
+      ticks = d3.select(this).selectAll("g.bullet.ticks").data([scal.ticks(8)]);
+      ticks.enter().append("svg:g").attr("class", "bullet ticks");
+      curEl.selectAll("g.bullet.ticks").each(function(d, i) {
+        var tick, tickEnter;
+
+        tick = d3.select(this).selectAll("g.bullet.tick").data(d);
+        tickEnter = tick.enter().append("svg:g").attr("class", "bullet tick");
+        tickEnter.append("svg:line").style("opacity", 1e-6).attr("y1", render.barHeight / 2).attr("y2", render.barHeight / 2 + 4).attr("x1", function(d) {
+          return scalOld(d);
+        }).attr("x2", function(d) {
+          return scalOld(d);
+        });
+        tickEnter.append("text").attr("x", function(d) {
+          return scalOld(d);
+        }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1e-6);
+        return tick.exit().transition().duration(transitionSpeed).style("opacity", 1e-6).remove();
+      });
+      d3.select(this).selectAll("g.bullet.ticks line").data(scal.ticks(8));
+      d3.select(this).selectAll("g.bullet.ticks text").data(scal.ticks(8));
+      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.ticks").attr("transform", function(d, i) {
+        return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
+      });
+      curEl.selectAll("#" + (render._nameToId()) + " g.bullet.tick line").duration(transitionSpeed).attr("x1", function(d) {
+        return scal(d);
+      }).attr("x2", function(d) {
+        return scal(d);
+      }).attr("y1", render.barHeight / 2).attr("y2", render.barHeight / 2 + 4).attr("stroke", "#BBBBBB").attr("stroke-width", 1).style("opacity", 1);
+      return curEl.selectAll("#" + (render._nameToId()) + " g.bullet.tick text").duration(transitionSpeed).attr("text-anchor", "middle").attr("x", function(d) {
+        return scal(d);
+      }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1).text(function(d) {
+        return d + "";
+      });
+    });
+  };
+
+  BulletRenderer.prototype._xOffset = function(d, i) {
+    return this.margin.left;
+  };
+
+  BulletRenderer.prototype._yOffset = function(d, i) {
+    var yMargin;
+
+    yMargin = (this.graph.height() - this.series.stack.length * this.barHeight - this.margin.top - this.margin.bottom) / (this.series.stack.length + 1);
+    return yMargin + (this.barHeight + yMargin) * this._index(d, i) + this.margin.top;
+  };
+
+  BulletRenderer.prototype._index = function(d, i) {
+    if (!isNaN(d.index) && (d.index != null)) {
+      return d.index;
+    } else {
+      return i;
+    }
+  };
+
+  return BulletRenderer;
+
+})(Tactile.RendererBase);
 
 }).call(this);
 
@@ -2568,7 +2817,8 @@ Tactile.Chart = (function() {
     'scatter': Tactile.ScatterRenderer,
     'donut': Tactile.DonutRenderer,
     'waterfall': Tactile.WaterfallRenderer,
-    'leaderboard': Tactile.LeaderboardRenderer
+    'leaderboard': Tactile.LeaderboardRenderer,
+    'bullet': Tactile.BulletRenderer
   };
 
   Chart.prototype.margin = {
@@ -2882,6 +3132,7 @@ Tactile.Chart = (function() {
       var name, r, rendererClass, rendererOptions;
 
       name = s.renderer;
+      console.log(_this._renderers);
       if (!_this._renderers[name]) {
         throw "couldn't find renderer " + name;
       }

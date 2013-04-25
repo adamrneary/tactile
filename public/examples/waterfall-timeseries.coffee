@@ -46,47 +46,47 @@ data = [
   newCustomers: 40
   churnedCustomers: -5
 ]
+
 chart = new Tactile.Chart()
   .element($("#example_view")[0])
-  .width(680)
-  .height(400)
   .data(data)
   .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+  .addSeries [
+    name: "Customers"
+    renderer: "waterfall"
+    color: "#30878F"
+    fromBaseline: true
+    tooltip: (d) ->
+      d.y + " customers"
+    dataTransform: (d) ->
+      x: d.period
+      y: d.customers
+  ,
+    name: "New customers"
+    renderer: "waterfall"
+    color: "#8ac16f"
+    tooltip: (d) ->
+      d.y + " new customers"
+    dataTransform: (d) ->
+      x: d.period
+      y: d.newCustomers
+  ,
+    name: "Churned customers"
+    renderer: "waterfall"
+    color: "#dc6e59"
+    tooltip: (d) ->
+      d.y + " churned customers"
+    dataTransform: (d) ->
+      x: d.period
+      y: d.churnedCustomers
+  ]
 
-chart.addSeries [
-  name: "Customers"
-  renderer: "waterfall"
-  color: "#30878F"
-  fromBaseline: true
-  tooltip: (d) ->
-    d.y + " customers"
-  dataTransform: (d) ->
-    x: d.period
-    y: d.customers
-,
-  name: "New customers"
-  renderer: "waterfall"
-  color: "#8ac16f"
-  tooltip: (d) ->
-    d.y + " new customers"
-  dataTransform: (d) ->
-    x: d.period
-    y: d.newCustomers
-,
-  name: "Churned customers"
-  renderer: "waterfall"
-  color: "#dc6e59"
-  tooltip: (d) ->
-    d.y + " churned customers"
-  dataTransform: (d) ->
-    x: d.period
-    y: d.churnedCustomers
-]
-chart.axes().x.frame = frameVal
 chart.render()
 
+$("#above-chart").html ''
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 1325376000
   max: 1354320000

@@ -96,7 +96,7 @@ data = [
   ]
 ]
 
-generateData = (count)=>
+generateData = (count) =>
   i = 0
   while i < count
     j = 0
@@ -115,30 +115,30 @@ generateData = (count)=>
     data[i].markers[0].value = Math.floor Math.random() * 100
     i++
 
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0])
-chart.data(data).width(800).height(350)
-
-chart.addSeries [
-  name: "enemies"
-  renderer: "bullet"
-  format: d3.format("d")
-  dataTransform: (d) ->
-    title: d.title
-    subtitle: d.subtitle
-    ranges: d.ranges
-    measures: d.measures
-    markers: d.markers
-]
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0])
+  .data(data)
+  .addSeries
+    name: "enemies"
+    renderer: "bullet"
+    format: d3.format("d")
+    dataTransform: (d) ->
+      title: d.title
+      subtitle: d.subtitle
+      ranges: d.ranges
+      measures: d.measures
+      markers: d.markers
 
 chart.render()
 
+# interactions
+
 setDataButton = $("<button class='btn btn-mini'>Set data</button>")
-
-$("#example_view").prepend setDataButton
-
-setDataButton.click((e)=>
+$("#above-chart").html setDataButton
+setDataButton.click (e) =>
   generateData(4)
   chart.data(data)
   chart.render(1000)
   e.stopPropagation()
-)
+
+$("#below-chart").html ''

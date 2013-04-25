@@ -41,77 +41,78 @@ data = [
   color5: "#DDAF63"
   color6: "#A79380"
 ]
-chart = new Tactile.Chart()
-  .element($("#example_view")[0]).data(data).width(680).height(400)
 
-chart.addSeries [
-  name: "grapefruit"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color1
-    val: d.val1
-    label: d.label
-,
-  name: "kiwis"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color2
-    val: d.val2
-    label: d.label
-,
-  name: "cherries"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color3
-    val: d.val3
-    label: d.label
-,
-  name: "oranges"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color4
-    val: d.val4
-    label: d.label
-,
-  name: "apples"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color5
-    val: d.val5
-    label: d.label
-,
-  name: "peaches"
-  renderer: "donut"
-  tooltip: (d) ->
-    d.label + " " + d.val
-  dataTransform: (d) ->
-    color: d.color6
-    val: d.val6
-    label: d.label
-]
+chart = new Tactile.Chart()
+  .element($("#example_view")[0])
+  .data(data)
+  .addSeries [
+    name: "grapefruit"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color1
+      val: d.val1
+      label: d.label
+  ,
+    name: "kiwis"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color2
+      val: d.val2
+      label: d.label
+  ,
+    name: "cherries"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color3
+      val: d.val3
+      label: d.label
+  ,
+    name: "oranges"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color4
+      val: d.val4
+      label: d.label
+  ,
+    name: "apples"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color5
+      val: d.val5
+      label: d.label
+  ,
+    name: "peaches"
+    renderer: "donut"
+    tooltip: (d) ->
+      d.label + " " + d.val
+    dataTransform: (d) ->
+      color: d.color6
+      val: d.val6
+      label: d.label
+  ]
+
 chart.render()
 
 stackButton = $("<button class='btn btn-mini'>Stack</button>")
 unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
-$("#example_view").prepend stackButton
-$("#example_view").prepend unstackButton
-
-unstackButton.click((e)->
+$("#above-chart").html ''
+$("#above-chart").prepend stackButton
+$("#above-chart").prepend unstackButton
+unstackButton.click (e) ->
   chart.unstackTransition(1500)
   e.stopPropagation()
-)
-
-stackButton.click((e)->
+stackButton.click (e) ->
   chart.stackTransition(1500)
   e.stopPropagation()
-)
+
+$("#below-chart").html ''

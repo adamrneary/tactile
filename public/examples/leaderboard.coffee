@@ -20,7 +20,7 @@ data = [
   barPosition: 0
 ]
 
-generateData = (count)=>
+generateData = (count) =>
   i = 0
   while i < count
     oldValue = data[i].value
@@ -41,30 +41,27 @@ generateData = (count)=>
 
   data
 
-
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0])
-chart.data(generateData(4)).width(680).height(400)
-
-chart.addSeries [
-  name: "enemies"
-  renderer: "leaderboard"
-  format: d3.format("d")
-  dataTransform: (d) ->
-    label: d.label
-    value: d.value
-    change: d.change
-    barPosition: d.barPosition
-    index: d.index
-]
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0])
+  .data(generateData(4))
+  .addSeries
+    name: "enemies"
+    renderer: "leaderboard"
+    format: d3.format("d")
+    dataTransform: (d) ->
+      label: d.label
+      value: d.value
+      change: d.change
+      barPosition: d.barPosition
+      index: d.index
 
 chart.render()
 
 setDataButton = $("<button class='btn btn-mini'>Set data</button>")
-
-$("#example_view").prepend setDataButton
-
-setDataButton.click((e)=>
+$("#above-chart").html setDataButton
+setDataButton.click (e)=>
   chart.data(generateData(4))
   chart.render(1000)
   e.stopPropagation()
-)
+
+$("#below-chart").html ''

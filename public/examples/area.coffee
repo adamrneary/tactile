@@ -40,40 +40,42 @@ data = [
   y: 120
   z: 490
 ]
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0])
-chart.data(data).width(680).height(400).axes x:
-  dimension: "time"
-  frame: frameVal
 
-chart.addSeries [
-  name: "enemies"
-  renderer: "area"
-  dotSize: 1
-  sigfigs: 0
-  isEditable: true
-  afterDrag: (d, y, i, draggedSeries, graph) ->
-    graph.data()[i].y = y
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0])
+  .data(data)
+  .axes({x:{dimension: "time", frame: frameVal}})
+  .addSeries [
+    name: "enemies"
+    renderer: "area"
+    dotSize: 1
+    sigfigs: 0
+    isEditable: true
+    afterDrag: (d, y, i, draggedSeries, graph) ->
+      graph.data()[i].y = y
+    color: "#c05020"
+    dataTransform: (d) ->
+      x: d.x
+      y: d.y
+  ,
+    name: "friends"
+    renderer: "area"
+    sigfigs: 1
+    color: "#6060c0"
+    isEditable: true
+    afterDrag: (d, y, i, draggedSeries, graph) ->
+      graph.data()[i].z = y
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z
+  ]
 
-  color: "#c05020"
-  dataTransform: (d) ->
-    x: d.x
-    y: d.y
-,
-  name: "friends"
-  renderer: "area"
-  sigfigs: 1
-  color: "#6060c0"
-  isEditable: true
-  afterDrag: (d, y, i, draggedSeries, graph) ->
-    graph.data()[i].z = y
-
-  dataTransform: (d) ->
-    x: d.x
-    y: d.z
-]
 chart.render()
+
+$("#above-chart").html ''
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 8

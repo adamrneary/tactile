@@ -36,14 +36,15 @@ data = [
   y: 120
   z: 490
 ]
-chart = new Tactile.Chart(unstack: false).element($("#example_view")[0])
-chart.data(data).width(680).height(400)
 
-chart.axes
-  y: "linear"
-  x:
-    dimension: "time"
-    frame: frameVal
+chart = new Tactile.Chart(unstack: false)
+  .element($("#example_view")[0])
+  .data(data)
+  .axes
+    y: "linear"
+    x:
+      dimension: "time"
+      frame: frameVal
 
 chart.addSeries [
   name: "enemies"
@@ -70,9 +71,23 @@ chart.addSeries [
     x: d.x
     y: d.y + d.z/2
 ]
+
 chart.render()
+
+stackButton = $("<button class='btn btn-mini'>Stack</button>")
+unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
+$("#above-chart").html ''
+$("#above-chart").prepend stackButton
+$("#above-chart").prepend unstackButton
+unstackButton.click (e) ->
+  chart.unstackTransition()
+  e.stopPropagation()
+stackButton.click (e) ->
+  chart.stackTransition()
+  e.stopPropagation()
+
 sl = $("<div>").attr("id", "slider")
-$("#example_view").append sl
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 8
@@ -81,19 +96,3 @@ sl.slider
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
-
-
-stackButton = $("<button class='btn btn-mini'>Stack</button>")
-unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
-$("#example_view").prepend stackButton
-$("#example_view").prepend unstackButton
-
-unstackButton.click((e)->
-  chart.unstackTransition()
-  e.stopPropagation()
-)
-
-stackButton.click((e)->
-  chart.stackTransition()
-  e.stopPropagation()
-)
