@@ -48,6 +48,10 @@ data = [
   period: 1354320000
   actual: 5
   plan: 2
+,
+  period: undefined
+  actual: 3
+  plan: undefined
 ]
 chart = new Tactile.Chart()
   .element($("#example_view")[0]).height(500).width(700).data data

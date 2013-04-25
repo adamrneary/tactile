@@ -35,7 +35,12 @@ data = [
   x: 8
   y: 332
   z: 490
+,
+  x:9
+  y: undefined
+  z: undefined
 ]
+
 chart = new Tactile.Chart()
 tickFormat = (d) ->
   if d > 99 then d / 100 + "★" else "#{d*10}☢"

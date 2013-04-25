@@ -25,7 +25,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
 
     @transition.selectAll("##{@_nameToId()} rect")
-      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y00) and d.y? and d.x? and d.y00?)
+      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => (@graph.y.magnitude Math.abs(d.y)) - 1)
       .attr("y", (d)=> @_barY(d) + 0.5)
       .attr("x", @_barX)
@@ -41,7 +41,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("clip-path", "url(#clip)")
 
     @transition.selectAll("##{@_nameToId()} line")
-      .filter((d) => !isNaN(d.y) and !isNaN(d.x) and !isNaN(d.y00) and d.y? and d.x? and d.y00?)
+      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d)=>@_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i)=>
         gapCount = @graph.series.filter(

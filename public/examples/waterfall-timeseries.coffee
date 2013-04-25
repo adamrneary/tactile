@@ -36,6 +36,11 @@ data = [
   newCustomers: 30
   churnedCustomers: -6
 ,
+  period: undefined
+  customers: null
+  newCustomers: null
+  churnedCustomers: -5
+,
   period: 1343779200
   customers: 138
   newCustomers: 40
