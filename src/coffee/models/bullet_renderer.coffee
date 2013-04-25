@@ -174,7 +174,61 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("y2", render.barHeight/2 - 2)
         .attr("stroke", (d) -> d.color)
         .attr("stroke-width", 2)
+
+
+      # append ticks
+      ticks = d3.select(@).selectAll("g.bullet.ticks").data([scal.ticks(8)])
+      ticks.enter()
+        .append("svg:g")
+        .attr("class", "bullet ticks")
+
+      curEl.selectAll("g.bullet.ticks").each((d, i) ->
+        tick = d3.select(@).selectAll("g.bullet.tick").data(d)
+        tickEnter = tick.enter()
+          .append("svg:g")
+          .attr("class", "bullet tick")
+        tickEnter.append("svg:line")
+          .style("opacity", 1e-6)
+          .attr("y1", render.barHeight/2)
+          .attr("y2", render.barHeight/2 + 4)
+#          .attr("x1", Infinity)
+#          .attr("x2", Infinity)
+
+        tickEnter.append("text")
+          .style("opacity", 1e-6)
+
+        tick.exit().transition()
+          .duration(transitionSpeed / 2)
+          .style("opacity", 1e-6)
+          .remove()
+      )
+      d3.select(@).selectAll("g.bullet.ticks line").data(scal.ticks(8))
+      d3.select(@).selectAll("g.bullet.ticks text").data(scal.ticks(8))
+
+      # draw ticks
+      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.ticks")
+        .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
+
+      curEl.selectAll("##{render._nameToId()} g.bullet.tick line")
+        .duration(transitionSpeed / 2)
+        .attr("x1", (d) -> scal(d))
+        .attr("x2", (d) -> scal(d))
+        .attr("y1", render.barHeight/2)
+        .attr("y2", render.barHeight/2 + 4)
+        .attr("stroke", "#000000")
+        .attr("stroke-width", 1)
+        .style("opacity", 1)
+
+      curEl.selectAll("##{render._nameToId()} g.bullet.tick text")
+        .duration(transitionSpeed / 2)
+        .attr("text-anchor", "middle")
+        .attr("x", (d) -> scal(d))
+        .attr("y", render.barHeight/2 + 4)
+        .attr("dy", "1em")
+        .style("opacity", 1)
+        .text((d)-> d+"")
     )
+
 
   _xOffset: (d, i)=>
     @margin.left
