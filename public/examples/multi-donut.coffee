@@ -42,7 +42,7 @@ data = [
   color6: "#A79380"
 ]
 chart = new Tactile.Chart()
-  .element($("#example_view")[0]).width(1000).height(720).data(data)
+  .element($("#example_view")[0]).data(data).width(680).height(400)
 
 chart.addSeries [
   name: "grapefruit"

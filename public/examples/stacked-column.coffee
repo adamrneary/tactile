@@ -52,7 +52,7 @@ data = [
 ]
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0]).data(data)
-chart.width(680).height 400
+chart.width(680).height(400)
 chart.axes
   y: "linear"
   x:

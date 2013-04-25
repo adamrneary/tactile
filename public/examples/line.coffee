@@ -46,7 +46,7 @@ tickFormat = (d) ->
   if d > 99 then d / 100 + "★" else "#{d*10}☢"
 
 chart.axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
-chart.element($("#example_view")[0]).data(data)
+chart.element($("#example_view")[0]).width(680).height(400).data(data)
 
 chart.addSeries
   name: "enemies"

@@ -36,7 +36,7 @@ data = [
   y: 332
   z: 490
 ]
-chart = new Tactile.Chart().element($("#example_view")[0]).data(data).axes(x:
+chart = new Tactile.Chart().element($("#example_view")[0]).width(680).height(400).data(data).axes(x:
   dimension: "time"
   frame: frameVal
 )

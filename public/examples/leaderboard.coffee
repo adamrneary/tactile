@@ -43,7 +43,7 @@ generateData = (count)=>
 
 
 chart = new Tactile.Chart(unstack: false).element($("#example_view")[0])
-chart.data(generateData(4)).width(400).height(350)
+chart.data(generateData(4)).width(680).height(400)
 
 chart.addSeries [
   name: "enemies"

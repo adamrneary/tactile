@@ -53,7 +53,7 @@ data = [
   plan: null
 ]
 chart = new Tactile.Chart(unstack: false)
-  .element($("#example_view")[0]).data(data).width(680)
+  .element($("#example_view")[0]).data(data).width(680).height(400)
 chart.axes(y: dimension: "linear")
 
 chart.addSeries [

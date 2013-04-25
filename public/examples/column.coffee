@@ -54,7 +54,7 @@ data = [
   plan: undefined
 ]
 chart = new Tactile.Chart()
-  .element($("#example_view")[0]).height(500).width(700).data data
+  .element($("#example_view")[0]).width(680).height(400).data data
 chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
 
 chart.addSeries [
