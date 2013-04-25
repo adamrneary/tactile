@@ -18,6 +18,13 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     height: @barHeight - @margin.top - @margin.bottom
 
     @transition = transition if transition
+
+    oldData = @seriesCanvas().selectAll("g.bullet.bars").data()
+    @series.stack.forEach((d, i) ->
+        d.maxValue = d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value), d3.max(d.markers, (d) -> d.value)])
+        d.maxValueOld = oldData[i]?.maxValue
+    )
+
     bars = @seriesCanvas().selectAll("g.bullet.bars")
       .data(@series.stack)
 
@@ -131,8 +138,13 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     render = @
     @seriesCanvas().selectAll("g.bullet.bars").each((d, i) ->
       scal = d3.scale.linear()
-        .domain([0, d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value), d3.max(d.markers, (d) -> d.value)])])
+        .domain([0, d.maxValue])
         .range([0, render.graph.width() - render.margin.left - render.margin.right])
+
+      scalOld = d3.scale.linear()
+        .domain([0, d.maxValueOld])
+        .range([0, render.graph.width() - render.margin.left - render.margin.right])
+
 
       element = @
       curEl = render.transition.selectAll("##{render._nameToId()} g.bullet.bars")
@@ -191,10 +203,13 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           .style("opacity", 1e-6)
           .attr("y1", render.barHeight/2)
           .attr("y2", render.barHeight/2 + 4)
-#          .attr("x1", Infinity)
-#          .attr("x2", Infinity)
+          .attr("x1", (d) -> scalOld(d))
+          .attr("x2", (d) -> scalOld(d))
 
         tickEnter.append("text")
+          .attr("x", (d) -> scalOld(d))
+          .attr("y", render.barHeight/2 + 4)
+          .attr("dy", "1em")
           .style("opacity", 1e-6)
 
         tick.exit().transition()
@@ -215,7 +230,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("x2", (d) -> scal(d))
         .attr("y1", render.barHeight/2)
         .attr("y2", render.barHeight/2 + 4)
-        .attr("stroke", "#000000")
+        .attr("stroke", "#BBBBBB")
         .attr("stroke-width", 1)
         .style("opacity", 1)
 
