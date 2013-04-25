@@ -119,4 +119,6 @@ class Tactile.RendererBase
 
   _filterNaNs: (d, args...) =>
     _.all args, (attr) ->
-      !isNaN(d[attr]) and d[attr]?
+      switch typeof d[attr]
+        when "number" then !isNaN(d[attr]) and d[attr]?
+        when "string" then d[attr]?

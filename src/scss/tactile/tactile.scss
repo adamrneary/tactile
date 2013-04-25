@@ -606,4 +606,19 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   }
 }
 
+/*Bullet*/
+.bullet {
+  font: 10px sans-serif;
+  &.title {
+    font-size: 14px;
+    font-weight: bold;
+    fill: darken($grey, 40%);
+  }
+
+  &.subtitle {
+    fill: $grey;
+    font-size: 10px;
+  }
+}
+
 

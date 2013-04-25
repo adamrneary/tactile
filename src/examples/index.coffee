@@ -35,6 +35,9 @@ noncartesian = [
   shortLink: "leaderboard"
   title: "Leaderboard"
 ,
+  shortLink: "bullet"
+  title: "Bullet"
+,
   shortLink: "sankey"
   title: "Sankey (future)"
 ,
