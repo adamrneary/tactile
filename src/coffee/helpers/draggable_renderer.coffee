@@ -3,30 +3,31 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
     @active = null
 
     # Remove active class if click anywhere
-    window.addEventListener("click", (()=> # use native js, because method 'on' replace existing handler
-      @active = null
-      @render()
-    ), true)
 
-    window.addEventListener("keyup", (e)=>
+    @graph.onElementChange =>
+      @graph.element().addEventListener("click", (() => # use native js, because method 'on' replace existing handler
+        @active = null
+        @render()
+      ), true)
+
+    window.addEventListener("keyup", (e) =>
       clearInterval(@id) if @id
       @id = null
     )
 
-    window.addEventListener("keydown", (e)=>
-      #console.log("keydown")
+    window.addEventListener("keydown", (e) =>
       switch e.keyCode
         when 37 then @selectPerviousEditableValue()
         when 39 then @selectNextEditableValue()
         when 38
-          increase = ()=>
+          increase = () =>
             @increaseEditableValue()
           unless @id
             @increaseEditableValue()
             @id = setInterval(increase, 200) unless @id
           e.preventDefault()
         when 40
-          decrease = ()=>
+          decrease = () =>
             @decreaseEditableValue()
           unless @id
             @decreaseEditableValue()
