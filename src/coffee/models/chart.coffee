@@ -20,7 +20,7 @@ class Tactile.Chart
   max: undefined
   transitionSpeed: 750
   defaultHeight: 400
-  defaultWidth: 730
+  defaultWidth: 680
   defaultAxesOptions:
     x:
       dimension: "time"
