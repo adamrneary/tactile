@@ -110,7 +110,9 @@ groupButton.click (e) ->
   chart.unstackTransition()
   e.stopPropagation()
 
-sl = $("<div>").attr("id", "slider")
+sl = $("<div>")
+  .attr("id", "slider")
+  .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
   min: 1325376000

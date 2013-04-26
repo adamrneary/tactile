@@ -84,7 +84,9 @@ chart.series.forEach (val, idx) ->
     chart.render()
 $("#above-chart").html legends
 
-sl = $("<div>").attr("id", "slider")
+sl = $("<div>")
+  .attr("id", "slider")
+  .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
   min: 0

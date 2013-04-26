@@ -1466,6 +1466,11 @@ Tactile.DonutRenderer = (function(_super) {
   __extends(DonutRenderer, _super);
 
   function DonutRenderer() {
+    this._setStackedInnerRadius = __bind(this._setStackedInnerRadius, this);
+    this._setStackedOuterRadius = __bind(this._setStackedOuterRadius, this);
+    this._setInnerRadius = __bind(this._setInnerRadius, this);
+    this._setOuterRadius = __bind(this._setOuterRadius, this);
+    this._calculateOuterRadius = __bind(this._calculateOuterRadius, this);
     this._indexInLine = __bind(this._indexInLine, this);
     this._donutsInLine = __bind(this._donutsInLine, this);
     this._donutsCount = __bind(this._donutsCount, this);
@@ -1479,11 +1484,14 @@ Tactile.DonutRenderer = (function(_super) {
     this._donutsPerLine = __bind(this._donutsPerLine, this);
     this.unstackTransition = __bind(this.unstackTransition, this);
     this.stackTransition = __bind(this.stackTransition, this);
-    this.getMaxOuterRadius = __bind(this.getMaxOuterRadius, this);
+    this.getMaxStackedInnerRadius = __bind(this.getMaxStackedInnerRadius, this);
     this.getMaxStackedOuterRadius = __bind(this.getMaxStackedOuterRadius, this);
-    this.getStackedRadius = __bind(this.getStackedRadius, this);
-    this.getOuterRadius = __bind(this.getOuterRadius, this);
+    this.getMaxInnerRadius = __bind(this.getMaxInnerRadius, this);
+    this.getMaxOuterRadius = __bind(this.getMaxOuterRadius, this);
+    this.getStackedInnerRadius = __bind(this.getStackedInnerRadius, this);
+    this.getStackedOuterRadius = __bind(this.getStackedOuterRadius, this);
     this.getInnerRadius = __bind(this.getInnerRadius, this);
+    this.getOuterRadius = __bind(this.getOuterRadius, this);
     this.setupTooltips = __bind(this.setupTooltips, this);
     this.render = __bind(this.render, this);
     this.initialize = __bind(this.initialize, this);    _ref = DonutRenderer.__super__.constructor.apply(this, arguments);
@@ -1496,12 +1504,8 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype.specificDefaults = {
     cartesian: false,
-    minMargin: 20,
-    unstack: true,
-    stackedInnerRadius: 200,
-    stackedOuterRadius: 330,
-    innerRadius: 70,
-    outerRadius: 120
+    minMargin: 10,
+    unstack: true
   };
 
   DonutRenderer.prototype.initialize = function() {
@@ -1525,6 +1529,10 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.render = function(transition, transitionSpeed) {
     var _this = this;
 
+    this._setOuterRadius();
+    this._setInnerRadius();
+    this._setStackedOuterRadius();
+    this._setStackedInnerRadius();
     if (transition) {
       this.transition = transition;
     }
@@ -1532,7 +1540,7 @@ Tactile.DonutRenderer = (function(_super) {
     this.transition.selectAll("#" + (this._nameToId()) + " path").attr("class", "donut-arc").attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attr("d", function(d, i) {
       var arc;
 
-      return arc = d3.svg.arc().startAngle(_this._startAngle(d, i)).endAngle(_this._endAngle(d, i)).innerRadius(_this.unstack ? _this.innerRadius : _this.stackedInnerRadius).outerRadius(_this.unstack ? _this.outerRadius : _this.stackedOuterRadius)();
+      return arc = d3.svg.arc().startAngle(_this._startAngle(d, i)).endAngle(_this._endAngle(d, i)).innerRadius(_this.unstack ? _this.getInnerRadius() : _this.getStackedInnerRadius()).outerRadius(_this.unstack ? _this.getOuterRadius() : _this.getStackedOuterRadius())();
     }).attr("stroke", "white").attr("fill", (function(d) {
       return d.color;
     }), "stroke");
@@ -1556,44 +1564,113 @@ Tactile.DonutRenderer = (function(_super) {
     }
   };
 
-  DonutRenderer.prototype.getInnerRadius = function() {
-    return this.innerRadius;
-  };
-
   DonutRenderer.prototype.getOuterRadius = function() {
     return this.outerRadius;
   };
 
-  DonutRenderer.prototype.getStackedRadius = function() {
+  DonutRenderer.prototype.getInnerRadius = function() {
+    return this.innerRadius;
+  };
+
+  DonutRenderer.prototype.getStackedOuterRadius = function() {
     return this.stackedOuterRadius;
   };
 
-  DonutRenderer.prototype.getMaxStackedOuterRadius = function() {
-    var max, renderers,
-      _this = this;
-
-    max = 0;
-    renderers = this.graph.renderers;
-    _.filter(renderers, function(r) {
-      return r.name === _this.name;
-    }).forEach(function(r) {
-      if (max < r.getStackedRadius()) {
-        return max = r.getStackedRadius();
-      }
-    });
-    return max;
+  DonutRenderer.prototype.getStackedInnerRadius = function() {
+    return this.stackedInnerRadius;
   };
 
   DonutRenderer.prototype.getMaxOuterRadius = function() {
     var max,
       _this = this;
 
-    max = 0;
+    max = void 0;
     this.graph.renderers.filter(function(r) {
       return r.name === _this.name;
     }).forEach(function(r) {
-      if (max < r.outerRadius) {
-        return max = r.outerRadius;
+      var radius;
+
+      radius = r.getOuterRadius();
+      if (!isNaN(radius) && (radius != null)) {
+        if (!isNaN(max) && (max != null)) {
+          if (max < radius) {
+            return max = radius;
+          }
+        } else {
+          return max = radius;
+        }
+      }
+    });
+    return max;
+  };
+
+  DonutRenderer.prototype.getMaxInnerRadius = function() {
+    var max,
+      _this = this;
+
+    max = void 0;
+    this.graph.renderers.filter(function(r) {
+      return r.name === _this.name;
+    }).forEach(function(r) {
+      var radius;
+
+      radius = r.getInnerRadius();
+      if (!isNaN(radius) && (radius != null)) {
+        if (!isNaN(max) && (max != null)) {
+          if (max < radius) {
+            return max = radius;
+          }
+        } else {
+          return max = radius;
+        }
+      }
+    });
+    return max;
+  };
+
+  DonutRenderer.prototype.getMaxStackedOuterRadius = function() {
+    var max,
+      _this = this;
+
+    max = void 0;
+    this.graph.renderers.filter(function(r) {
+      return r.name === _this.name;
+    }).forEach(function(r) {
+      var radius;
+
+      radius = r.getStackedOuterRadius();
+      if (!isNaN(radius) && (radius != null)) {
+        if (!isNaN(max) && (max != null)) {
+          if (max < radius) {
+            return max = radius;
+          }
+        } else {
+          return max = radius;
+        }
+      }
+    });
+    return max;
+  };
+
+  DonutRenderer.prototype.getMaxStackedInnerRadius = function() {
+    var max,
+      _this = this;
+
+    max = void 0;
+    this.graph.renderers.filter(function(r) {
+      return r.name === _this.name;
+    }).forEach(function(r) {
+      var radius;
+
+      radius = r.getStackedInnerRadius();
+      if (!isNaN(radius) && (radius != null)) {
+        if (!isNaN(max) && (max != null)) {
+          if (max < radius) {
+            return max = radius;
+          }
+        } else {
+          return max = radius;
+        }
       }
     });
     return max;
@@ -1617,8 +1694,8 @@ Tactile.DonutRenderer = (function(_super) {
     return transition.selectAll("#" + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
 
-      iInnerRadius = d3.interpolate(_this.innerRadius, _this.stackedInnerRadius);
-      iOuterRadius = d3.interpolate(_this.outerRadius, _this.stackedOuterRadius);
+      iInnerRadius = d3.interpolate(_this.getInnerRadius(), _this.getStackedInnerRadius());
+      iOuterRadius = d3.interpolate(_this.getOuterRadius(), _this.stackedOuterRadius);
       iStartAngle = d3.interpolate(_this._startAngle(d, i, true), _this._startAngle(d, i, false));
       iEndAngle = d3.interpolate(_this._endAngle(d, i, true), _this._endAngle(d, i, false));
       return function(t) {
@@ -1642,8 +1719,8 @@ Tactile.DonutRenderer = (function(_super) {
     transition.selectAll("#" + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
 
-      iInnerRadius = d3.interpolate(_this.stackedInnerRadius, _this.innerRadius);
-      iOuterRadius = d3.interpolate(_this.stackedOuterRadius, _this.outerRadius);
+      iInnerRadius = d3.interpolate(_this.getStackedInnerRadius(), _this.getInnerRadius());
+      iOuterRadius = d3.interpolate(_this.getStackedOuterRadius(), _this.getOuterRadius());
       iStartAngle = d3.interpolate(_this._startAngle(d, i, false), _this._startAngle(d, i, true));
       iEndAngle = d3.interpolate(_this._endAngle(d, i, false), _this._endAngle(d, i, true));
       return function(t) {
@@ -1795,6 +1872,67 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._indexInLine = function() {
     return Math.floor(this._donutIndex() - this._lineIndex() * this._donutsPerLine());
+  };
+
+  DonutRenderer.prototype._calculateOuterRadius = function() {
+    var donutHeig, donutWidth, donutsCount, donutsInLine, height, lastRadius, linesCount, margin, newRadius, width;
+
+    donutsCount = this._donutsCount();
+    width = this.graph.width();
+    height = this.graph.height();
+    margin = this.minMargin;
+    lastRadius = 0;
+    linesCount = 1;
+    while (true) {
+      donutsInLine = Math.ceil(donutsCount / linesCount);
+      donutWidth = ((width - margin) / donutsInLine) - margin;
+      donutHeig = ((height - margin) / linesCount) - margin;
+      newRadius = Math.min(donutWidth, donutHeig);
+      newRadius = newRadius / 2;
+      if (newRadius > lastRadius) {
+        lastRadius = newRadius;
+        linesCount++;
+      } else {
+        break;
+      }
+    }
+    return lastRadius;
+  };
+
+  DonutRenderer.prototype._setOuterRadius = function() {
+    if (isNaN(this.outerRadius) || (this.outerRadius == null)) {
+      this.outerRadius = this.getMaxOuterRadius();
+      if (isNaN(this.outerRadius) || (this.outerRadius == null)) {
+        return this.outerRadius = this._calculateOuterRadius();
+      }
+    }
+  };
+
+  DonutRenderer.prototype._setInnerRadius = function() {
+    if (isNaN(this.innerRadius) || (this.innerRadius == null)) {
+      this.innerRadius = this.getMaxInnerRadius();
+      if (isNaN(this.innerRadius) || (this.innerRadius == null)) {
+        return this.innerRadius = this.getOuterRadius() * 0.6;
+      }
+    }
+  };
+
+  DonutRenderer.prototype._setStackedOuterRadius = function() {
+    if (isNaN(this.stackedOuterRadius) || (this.stackedOuterRadius == null)) {
+      this.stackedOuterRadius = this.getMaxStackedOuterRadius();
+      if (isNaN(this.getMaxStackedOuterRadius()) || (this.stackedOuterRadius == null)) {
+        return this.stackedOuterRadius = (Math.min(this.graph.width(), this.graph.height()) - this.minMargin * 2) / 2;
+      }
+    }
+  };
+
+  DonutRenderer.prototype._setStackedInnerRadius = function() {
+    if (isNaN(this.stackedInnerRadius) || (this.stackedInnerRadius == null)) {
+      this.stackedInnerRadius = this.getMaxStackedInnerRadius();
+      if (isNaN(this.stackedInnerRadius) || (this.stackedInnerRadius == null)) {
+        return this.stackedInnerRadius = this.getStackedOuterRadius() * 0.6;
+      }
+    }
   };
 
   return DonutRenderer;
@@ -2847,7 +2985,7 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultHeight = 400;
 
-  Chart.prototype.defaultWidth = 730;
+  Chart.prototype.defaultWidth = 680;
 
   Chart.prototype.defaultAxesOptions = {
     x: {
