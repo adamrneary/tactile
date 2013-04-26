@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "coffee-script": "~1.6.2",
-    "showcase": "~0.2.9",
+    "showcase": "~0.2.11",
     "kss": "~0.3.6"
   },
   "devDependencies": {
