@@ -1,8 +1,4 @@
-/* UI
--------------------------------------------------------------- */
 // Vertical slider
-// 
-// Styleguide 3.1
 .ui-vertical-slider {
   margin: 0 10px;
   padding: 0;
@@ -60,8 +56,6 @@
 }
 
 // Horizontal slider
-// 
-// Styleguide 3.2
 .ui-horizontal-slider {
   @extend .ui-vertical-slider;
   margin: 0 0 10px 0;
@@ -133,8 +127,6 @@ ul.ui-horizontal-slider {
 }
 
 // Scrollbar
-// 
-// Styleguide 3.3
 .ui-scrollbar {
   @extend .ui-vertical-slider;
 

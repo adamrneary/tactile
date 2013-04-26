@@ -1690,19 +1690,17 @@ ul.icons {
   color: #333333;
   text-decoration: none; }
 
-/* UI
--------------------------------------------------------------- */
-/* line 6, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+/* line 2, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
 .ui-vertical-slider, .ui-horizontal-slider, .ui-scrollbar {
   margin: 0 10px;
   padding: 0;
   list-style: none; }
-  /* line 11, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 7, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-vertical-slider li, .ui-horizontal-slider li, .ui-scrollbar li {
     display: inline-block;
     position: relative;
     margin: 0 20px 0 0; }
-  /* line 17, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 13, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-vertical-slider .ui-slider-track, .ui-horizontal-slider .ui-slider-track, .ui-scrollbar .ui-slider-track, .ui-vertical-slider .ui-slider, .ui-horizontal-slider .ui-slider, .ui-scrollbar .ui-slider {
     width: 6px;
     height: 200px;
@@ -1712,7 +1710,7 @@ ul.icons {
     border: none;
     border-radius: 1em;
     box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.22), 1px 1px 0 rgba(255, 255, 255, 0.7); }
-  /* line 28, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 24, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-vertical-slider .ui-slider-handler, .ui-horizontal-slider .ui-slider-handler, .ui-scrollbar .ui-slider-handler, .ui-vertical-slider .ui-slider-handle, .ui-horizontal-slider .ui-slider-handle, .ui-scrollbar .ui-slider-handle {
     position: absolute;
     bottom: 0;
@@ -1734,7 +1732,7 @@ ul.icons {
     background-image: linear-gradient(top, #f8f8f8, #efefef);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF8F8F8', endColorstr='#FFEFEFEF', GradientType=0)"; }
-    /* line 42, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+    /* line 38, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
     .ui-vertical-slider .ui-slider-handler:hover, .ui-horizontal-slider .ui-slider-handler:hover, .ui-scrollbar .ui-slider-handler:hover, .ui-vertical-slider .ui-slider-handle:hover, .ui-horizontal-slider .ui-slider-handle:hover, .ui-scrollbar .ui-slider-handle:hover {
       background-color: #fbfbfb;
       background-image: -moz-linear-gradient(top, white 0%, #f7f7f7 99%);
@@ -1745,7 +1743,7 @@ ul.icons {
       background-image: linear-gradient(top, #ffffff, #f7f7f7);
       background-repeat: repeat-x;
       filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFF7F7F7', GradientType=0)"; }
-    /* line 46, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+    /* line 42, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
     .ui-vertical-slider .ui-slider-handler:active, .ui-horizontal-slider .ui-slider-handler:active, .ui-scrollbar .ui-slider-handler:active, .ui-vertical-slider .ui-slider-handle:active, .ui-horizontal-slider .ui-slider-handle:active, .ui-scrollbar .ui-slider-handle:active {
       background-color: #fafafa;
       background-image: -moz-linear-gradient(top, #f7f7f7 0%, white 99%);
@@ -1756,7 +1754,7 @@ ul.icons {
       background-image: linear-gradient(top, #f7f7f7, #ffffff);
       background-repeat: repeat-x;
       filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF7F7F7', endColorstr='#FFFFFFFF', GradientType=0)"; }
-  /* line 51, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 47, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-vertical-slider .ui-slider-fill, .ui-horizontal-slider .ui-slider-fill, .ui-scrollbar .ui-slider-fill, .ui-vertical-slider .ui-slider-range, .ui-horizontal-slider .ui-slider-range, .ui-scrollbar .ui-slider-range {
     position: absolute;
     width: 6px;
@@ -1766,14 +1764,14 @@ ul.icons {
     border-radius: 1em;
     box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.22); }
 
-/* line 65, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+/* line 59, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
 .ui-horizontal-slider {
   margin: 0 0 10px 0; }
-  /* line 69, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 63, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider li {
     width: 100%;
     margin: 0 0 15px 0; }
-  /* line 74, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 68, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider .ui-slider-track, .ui-horizontal-slider .ui-slider, .ui-horizontal-slider.ui-widget-content {
     width: 100%;
     height: 6px;
@@ -1783,7 +1781,7 @@ ul.icons {
     border: none;
     border-radius: 1em;
     box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.22), 1px 1px 0 rgba(255, 255, 255, 0.7); }
-  /* line 85, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 79, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider .ui-slider-handler, .ui-horizontal-slider .ui-slider-handle {
     bottom: -9px;
     width: 16px;
@@ -1793,11 +1791,11 @@ ul.icons {
     background: transparent url(/images/styleguide/sprite_air.png) -80px -10px no-repeat !important;
     box-shadow: none;
     border-radius: 0; }
-  /* line 96, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 90, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider .ui-slider-handler {
     bottom: 4px;
     margin-left: -3px; }
-  /* line 101, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 95, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider .ui-slider-fill, .ui-horizontal-slider .ui-slider-range {
     width: auto;
     height: 6px;
@@ -1810,15 +1808,15 @@ ul.icons {
     background-image: linear-gradient(top, #8a8a8a, #707070);
     background-repeat: repeat-x;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF8A8A8A', endColorstr='#FF707070', GradientType=0)"; }
-  /* line 108, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 102, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider .ui-slider-title {
     margin: 0 0 7px 0;
     text-align: center;
     text-shadow: 1px solid rgba(255, 255, 255, 0.9); }
-    /* line 113, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+    /* line 107, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
     .ui-horizontal-slider .ui-slider-title em {
       padding: 0 3px; }
-  /* line 119, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 113, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-horizontal-slider.alt-handler .ui-slider-handler {
     bottom: -6px;
     width: 16px;
@@ -1828,10 +1826,10 @@ ul.icons {
     box-shadow: none;
     border-radius: 0; }
 
-/* line 141, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+/* line 133, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
 .ui-scrollbar .ui-slider-track {
   width: 7px; }
-/* line 145, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+/* line 137, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
 .ui-scrollbar .ui-slider-handler {
   width: 10px;
   height: 25px;
@@ -1847,11 +1845,11 @@ ul.icons {
   background-image: linear-gradient(top, #19affe, #0499e4);
   background-repeat: repeat-x;
   filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF19AFFE', endColorstr='#FF0499E4', GradientType=0)"; }
-  /* line 154, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+  /* line 146, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
   .ui-scrollbar .ui-slider-handler:hover, .ui-scrollbar .ui-slider-handler:active {
     background: #07a9fb !important; }
 
-/* line 173, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
+/* line 165, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/styleguide/_sliders.scss */
 .ui-vertical-slider .ui-slider-handler:hover, .ui-horizontal-slider .ui-slider-handler:hover, .ui-scrollbar .ui-slider-handler:hover,
 .ui-horizontal-slider .ui-slider-handler:hover,
 .ui-scrollbar .ui-slider-handler:hover,
