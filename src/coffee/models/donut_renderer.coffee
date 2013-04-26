@@ -7,8 +7,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     unstack: true
     stackedInnerRadius: 200
     stackedOuterRadius: 330
-    innerRadius: 70
-    outerRadius: 120
+#    innerRadius: 70
+#    outerRadius: 120
 
   initialize: =>
     @stackedInnerRadius = @series.stackedInnerRadius unless @series.stackedInnerRadius is undefined
@@ -18,6 +18,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     @stackedIndex = @series.stackedIndex unless @series.stackedIndex is undefined
 
   render: (transition, transitionSpeed) =>
+    @_setOuterRadius()
+    @_setInnerRadius()
     @transition = transition if transition
     @seriesCanvas().selectAll("donut-arc")
       .data(@series.stack).enter().append("path")
@@ -29,8 +31,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
         arc = d3.svg.arc()
           .startAngle(@_startAngle(d, i))
           .endAngle(@_endAngle(d, i))
-          .innerRadius(if @unstack then @innerRadius else @stackedInnerRadius)
-          .outerRadius(if @unstack then @outerRadius else @stackedOuterRadius)()
+          .innerRadius(if @unstack then @getInnerRadius() else @getStackedInnerRadius())
+          .outerRadius(if @unstack then @getOuterRadius() else @getStackedOuterRadius())()
       )
       .attr("stroke", "white")
       .attr("fill", ((d) -> d.color), "stroke")
@@ -56,30 +58,61 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
         gravity: "right"
         displacement: [-10, 0]# because tooltip have left margin 10
 
-  getInnerRadius: =>
-    @innerRadius
-
   getOuterRadius: =>
     @outerRadius
 
-  getStackedRadius: =>
+  getInnerRadius: =>
+    @innerRadius
+
+  getStackedOuterRadius: =>
     @stackedOuterRadius
+
+  getStackedInnerRadius: =>
+    @stackedInnerRadius
+
+  getMaxOuterRadius: =>
+    max = undefined
+    @graph.renderers.filter(
+      (r) =>
+        r.name == @name
+    ).forEach((r) =>
+      radius = r.getOuterRadius()
+      if !isNaN(radius) and radius?
+        if !isNaN(max) and max?
+          max = radius if max < radius
+        else
+          max = radius
+    )
+    max
+
+  getMaxInnerRadius: =>
+    max = undefined
+    @graph.renderers.filter(
+      (r) =>
+        r.name == @name
+    ).forEach((r) =>
+      radius = r.getInnerRadius()
+      if !isNaN(radius) and radius?
+        if !isNaN(max) and max?
+          max = radius if max < radius
+        else
+          max = radius
+    )
+    max
 
   getMaxStackedOuterRadius: =>
     max = 0;
     renderers = @graph.renderers
     _.filter(renderers,(r) => r.name == @name).forEach((r) =>
-      max = r.getStackedRadius() if max < r.getStackedRadius()
+      max = r.getStackedOuterRadius() if max < r.getStackedOuterRadius()
     )
     max
 
-  getMaxOuterRadius: =>
+  getMaxStackedInnerRadius: =>
     max = 0;
-    @graph.renderers.filter(
-      (r) =>
-        r.name == @name
-    ).forEach((r) =>
-      max = r.outerRadius if max < r.outerRadius
+    renderers = @graph.renderers
+    _.filter(renderers,(r) => r.name == @name).forEach((r) =>
+      max = r.getStackedOuterRadius() if max < r.getStackedOuterRadius()
     )
     max
 
@@ -111,8 +144,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
       .attrTween("d", (d, i) =>
-        iInnerRadius = d3.interpolate(@innerRadius, @stackedInnerRadius)
-        iOuterRadius = d3.interpolate(@outerRadius, @stackedOuterRadius)
+        iInnerRadius = d3.interpolate(@getInnerRadius(), @getStackedInnerRadius())
+        iOuterRadius = d3.interpolate(@getOuterRadius(), @stackedOuterRadius)
         iStartAngle = d3.interpolate(@_startAngle(d, i, true), @_startAngle(d, i, false))
         iEndAngle = d3.interpolate(@_endAngle(d, i, true), @_endAngle(d, i, false))
         (t) =>
@@ -137,8 +170,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{xOffset},#{yOffset})")
       .attrTween("d", (d, i) =>
-        iInnerRadius = d3.interpolate(@stackedInnerRadius, @innerRadius)
-        iOuterRadius = d3.interpolate(@stackedOuterRadius, @outerRadius)
+        iInnerRadius = d3.interpolate(@getStackedInnerRadius(), @getInnerRadius())
+        iOuterRadius = d3.interpolate(@getStackedOuterRadius(), @getOuterRadius())
         iStartAngle = d3.interpolate(@_startAngle(d, i, false), @_startAngle(d, i, true))
         iEndAngle = d3.interpolate(@_endAngle(d, i, false), @_endAngle(d, i, true))
         (t) =>
@@ -269,3 +302,47 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
   _indexInLine: =>
     Math.floor @_donutIndex() - @_lineIndex() * @_donutsPerLine()
+
+  _calculateOuterRadius: =>
+    donutsCount = @_donutsCount()
+    width = @graph.width()
+    height = @graph.height()
+    margin = @minMargin
+    lastRadius = 0
+    linesCount = 1
+
+    loop
+      donutsInLine = Math.ceil donutsCount / linesCount
+      donutWidth = ((width - margin) / donutsInLine) - margin
+      donutHeig  = ((height - margin) / linesCount) - margin
+      newRadius = Math.min(donutWidth, donutHeig)
+      newRadius = newRadius / 2
+      if newRadius > lastRadius
+        lastRadius = newRadius
+        linesCount++
+      else
+        break
+
+    lastRadius
+
+
+  _setInnerRadius: =>
+    if !isNaN(@innerRadius) and @innerRadius?
+      @innerRadius
+    else
+      @innerRadius = @getMaxInnerRadius()
+      if !isNaN(@innerRadius) and @innerRadius?
+        @innerRadius
+      else
+        @innerRadius = @getOuterRadius() * 0.6
+
+
+  _setOuterRadius: =>
+    if !isNaN(@outerRadius) and @outerRadius?
+      @outerRadius
+    else
+      @outerRadius = @getMaxOuterRadius()
+      if !isNaN(@outerRadius) and @outerRadius?
+        @outerRadius
+      else
+        @outerRadius = @_calculateOuterRadius()
