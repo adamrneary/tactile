@@ -23,6 +23,8 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
 
   render: (transition)=>
+    @checkData(@series.stack)
+
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)
@@ -72,3 +74,10 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+
+  checkData: (data)=>
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.x, "line renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "line renderer data[#{i}].y")
+    )
+

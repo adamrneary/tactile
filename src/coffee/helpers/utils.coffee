@@ -12,6 +12,10 @@ class Tactile.Utils
     throw new Error("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
     throw new Error("Tactile error: '#{strName}' empty") unless  $.trim(str)
 
+  checkNumber: (num, numName) ->
+    throw new Error("Tactile error: '#{numName}' invalid type") if typeof num isnt "number"
+
+
 
 
 
