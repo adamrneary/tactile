@@ -115,6 +115,7 @@ class Tactile.RendererBase
 
   _nameToId: ->
     #TODO: handle empty name
+    @utils.checkString(@series.name, "series name")
     @series.name?.replace(/[^\w]/g, '-').toLowerCase()
 
   _filterNaNs: (d, args...) =>
