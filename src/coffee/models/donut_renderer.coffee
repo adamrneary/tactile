@@ -14,6 +14,8 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     @stackedIndex = @series.stackedIndex unless @series.stackedIndex is undefined
 
   render: (transition, transitionSpeed) =>
+    @_checkData()
+
     @_setOuterRadius()
     @_setInnerRadius()
     @_setStackedOuterRadius()
@@ -238,7 +240,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     unstack = @unstack if unstack is undefined
     dataAmount = 0
     @series.stack.forEach((d) =>
-      dataAmount += d.val if !isNaN(d.val) and d.val?
+      dataAmount += d.value if !isNaN(d.value) and d.value?
     )
 
     if unstack
@@ -254,7 +256,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
     k = 0
     while k < i
-      arcStartAngle += scal(@series.stack[k].val) if !isNaN(@series.stack[k].val) and @series.stack[k].val?
+      arcStartAngle += scal(@series.stack[k].value) if !isNaN(@series.stack[k].value) and @series.stack[k].value?
       k++
     arcStartAngle
 
@@ -262,7 +264,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     unstack = @unstack if unstack is undefined
     dataAmount = 0
     @series.stack.forEach((d) =>
-      dataAmount += d.val if !isNaN(d.val) and d.val?
+      dataAmount += d.value if !isNaN(d.value) and d.value?
     )
 
     if unstack
@@ -278,7 +280,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
     k = 0
     while k <= i
-      arcEndAngle += scal(@series.stack[k].val) if !isNaN(@series.stack[k].val) and @series.stack[k].val?
+      arcEndAngle += scal(@series.stack[k].value) if !isNaN(@series.stack[k].value) and @series.stack[k].value?
       k++
     arcEndAngle
 
@@ -361,3 +363,11 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
       @stackedInnerRadius = @getMaxStackedInnerRadius()
       if isNaN(@stackedInnerRadius) or !@stackedInnerRadius?
         @stackedInnerRadius = @getStackedOuterRadius() * 0.6
+
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.value, "donut renderer data[#{i}].value")
+      @utils.checkString(d.color, "donut renderer data[#{i}].color")
+    )
+
