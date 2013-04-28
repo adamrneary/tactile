@@ -34,6 +34,8 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     .tension @tension
 
   render: (transition)->
+    @checkData(@series.stack)
+
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)
@@ -97,3 +99,10 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @unstack = true
     @graph.discoverRange(@)
     @render(transition)
+
+  checkData: (data)=>
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.x, "area renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "area renderer data[#{i}].y")
+    )
+

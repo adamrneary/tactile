@@ -9,12 +9,14 @@ class Tactile.Utils
       arguments[0]
 
   checkString: (str, strName) ->
-    throw new Error("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
-    throw new Error("Tactile error: '#{strName}' empty") unless  $.trim(str)
+    console.error("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
+    console.error("Tactile error: '#{strName}' empty") unless  $.trim(str)
+#    throw new Error("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
+#    throw new Error("Tactile error: '#{strName}' empty") unless  $.trim(str)
 
   checkNumber: (num, numName) ->
-    throw new Error("Tactile error: '#{numName}' invalid type") if typeof num isnt "number"
-
+#    throw new Error("Tactile error: '#{numName}' invalid type") if typeof num isnt "number"
+    console.error("Tactile error: '#{numName}' invalid type") if typeof num isnt "number"
 
 
 
