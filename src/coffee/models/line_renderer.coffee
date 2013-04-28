@@ -74,10 +74,3 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
-
-  _checkData: ()=>
-    data = @series.stack
-    data.forEach((d, i) =>
-      @utils.checkNumber(d.x, "area renderer data[#{i}].x")
-      @utils.checkNumber(d.y, "area renderer data[#{i}].y")
-    )

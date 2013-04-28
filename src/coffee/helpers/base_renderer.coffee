@@ -59,6 +59,8 @@ class Tactile.RendererBase
     @graph[@series.yAxis]
 
   render: (transition)=>
+    @_checkData()
+
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
@@ -123,3 +125,10 @@ class Tactile.RendererBase
       switch typeof d[attr]
         when "number" then !isNaN(d[attr]) and d[attr]?
         when "string" then d[attr]?
+
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.x, "area renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "area renderer data[#{i}].y")
+    )
