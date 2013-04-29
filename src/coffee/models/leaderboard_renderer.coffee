@@ -9,6 +9,8 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     @format = @series.format unless @series.format is undefined
 
   render: (transition, transitionSpeed)->
+    @_checkData()
+
     @transition = transition if transition
     bars = @seriesCanvas().selectAll("g.leaderboard.bars")
       .data(@series.stack)
@@ -162,4 +164,12 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     else
       i
 
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkString(d.color, "leaderboard renderer data[#{i}].label")
+      @utils.checkNumber(d.value, "leaderboard renderer data[#{i}].value")
+      @utils.checkNumber(d.change, "leaderboard renderer data[#{i}].change")
+      @utils.checkNumber(d.barPosition, "leaderboard renderer data[#{i}].barPosition")
+    )
 
