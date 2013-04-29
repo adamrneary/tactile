@@ -1,6 +1,9 @@
 class Tactile.AxisLinear
   constructor: (options) ->
+    @utils = new Tactile.Utils()
     @options = options
+    @_checkOptions()
+
     @graph = options.graph
     @options.axis ?= 'x'
     @horizontal = @options.axis == 'x'
@@ -47,3 +50,18 @@ class Tactile.AxisLinear
 
       @ticks ?= Math.floor(@graph.height() / pixelsPerTick)
 
+  _checkOptions: ()=>
+    if @options.ticksTreatment?
+      @utils.checkString(@options.ticksTreatment, "AxisLinear options.ticksTreatment")
+
+    if @options.tickSize?
+      @utils.checkNumber(@options.tickSize, "AxisLinear options.tickSize")
+
+    if @options.tickFormat?
+      @utils.checkFunction(@options.tickFormat, "AxisLinear options.tickFormat")
+
+    if @options.frame?
+      if @utils.checkArray(@options.frame, "AxisLinear options.frame")
+        @options.frame.forEach((d, i)=>
+          @utils.checkNumber(d, "AxisLinear options.frame[#{i}]") if d?
+        )

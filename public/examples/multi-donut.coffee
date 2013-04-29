@@ -52,8 +52,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color1
-      val: d.val1
-      label: d.label
+      value: d.val1
   ,
     name: "kiwis"
     renderer: "donut"
@@ -61,8 +60,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color2
-      val: d.val2
-      label: d.label
+      value: d.val2
   ,
     name: "cherries"
     renderer: "donut"
@@ -70,8 +68,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color3
-      val: d.val3
-      label: d.label
+      value: d.val3
   ,
     name: "oranges"
     renderer: "donut"
@@ -79,8 +76,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color4
-      val: d.val4
-      label: d.label
+      value: d.val4
   ,
     name: "apples"
     renderer: "donut"
@@ -88,8 +84,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color5
-      val: d.val5
-      label: d.label
+      value: d.val5
   ,
     name: "peaches"
     renderer: "donut"
@@ -97,8 +92,7 @@ chart = new Tactile.Chart()
       d.label + " " + d.val
     dataTransform: (d) ->
       color: d.color6
-      val: d.val6
-      label: d.label
+      value: d.val6
   ]
 
 chart.render()

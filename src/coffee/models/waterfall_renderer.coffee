@@ -10,6 +10,8 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     @gapSize = options.gapSize || @gapSize
 
   render: (transition)=>
+    @_checkData()
+
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0

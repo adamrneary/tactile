@@ -14,6 +14,8 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     @format = @series.format unless @series.format is undefined
 
   render: (transition, transitionSpeed) ->
+    @_checkData()
+
     width: @margin.width - @margin.left - @margin.right
     height: @barHeight - @margin.top - @margin.bottom
 
@@ -257,3 +259,25 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
       d.index
     else
       i
+
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkString(d.title, "#{@name} renderer data[#{i}].title")
+      @utils.checkString(d.subtitle, "#{@name} renderer data[#{i}].subtitle")
+      if @utils.checkArray(d.ranges, "#{@name} renderer data[#{i}].ranges")
+        d.ranges.forEach((r, j)=>
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].ranges[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].ranges[#{j}].color")
+        )
+      if @utils.checkArray(d.measures, "#{@name} renderer data[#{i}].measures")
+        d.measures.forEach((r, j)=>
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].measures[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].measures[#{j}].color")
+        )
+      if @utils.checkArray(d.markers, "#{@name} renderer data[#{i}].markers")
+        d.markers.forEach((r, j)=>
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].markers[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].markers[#{j}].color")
+        )
+    )

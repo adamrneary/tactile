@@ -6,6 +6,7 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     oldValueAngle: 0
 
   render: (transition, transitionSpeed)->
+    @_checkData()
     @transition = transition if transition
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
     ringInset = 0.300
@@ -162,3 +163,11 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     @max = @series.stack[0].max
 
     [@min, @max]
+
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.min, "#{@name} renderer data[#{i}].min")
+      @utils.checkNumber(d.max, "#{@name} renderer data[#{i}].max")
+      @utils.checkNumber(d.value, "#{@name} renderer data[#{i}].value")
+    )

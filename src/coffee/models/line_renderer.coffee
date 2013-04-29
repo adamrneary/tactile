@@ -23,6 +23,8 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
 
   render: (transition)=>
+    @_checkData()
+
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)
