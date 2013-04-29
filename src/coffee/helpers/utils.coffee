@@ -37,4 +37,18 @@ class Tactile.Utils
 
     check
 
+  checkFunction: (func, funcName) ->
+    check = true
+    if !_.isFunction(func)
+      console.error("Tactile error: '#{funcName}' invalid type")
+      check = false
 
+    check
+
+  checkObject: (obj, objName) ->
+    check = true
+    if typeof str isnt "object"
+      console.error("Tactile error: '#{objName}' invalid type")
+      check = false
+
+    check
