@@ -41,9 +41,6 @@ noncartesian = [
     shortLink: "bullet",
     title: "Bullet"
   }, {
-    shortLink: "sankey",
-    title: "Sankey (future)"
-  }, {
     shortLink: "donut",
     title: "Donut"
   }, {
@@ -54,20 +51,20 @@ noncartesian = [
 
 components = [
   {
-    shortLink: "dual-scaled",
-    title: "Secondary y-axis"
-  }, {
     shortLink: "sliding-timeframe",
     title: "Sliding timeframe"
   }, {
-    shortLink: "filter",
-    title: "Filters (future)"
+    shortLink: "chart-update",
+    title: "Real time updates"
   }, {
     shortLink: "legend",
-    title: "Legend"
+    title: "Interactive legend"
   }, {
-    shortLink: "chart-update",
-    title: "Chart update"
+    shortLink: "dual-scaled",
+    title: "Secondary y-axis"
+  }, {
+    shortLink: "filter",
+    title: "Filters (future)"
   }, {
     shortLink: "stacked-column-big-data",
     title: "Stacked column big data"
