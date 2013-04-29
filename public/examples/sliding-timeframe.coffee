@@ -87,7 +87,7 @@ chart = new Tactile.Chart(grid: true)
 
 chart.render()
 
-$("#above-chart").html
+$("#above-chart").html ''
 
 sl = $("<div>")
   .attr("id", "slider")
