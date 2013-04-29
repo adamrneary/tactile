@@ -63,5 +63,5 @@ class Tactile.AxisLinear
     if @options.frame?
       if @utils.checkArray(@options.frame, "AxisLinear options.frame")
         @options.frame.forEach((d, i)=>
-          @utils.checkNumber(d, "AxisLinear options.frame[#{i}]")
+          @utils.checkNumber(d, "AxisLinear options.frame[#{i}]") if d?
         )

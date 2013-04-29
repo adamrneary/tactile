@@ -82,5 +82,5 @@ class Tactile.AxisTime
     if @options.frame?
       if @utils.checkArray(@options.frame, "AxisTime options.frame")
         @options.frame.forEach((d, i)=>
-          @utils.checkNumber(d, "AxisTime options.frame[#{i}]")
+          @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
         )
