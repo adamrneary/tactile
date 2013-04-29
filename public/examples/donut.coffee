@@ -32,13 +32,11 @@ chart = new Tactile.Chart()
   .element($("#example_view")[0])
   .data(data)
   .addSeries
-    name: "donut"
+    name: "optional desc here"
     renderer: "donut"
     tooltip: (d) ->
       d.label + " " + d.val
     color: "#c05020"
-    innerRadius: 50
-    outerRadius: 70
 
 chart.render()
 
