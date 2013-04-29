@@ -167,7 +167,7 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkNumber(d.min, "gauge renderer data[#{i}].min")
-      @utils.checkNumber(d.max, "gauge renderer data[#{i}].max")
-      @utils.checkNumber(d.value, "gauge renderer data[#{i}].value")
+      @utils.checkNumber(d.min, "#{@name} renderer data[#{i}].min")
+      @utils.checkNumber(d.max, "#{@name} renderer data[#{i}].max")
+      @utils.checkNumber(d.value, "#{@name} renderer data[#{i}].value")
     )

@@ -263,21 +263,21 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkString(d.title, "bullet renderer data[#{i}].title")
-      @utils.checkString(d.subtitle, "bullet renderer data[#{i}].subtitle")
-      if @utils.checkArray(d.ranges, "bullet renderer data[#{i}].ranges")
+      @utils.checkString(d.title, "#{@name} renderer data[#{i}].title")
+      @utils.checkString(d.subtitle, "#{@name} renderer data[#{i}].subtitle")
+      if @utils.checkArray(d.ranges, "#{@name} renderer data[#{i}].ranges")
         d.ranges.forEach((r, j)=>
-          @utils.checkNumber(r.value, "bullet renderer data[#{i}].ranges[#{j}].value")
-          @utils.checkString(r.color, "bullet renderer data[#{i}].ranges[#{j}].color")
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].ranges[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].ranges[#{j}].color")
         )
-      if @utils.checkArray(d.measures, "bullet renderer data[#{i}].measures")
+      if @utils.checkArray(d.measures, "#{@name} renderer data[#{i}].measures")
         d.measures.forEach((r, j)=>
-          @utils.checkNumber(r.value, "bullet renderer data[#{i}].measures[#{j}].value")
-          @utils.checkString(r.color, "bullet renderer data[#{i}].measures[#{j}].color")
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].measures[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].measures[#{j}].color")
         )
-      if @utils.checkArray(d.markers, "bullet renderer data[#{i}].markers")
+      if @utils.checkArray(d.markers, "#{@name} renderer data[#{i}].markers")
         d.markers.forEach((r, j)=>
-          @utils.checkNumber(r.value, "bullet renderer data[#{i}].markers[#{j}].value")
-          @utils.checkString(r.color, "bullet renderer data[#{i}].markers[#{j}].color")
+          @utils.checkNumber(r.value, "#{@name} renderer data[#{i}].markers[#{j}].value")
+          @utils.checkString(r.color, "#{@name} renderer data[#{i}].markers[#{j}].color")
         )
     )

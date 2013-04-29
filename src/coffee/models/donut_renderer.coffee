@@ -367,7 +367,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkNumber(d.value, "donut renderer data[#{i}].value")
-      @utils.checkString(d.color, "donut renderer data[#{i}].color")
+      @utils.checkNumber(d.value, "#{@name} renderer data[#{i}].value")
+      @utils.checkString(d.color, "#{@name} renderer data[#{i}].color")
     )
 

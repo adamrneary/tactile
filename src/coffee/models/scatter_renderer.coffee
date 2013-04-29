@@ -39,7 +39,7 @@ class Tactile.ScatterRenderer extends Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkNumber(d.x, "scatter renderer data[#{i}].x")
-      @utils.checkNumber(d.y, "scatter renderer data[#{i}].y")
-      @utils.checkNumber(d.r, "scatter renderer data[#{i}].r")
+      @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
+      @utils.checkNumber(d.r, "#{@name} renderer data[#{i}].r")
     )

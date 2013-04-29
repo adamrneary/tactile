@@ -129,6 +129,6 @@ class Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkNumber(d.x, "area renderer data[#{i}].x")
-      @utils.checkNumber(d.y, "area renderer data[#{i}].y")
+      @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
     )
