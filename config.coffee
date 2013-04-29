@@ -15,4 +15,3 @@ exports.config = defaultConfig
     stylesheets:
       joinTo:
         'assets/tactile.css': path('src/scss/tactile/*')
-        'assets/styleguide.css': path('src/scss/styleguide/*')
