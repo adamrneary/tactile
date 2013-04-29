@@ -85,6 +85,7 @@ chart = new Tactile.Chart()
 
 chart.render()
 
+$("#above-chart").html ''
 $("#below-chart").html ''
 
 sl = $("<div>")

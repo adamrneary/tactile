@@ -99,10 +99,14 @@ chart.render()
 # interactions
 
 groupButton = $("<button class='btn btn-mini'>Grouped</button>")
-stackButton = $("<button class='btn btn-mini' style='margin-left: 10px'>Stacked</button>")
+stackButton = $("<button class='btn btn-mini'>Stacked</button>")
+buttonGroup = $("<div class='btn-group'></div>")
+buttonGroup.prepend groupButton 
+buttonGroup.prepend stackButton 
+
 $("#above-chart").html ''
-$("#above-chart").prepend groupButton
-$("#above-chart").prepend stackButton
+$("#above-chart").prepend buttonGroup
+
 stackButton.click (e) ->
   chart.stackTransition()
   e.stopPropagation()

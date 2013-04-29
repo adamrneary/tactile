@@ -76,9 +76,12 @@ chart.render()
 
 stackButton = $("<button class='btn btn-mini'>Stack</button>")
 unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
+buttonGroup = $("<div class='btn-group'></div>")
+buttonGroup.prepend stackButton
+buttonGroup.prepend unstackButton
+
 $("#above-chart").html ''
-$("#above-chart").prepend stackButton
-$("#above-chart").prepend unstackButton
+$("#above-chart").prepend buttonGroup
 unstackButton.click (e) ->
   chart.unstackTransition()
   e.stopPropagation()

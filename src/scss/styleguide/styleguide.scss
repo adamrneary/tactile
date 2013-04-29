@@ -4,6 +4,7 @@
 @import "typography";
 @import "icons";
 @import "navigation";
+@import "buttons";
 @import "sliders";
 @import "kss";
 @import "github";
@@ -116,4 +117,8 @@ body {
   background-image: linear-gradient(to bottom, white, #f9f9f9);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFF9F9F9', GradientType=0);
+}
+
+#above-chart {
+  min-height: 60px;
 }
