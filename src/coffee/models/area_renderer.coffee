@@ -34,6 +34,8 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     .tension @tension
 
   render: (transition)->
+    @_checkData(@series.stack)
+
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)

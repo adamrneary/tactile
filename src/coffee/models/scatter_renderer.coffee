@@ -6,6 +6,7 @@ class Tactile.ScatterRenderer extends Tactile.RendererBase
     stroke: false
 
   render: (transition)->
+    @_checkData()
     @transition = transition if transition
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
@@ -35,3 +36,10 @@ class Tactile.ScatterRenderer extends Tactile.RendererBase
         displacement: [-10, 0]# because tooltip have left margin 10
     circ.exit().remove()
 
+  _checkData: ()=>
+    data = @series.stack
+    data.forEach((d, i) =>
+      @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
+      @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
+      @utils.checkNumber(d.r, "#{@name} renderer data[#{i}].r")
+    )

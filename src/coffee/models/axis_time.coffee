@@ -1,12 +1,16 @@
 class Tactile.AxisTime
-  constructor: (args) ->
-    @graph = args.graph
-    @ticksTreatment = args.ticksTreatment or "plain"
-    @fixedTimeUnit = args.timeUnit
-    @marginTop = args.paddingBottom or 5
+  constructor: (options) ->
+    @utils = new Tactile.Utils()
+    @options = options
+    @_checkOptions()
+
+    @graph = options.graph
+    @ticksTreatment = options.ticksTreatment or "plain"
+    @fixedTimeUnit = options.timeUnit
+    @marginTop = options.paddingBottom or 5
     @time = new Tactile.FixturesTime()
-    @grid = args.grid
-    @frame = args.frame
+    @grid = options.grid
+    @frame = options.frame
 
   appropriateTimeUnit: ->
     unit = undefined
@@ -65,5 +69,18 @@ class Tactile.AxisTime
 
     ticks.exit().remove()
 
+  _checkOptions: ()=>
+    if @options.ticksTreatment?
+      @utils.checkString(@options.ticksTreatment, "AxisTime options.ticksTreatment")
 
+    if @options.timeUnit?
+      @utils.checkNumber(@options.timeUnit, "AxisTime options.timeUnit")
 
+    if @options.paddingBottom?
+      @utils.checkNumber(@options.paddingBottom, "AxisTime options.paddingBottom")
+
+    if @options.frame?
+      if @utils.checkArray(@options.frame, "AxisTime options.frame")
+        @options.frame.forEach((d, i)=>
+          @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
+        )
