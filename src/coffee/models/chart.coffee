@@ -111,6 +111,8 @@ class Tactile.Chart
 
   render: (transitionSpeed)->
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
+      @vis?.remove()
+      @draggableVis?.remove()
       return
     @initSeriesStackData()
     @_setupCanvas()
