@@ -345,18 +345,23 @@ class Tactile.Chart
       .attr('width', @outerWidth)
       .attr('height', @outerHeight)
 
-    @vis = @_findOrAppend(what: 'g', in: @svg)
+    vis = @_findOrAppend(what: 'g', in: @svg)
       .attr("transform", "translate(#{@margin.left},#{@margin.top})")
 
-    @vis = @_findOrAppend(what: 'g', in: @vis)
+    vis = @_findOrAppend(what: 'g', in: vis)
       .attr("class", "outer-canvas")
       .attr("width", @marginedWidth)
       .attr("height", @marginedHeight)
 
     # this is the canvas on which all data should be drawn
-    @vis = @_findOrAppend(what: 'g', in: @vis)
+    @vis = @_findOrAppend(what: 'g', in: vis, selector: 'g.inner-canvas')
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
+
+    # this is the canvas on which all draggable data should be drawn
+    @draggableVis = @_findOrAppend(what: 'g', in: vis, selector: 'g.draggable-canvas')
+      .attr("transform", "translate(#{@padding.left},#{@padding.top})")
+      .attr("class", "draggable-canvas")
 
     # Add the default clip path.
     clip = @_findOrAppend(what: 'clipPath', selector: '#clip', in: @vis)

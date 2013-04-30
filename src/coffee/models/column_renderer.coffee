@@ -20,7 +20,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
-      @seriesCanvas().selectAll('circle').data(@series.stack).remove()
+      @seriesDraggableCanvas().selectAll('circle').data(@series.stack).remove()
       return
 
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
@@ -30,7 +30,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .on("click", @setActive)# set active element if click on it
 
 
-    @transition.selectAll("##{@_nameToId()} rect")
+    @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
@@ -51,12 +51,12 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     nodes.exit().remove()
 
     nodes.on 'mouseover.show-dragging-circle', (d, i, el) =>
-      @seriesCanvas().selectAll('circle:not(.active)')
+      @seriesDraggableCanvas().selectAll('circle:not(.active)')
         .style('display', 'none')
-      circ = @seriesCanvas().select("#node-#{i}-#{d.x}")
+      circ = @seriesDraggableCanvas().selectAll("#node-#{i}-#{d.x}")
       circ.style('display', '')
 
-    circ = @seriesCanvas().selectAll('circle')
+    circ = @seriesDraggableCanvas().selectAll('circle')
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
@@ -67,7 +67,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode()
 
 
-    @transition.selectAll("##{@_nameToId()} circle")
+    @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d))
@@ -124,24 +124,24 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
     @graph.discoverRange(@)
-    transition.selectAll("##{@_nameToId()} rect")
+    transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .duration(transitionSpeed/2)
       .attr("y", @_barY)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
 
-    transition.selectAll("##{@_nameToId()} circle")
+    transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .duration(transitionSpeed/2)
       .attr("cy", @_barY)
 
-    transition.selectAll("##{@_nameToId()} rect")
+    transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .delay(transitionSpeed/2)
       .attr("width", @_seriesBarWidth())
       .attr("x", @_barX)
 
-    transition.selectAll("##{@_nameToId()} circle")
+    transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .delay(transitionSpeed/2)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
@@ -151,24 +151,24 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
     @graph.discoverRange(@)
-    transition.selectAll("##{@_nameToId()} rect")
+    transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .duration(transitionSpeed/2)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
 
-    transition.selectAll("##{@_nameToId()} circle")
+    transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .duration(transitionSpeed/2)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
 
-    transition.selectAll("##{@_nameToId()} rect")
+    transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .delay(transitionSpeed/2)
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", @_barY)
 
-    transition.selectAll("##{@_nameToId()} circle")
+    transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .delay(transitionSpeed/2)
       .attr("cy", @_barY)

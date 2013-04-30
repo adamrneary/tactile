@@ -86,13 +86,13 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
       .endAngle( @graph._deg2rad(minAngle + angleRange) )
 
     # main arc
-    @transition.selectAll("##{@_nameToId()} path.gauge.arc")
+    @transition.selectAll(".#{@_nameToId()} path.gauge.arc")
       .attr( "transform", originTranslate )
       .attr( "d", outerArc )
 
     # arc representing plot value
     plotAngle = minAngle + (scale(plotValue) * angleRange)
-    @transition.selectAll("##{@_nameToId()} path.gauge.arc-value")
+    @transition.selectAll(".#{@_nameToId()} path.gauge.arc-value")
       .attr("transform", originTranslate)
       .attrTween("d", (d, i) =>
         iEndAngle = d3.interpolate(@graph._deg2rad(@oldValueAngle), @graph._deg2rad(plotAngle) )
@@ -119,34 +119,34 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
 
     @seriesCanvas().selectAll("path.gauge.pointer").data([lineData])
 
-    @transition.selectAll("##{@_nameToId()} path.gauge.pointer")
+    @transition.selectAll(".#{@_nameToId()} path.gauge.pointer")
       .attr("transform", "#{originTranslate} rotate(#{plotAngle})")
       .attr( "d", pointerLine)
 
 
-    @transition.selectAll("##{@_nameToId()} circle.gauge.pointer-circle")
+    @transition.selectAll(".#{@_nameToId()} circle.gauge.pointer-circle")
       .attr("transform", originTranslate)
       .attr("r", @graph.width() / 30)
 
     # pointer circle then inner-circle (nail)
-    @transition.selectAll("##{@_nameToId()} circle.gauge.pointer-nail")
+    @transition.selectAll(".#{@_nameToId()} circle.gauge.pointer-nail")
       .attr("transform", originTranslate)
       .attr("r", @graph.width() / 90)
 
     # min label
-    @transition.selectAll("##{@_nameToId()} text.gauge.label.min-label")
+    @transition.selectAll(".#{@_nameToId()} text.gauge.label.min-label")
     .text(@min)
     .attr("transform", "translate(#{0.1 * @graph.width()},
           #{1.15 * @graph.height() * @bottomOffset})")
 
     # max label
-    @transition.selectAll("##{@_nameToId()} text.gauge.label.max-label")
+    @transition.selectAll(".#{@_nameToId()} text.gauge.label.max-label")
       .text(@max)
       .attr("transform", "translate(#{0.90 * @graph.width()},
             #{1.15 * @graph.height() * @bottomOffset})")
 
     # value label
-    @transition.selectAll("##{@_nameToId()} text.gauge.label.value-label")
+    @transition.selectAll(".#{@_nameToId()} text.gauge.label.value-label")
       .attr("transform", "translate(#{( @graph.width() -
           @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
       .tween("text", (d) ->

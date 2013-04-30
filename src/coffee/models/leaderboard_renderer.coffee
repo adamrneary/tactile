@@ -60,7 +60,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
         triangle
       )
 
-    @transition.selectAll("##{@_nameToId()} rect.leaderboard.track")
+    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.track")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("width", @graph.width())
@@ -68,7 +68,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("rx", 4)
       .attr("ry", 4)
 
-    @transition.selectAll("##{@_nameToId()} rect.leaderboard.bar")
+    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.bar")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("height", 6)
@@ -76,13 +76,13 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("rx", 4)
       .attr("ry", 4)
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.label")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .text((d)->d.label)
       .attr("transform", "translate(3 -8)")
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.value")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
@@ -93,7 +93,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()-50} -8)")
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.change")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
@@ -104,7 +104,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()} -8)")
 
-    @transition.selectAll("##{@_nameToId()} path")
+    @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("d", d3.svg.symbol().size(18).type((d) ->
@@ -116,37 +116,37 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
         else if d.change < 0 then "triangle-down"
       )
 
-    @transition.selectAll("##{@_nameToId()} rect.leaderboard.track")
+    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.track")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll("##{@_nameToId()} rect.leaderboard.bar")
+    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.bar")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.label")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.value")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll("##{@_nameToId()} text.leaderboard.change")
+    @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll("##{@_nameToId()} path")
+    @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)

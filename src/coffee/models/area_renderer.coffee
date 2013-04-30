@@ -53,10 +53,10 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .attr("stroke-width", '2')
       .attr("stroke", @series.color)
 
-    @transition.selectAll("##{@_nameToId()} path.stroke")
+    @transition.selectAll(".#{@_nameToId()} path.stroke")
       .attr("d", @seriesStrokeFactory())
 
-    circ = @seriesCanvas().selectAll('circle')
+    circ = @seriesDraggableCanvas().selectAll('circle')
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
@@ -66,7 +66,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode(circ)
 
     #TODO: this block of code is the same in few places
-    @transition.selectAll("##{@_nameToId()} circle")
+    @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("r",
         (d) =>
