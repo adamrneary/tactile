@@ -86,6 +86,10 @@ Tactile.RendererBase = (function() {
       _this = this;
 
     this._checkData();
+    if (this.series.disabled) {
+      this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]).remove();
+      return;
+    }
     if (transition) {
       this.transition = transition;
     }
@@ -98,14 +102,25 @@ Tactile.RendererBase = (function() {
     });
     line = this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "baseline " + (this.series.className || '') + "       " + (this.series.color ? '' : 'colorless'));
-    return this.transition.selectAll("#" + (this._nameToId()) + " path.baseline").attr("d", this.seriesPathFactory());
+    return this.transition.selectAll("." + (this._nameToId()) + " path.baseline").attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
-    var _ref;
+    var _ref, _ref1;
 
-    this._seriesCanvas || (this._seriesCanvas = (_ref = this.graph.vis) != null ? _ref.selectAll("g#" + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('id', this._nameToId()).attr('class', this.name) : void 0);
-    return this._seriesCanvas;
+    if ((_ref = this.graph.vis) != null) {
+      _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
+    }
+    return (_ref1 = this.graph.vis) != null ? _ref1.selectAll("g." + (this._nameToId())) : void 0;
+  };
+
+  RendererBase.prototype.seriesDraggableCanvas = function() {
+    var _ref, _ref1;
+
+    if ((_ref = this.graph.draggableVis) != null) {
+      _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
+    }
+    return (_ref1 = this.graph.draggableVis) != null ? _ref1.selectAll("g." + (this._nameToId())) : void 0;
   };
 
   RendererBase.prototype.configure = function(options) {
@@ -782,8 +797,8 @@ Tactile.AreaRenderer = (function(_super) {
     }
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('class', 'stroke').attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color);
-    this.transition.selectAll("#" + (this._nameToId()) + " path.stroke").attr("d", this.seriesStrokeFactory());
-    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    this.transition.selectAll("." + (this._nameToId()) + " path.stroke").attr("d", this.seriesStrokeFactory());
+    circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle").on("click", this.setActive);
     if ((_ref1 = this.dragger) != null) {
       _ref1.makeHandlers(newCircs);
@@ -791,7 +806,7 @@ Tactile.AreaRenderer = (function(_super) {
     if ((_ref2 = this.dragger) != null) {
       _ref2.updateDraggedNode(circ);
     }
-    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("r", function(d) {
       if ("r" in d) {
@@ -1190,15 +1205,15 @@ Tactile.BulletRenderer = (function(_super) {
         return marker.exit().remove();
       });
     });
-    this.seriesCanvas().selectAll("#" + (this._nameToId()) + " g.bullet.titles").attr("transform", function(d, i) {
+    this.seriesCanvas().selectAll("." + (this._nameToId()) + " g.bullet.titles").attr("transform", function(d, i) {
       return "translate(" + (_this._xOffset(d, i) - 6) + ", " + (_this._yOffset(d, i) + _this.barHeight / 2 - 5) + ")";
     });
-    this.transition.selectAll("#" + (this._nameToId()) + " text.bullet.title").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.bullet.title").filter(function(d) {
       return _this._filterNaNs(d, 'title');
     }).duration(transitionSpeed).text(function(d) {
       return d.title;
     }).attr("transform", "translate(3 -8)").attr("text-anchor", "end");
-    this.transition.selectAll("#" + (this._nameToId()) + " text.bullet.subtitle").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.bullet.subtitle").filter(function(d) {
       return _this._filterNaNs(d, 'subtitle');
     }).duration(transitionSpeed).text(function(d) {
       return d.subtitle;
@@ -1211,33 +1226,33 @@ Tactile.BulletRenderer = (function(_super) {
       scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       element = this;
-      curEl = render.transition.selectAll("#" + (render._nameToId()) + " g.bullet.bars").filter(function() {
+      curEl = render.transition.selectAll("." + (render._nameToId()) + " g.bullet.bars").filter(function() {
         return this === element;
       });
-      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.ranges").attr("transform", function(d, i) {
+      render.seriesCanvas().selectAll("." + (render._nameToId()) + " g.bullet.ranges").attr("transform", function(d, i) {
         return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
       });
-      curEl.selectAll("#" + (render._nameToId()) + " rect.bullet.range").filter(function(d) {
+      curEl.selectAll("." + (render._nameToId()) + " rect.bullet.range").filter(function(d) {
         return render._filterNaNs(d, 'value', 'color');
       }).duration(transitionSpeed).attr("height", render.barHeight / 2).attr("width", function(d) {
         return scal(d.value);
       }).attr("fill", function(d) {
         return d.color;
       });
-      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.measures").attr("transform", function(d, i) {
+      render.seriesCanvas().selectAll("." + (render._nameToId()) + " g.bullet.measures").attr("transform", function(d, i) {
         return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
       });
-      curEl.selectAll("#" + (render._nameToId()) + " rect.bullet.measure").filter(function(d) {
+      curEl.selectAll("." + (render._nameToId()) + " rect.bullet.measure").filter(function(d) {
         return render._filterNaNs(d, 'value', 'color');
       }).duration(transitionSpeed).attr("height", render.barHeight / 2 / 3).attr("transform", "translate(0, " + (render.barHeight / 2 / 3) + ")").attr("width", function(d) {
         return scal(d.value);
       }).attr("fill", function(d) {
         return d.color;
       });
-      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.markers").attr("transform", function(d, i) {
+      render.seriesCanvas().selectAll("." + (render._nameToId()) + " g.bullet.markers").attr("transform", function(d, i) {
         return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
       });
-      curEl.selectAll("#" + (render._nameToId()) + " line.bullet.marker").filter(function(d) {
+      curEl.selectAll("." + (render._nameToId()) + " line.bullet.marker").filter(function(d) {
         return render._filterNaNs(d, 'value', 'color');
       }).duration(transitionSpeed).attr("x1", function(d) {
         return scal(d.value);
@@ -1265,15 +1280,15 @@ Tactile.BulletRenderer = (function(_super) {
       });
       d3.select(this).selectAll("g.bullet.ticks line").data(scal.ticks(8));
       d3.select(this).selectAll("g.bullet.ticks text").data(scal.ticks(8));
-      render.seriesCanvas().selectAll("#" + (render._nameToId()) + " g.bullet.ticks").attr("transform", function(d, i) {
+      render.seriesCanvas().selectAll("." + (render._nameToId()) + " g.bullet.ticks").attr("transform", function(d, i) {
         return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
       });
-      curEl.selectAll("#" + (render._nameToId()) + " g.bullet.tick line").duration(transitionSpeed).attr("x1", function(d) {
+      curEl.selectAll("." + (render._nameToId()) + " g.bullet.tick line").duration(transitionSpeed).attr("x1", function(d) {
         return scal(d);
       }).attr("x2", function(d) {
         return scal(d);
       }).attr("y1", render.barHeight / 2).attr("y2", render.barHeight / 2 + 4).attr("stroke", "#BBBBBB").attr("stroke-width", 1).style("opacity", 1);
-      return curEl.selectAll("#" + (render._nameToId()) + " g.bullet.tick text").duration(transitionSpeed).attr("text-anchor", "middle").attr("x", function(d) {
+      return curEl.selectAll("." + (render._nameToId()) + " g.bullet.tick text").duration(transitionSpeed).attr("text-anchor", "middle").attr("x", function(d) {
         return scal(d);
       }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1).text(function(d) {
         return d + "";
@@ -1389,12 +1404,12 @@ Tactile.ColumnRenderer = (function(_super) {
         _ref1.timesRendered = 0;
       }
       this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
-      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack).remove();
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
-    this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
@@ -1405,11 +1420,11 @@ Tactile.ColumnRenderer = (function(_super) {
     nodes.on('mouseover.show-dragging-circle', function(d, i, el) {
       var circ;
 
-      _this.seriesCanvas().selectAll('circle:not(.active)').style('display', 'none');
-      circ = _this.seriesCanvas().select("#node-" + i + "-" + d.x);
+      _this.seriesDraggableCanvas().selectAll('circle:not(.active)').style('display', 'none');
+      circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
       return circ.style('display', '');
     });
-    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle").on("click", this.setActive).style('display', 'none');
     if ((_ref2 = this.dragger) != null) {
       _ref2.makeHandlers(newCircs);
@@ -1417,7 +1432,7 @@ Tactile.ColumnRenderer = (function(_super) {
     if ((_ref3 = this.dragger) != null) {
       _ref3.updateDraggedNode();
     }
-    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
@@ -1502,18 +1517,18 @@ Tactile.ColumnRenderer = (function(_super) {
 
     this.unstack = false;
     this.graph.discoverRange(this);
-    transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     });
-    transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("cy", this._barY);
-    transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
-    return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
@@ -1525,20 +1540,20 @@ Tactile.ColumnRenderer = (function(_super) {
 
     this.unstack = true;
     this.graph.discoverRange(this);
-    transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
-    transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).duration(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
-    transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("y", this._barY);
-    return transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).delay(transitionSpeed / 2).attr("cy", this._barY);
   };
@@ -1712,7 +1727,7 @@ Tactile.DonutRenderer = (function(_super) {
       this.transition = transition;
     }
     this.seriesCanvas().selectAll("donut-arc").data(this.series.stack).enter().append("path");
-    this.transition.selectAll("#" + (this._nameToId()) + " path").attr("class", "donut-arc").attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attr("d", function(d, i) {
+    this.transition.selectAll("." + (this._nameToId()) + " path").attr("class", "donut-arc").attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attr("d", function(d, i) {
       var arc;
 
       return arc = d3.svg.arc().startAngle(_this._startAngle(d, i)).endAngle(_this._endAngle(d, i)).innerRadius(_this.unstack ? _this.getInnerRadius() : _this.getStackedInnerRadius()).outerRadius(_this.unstack ? _this.getOuterRadius() : _this.getStackedOuterRadius())();
@@ -1863,10 +1878,10 @@ Tactile.DonutRenderer = (function(_super) {
     yMargin = (this.graph.height() - this.getMaxStackedOuterRadius() * 2) / 2;
     xOffset = xMargin + this.getMaxStackedOuterRadius() + (this.getMaxStackedOuterRadius() - this.getMaxOuterRadius()) * Math.cos((2 * Math.PI / this._donutsCount()) * this._donutIndex() - Math.PI / 2);
     yOffset = yMargin + this.getMaxStackedOuterRadius() + (this.getMaxStackedOuterRadius() - this.getMaxOuterRadius()) * Math.sin((2 * Math.PI / this._donutsCount()) * this._donutIndex() - Math.PI / 2);
-    transition.selectAll("#" + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")");
-    transition.selectAll("#" + (this._nameToId()) + " text.donut-label").duration(transitionSpeed / 3).attr("x", xOffset).attr("y", yOffset);
-    transition.selectAll("#" + (this._nameToId()) + " text.donut-label").delay(transitionSpeed / 3).duration(transitionSpeed / 3).attr("opacity", 0);
-    return transition.selectAll("#" + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attrTween("d", function(d, i) {
+    transition.selectAll("." + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")");
+    transition.selectAll("." + (this._nameToId()) + " text.donut-label").duration(transitionSpeed / 3).attr("x", xOffset).attr("y", yOffset);
+    transition.selectAll("." + (this._nameToId()) + " text.donut-label").delay(transitionSpeed / 3).duration(transitionSpeed / 3).attr("opacity", 0);
+    return transition.selectAll("." + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
 
       iInnerRadius = d3.interpolate(_this.getInnerRadius(), _this.getStackedInnerRadius());
@@ -1891,7 +1906,7 @@ Tactile.DonutRenderer = (function(_super) {
     yMargin = (this.graph.height() - this.getMaxStackedOuterRadius() * 2) / 2;
     xOffset = xMargin + this.getMaxStackedOuterRadius() + (this.getMaxStackedOuterRadius() - this.getMaxOuterRadius()) * Math.cos((2 * Math.PI / this._donutsCount()) * this._donutIndex(false) - Math.PI / 2);
     yOffset = yMargin + this.getMaxStackedOuterRadius() + (this.getMaxStackedOuterRadius() - this.getMaxOuterRadius()) * Math.sin((2 * Math.PI / this._donutsCount()) * this._donutIndex(false) - Math.PI / 2);
-    transition.selectAll("#" + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")").attrTween("d", function(d, i) {
+    transition.selectAll("." + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
 
       iInnerRadius = d3.interpolate(_this.getStackedInnerRadius(), _this.getInnerRadius());
@@ -1902,10 +1917,10 @@ Tactile.DonutRenderer = (function(_super) {
         return d3.svg.arc().startAngle(iStartAngle(t)).endAngle(iEndAngle(t)).innerRadius(iInnerRadius(t)).outerRadius(iOuterRadius(t))();
       };
     });
-    transition.selectAll("#" + (this._nameToId()) + " text.donut-label").duration(transitionSpeed / 3).attr("x", xOffset).attr("y", yOffset);
-    transition.selectAll("#" + (this._nameToId()) + " text.donut-label").delay(transitionSpeed / 3).duration(transitionSpeed / 3).attr("opacity", 1);
-    transition.selectAll("#" + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")");
-    return transition.selectAll("#" + (this._nameToId()) + " text.donut-label").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("x", this._xOffset()).attr("y", this._yOffset());
+    transition.selectAll("." + (this._nameToId()) + " text.donut-label").duration(transitionSpeed / 3).attr("x", xOffset).attr("y", yOffset);
+    transition.selectAll("." + (this._nameToId()) + " text.donut-label").delay(transitionSpeed / 3).duration(transitionSpeed / 3).attr("opacity", 1);
+    transition.selectAll("." + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")");
+    return transition.selectAll("." + (this._nameToId()) + " text.donut-label").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("x", this._xOffset()).attr("y", this._yOffset());
   };
 
   DonutRenderer.prototype._donutsPerLine = function() {
@@ -2164,7 +2179,7 @@ Tactile.Dragger = (function() {
       _this = this;
 
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
-      return this.renderer.seriesCanvas().selectAll('circle.editable').filter(function(d, i) {
+      return this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
         return d === _this.dragged.d;
       }).each(function(d) {
         d.y = _this.dragged.y;
@@ -2194,12 +2209,12 @@ Tactile.Dragger = (function() {
     var hoveredNode, inverted, p, t, tip, value,
       _this = this;
 
-    p = d3.svg.mouse(this.graph.vis.node());
+    p = d3.svg.mouse(this.graph.draggableVis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
       if (this.series.tooltip) {
         tip = d3.select(this.graph._element).select('.tooltip');
-        hoveredNode = this.renderer.seriesCanvas().selectAll('circle.editable').filter(function(d, i) {
+        hoveredNode = this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
           d = _.isArray(d) ? d[i] : d;
           return d === _this.dragged.d;
         }).node().getBoundingClientRect();
@@ -2224,7 +2239,7 @@ Tactile.Dragger = (function() {
     if (this.dragged) {
       this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
     }
-    this.renderer.seriesCanvas().selectAll('circle.editable').data(this.series.stack).attr("class", function(d) {
+    this.renderer.seriesDraggableCanvas().selectAll('circle.editable').data(this.series.stack).attr("class", function(d) {
       d.dragged = false;
       return "editable";
     });
@@ -2246,7 +2261,7 @@ Tactile.Dragger = (function() {
       _this = this;
 
     renderer = this.renderer;
-    circs = this.renderer.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circs = this.renderer.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     circs.enter().append("svg:circle").style('display', 'none');
     circs.attr("r", 4).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
       return [(d === renderer.active ? "active" : void 0), (renderer.utils.ourFunctor(renderer.series.isEditable, d, i) ? "editable" : void 0)].join(' ');
@@ -2279,8 +2294,8 @@ Tactile.Dragger = (function() {
     nodes.on('mouseover.show-dragging-circle', function(d, i, el) {
       var circ;
 
-      renderer.seriesCanvas().selectAll('circle:not(.active)').style('display', 'none');
-      circ = renderer.seriesCanvas().select("#node-" + i + "-" + d.x);
+      renderer.seriesDraggableCanvas().selectAll('circle:not(.active)').style('display', 'none');
+      circ = renderer.seriesDraggableCanvas().select("#node-" + i + "-" + d.x);
       return circ.style('display', '');
     });
     circs.tooltip(function(d, i) {
@@ -2291,7 +2306,7 @@ Tactile.Dragger = (function() {
         gravity: "right"
       };
     });
-    return renderer.seriesCanvas().selectAll('circle.editable');
+    return renderer.seriesDraggableCanvas().selectAll('circle.editable');
   };
 
   return Dragger;
@@ -2490,9 +2505,9 @@ Tactile.GaugeRenderer = (function(_super) {
       return value_label.exit().remove();
     });
     outerArc = d3.svg.arc().outerRadius(r * ringWidth).innerRadius(r * ringInset).startAngle(this.graph._deg2rad(minAngle)).endAngle(this.graph._deg2rad(minAngle + angleRange));
-    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.arc").attr("transform", originTranslate).attr("d", outerArc);
+    this.transition.selectAll("." + (this._nameToId()) + " path.gauge.arc").attr("transform", originTranslate).attr("d", outerArc);
     plotAngle = minAngle + (scale(plotValue) * angleRange);
-    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.arc-value").attr("transform", originTranslate).attrTween("d", function(d, i) {
+    this.transition.selectAll("." + (this._nameToId()) + " path.gauge.arc-value").attr("transform", originTranslate).attrTween("d", function(d, i) {
       var iEndAngle;
 
       iEndAngle = d3.interpolate(_this.graph._deg2rad(_this.oldValueAngle), _this.graph._deg2rad(plotAngle));
@@ -2504,12 +2519,12 @@ Tactile.GaugeRenderer = (function(_super) {
     lineData = [[r * pointerWidth / 2, 0], [0, -(r * pointerHeadLength)], [-(r * pointerWidth / 2), 0], [0, r * pointerTailLength], [r * pointerWidth / 2, 0]];
     pointerLine = d3.svg.line().interpolate("monotone");
     this.seriesCanvas().selectAll("path.gauge.pointer").data([lineData]);
-    this.transition.selectAll("#" + (this._nameToId()) + " path.gauge.pointer").attr("transform", "" + originTranslate + " rotate(" + plotAngle + ")").attr("d", pointerLine);
-    this.transition.selectAll("#" + (this._nameToId()) + " circle.gauge.pointer-circle").attr("transform", originTranslate).attr("r", this.graph.width() / 30);
-    this.transition.selectAll("#" + (this._nameToId()) + " circle.gauge.pointer-nail").attr("transform", originTranslate).attr("r", this.graph.width() / 90);
-    this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.min-label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",          " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    return this.transition.selectAll("#" + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " path.gauge.pointer").attr("transform", "" + originTranslate + " rotate(" + plotAngle + ")").attr("d", pointerLine);
+    this.transition.selectAll("." + (this._nameToId()) + " circle.gauge.pointer-circle").attr("transform", originTranslate).attr("r", this.graph.width() / 30);
+    this.transition.selectAll("." + (this._nameToId()) + " circle.gauge.pointer-nail").attr("transform", originTranslate).attr("r", this.graph.width() / 90);
+    this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.min-label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",          " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
+    return this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
       var i;
 
       i = d3.interpolate(this.textContent, _this.value);
@@ -2609,20 +2624,20 @@ Tactile.LeaderboardRenderer = (function(_super) {
       triangle.exit().remove();
       return triangle;
     });
-    this.transition.selectAll("#" + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("width", this.graph.width()).attr("height", 6).attr("rx", 4).attr("ry", 4);
-    this.transition.selectAll("#" + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("height", 6).attr("width", function(d) {
       return _this.graph.width() * d.barPosition;
     }).attr("rx", 4).attr("ry", 4);
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).text(function(d) {
       return d.label;
     }).attr("transform", "translate(3 -8)");
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
       var i;
@@ -2632,7 +2647,7 @@ Tactile.LeaderboardRenderer = (function(_super) {
         return this.textContent = _this.format(Math.floor(i(t)));
       };
     }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 50) + " -8)");
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
       var i;
@@ -2642,7 +2657,7 @@ Tactile.LeaderboardRenderer = (function(_super) {
         return this.textContent = _this.format(Math.floor(i(t)));
       };
     }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + " -8)");
-    this.transition.selectAll("#" + (this._nameToId()) + " path").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("d", d3.svg.symbol().size(18).type(function(d) {
       if (d.change > 0) {
@@ -2657,22 +2672,22 @@ Tactile.LeaderboardRenderer = (function(_super) {
         return "triangle-down";
       }
     });
-    this.transition.selectAll("#" + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("#" + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("#" + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    return this.transition.selectAll("#" + (this._nameToId()) + " path").filter(function(d) {
+    return this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("transform", function(d, i) {
       return ("translate(" + (_this.graph.width() - 10) + ",") + (_this._yOffset(d, i) - 22) + ")";
@@ -2770,10 +2785,10 @@ Tactile.LineRenderer = (function(_super) {
     }
     LineRenderer.__super__.render.call(this, this.transition);
     if (this.series.disabled) {
-      this.seriesCanvas().selectAll('circle').data(this.series.stack).remove();
+      this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack).remove();
       return;
     }
-    circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
+    circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle").on("click", this.setActive);
     if ((_ref1 = this.dragger) != null) {
       _ref1.makeHandlers(newCircs);
@@ -2781,7 +2796,7 @@ Tactile.LineRenderer = (function(_super) {
     if ((_ref2 = this.dragger) != null) {
       _ref2.updateDraggedNode();
     }
-    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -2938,7 +2953,7 @@ Tactile.ScatterRenderer = (function(_super) {
     }
     circ = this.seriesCanvas().selectAll('circle').data(this.series.stack);
     circ.enter().append("svg:circle");
-    this.transition.selectAll("#" + (this._nameToId()) + " circle").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y', 'r');
     }).attr("r", function(d) {
       if ("r" in d) {
@@ -3044,7 +3059,7 @@ Tactile.WaterfallRenderer = (function(_super) {
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
-    this.transition.selectAll("#" + (this._nameToId()) + " rect").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("height", function(d) {
       return (_this.graph.y.magnitude(Math.abs(d.y))) - 1;
@@ -3054,7 +3069,7 @@ Tactile.WaterfallRenderer = (function(_super) {
     nodes.exit().remove();
     line = this.seriesCanvas().selectAll("line").data(this.series.stack);
     line.enter().append("svg:line").attr("clip-path", "url(#clip)");
-    this.transition.selectAll("#" + (this._nameToId()) + " line").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " line").filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("x1", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
@@ -3339,10 +3354,16 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.render = function(transitionSpeed) {
-    var t,
+    var t, _ref, _ref1,
       _this = this;
 
     if (this.renderers === void 0 || _.isEmpty(this.renderers) || this._allSeriesDisabled()) {
+      if ((_ref = this.vis) != null) {
+        _ref.remove();
+      }
+      if ((_ref1 = this.draggableVis) != null) {
+        _ref1.remove();
+      }
       return;
     }
     this.initSeriesStackData();
@@ -3624,7 +3645,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._setupCanvas = function() {
-    var clip, scatterClip;
+    var clip, scatterClip, vis;
 
     $(this._element).addClass('graph-container');
     this.svg = this._findOrAppend({
@@ -3632,18 +3653,24 @@ Tactile.Chart = (function() {
       "in": d3.select(this._element)
     });
     this.svg.attr('width', this.outerWidth).attr('height', this.outerHeight);
-    this.vis = this._findOrAppend({
+    vis = this._findOrAppend({
       what: 'g',
       "in": this.svg
     }).attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-    this.vis = this._findOrAppend({
+    vis = this._findOrAppend({
       what: 'g',
-      "in": this.vis
+      "in": vis
     }).attr("class", "outer-canvas").attr("width", this.marginedWidth).attr("height", this.marginedHeight);
     this.vis = this._findOrAppend({
       what: 'g',
-      "in": this.vis
+      "in": vis,
+      selector: 'g.inner-canvas'
     }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
+    this.draggableVis = this._findOrAppend({
+      what: 'g',
+      "in": vis,
+      selector: 'g.draggable-canvas'
+    }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "draggable-canvas");
     clip = this._findOrAppend({
       what: 'clipPath',
       selector: '#clip',
