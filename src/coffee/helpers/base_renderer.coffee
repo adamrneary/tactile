@@ -61,6 +61,12 @@ class Tactile.RendererBase
   render: (transition)=>
     @_checkData()
 
+    if (@series.disabled)
+      @seriesCanvas().selectAll("path.baseline")
+        .data([@series.stack])
+        .remove()
+      return
+
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
@@ -95,24 +101,24 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
-    @_seriesCanvas ||= @graph.vis?.selectAll("g.#{@_nameToId()}")
+    @graph.vis?.selectAll("g.#{@_nameToId()}")
       .data([@series.stack])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
       .attr('class', @_nameToId() + " " + @name)
 
-    @_seriesCanvas
+    @graph.vis?.selectAll("g.#{@_nameToId()}")
 
   seriesDraggableCanvas: ->
-    @_seriesDraggableCanvas ||= @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
+    @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
       .data([@series.stack])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
       .attr('class', @_nameToId() + " " + @name)
 
-    @_seriesDraggableCanvas
+    @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
 
   configure: (options) ->
     # merge base defaults with particular renderer's
