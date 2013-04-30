@@ -25,7 +25,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     @seriesCanvas().selectAll("donut-arc")
       .data(@series.stack).enter().append("path")
 
-    @transition.selectAll("##{@_nameToId()} path")
+    @transition.selectAll(".#{@_nameToId()} path")
       .attr("class", "donut-arc")
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
       .attr("d", (d, i) =>
@@ -140,21 +140,21 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     xOffset = xMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius() - @getMaxOuterRadius()) * Math.cos((2 * Math.PI / @_donutsCount()) * @_donutIndex() - Math.PI / 2)
     yOffset = yMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius() - @getMaxOuterRadius()) * Math.sin((2 * Math.PI / @_donutsCount()) * @_donutIndex() - Math.PI / 2)
 
-    transition.selectAll("##{@_nameToId()} path")
+    transition.selectAll(".#{@_nameToId()} path")
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{xOffset},#{yOffset})")
 
-    transition.selectAll("##{@_nameToId()} text.donut-label")
+    transition.selectAll(".#{@_nameToId()} text.donut-label")
       .duration(transitionSpeed / 3)
       .attr("x", xOffset)
       .attr("y", yOffset)
 
-    transition.selectAll("##{@_nameToId()} text.donut-label")
+    transition.selectAll(".#{@_nameToId()} text.donut-label")
       .delay(transitionSpeed / 3)
       .duration(transitionSpeed / 3)
       .attr("opacity", 0)
 
-    transition.selectAll("##{@_nameToId()} path")
+    transition.selectAll(".#{@_nameToId()} path")
       .delay(transitionSpeed * 2 / 3)
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
@@ -181,7 +181,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     xOffset = xMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius() - @getMaxOuterRadius()) * Math.cos((2 * Math.PI / @_donutsCount()) * @_donutIndex(false) - Math.PI / 2)
     yOffset = yMargin + @getMaxStackedOuterRadius() + (@getMaxStackedOuterRadius() - @getMaxOuterRadius()) * Math.sin((2 * Math.PI / @_donutsCount()) * @_donutIndex(false) - Math.PI / 2)
 
-    transition.selectAll("##{@_nameToId()} path")
+    transition.selectAll(".#{@_nameToId()} path")
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{xOffset},#{yOffset})")
       .attrTween("d", (d, i) =>
@@ -196,22 +196,22 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
             .innerRadius(iInnerRadius(t))
             .outerRadius(iOuterRadius(t))()
       )
-    transition.selectAll("##{@_nameToId()} text.donut-label")
+    transition.selectAll(".#{@_nameToId()} text.donut-label")
       .duration(transitionSpeed / 3)
       .attr("x", xOffset)
       .attr("y", yOffset)
 
-    transition.selectAll("##{@_nameToId()} text.donut-label")
+    transition.selectAll(".#{@_nameToId()} text.donut-label")
       .delay(transitionSpeed / 3)
       .duration(transitionSpeed / 3)
       .attr("opacity", 1)
 
-    transition.selectAll("##{@_nameToId()} path")
+    transition.selectAll(".#{@_nameToId()} path")
       .delay(transitionSpeed * 2 / 3)
       .duration(transitionSpeed / 3)
       .attr("transform", "translate(#{@_xOffset()},#{@_yOffset()})")
 
-    transition.selectAll("##{@_nameToId()} text.donut-label")
+    transition.selectAll(".#{@_nameToId()} text.donut-label")
       .delay(transitionSpeed * 2 / 3)
       .duration(transitionSpeed / 3)
       .attr("x", @_xOffset())

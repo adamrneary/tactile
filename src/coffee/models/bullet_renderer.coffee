@@ -119,17 +119,17 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     )
 
     # draw titles
-    @seriesCanvas().selectAll("##{@_nameToId()} g.bullet.titles")
+    @seriesCanvas().selectAll(".#{@_nameToId()} g.bullet.titles")
       .attr("transform", (d, i) => "translate(#{@_xOffset(d, i) - 6}, #{@_yOffset(d, i) + @barHeight/2 - 5})")
 
-    @transition.selectAll("##{@_nameToId()} text.bullet.title")
+    @transition.selectAll(".#{@_nameToId()} text.bullet.title")
       .filter((d) => @_filterNaNs(d, 'title'))
       .duration(transitionSpeed)
       .text((d) -> d.title)
       .attr("transform", "translate(3 -8)")
       .attr("text-anchor", "end")
 
-    @transition.selectAll("##{@_nameToId()} text.bullet.subtitle")
+    @transition.selectAll(".#{@_nameToId()} text.bullet.subtitle")
       .filter((d) => @_filterNaNs(d, 'subtitle'))
       .duration(transitionSpeed)
       .text((d) -> d.subtitle)
@@ -149,14 +149,14 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
 
       element = @
-      curEl = render.transition.selectAll("##{render._nameToId()} g.bullet.bars")
+      curEl = render.transition.selectAll(".#{render._nameToId()} g.bullet.bars")
         .filter(()-> @ is element)
 
       # draw ranges
-      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.ranges")
+      render.seriesCanvas().selectAll(".#{render._nameToId()} g.bullet.ranges")
         .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
 
-      curEl.selectAll("##{render._nameToId()} rect.bullet.range")
+      curEl.selectAll(".#{render._nameToId()} rect.bullet.range")
         .filter((d) => render._filterNaNs(d, 'value', 'color'))
         .duration(transitionSpeed)
         .attr("height", render.barHeight/2)
@@ -164,10 +164,10 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("fill", (d) -> d.color)
 
       # draw measures
-      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.measures")
+      render.seriesCanvas().selectAll(".#{render._nameToId()} g.bullet.measures")
         .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
 
-      curEl.selectAll("##{render._nameToId()} rect.bullet.measure")
+      curEl.selectAll(".#{render._nameToId()} rect.bullet.measure")
         .filter((d) => render._filterNaNs(d, 'value', 'color'))
         .duration(transitionSpeed)
         .attr("height", render.barHeight / 2 / 3)
@@ -176,10 +176,10 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("fill", (d) -> d.color)
 
       # draw markers
-      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.markers")
+      render.seriesCanvas().selectAll(".#{render._nameToId()} g.bullet.markers")
         .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
 
-      curEl.selectAll("##{render._nameToId()} line.bullet.marker")
+      curEl.selectAll(".#{render._nameToId()} line.bullet.marker")
         .filter((d) => render._filterNaNs(d, 'value', 'color'))
         .duration(transitionSpeed)
         .attr("x1", (d) -> scal(d.value))
@@ -223,10 +223,10 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
       d3.select(@).selectAll("g.bullet.ticks text").data(scal.ticks(8))
 
       # draw ticks
-      render.seriesCanvas().selectAll("##{render._nameToId()} g.bullet.ticks")
+      render.seriesCanvas().selectAll(".#{render._nameToId()} g.bullet.ticks")
         .attr("transform", (d, i) => "translate(#{render._xOffset(d, i)}, #{render._yOffset(d, i)})")
 
-      curEl.selectAll("##{render._nameToId()} g.bullet.tick line")
+      curEl.selectAll(".#{render._nameToId()} g.bullet.tick line")
         .duration(transitionSpeed)
         .attr("x1", (d) -> scal(d))
         .attr("x2", (d) -> scal(d))
@@ -236,7 +236,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("stroke-width", 1)
         .style("opacity", 1)
 
-      curEl.selectAll("##{render._nameToId()} g.bullet.tick text")
+      curEl.selectAll(".#{render._nameToId()} g.bullet.tick text")
         .duration(transitionSpeed)
         .attr("text-anchor", "middle")
         .attr("x", (d) -> scal(d))

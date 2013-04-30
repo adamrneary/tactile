@@ -84,7 +84,7 @@ class Tactile.RendererBase
       .attr("class", "baseline #{@series.className or ''}
        #{if @series.color then '' else 'colorless'}")
 
-    @transition.selectAll("##{@_nameToId()} path.baseline")
+    @transition.selectAll(".#{@_nameToId()} path.baseline")
       .attr("d", @seriesPathFactory())
 
   # Creates separate g element for each series.
@@ -95,15 +95,24 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
-    @_seriesCanvas ||= @graph.vis?.selectAll("g##{@_nameToId()}")
+    @_seriesCanvas ||= @graph.vis?.selectAll("g.#{@_nameToId()}")
       .data([@series.stack])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
-      .attr('id', @_nameToId())
-      .attr('class', @name)
+      .attr('class', @_nameToId() + " " + @name)
 
     @_seriesCanvas
+
+  seriesDraggableCanvas: ->
+    @_seriesDraggableCanvas ||= @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
+      .data([@series.stack])
+      .enter()
+      .append("g")
+      .attr("clip-path", "url(#scatter-clip)")
+      .attr('class', @_nameToId() + " " + @name)
+
+    @_seriesDraggableCanvas
 
   configure: (options) ->
     # merge base defaults with particular renderer's

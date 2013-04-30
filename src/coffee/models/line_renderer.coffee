@@ -28,11 +28,11 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)
-      @seriesCanvas().selectAll('circle')
+      @seriesDraggableCanvas().selectAll('circle')
         .data(@series.stack)
         .remove()
       return
-    circ = @seriesCanvas().selectAll('circle')
+    circ = @seriesDraggableCanvas().selectAll('circle')
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
@@ -42,7 +42,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
 
-    @transition.selectAll("##{@_nameToId()} circle")
+    @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @yFunction() d.y)
