@@ -12,10 +12,10 @@ class Tactile.Utils
     check = true
 
     if typeof str isnt "string"
-      console.error("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
+      console.warn("Tactile error: '#{strName}' invalid type") if typeof str isnt "string"
       check = false
     else if !$.trim(str)
-      console.error("Tactile error: '#{strName}' empty")
+      console.warn("Tactile error: '#{strName}' empty")
       check = false
 
     check
@@ -24,7 +24,7 @@ class Tactile.Utils
     check = true
 
     if typeof num isnt "number"
-      console.error("Tactile error: '#{numName}' invalid type")
+      console.warn("Tactile error: '#{numName}' invalid type")
       check = false
 
     check
@@ -32,7 +32,7 @@ class Tactile.Utils
   checkArray: (arr, arrName) ->
     check = true
     if !_.isArray(arr)
-      console.error("Tactile error: '#{arrName}' invalid type")
+      console.warn("Tactile error: '#{arrName}' invalid type")
       check = false
 
     check
@@ -40,7 +40,7 @@ class Tactile.Utils
   checkFunction: (func, funcName) ->
     check = true
     if !_.isFunction(func)
-      console.error("Tactile error: '#{funcName}' invalid type")
+      console.warn("Tactile error: '#{funcName}' invalid type")
       check = false
 
     check
@@ -48,7 +48,7 @@ class Tactile.Utils
   checkObject: (obj, objName) ->
     check = true
     if typeof str isnt "object"
-      console.error("Tactile error: '#{objName}' invalid type")
+      console.warn("Tactile error: '#{objName}' invalid type")
       check = false
 
     check
