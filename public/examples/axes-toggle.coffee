@@ -28,7 +28,7 @@ data = [
 
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)
   .addSeries [
@@ -72,8 +72,16 @@ sl.slider
     chart.render()
 
 turnOffAxes = $("<button class='btn btn-mini'>Turn off axes</button>")
+turnOnAxes = $("<button class='btn btn-mini'>Turn on axes</button>")
 $("#above-chart").html turnOffAxes
+$("#above-chart").append turnOnAxes
+
 turnOffAxes.click (e) =>
-  chart.axes [], overwrite: true
+  chart.axes {}
+  chart.render(1000)
+  e.stopPropagation()
+
+turnOnAxes.click (e) =>
+  chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
   chart.render(1000)
   e.stopPropagation()

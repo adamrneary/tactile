@@ -42,13 +42,13 @@ class Tactile.AxisTime
 
   render: (transition)->
     return unless @graph.x?
-    g = @graph.vis.selectAll('.x-ticks').data([0])
-    g.enter().append('g').attr('class', 'x-ticks')
+    @g = @graph.vis.selectAll('.x-ticks').data([0])
+    @g.enter().append('g').attr('class', 'x-ticks')
 
     tickData = @tickOffsets().filter((tick) =>
       @graph.x.range()[0] <= @graph.x(tick.value) <= @graph.x.range()[1])
 
-    ticks = g.selectAll('g.x-tick')
+    ticks = @g.selectAll('g.x-tick')
       .data(@tickOffsets(), (d) -> d.value)
 
     ticks.enter()
@@ -68,6 +68,10 @@ class Tactile.AxisTime
           "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
 
     ticks.exit().remove()
+
+  destroy: ->
+    @g.remove()
+    delete @graph.axesList[@options.axis]
 
   _checkOptions: ()=>
     if @options.ticksTreatment?

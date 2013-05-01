@@ -15,13 +15,13 @@ class Tactile.AxisLinear
 
     @_setupForOrientation()
 
-  render: (transition)->
+  render: (transition) ->
     return unless @graph[@options.axis]?
     className = "#{@options.axis}-ticks"
-    g = @graph.vis.selectAll('.' + className).data([0])
-    g.enter().append("g").attr("class", [className, @ticksTreatment].join(" "))
+    @g = @graph.vis.selectAll('.' + className).data([0])
+    @g.enter().append("g").attr("class", [className, @ticksTreatment].join(" "))
 
-    g.attr("transform", @translateString)
+    @g.attr("transform", @translateString)
 
     axis = d3.svg.axis()
       .scale(@graph[@options.axis])
@@ -33,6 +33,9 @@ class Tactile.AxisLinear
 
     transition.select('.' + className).call(axis)
 
+  destroy: ->
+    @g.remove()
+    delete @graph.axesList[@options.axis]
 
   _setupForOrientation: ->
     pixelsPerTick = @options.pixelsPerTick or 75
