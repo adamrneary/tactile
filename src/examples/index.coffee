@@ -61,6 +61,9 @@ components = [
   shortLink: "dual-scaled"
   title: "Secondary y-axis"
 ,
+  shortLink: "axes-toggle"
+  title: "Toggling axes"
+,
   shortLink:"filter"
   title: "Filters (future)"
 ,
