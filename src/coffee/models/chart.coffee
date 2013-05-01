@@ -174,6 +174,9 @@ class Tactile.Chart
   axes: (args) ->
     return @axesList unless args
 
+    # kill any old axes
+    _.each _.toArray(@axesList), (axis) -> axis.destroy()
+
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
         defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k}

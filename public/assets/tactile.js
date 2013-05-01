@@ -891,17 +891,22 @@ Tactile.AxisLinear = (function() {
   }
 
   AxisLinear.prototype.render = function(transition) {
-    var axis, className, g;
+    var axis, className;
 
     if (this.graph[this.options.axis] == null) {
       return;
     }
     className = "" + this.options.axis + "-ticks";
-    g = this.graph.vis.selectAll('.' + className).data([0]);
-    g.enter().append("g").attr("class", [className, this.ticksTreatment].join(" "));
-    g.attr("transform", this.translateString);
+    this.g = this.graph.vis.selectAll('.' + className).data([0]);
+    this.g.enter().append("g").attr("class", [className, this.ticksTreatment].join(" "));
+    this.g.attr("transform", this.translateString);
     axis = d3.svg.axis().scale(this.graph[this.options.axis]).orient(this.orientation).tickFormat(this.tickFormat).ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
     return transition.select('.' + className).call(axis);
+  };
+
+  AxisLinear.prototype.destroy = function() {
+    this.g.remove();
+    return delete this.graph.axesList[this.options.axis];
   };
 
   AxisLinear.prototype._setupForOrientation = function() {
@@ -1009,20 +1014,20 @@ Tactile.AxisTime = (function() {
   };
 
   AxisTime.prototype.render = function(transition) {
-    var g, tickData, ticks,
+    var tickData, ticks,
       _this = this;
 
     if (this.graph.x == null) {
       return;
     }
-    g = this.graph.vis.selectAll('.x-ticks').data([0]);
-    g.enter().append('g').attr('class', 'x-ticks');
+    this.g = this.graph.vis.selectAll('.x-ticks').data([0]);
+    this.g.enter().append('g').attr('class', 'x-ticks');
     tickData = this.tickOffsets().filter(function(tick) {
       var _ref;
 
       return (_this.graph.x.range()[0] <= (_ref = _this.graph.x(tick.value)) && _ref <= _this.graph.x.range()[1]);
     });
-    ticks = g.selectAll('g.x-tick').data(this.tickOffsets(), function(d) {
+    ticks = this.g.selectAll('g.x-tick').data(this.tickOffsets(), function(d) {
       return d.value;
     });
     ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d) {
@@ -1034,6 +1039,11 @@ Tactile.AxisTime = (function() {
       return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     });
     return ticks.exit().remove();
+  };
+
+  AxisTime.prototype.destroy = function() {
+    this.g.remove();
+    return delete this.graph.axesList[this.options.axis];
   };
 
   AxisTime.prototype._checkOptions = function() {
@@ -3405,6 +3415,9 @@ Tactile.Chart = (function() {
     if (!args) {
       return this.axesList;
     }
+    _.each(_.toArray(this.axesList), function(axis) {
+      return axis.destroy();
+    });
     _.each(['x', 'y', 'y1'], function(k) {
       var defaults;
 
