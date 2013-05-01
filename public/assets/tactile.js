@@ -648,11 +648,11 @@ d3.selection.prototype.tooltip = function(f) {
     check = true;
     if (typeof str !== "string") {
       if (typeof str !== "string") {
-        console.error("Tactile error: '" + strName + "' invalid type");
+        console.warn("Tactile error: '" + strName + "' invalid type");
       }
       check = false;
     } else if (!$.trim(str)) {
-      console.error("Tactile error: '" + strName + "' empty");
+      console.warn("Tactile error: '" + strName + "' empty");
       check = false;
     }
     return check;
@@ -663,7 +663,7 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (typeof num !== "number") {
-      console.error("Tactile error: '" + numName + "' invalid type");
+      console.warn("Tactile error: '" + numName + "' invalid type");
       check = false;
     }
     return check;
@@ -674,7 +674,7 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (!_.isArray(arr)) {
-      console.error("Tactile error: '" + arrName + "' invalid type");
+      console.warn("Tactile error: '" + arrName + "' invalid type");
       check = false;
     }
     return check;
@@ -685,7 +685,7 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (!_.isFunction(func)) {
-      console.error("Tactile error: '" + funcName + "' invalid type");
+      console.warn("Tactile error: '" + funcName + "' invalid type");
       check = false;
     }
     return check;
@@ -696,7 +696,7 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (typeof str !== "object") {
-      console.error("Tactile error: '" + objName + "' invalid type");
+      console.warn("Tactile error: '" + objName + "' invalid type");
       check = false;
     }
     return check;
@@ -3444,7 +3444,7 @@ Tactile.Chart = (function() {
       case "time":
         return this.axesList[args.axis] = new Tactile.AxisTime(args);
       default:
-        return console.error("Tactile error: " + args.dimension + " is not currently implemented");
+        return console.warn("Tactile error: " + args.dimension + " is not currently implemented");
     }
   };
 
