@@ -642,13 +642,14 @@ d3.selection.prototype.tooltip = function(f) {
     }
   };
 
-  Utils.prototype.checkString = function(str, strName) {
+  Utils.prototype.checkString = function(str, strName, d) {
     var check;
 
     check = true;
     if (typeof str !== "string") {
-      if (typeof str !== "string") {
-        console.warn("Tactile error: '" + strName + "' invalid type");
+      console.warn("Tactile error: '" + strName + "' invalid type: " + str);
+      if (d != null) {
+        console.log(d);
       }
       check = false;
     } else if (!$.trim(str)) {
@@ -658,45 +659,57 @@ d3.selection.prototype.tooltip = function(f) {
     return check;
   };
 
-  Utils.prototype.checkNumber = function(num, numName) {
+  Utils.prototype.checkNumber = function(num, numName, d) {
     var check;
 
     check = true;
     if (typeof num !== "number") {
-      console.warn("Tactile error: '" + numName + "' invalid type");
+      console.warn("Tactile error: '" + numName + "' invalid type: " + num);
+      if (d != null) {
+        console.log(d);
+      }
       check = false;
     }
     return check;
   };
 
-  Utils.prototype.checkArray = function(arr, arrName) {
+  Utils.prototype.checkArray = function(arr, arrName, d) {
     var check;
 
     check = true;
     if (!_.isArray(arr)) {
-      console.warn("Tactile error: '" + arrName + "' invalid type");
+      console.warn("Tactile error: '" + arrName + "' invalid type: " + arr);
+      if (d != null) {
+        console.log(d);
+      }
       check = false;
     }
     return check;
   };
 
-  Utils.prototype.checkFunction = function(func, funcName) {
+  Utils.prototype.checkFunction = function(func, funcName, d) {
     var check;
 
     check = true;
     if (!_.isFunction(func)) {
-      console.warn("Tactile error: '" + funcName + "' invalid type");
+      console.warn("Tactile error: '" + funcName + "' invalid type: " + func);
+      if (d != null) {
+        console.log(d);
+      }
       check = false;
     }
     return check;
   };
 
-  Utils.prototype.checkObject = function(obj, objName) {
+  Utils.prototype.checkObject = function(obj, objName, d) {
     var check;
 
     check = true;
     if (typeof str !== "object") {
-      console.warn("Tactile error: '" + objName + "' invalid type");
+      console.warn("Tactile error: '" + objName + "' invalid type: " + obj);
+      if (d != null) {
+        console.log(d);
+      }
       check = false;
     }
     return check;
@@ -2717,10 +2730,10 @@ Tactile.LeaderboardRenderer = (function(_super) {
 
     data = this.series.stack;
     return data.forEach(function(d, i) {
-      _this.utils.checkString(d.color, "" + _this.name + " renderer data[" + i + "].label");
-      _this.utils.checkNumber(d.value, "" + _this.name + " renderer data[" + i + "].value");
-      _this.utils.checkNumber(d.change, "" + _this.name + " renderer data[" + i + "].change");
-      return _this.utils.checkNumber(d.barPosition, "" + _this.name + " renderer data[" + i + "].barPosition");
+      _this.utils.checkString(d.color, "" + _this.name + " renderer data[" + i + "].label", d);
+      _this.utils.checkNumber(d.value, "" + _this.name + " renderer data[" + i + "].value", d);
+      _this.utils.checkNumber(d.change, "" + _this.name + " renderer data[" + i + "].change", d);
+      return _this.utils.checkNumber(d.barPosition, "" + _this.name + " renderer data[" + i + "].barPosition", d);
     });
   };
 
