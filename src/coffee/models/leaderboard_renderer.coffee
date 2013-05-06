@@ -167,9 +167,9 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   _checkData: ()=>
     data = @series.stack
     data.forEach((d, i) =>
-      @utils.checkString(d.color, "#{@name} renderer data[#{i}].label")
-      @utils.checkNumber(d.value, "#{@name} renderer data[#{i}].value")
-      @utils.checkNumber(d.change, "#{@name} renderer data[#{i}].change")
-      @utils.checkNumber(d.barPosition, "#{@name} renderer data[#{i}].barPosition")
+      @utils.checkString(d.color, "#{@name} renderer data[#{i}].label", d)
+      @utils.checkNumber(d.value, "#{@name} renderer data[#{i}].value", d)
+      @utils.checkNumber(d.change, "#{@name} renderer data[#{i}].change", d)
+      @utils.checkNumber(d.barPosition, "#{@name} renderer data[#{i}].barPosition", d)
     )
 
