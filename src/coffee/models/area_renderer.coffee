@@ -89,6 +89,14 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
     circ.exit().remove()
 
+    if @series.tooltip
+      circ.tooltip (d, i) =>
+        circleColor: @series.color
+        graph: @graph
+        text: @series.tooltip(d)
+        circleOnHover: true
+        #tooltipCircleContainer: @graph.vis.node()
+        gravity: "right"
 
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false

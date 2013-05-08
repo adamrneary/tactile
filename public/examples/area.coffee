@@ -54,6 +54,8 @@ chart = new Tactile.Chart(unstack: false)
     afterDrag: (d, y, i, draggedSeries, graph) ->
       graph.data()[i].y = y
     color: "#c05020"
+    tooltip: (d) ->
+      d.y + " friends"
     dataTransform: (d) ->
       x: d.x
       y: d.y
@@ -65,6 +67,8 @@ chart = new Tactile.Chart(unstack: false)
     isEditable: true
     afterDrag: (d, y, i, draggedSeries, graph) ->
       graph.data()[i].z = y
+    tooltip: (d) ->
+      d.y + " friends"
     dataTransform: (d) ->
       x: d.x
       y: d.z
