@@ -49,6 +49,7 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
         @active = @series.stack[i]
         break
       i++
+    @hideCircles?()
     @render()
 
   selectPerviousEditableValue: =>
@@ -65,6 +66,7 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
         @active = @series.stack[i]
         break
       i--
+    @hideCircles?()
     @render()
 
 
@@ -74,14 +76,12 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
     @render()
 
   increaseEditableValue: ()=>
-    console.log("increaseEditableValue")
     return unless @active
     @active.y++
     @render()
 
 
   decreaseEditableValue: ()=>
-    console.log("decreaseEditableValue")
     return unless @active
     @active.y--
     @render()
