@@ -391,85 +391,84 @@
     border-left: 1px dotted rgba(0, 0, 0, 0.2); }
   /* line 184 */
   .x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
-    font-size: 11px;
+    font-size: 12px;
     text-transform: uppercase;
     font-weight: bold;
-    font-family: Arial, sans-serif;
     opacity: 0.5;
     white-space: nowrap;
     text-anchor: middle; }
-  /* line 194 */
+  /* line 193 */
   .x-tick.align-end .title, .x-ticks.align-end .title {
     text-anchor: end; }
-  /* line 198 */
+  /* line 197 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: start; }
-  /* line 202 */
+  /* line 201 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: middle; }
 
-/* line 207 */
+/* line 206 */
 .x-tick.glow .title, .y-ticks.glow text {
   fill: black;
   color: black;
   text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1); }
 
-/* line 217 */
+/* line 216 */
 .x-tick.inverse .title, .y-ticks.inverse text {
   fill: white;
   color: white;
   text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8); }
 
-/* line 227 */
+/* line 226 */
 #y-axis {
   position: absolute;
   bottom: 0;
   width: 20px;
   left: 5px; }
 
-/* line 234 */
+/* line 233 */
 .y-axis {
   fill: none; }
 
-/* line 239 */
+/* line 238 */
 .axis.yAxis, .axis.xAxis {
   text-transform: uppercase !important;
   font-size: 11px;
   font-weight: bold;
   fill: #a69b9e; }
-/* line 244 */
+/* line 243 */
 .axis.yAxis line, .axis.yAxis path {
   stroke: #a69b9e;
   stroke-width: 2px; }
-/* line 249 */
+/* line 248 */
 .axis.yAxis .domain {
   stroke: none; }
 
-/* line 255 */
+/* line 254 */
 .axis {
   shape-rendering: crispEdges; }
 
-/* line 260 */
+/* line 259 */
 .xAxis.axis line {
   stroke: #fff; }
-/* line 264 */
+/* line 263 */
 .xAxis.axis .minor {
   stroke-opacity: .5; }
-/* line 268 */
+/* line 267 */
 .xAxis.axis path {
   display: none; }
 
-/* line 273 */
+/* line 272 */
 .yAxis.axis line, .yAxis.axis path {
   fill: none;
   stroke: #000; }
 
 /* legend */
-/* line 281 */
+/* line 280 */
 #main-chart-legend .well {
   display: inline-block;
   padding: 5px; }
-/* line 286 */
+/* line 285 */
 #main-chart-legend .chart-legend {
   margin: 1px 0 0 15px;
   padding: 5px 0 0 0;
@@ -482,12 +481,12 @@
   /* line 171, /Users/sinisa/Workspaces/oDesk/Profitably/ActiveCell/Code/tactile/src/scss/tactile/_mixins.scss */
   #main-chart-legend .chart-legend:after {
     clear: both; }
-  /* line 292 */
+  /* line 291 */
   #main-chart-legend .chart-legend li {
     float: left;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
     margin: 0 15px 5px 0; }
-    /* line 297 */
+    /* line 296 */
     #main-chart-legend .chart-legend li span {
       display: inline-block;
       position: relative;
@@ -497,40 +496,40 @@
       height: 6px;
       border-radius: 1em;
       box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2); }
-      /* line 306 */
+      /* line 305 */
       #main-chart-legend .chart-legend li span.point-noise {
         background-color: #a69b9e; }
-      /* line 307 */
+      /* line 306 */
       #main-chart-legend .chart-legend li span.point-dogs {
         background-color: #dc6e59; }
-      /* line 308 */
+      /* line 307 */
       #main-chart-legend .chart-legend li span.point-sprouts {
         background-color: #19affe; }
-      /* line 309 */
+      /* line 308 */
       #main-chart-legend .chart-legend li span.point-stars {
         background-color: #8ac16f; }
 
-/* line 315 */
+/* line 314 */
 .chart-legend {
   margin: 0 0 10px 10px;
   color: #404040;
   overflow: hidden; }
-  /* line 320 */
+  /* line 319 */
   .chart-legend .legend-item {
     float: left;
     list-style: none;
     overflow: hidden;
     margin-right: 10px; }
-    /* line 327 */
+    /* line 326 */
     .chart-legend .legend-item.off .text {
       color: #ccc; }
-    /* line 332 */
+    /* line 331 */
     .chart-legend .legend-item:hover {
       cursor: pointer; }
-    /* line 336 */
+    /* line 335 */
     .chart-legend .legend-item .color, .chart-legend .legend-item .text {
       float: left; }
-    /* line 340 */
+    /* line 339 */
     .chart-legend .legend-item .color {
       border-radius: 3px;
       width: 6px;
@@ -538,13 +537,13 @@
       border: 1px solid #e6e6e6;
       margin-right: 8px;
       margin-top: 5px; }
-    /* line 349 */
+    /* line 348 */
     .chart-legend .legend-item .text {
       font-size: 14px;
       line-height: 16px; }
 
 /* hover detail */
-/* line 358 */
+/* line 357 */
 .metric-inner-container .detail, .graph-container .detail {
   pointer-events: none;
   position: absolute;
@@ -558,18 +557,17 @@
   -ms-transition: opacity 0.25s linear;
   -o-transition: opacity 0.25s linear;
   transition: opacity 0.25s linear; }
-  /* line 367 */
+  /* line 366 */
   .metric-inner-container .detail.inactive, .graph-container .detail.inactive {
     opacity: 0; }
-  /* line 371 */
+  /* line 370 */
   .metric-inner-container .detail.no-line, .graph-container .detail.no-line {
     background: none; }
-  /* line 375 */
+  /* line 374 */
   .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
     opacity: 1; }
-  /* line 379 */
+  /* line 378 */
   .metric-inner-container .detail .x_label, .graph-container .detail .x_label {
-    font-family: Arial, sans-serif;
     border-radius: 3px;
     padding: 6px;
     opacity: 0.5;
@@ -578,7 +576,7 @@
     position: absolute;
     background: white;
     white-space: nowrap; }
-  /* line 390 */
+  /* line 388 */
   .metric-inner-container .detail .item, .graph-container .detail .item {
     text-transform: none;
     position: absolute;
@@ -586,7 +584,6 @@
     border-radius: 3px;
     padding: 0.25em;
     font-size: 12px;
-    font-family: Arial, sans-serif;
     opacity: 0;
     background: rgba(0, 0, 0, 0.4);
     color: white;
@@ -594,18 +591,18 @@
     margin-left: 1em;
     margin-top: -1em;
     white-space: nowrap; }
-    /* line 405 */
+    /* line 402 */
     .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
       opacity: 1;
       background: rgba(0, 0, 0, 0.8); }
-    /* line 409 */
+    /* line 406 */
     .metric-inner-container .detail .item:before, .graph-container .detail .item:before {
       content: "\25c2";
       position: absolute;
       left: -0.5em;
       color: rgba(0, 0, 0, 0.7);
       width: 0; }
-  /* line 417 */
+  /* line 414 */
   .metric-inner-container .detail .dot, .graph-container .detail .dot {
     width: 4px;
     height: 4px;
@@ -619,36 +616,36 @@
     border-style: solid;
     display: none;
     background-clip: padding-box; }
-    /* line 430 */
+    /* line 427 */
     .metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
       display: block; }
 
-/* line 437 */
+/* line 434 */
 .graph-container .tooltip {
   padding: 0;
   margin: 0;
   white-space: nowrap; }
-/* line 443 */
+/* line 440 */
 .graph-container .tooltip.right {
   padding-left: 5px;
   margin-left: 10px;
   margin-top: -11px; }
 
 /* sankey */
-/* line 457 */
+/* line 454 */
 .sankey-chart .node {
   stroke: #fff;
   stroke-width: 2px; }
-/* line 462 */
+/* line 459 */
 .sankey-chart .link {
   fill: none;
   stroke: #000;
   opacity: .3; }
-/* line 467 */
+/* line 464 */
 .sankey-chart .link.on {
   stroke: #F00;
   opacity: .7; }
-/* line 472 */
+/* line 469 */
 .sankey-chart .node {
   stroke: none; }
 
@@ -657,60 +654,60 @@
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-/* line 487 */
+/* line 484 */
 .scatter circle.low {
   fill: #dc6e59; }
-/* line 488 */
+/* line 485 */
 .scatter circle.mid {
   fill: #19affe; }
-/* line 489 */
+/* line 486 */
 .scatter circle.high {
   fill: #8ac16f; }
 
-/* line 493 */
+/* line 490 */
 .graph-container circle.tip-hovered {
   stroke-width: 1; }
 
-/* line 498 */
+/* line 495 */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
   fill: #f1d8a6; }
 
-/* line 503 */
+/* line 500 */
 rect.colorless {
   fill: #5a6ca1; }
 
-/* line 509 */
+/* line 506 */
 .ui-button {
   border: 1px solid #a69b9e;
   padding: 5px; }
 
-/* line 515 */
+/* line 512 */
 path.colorless {
   stroke: #405192; }
-/* line 519 */
+/* line 516 */
 path.sparkline {
   stroke: #30878f;
   stroke-width: 1px;
   fill: none; }
-/* line 524 */
+/* line 521 */
 path.line {
   fill: none;
   stroke-width: 2px; }
-/* line 528 */
+/* line 525 */
 path.area {
   fill: #e7e7e7; }
 
-/* line 533 */
+/* line 530 */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   padding: 6px; }
 
 /* Leaderboard */
-/* line 540 */
+/* line 537 */
 .leaderboard.label {
   fill: #a69b9e;
   font-size: 20px;
   font-weight: bold; }
-/* line 546 */
+/* line 543 */
 .leaderboard.value {
   font-size: 27px;
   fill: #3e3739;
@@ -718,46 +715,46 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   font-family: "ProximaNova", sans-serif;
   font-weight: 800;
   text-transform: uppercase; }
-/* line 553 */
+/* line 550 */
 .leaderboard.change {
   fill: #a69b9e;
   font-size: 12px;
   font-family: "ProximaNova", sans-serif;
   font-weight: bold;
   text-transform: uppercase; }
-/* line 559 */
+/* line 556 */
 .leaderboard .triangle-down {
   fill: #dc6e59;
   stroke: none; }
-/* line 564 */
+/* line 561 */
 .leaderboard .triangle-up {
   fill: #8ac16f;
   stroke: none; }
-/* line 569 */
+/* line 566 */
 .leaderboard.track {
   fill: #e2dedf;
   stroke: none; }
-/* line 574 */
+/* line 571 */
 .leaderboard.bar {
   fill: #30878f;
   stroke: none; }
 
 /* Gauge */
-/* line 583 */
+/* line 580 */
 .gauge.arc {
   fill: #e2dedf; }
-/* line 587 */
+/* line 584 */
 .gauge.arc-value {
   fill: #30878f; }
-/* line 591 */
+/* line 588 */
 .gauge.pointer-circle {
   fill: #faf9fa;
   stroke: #bfbfbf; }
-/* line 596 */
+/* line 593 */
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
   fill: #4c4345; }
-/* line 601 */
+/* line 598 */
 .gauge.label {
   font-size: 27px;
   fill: #3e3739;
@@ -767,15 +764,15 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   text-transform: uppercase; }
 
 /*Bullet*/
-/* line 610 */
+/* line 607 */
 .bullet {
   font: 10px sans-serif; }
-  /* line 612 */
+  /* line 609 */
   .bullet.title {
     font-size: 14px;
     font-weight: bold;
     fill: #3e3739; }
-  /* line 618 */
+  /* line 615 */
   .bullet.subtitle {
     fill: #a69b9e;
     font-size: 10px; }
