@@ -270,6 +270,9 @@ Tactile.DraggableRenderer = (function(_super) {
       }
       i++;
     }
+    if (typeof this.hideCircles === "function") {
+      this.hideCircles();
+    }
     return this.render();
   };
 
@@ -295,6 +298,9 @@ Tactile.DraggableRenderer = (function(_super) {
       }
       i--;
     }
+    if (typeof this.hideCircles === "function") {
+      this.hideCircles();
+    }
     return this.render();
   };
 
@@ -307,7 +313,6 @@ Tactile.DraggableRenderer = (function(_super) {
   };
 
   DraggableRenderer.prototype.increaseEditableValue = function() {
-    console.log("increaseEditableValue");
     if (!this.active) {
       return;
     }
@@ -316,7 +321,6 @@ Tactile.DraggableRenderer = (function(_super) {
   };
 
   DraggableRenderer.prototype.decreaseEditableValue = function() {
-    console.log("decreaseEditableValue");
     if (!this.active) {
       return;
     }
@@ -856,7 +860,18 @@ Tactile.AreaRenderer = (function(_super) {
         return "auto";
       }
     });
-    return circ.exit().remove();
+    circ.exit().remove();
+    if (this.series.tooltip) {
+      return circ.tooltip(function(d, i) {
+        return {
+          circleColor: _this.series.color,
+          graph: _this.graph,
+          text: _this.series.tooltip(d),
+          circleOnHover: true,
+          gravity: "right"
+        };
+      });
+    }
   };
 
   AreaRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
@@ -1380,6 +1395,7 @@ Tactile.ColumnRenderer = (function(_super) {
     this._transformMatrix = __bind(this._transformMatrix, this);
     this.unstackTransition = __bind(this.unstackTransition, this);
     this.stackTransition = __bind(this.stackTransition, this);
+    this.hideCircles = __bind(this.hideCircles, this);
     this.render = __bind(this.render, this);    _ref = ColumnRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -1417,28 +1433,28 @@ Tactile.ColumnRenderer = (function(_super) {
         _ref1.timesRendered = 0;
       }
       this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
-      this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack).remove();
+      this.seriesDraggableCanvas().selectAll("circle").data(this.series.stack).remove();
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
     nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
     this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
-    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", 'white').attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
-      return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(' ');
+    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+      return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
     });
     nodes.exit().remove();
-    nodes.on('mouseover.show-dragging-circle', function(d, i, el) {
+    nodes.on("mouseover.show-dragging-circle", function(d, i, el) {
       var circ;
 
-      _this.seriesDraggableCanvas().selectAll('circle:not(.active)').style('display', 'none');
+      _this.hideCircles();
       circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
-      return circ.style('display', '');
+      return circ.style("display", "");
     });
-    circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
-    newCircs = circ.enter().append("svg:circle").on("click", this.setActive).style('display', 'none');
+    circ = this.seriesDraggableCanvas().selectAll("circle").data(this.series.stack);
+    newCircs = circ.enter().append("svg:circle").on("click", this.setActive).style("display", "none");
     if ((_ref2 = this.dragger) != null) {
       _ref2.makeHandlers(newCircs);
     }
@@ -1446,7 +1462,7 @@ Tactile.ColumnRenderer = (function(_super) {
       _ref3.updateDraggedNode();
     }
     this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     }).attr("cy", function(d) {
@@ -1462,10 +1478,10 @@ Tactile.ColumnRenderer = (function(_super) {
         }
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
-      return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(' ');
+      return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
     }).attr("fill", function(d) {
       if (d.dragged || d === _this.active) {
-        return 'white';
+        return "white";
       } else {
         return _this.series.color;
       }
@@ -1473,9 +1489,9 @@ Tactile.ColumnRenderer = (function(_super) {
       if (d.dragged || d === _this.active) {
         return _this.series.color;
       } else {
-        return 'white';
+        return "white";
       }
-    }).attr("stroke-width", 2).attr('id', function(d, i) {
+    }).attr("stroke-width", 2).attr("id", function(d, i) {
       return "node-" + i + "-" + d.x;
     }).style("cursor", function(d, i) {
       if (_this.utils.ourFunctor(_this.series.isEditable, d, i)) {
@@ -1498,6 +1514,18 @@ Tactile.ColumnRenderer = (function(_super) {
       });
     }
     return this.setupTooltips();
+  };
+
+  ColumnRenderer.prototype.hideCircles = function() {
+    var _this = this;
+
+    return this.seriesDraggableCanvas().selectAll("circle").style("display", function(d) {
+      if (d === _this.active) {
+        return "";
+      } else {
+        return "none";
+      }
+    });
   };
 
   ColumnRenderer.prototype.setupTooltips = function() {
@@ -1531,18 +1559,18 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = false;
     this.graph.discoverRange(this);
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     });
     transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("cy", this._barY);
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
     return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).delay(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
@@ -1554,20 +1582,20 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstack = true;
     this.graph.discoverRange(this);
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
     transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).delay(transitionSpeed / 2).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
     }).attr("y", this._barY);
     return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, "x", "y");
     }).delay(transitionSpeed / 2).attr("cy", this._barY);
   };
 
@@ -1598,7 +1626,7 @@ Tactile.ColumnRenderer = (function(_super) {
     }
     if (this.unstack) {
       width = width / this.graph.series.filter(function(d) {
-        return d.renderer === 'column';
+        return d.renderer === "column";
       }).array.length;
     }
     return width;
