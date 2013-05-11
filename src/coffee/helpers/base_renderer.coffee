@@ -129,6 +129,7 @@ class Tactile.RendererBase
 
   delete: ->
     @seriesCanvas()?.remove()
+    @seriesDraggableCanvas()?.remove()
 
   _nameToId: ->
     #TODO: handle empty name
