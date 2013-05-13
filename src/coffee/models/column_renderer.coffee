@@ -13,7 +13,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @dragger = new Tactile.Dragger(renderer: @)
     @gapSize = options.gapSize || @gapSize
     @round = @series.round unless @series.round is undefined
-    @unstack = @series.unstack unless @series.round is undefined
+    @unstack = @series.unstack unless @series.unstack is undefined
 
   render: (transition)=>
     @_checkData()
