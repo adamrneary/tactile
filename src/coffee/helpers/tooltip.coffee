@@ -54,7 +54,11 @@ class Tactile.Tooltip
           center[0] = @options.position[0]
           center[1] = @options.position[1]
         else
-          hoveredNode = @el.node().getBoundingClientRect()
+
+          if @options.graph.series[0].renderer is "donut"
+            hoveredNode = @el.node().parentNode.getBoundingClientRect()
+          else
+            hoveredNode = @el.node().getBoundingClientRect()
           center[0] = hoveredNode.left + hoveredNode.width / 2
           center[1] = hoveredNode.top
           if @options.graph.series[0].renderer is "donut"

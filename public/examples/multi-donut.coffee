@@ -49,50 +49,56 @@ chart = new Tactile.Chart()
     name: "grapefruit"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color1
       value: d.val1
+      label: d.label
   ,
     name: "kiwis"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color2
       value: d.val2
+      label: d.label
   ,
     name: "cherries"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color3
       value: d.val3
+      label: d.label
   ,
     name: "oranges"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color4
       value: d.val4
+      label: d.label
   ,
     name: "apples"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color5
       value: d.val5
+      label: d.label
   ,
     name: "peaches"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     dataTransform: (d) ->
       color: d.color6
       value: d.val6
+      label: d.label
   ]
 
 chart.render()
