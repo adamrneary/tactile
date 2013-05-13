@@ -55,6 +55,13 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       circ = @seriesDraggableCanvas().selectAll("#node-#{i}-#{d.x}")
       circ.style("display", "")
 
+    nodes.on "mouseout.hide-dragging-circle", (d, i) =>
+      return if d is @active
+      circ = @seriesDraggableCanvas().selectAll("#node-#{i}-#{d.x}")
+      circ.style("display", "none")
+
+
+
     circ = @seriesDraggableCanvas().selectAll("circle")
       .data(@series.stack)
 
