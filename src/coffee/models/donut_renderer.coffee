@@ -61,7 +61,6 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
         center = arc.centroid(d)
         center[0] -= 10 # because tooltip have left margin 10
-        console.log d
 
         color: @series.color
         graph: @graph
