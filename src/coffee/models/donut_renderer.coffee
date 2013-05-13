@@ -53,11 +53,20 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
   setupTooltips: =>
     if @series.tooltip
       @seriesCanvas().selectAll("path").tooltip (d, i) =>
+        arc = d3.svg.arc()
+          .startAngle(@_startAngle(d, i))
+          .endAngle(@_endAngle(d, i))
+          .innerRadius(if @unstack then @getInnerRadius() else @getStackedInnerRadius())
+          .outerRadius(if @unstack then @getOuterRadius() else @getStackedOuterRadius())
+
+        center = arc.centroid(d)
+        center[0] -= 10 # because tooltip have left margin 10
+
         color: @series.color
         graph: @graph
         text: @series.tooltip(d)
         gravity: "right"
-        displacement: [-10, 0]# because tooltip have left margin 10
+        displacement: center
 
   getOuterRadius: =>
     @outerRadius
