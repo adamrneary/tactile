@@ -14,7 +14,7 @@ data = [
   period: 1330560000
   customers: 86
   newCustomers: 12
-  churnedCustomers: -10
+  churnedCustomers: -200
 ,
   period: 1333238400
   customers: 88
@@ -47,7 +47,7 @@ data = [
   churnedCustomers: -5
 ]
 
-chart = new Tactile.Chart()
+chart = new Tactile.Chart(min: 'auto')
   .element($("#example_view")[0])
   .data(data)
   .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})

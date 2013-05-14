@@ -30,7 +30,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("y", (d)=> @_barY(d) + 0.5)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth() / (1 + @gapSize))
-      .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
 
     nodes.exit().remove()
@@ -78,13 +77,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     count = data.length
     barWidth = @graph.width() / count * (1 - @gapSize)
 
-  _transformMatrix: (d) =>
-    # A matrix transform for handling negative values
-    matrix = [1, 0, 0, ((if d.y+ d.y00 < 0 then -1 else 1)),
-              0, ((if d.y+ d.y00 < 0 then @graph.y.magnitude(Math.abs(d.y+ d.y00)) * 2 else 0))
-    ]
-    "matrix(" + matrix.join(",") + ")"
-
   _seriesBarWidth: =>
     if @series.stack.length >= 2
       stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
@@ -109,9 +101,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
   _barY: (d, i) =>
     if d.y > 0
-      @graph.y(Math.abs(d.y+d.y00)) * (if d.y+d.y00 < 0 then -1 else 1)
+      @graph.y(d.y + d.y00)
     else
-      @graph.y(Math.abs(d.y00)) * (if d.y00 < 0 then -1 else 1)
+      @graph.y(d.y00)
 
   _waterfalRendererIndex: ->
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
