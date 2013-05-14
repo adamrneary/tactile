@@ -155,8 +155,9 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   _xOffset: =>
 
   _yOffset: (d, i)=>
+    console.log @graph.height()
     yMargin = (@graph.height() - @series.stack.length * @barHeight) / (@series.stack.length + 1)
-    yMargin + (@barHeight + yMargin) * @_index(d, i)
+    yMargin + @barHeight + (@barHeight + yMargin) * @_index(d, i)
 
   _index: (d, i) =>
     if !isNaN(d.index) and d.index?

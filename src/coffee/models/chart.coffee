@@ -117,7 +117,7 @@ class Tactile.Chart
     @initSeriesStackData()
     @_setupCanvas()
     @stackData()
-    transitionSpeed ||= @transitionSpeed
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
@@ -284,7 +284,7 @@ class Tactile.Chart
     @timesRendered = 0
 
   stackTransition: (transitionSpeed)=>
-    transitionSpeed = @transitionSpeed unless transitionSpeed
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
@@ -294,7 +294,7 @@ class Tactile.Chart
 
 
   unstackTransition: (transitionSpeed)=>
-    transitionSpeed = @transitionSpeed unless transitionSpeed
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
