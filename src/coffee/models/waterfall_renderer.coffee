@@ -16,6 +16,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
+      @seriesDraggableCanvas().selectAll("line").data(@series.stack).remove()
       return
 
     nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
@@ -26,8 +27,8 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
-      .attr("height", (d) => (@graph.y.magnitude Math.abs(d.y)) - 1)
-      .attr("y", (d)=> @_barY(d) + 0.5)
+      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .attr("y", (d)=> @_barY(d))
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth() / (1 + @gapSize))
       .attr("transform", @_transformMatrix)
@@ -35,7 +36,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     nodes.exit().remove()
 
-    line = @seriesCanvas().selectAll("line").data(@series.stack)
+    line = @seriesDraggableCanvas().selectAll("line").data(@series.stack)
     line.enter()
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
