@@ -5525,9 +5525,8 @@ Tactile.Chart = (function() {
         rangeStart = barWidth;
         rangeEnd = this.width() - barWidth;
       }
-      xframe = [(((_ref = this.axes().x) != null ? (_ref1 = _ref.frame) != null ? _ref1[0] : void 0 : void 0) !== void 0 ? this.axes().x.frame[0] : domain.x[0]), (((_ref2 = this.axes().x) != null ? (_ref3 = _ref2.frame) != null ? _ref3[1] : void 0 : void 0) !== void 0 ? this.axes().x.frame[1] : domain.x[1])];
-      console.log(xframe);
-      yframe = [(((_ref4 = this.axes().y) != null ? (_ref5 = _ref4.frame) != null ? _ref5[0] : void 0 : void 0) !== void 0 ? this.axes().y.frame[0] : domain.y[0]), (((_ref6 = this.axes().y) != null ? (_ref7 = _ref6.frame) != null ? _ref7[1] : void 0 : void 0) !== void 0 ? this.axes().y.frame[1] : domain.y[1])];
+      xframe = [(((_ref = this.axes().x) != null ? (_ref1 = _ref.frame) != null ? _ref1[0] : void 0 : void 0) ? this.axes().x.frame[0] : domain.x[0]), (((_ref2 = this.axes().x) != null ? (_ref3 = _ref2.frame) != null ? _ref3[1] : void 0 : void 0) ? this.axes().x.frame[1] : domain.x[1])];
+      yframe = [(((_ref4 = this.axes().y) != null ? (_ref5 = _ref4.frame) != null ? _ref5[0] : void 0 : void 0) ? this.axes().y.frame[0] : domain.y[0]), (((_ref6 = this.axes().y) != null ? (_ref7 = _ref6.frame) != null ? _ref7[1] : void 0 : void 0) ? this.axes().y.frame[1] : domain.y[1])];
       this.x = d3.scale.linear().domain(xframe).range([rangeStart || 0, rangeEnd || this.width()]);
       this.y = d3.scale.linear().domain(yframe).range([this.height(), 0]);
       this.y.magnitude = d3.scale.linear().domain([0, domain.y[1] - domain.y[0]]).range([0, this.height()]);
