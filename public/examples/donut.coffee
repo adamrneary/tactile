@@ -35,7 +35,7 @@ chart = new Tactile.Chart()
     name: "optional desc here"
     renderer: "donut"
     tooltip: (d) ->
-      d.label + " " + d.val
+      d.label + " " + d.value
     color: "#c05020"
 
 chart.render()
