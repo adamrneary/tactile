@@ -325,17 +325,6 @@ class Tactile.Chart
     return @_element unless val
     @_element = val
 
-#    $(@_element).mousedown(()->
-#      console.log "mosuedown"
-#      $(@_element).mousedown(()->
-#        console.log "mosuedown"
-#      )
-#    )
-
-#    $(document).on("mousedown", "#example_view", ()->
-#      console.log "mosudeown"
-#    )
-
     d3.select(@_element)
       .on("mousedown.plot-drag", @_plotDrag)
       .on("touchstart.plot-drag", @_plotDrag)
