@@ -32,6 +32,11 @@ class Tactile.Chart
       dimension: "linear"
       frame: [undefined, undefined]
 
+  autoScale: true
+  defaultXFrame: [0, 1]
+  defaultYFrame: [0, 1]
+
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @renderers = []
@@ -56,6 +61,18 @@ class Tactile.Chart
 
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
+
+    xframe = args.xframe or @defaultXFrame
+    yframe = args.yframe or @defaultYFrame
+    @x = d3.scale.linear()
+      .domain(xframe)
+      .range([0, @width()])
+    @y = d3.scale.linear()
+      .domain(yframe)
+      .range([@height(), 0])
+    @y.magnitude = d3.scale.linear()
+      .domain([0, @y.domain()[1] - @y.domain()[0]])
+      .range([0, @height()])
 
   # Adds series to the chart and creates renderer instance for it
   # Note: you may pass a single object here or an array of them
@@ -121,7 +138,7 @@ class Tactile.Chart
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
-      @discoverRange(renderer)
+      @discoverRange(renderer) if @autoScale
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
@@ -155,13 +172,11 @@ class Tactile.Chart
         (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
       ]
 
-      @x = d3.scale.linear()
-        .domain(xframe)
+      @x.domain(xframe)
         .range([rangeStart || 0, rangeEnd || @width()])
-      @y = d3.scale.linear()
-        .domain(yframe)
+      @y.domain(yframe)
         .range([@height(), 0])
-      @y.magnitude = d3.scale.linear()
+      @y.magnitude
         .domain([0, domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
@@ -309,6 +324,17 @@ class Tactile.Chart
   element: (val) ->
     return @_element unless val
     @_element = val
+
+    d3.select(@_element).call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+      @svg.call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+        @render(0)
+      )
+      )
+      @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+      @render(0)
+    )
+    )
     @_setupCanvas()
     @elementChangeCallbacks.forEach (callback) -> callback()
     @

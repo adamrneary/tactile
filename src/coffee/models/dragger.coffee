@@ -48,6 +48,8 @@ class Tactile.Dragger
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
     @dragged = {d: d, i: i, y: d.y, x: d.x}
     @update()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
   _mouseMove: =>
     p = d3.svg.mouse(@graph.draggableVis.node())
@@ -76,6 +78,9 @@ class Tactile.Dragger
       @dragged.y = value
       @onDrag(@dragged, @series, @graph)
       @update()
+      d3.event.preventDefault()
+      d3.event.stopPropagation()
+
 
   _mouseUp: =>
     return unless @dragged?.y?
@@ -96,6 +101,8 @@ class Tactile.Dragger
 
     @renderer.transitionSpeed = @setSpeed
     @update()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
   update: =>
     @renderer.render()
