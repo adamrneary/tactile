@@ -321,7 +321,7 @@ class Tactile.Chart
   # expose public variables
   #############################################################################
 
-  element: (val) ->
+  element: (val) =>
     return @_element unless val
     @_element = val
 
@@ -337,10 +337,12 @@ class Tactile.Chart
           .on("mouseup.plot-drag",   @_mouseup)
           .on("touchend.plot-drag",  @_mouseup)
           .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+            return if @autoScale
             @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
             @render(0)
         )
         )
+        return if @autoScale
         @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
         @render(0)
       )
@@ -459,8 +461,10 @@ class Tactile.Chart
   _allSeriesDisabled: ->
     _.every(@series.array, (s) -> s.disabled is true)
 
-  _plotDrag: ->
+  _plotDrag: =>
+    return if @autoScale
     d3.select("body").style("cursor", "move")
 
-  _mouseup: ->
+  _mouseup: =>
+    return if @autoScale
     d3.select("body").style("cursor", "auto")
