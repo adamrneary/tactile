@@ -146,6 +146,21 @@ class Tactile.Chart
 
     @updateCallbacks.forEach (callback) ->
       callback()
+
+    d3.select(@_element)
+      .on("mousedown.plot-drag", @_plotDrag)
+      .on("touchstart.plot-drag", @_plotDrag)
+      .on("mousemove.drag", @_mousemove)
+      .on("touchmove.drag", @_mousemove)
+      .on("mouseup.plot-drag",   @_mouseup)
+      .on("touchend.plot-drag",  @_mouseup)
+      .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+        return if @autoScale
+        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+        @render(0)
+      )
+      )
+
     @timesRendered++
 
   update: ->
@@ -328,20 +343,11 @@ class Tactile.Chart
     d3.select(@_element)
       .on("mousedown.plot-drag", @_plotDrag)
       .on("touchstart.plot-drag", @_plotDrag)
+      .on("mousemove.drag", @_mousemove)
+      .on("touchmove.drag", @_mousemove)
       .on("mouseup.plot-drag",   @_mouseup)
       .on("touchend.plot-drag",  @_mouseup)
       .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
-        d3.select(@_element)
-          .on("mousedown.plot-drag", @_plotDrag)
-          .on("touchstart.plot-drag", @_plotDrag)
-          .on("mouseup.plot-drag",   @_mouseup)
-          .on("touchend.plot-drag",  @_mouseup)
-          .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
-            return if @autoScale
-            @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
-            @render(0)
-        )
-        )
         return if @autoScale
         @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
         @render(0)
@@ -468,3 +474,12 @@ class Tactile.Chart
   _mouseup: =>
     return if @autoScale
     d3.select("body").style("cursor", "auto")
+    @axes().x._mouseUp()
+    @axes().y._mouseUp()
+
+  _mousemove: =>
+    return if @autoScale
+    @axes().x._mouseMove()
+    @axes().y._mouseMove()
+
+

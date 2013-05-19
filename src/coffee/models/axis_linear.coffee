@@ -13,6 +13,8 @@ class Tactile.AxisLinear
     @tickFormat = options.tickFormat or (d) -> d
     @frame = options.frame
 
+    @down = Math.NaN
+
     @_setupForOrientation()
 
   render: (transition) ->
@@ -32,6 +34,11 @@ class Tactile.AxisLinear
       .tickSize(@tickSize)
 
     transition.select('.' + className).call(axis)
+
+    @g.selectAll("text")
+      .style("cursor", if @horizontal then "ew-resize" else "ns-resize")
+      .on("mousedown.drag",  @_axisDrag)
+      .on("touchstart.drag", @_axisDrag);
 
   destroy: ->
     @g.remove()
@@ -53,7 +60,7 @@ class Tactile.AxisLinear
 
       @ticks ?= Math.floor(@graph.height() / pixelsPerTick)
 
-  _checkOptions: ()=>
+  _checkOptions: =>
     if @options.ticksTreatment?
       @utils.checkString(@options.ticksTreatment, "AxisLinear options.ticksTreatment")
 
@@ -68,3 +75,36 @@ class Tactile.AxisLinear
         @options.frame.forEach((d, i)=>
           @utils.checkNumber(d, "AxisLinear options.frame[#{i}]") if d?
         )
+
+  _axisDrag: =>
+    p = d3.svg.mouse(@graph.svg.node())
+    @down = if @horizontal then @graph.x.invert(p[0]) else @graph.y.invert(p[1])
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  _mouseMove: =>
+    return if isNaN(@down)
+    p = d3.svg.mouse(@graph.svg.node())
+    d3.select("body").style("cursor", if @horizontal then "ew-resize" else "ns-resize")
+    if @horizontal then axis = @graph.x else axis = @graph.y
+
+    rup = axis.invert(if @horizontal then p[0] else p[1])
+    axis1 = axis.domain()[0]
+    axis2 = axis.domain()[1]
+    extent = axis2 - axis1
+
+    if rup isnt 0
+      change = @down / rup
+      new_domain = [axis1, axis1 + (extent * change)]
+      axis.domain(new_domain);
+
+    @graph.render(0)
+
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  _mouseUp: =>
+    return if isNaN(@down)
+    @down = Math.NaN;
+    d3.event.preventDefault()
+    d3.event.stopPropagation()

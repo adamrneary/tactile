@@ -135,12 +135,12 @@
     stroke: rgba(0, 0, 0, 0.16);
     stroke-width: 2px;
     shape-rendering: crisp-edges;
-    pointer-events: none;
+    //pointer-events: none;
   }
 
   text {
     opacity: 0.5;
-    pointer-events: none;
+    //pointer-events: none;
     fill: black;
     font-size: 11px;
     text-transform: uppercase;
@@ -179,7 +179,7 @@
   top: 0;
   bottom: 0;
   width: 0px;
-  pointer-events: none;
+  //pointer-events: none;
 
   .title, text {
     font-size: 12px;
@@ -355,7 +355,7 @@
 /* hover detail */
 
 .metric-inner-container .detail, .graph-container .detail {
-  pointer-events: none;
+  //pointer-events: none;
   position: absolute;
   top: 0;
   z-index: 100;
