@@ -45,10 +45,10 @@ tickFormat = (d) ->
   if d > 99 then d / 100 + "★" else "#{d*10}☢"
 
 chart = new Tactile.Chart(
-  autoScale: false
-  xframe: [0, 10]
-  yframe: [0, 500]
-)
+    autoScale: false
+    xframe: [0, 10]
+    yframe: [0, 500]
+  )
   .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
   .element($("#example_view")[0])
   .data(data)
@@ -87,11 +87,21 @@ sl = $("<div>")
   .attr("id", "slider")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
+
+
 sl.slider
   min: 0
-  max: 8
-  values: frameVal
+  max: 20
+  values: chart.x.domain()
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.x.domain(ui.values)
     chart.render()
+
+
+chart.onUpdate(()->
+  sl.slider
+    min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
+    max: if chart.x.domain()[1] > 20 then chart.x.domain()[1] else 20
+    values: chart.x.domain()
+)

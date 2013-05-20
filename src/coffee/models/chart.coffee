@@ -474,12 +474,12 @@ class Tactile.Chart
   _mouseup: =>
     return if @autoScale
     d3.select("body").style("cursor", "auto")
-    @axes().x._mouseUp()
-    @axes().y._mouseUp()
+    @axes()?.x?._mouseUp()
+    @axes()?.y?._mouseUp()
 
   _mousemove: =>
     return if @autoScale
-    @axes().x._mouseMove()
-    @axes().y._mouseMove()
+    @axes()?.x?._mouseMove()
+    @axes()?.y?._mouseMove()
 
 
