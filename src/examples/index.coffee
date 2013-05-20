@@ -69,6 +69,9 @@ components = [
 ,
   shortLink:"stacked-column-big-data"
   title: "Stacked column big data"
+,
+  shortLink:"zoom"
+  title: "zoom"
 ]
 
 # core = [

@@ -61,6 +61,10 @@ class Tactile.AxisTime
       .attr("y", @marginTop)
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
       .attr("class", 'title')
+      .style("cursor", "ew-resize")
+      .on("mousedown.drag",  @_axisDrag)
+      .on("touchstart.drag", @_axisDrag);
+
 
     ticks
       .attr("transform",
@@ -88,3 +92,36 @@ class Tactile.AxisTime
         @options.frame.forEach((d, i)=>
           @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
         )
+
+  _axisDrag: ()=>
+    p = d3.svg.mouse(@graph.svg.node())
+    @down = @graph.x.invert(p[0])
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  _mouseMove: =>
+    return if isNaN(@down)
+    p = d3.svg.mouse(@graph.svg.node())
+    d3.select("body").style("cursor", "ew-resize")
+    axis = @graph.x
+
+    rup = axis.invert(p[0])
+    axis1 = axis.domain()[0]
+    axis2 = axis.domain()[1]
+    extent = axis2 - axis1
+
+    if rup isnt 0
+      change = @down / rup
+      new_domain = [axis1, axis1 + (extent * change)]
+      axis.domain(new_domain);
+
+    @graph.render(0)
+
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  _mouseUp: =>
+    return if isNaN(@down)
+    @down = Math.NaN;
+    d3.event.preventDefault()
+    d3.event.stopPropagation()

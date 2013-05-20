@@ -32,6 +32,11 @@ class Tactile.Chart
       dimension: "linear"
       frame: [undefined, undefined]
 
+  autoScale: true
+  defaultXFrame: [0, 1]
+  defaultYFrame: [0, 1]
+
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @renderers = []
@@ -56,6 +61,18 @@ class Tactile.Chart
 
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
+
+    xframe = args.xframe or @defaultXFrame
+    yframe = args.yframe or @defaultYFrame
+    @x = d3.scale.linear()
+      .domain(xframe)
+      .range([0, @width()])
+    @y = d3.scale.linear()
+      .domain(yframe)
+      .range([@height(), 0])
+    @y.magnitude = d3.scale.linear()
+      .domain([0, @y.domain()[1] - @y.domain()[0]])
+      .range([0, @height()])
 
   # Adds series to the chart and creates renderer instance for it
   # Note: you may pass a single object here or an array of them
@@ -85,7 +102,7 @@ class Tactile.Chart
     stackedData = layout(seriesData)
 
     i = 0
-    maxLen = 0;
+    maxLen = 0
     while i < stackedData.length
       maxLen = Math.max(maxLen, stackedData[i].length)
       i++
@@ -97,7 +114,7 @@ class Tactile.Chart
       while j < stackedData.length
         if stackedData[j][i]
           y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, stackedData[j][i], i)
-          stackedData[j][i].y00 = y00;
+          stackedData[j][i].y00 = y00
           y00 += stackedData[j][i].y
         j++
       i++
@@ -121,7 +138,7 @@ class Tactile.Chart
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
-      @discoverRange(renderer)
+      @discoverRange(renderer) if @autoScale
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
@@ -129,6 +146,21 @@ class Tactile.Chart
 
     @updateCallbacks.forEach (callback) ->
       callback()
+
+    d3.select(@_element)
+      .on("mousedown.plot-drag", @_plotDrag)
+      .on("touchstart.plot-drag", @_plotDrag)
+      .on("mousemove.drag", @_mousemove)
+      .on("touchmove.drag", @_mousemove)
+      .on("mouseup.plot-drag",   @_mouseup)
+      .on("touchend.plot-drag",  @_mouseup)
+      .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+        return if @autoScale
+        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+        @render(0)
+      )
+      )
+
     @timesRendered++
 
   update: ->
@@ -155,20 +187,18 @@ class Tactile.Chart
         (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
       ]
 
-      @x = d3.scale.linear()
-        .domain(xframe)
+      @x.domain(xframe)
         .range([rangeStart || 0, rangeEnd || @width()])
-      @y = d3.scale.linear()
-        .domain(yframe)
+      @y.domain(yframe)
         .range([@height(), 0])
-      @y.magnitude = d3.scale.linear()
+      @y.magnitude
         .domain([0, domain.y[1] - domain.y[0]])
         .range([0, @height()])
 
       unless renderer.series.ofDefaultAxis()
         @y1 = d3.scale.linear()
           .domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
-          .range([@height(), 0]);
+          .range([@height(), 0])
 
 
   axes: (args) ->
@@ -212,7 +242,7 @@ class Tactile.Chart
     @stackedData = layout(defaultScaleSeriesData)
 
     i = 0
-    maxLen = 0;
+    maxLen = 0
     while i < @stackedData.length
       maxLen = Math.max(maxLen, @stackedData[i].length)
       i++
@@ -224,7 +254,7 @@ class Tactile.Chart
       while j < @stackedData.length
         if @stackedData[j][i]
           y00 = 0 if @utils.ourFunctor(@series[j].fromBaseline, @stackedData[j][i], i)
-          @stackedData[j][i].y00 = y00;
+          @stackedData[j][i].y00 = y00
           y00 += @stackedData[j][i].y
         j++
       i++
@@ -306,9 +336,23 @@ class Tactile.Chart
   # expose public variables
   #############################################################################
 
-  element: (val) ->
+  element: (val) =>
     return @_element unless val
     @_element = val
+
+    d3.select(@_element)
+      .on("mousedown.plot-drag", @_plotDrag)
+      .on("touchstart.plot-drag", @_plotDrag)
+      .on("mousemove.drag", @_mousemove)
+      .on("touchmove.drag", @_mousemove)
+      .on("mouseup.plot-drag",   @_mouseup)
+      .on("touchend.plot-drag",  @_mouseup)
+      .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+        return if @autoScale
+        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+        @render(0)
+      )
+      )
     @_setupCanvas()
     @elementChangeCallbacks.forEach (callback) -> callback()
     @
@@ -422,4 +466,20 @@ class Tactile.Chart
 
   _allSeriesDisabled: ->
     _.every(@series.array, (s) -> s.disabled is true)
+
+  _plotDrag: =>
+    return if @autoScale
+    d3.select("body").style("cursor", "move")
+
+  _mouseup: =>
+    return if @autoScale
+    d3.select("body").style("cursor", "auto")
+    @axes()?.x?._mouseUp()
+    @axes()?.y?._mouseUp()
+
+  _mousemove: =>
+    return if @autoScale
+    @axes()?.x?._mouseMove()
+    @axes()?.y?._mouseMove()
+
 
