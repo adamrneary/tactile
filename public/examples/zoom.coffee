@@ -41,15 +41,21 @@ data = [
   z: undefined
 ]
 
-tickFormat = (d) ->
-  if d > 99 then d / 100 + "★" else "#{d*10}☢"
+xTickFormat = (d) ->
+  if d > 99 then (d / 100).toFixed(2) + "★" else "#{(d*10).toFixed(2)}☢"
+
+yTickFormat = (d) ->
+  if d > 99 then (d / 100).toFixed() + "★" else "#{(d*10).toFixed()}☢"
 
 chart = new Tactile.Chart(
     autoScale: false
-    xframe: [0, 10]
-    yframe: [0, 500]
+    xFrame: [0, 10]
+    yFrame: [0, 500]
+    availableXFrame: [0, 15]
+    availableYFrame: [0, 1000]
+    minXFrame: 0.1
   )
-  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
+  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: xTickFormat}, y: {dimension: "linear", tickFormat: yTickFormat}})
   .element($("#example_view")[0])
   .data(data)
   .addSeries [
@@ -91,7 +97,7 @@ $("#below-chart").html sl
 
 sl.slider
   min: 0
-  max: 20
+  max: 15
   values: chart.x.domain()
   range: true
   slide: (event, ui) ->
@@ -102,6 +108,6 @@ sl.slider
 chart.onUpdate(()->
   sl.slider
     min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
-    max: if chart.x.domain()[1] > 20 then chart.x.domain()[1] else 20
+    max: if chart.x.domain()[1] > 15 then chart.x.domain()[1] else 15
     values: chart.x.domain()
 )
