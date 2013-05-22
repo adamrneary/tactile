@@ -163,6 +163,7 @@ class Tactile.Chart
     @updateCallbacks.forEach (callback) ->
       callback()
 
+    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     d3.select(@_element)
       .on("mousedown.plot-drag", @_plotDrag)
       .on("touchstart.plot-drag", @_plotDrag)
@@ -172,7 +173,6 @@ class Tactile.Chart
       .on("touchend.plot-drag",  @_mouseup)
       .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
         return if @autoScale
-        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
         @render(0)
       )
       )
