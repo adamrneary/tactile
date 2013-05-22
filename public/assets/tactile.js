@@ -3416,13 +3416,27 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultYFrame = [0, 1];
 
+  Chart.prototype.defaultAvailableXFrame = [-Infinity, Infinity];
+
+  Chart.prototype.defaultAvailableYFrame = [-Infinity, Infinity];
+
+  Chart.prototype.defaultMinXFrame = 1;
+
+  Chart.prototype.defaultMinYFrame = 1;
+
+  Chart.prototype.defaultMaxXFrame = Infinity;
+
+  Chart.prototype.defaultMaxYFrame = Infinity;
+
   function Chart(args) {
-    var xframe, yframe,
+    var xFrame, yFrame,
       _this = this;
 
     if (args == null) {
       args = {};
     }
+    this._checkYdomain = __bind(this._checkYdomain, this);
+    this._checkXdomain = __bind(this._checkXdomain, this);
     this._mousemove = __bind(this._mousemove, this);
     this._mouseup = __bind(this._mouseup, this);
     this._plotDrag = __bind(this._plotDrag, this);
@@ -3455,10 +3469,16 @@ Tactile.Chart = (function() {
     this.addSeries(args.series, {
       overwrite: true
     });
-    xframe = args.xframe || this.defaultXFrame;
-    yframe = args.yframe || this.defaultYFrame;
-    this.x = d3.scale.linear().domain(xframe).range([0, this.width()]);
-    this.y = d3.scale.linear().domain(yframe).range([this.height(), 0]);
+    xFrame = args.xFrame || this.defaultXFrame;
+    yFrame = args.yFrame || this.defaultYFrame;
+    this.availableXFrame = args.availableXFrame || this.defaultAvailableXFrame;
+    this.availableYFrame = args.availableYFrame || this.defaultAvailableYFrame;
+    this.minXFrame = args.minXFrame || this.defaultMinXFrame;
+    this.minYFrame = args.minYFrame || this.defaultMinYFrame;
+    this.maxXFrame = args.maxXFrame || this.defaultMaxXFrame;
+    this.maxYFrame = args.maxYFrame || this.defaultMaxYFrame;
+    this.x = d3.scale.linear().domain(xFrame).range([0, this.width()]);
+    this.y = d3.scale.linear().domain(yFrame).range([this.height(), 0]);
     this.y.magnitude = d3.scale.linear().domain([0, this.y.domain()[1] - this.y.domain()[0]]).range([0, this.height()]);
   }
 
@@ -3547,6 +3567,8 @@ Tactile.Chart = (function() {
     this.initSeriesStackData();
     this._setupCanvas();
     this.stackData();
+    this._checkXdomain();
+    this._checkYdomain();
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
@@ -3974,6 +3996,58 @@ Tactile.Chart = (function() {
       }
     }
     return (_ref2 = this.axes()) != null ? (_ref3 = _ref2.y) != null ? _ref3._mouseMove() : void 0 : void 0;
+  };
+
+  Chart.prototype._checkXdomain = function() {
+    var max, maxXFrame, middle, min, minXFrame;
+
+    min = this.x.domain()[0];
+    max = this.x.domain()[1];
+    minXFrame = this.utils.ourFunctor(this.minXFrame, [min, max]);
+    if (max - min < minXFrame) {
+      middle = (max + min) / 2;
+      min = middle - minXFrame / 2;
+      max = middle + minXFrame / 2;
+    }
+    maxXFrame = this.utils.ourFunctor(this.maxXFrame, [min, max]);
+    if (max - min > maxXFrame) {
+      middle = (max + min) / 2;
+      min = middle - maxXFrame / 2;
+      max = middle + maxXFrame / 2;
+    }
+    if (min < this.availableXFrame[0]) {
+      min = this.availableXFrame[0];
+    }
+    if (max > this.availableXFrame[1]) {
+      max = this.availableXFrame[1];
+    }
+    return this.x.domain([min, max]);
+  };
+
+  Chart.prototype._checkYdomain = function() {
+    var max, maxYFrame, middle, min, minYFrame;
+
+    min = this.y.domain()[0];
+    max = this.y.domain()[1];
+    minYFrame = this.utils.ourFunctor(this.minYFrame, [min, max]);
+    if (max - min < minYFrame) {
+      middle = (max + min) / 2;
+      min = middle - minYFrame / 2;
+      max = middle + minYFrame / 2;
+    }
+    maxYFrame = this.utils.ourFunctor(this.maxYFrame, [min, max]);
+    if (max - min > maxYFrame) {
+      middle = (max + min) / 2;
+      min = middle - maxYFrame / 2;
+      max = middle + maxYFrame / 2;
+    }
+    if (min < this.availableYFrame[0]) {
+      min = this.availableYFrame[0];
+    }
+    if (max > this.availableYFrame[1]) {
+      max = this.availableYFrame[1];
+    }
+    return this.y.domain([min, max]);
   };
 
   return Chart;
