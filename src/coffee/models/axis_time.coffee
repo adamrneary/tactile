@@ -42,29 +42,13 @@ class Tactile.AxisTime
 
   render: (transition)->
     return unless @graph.x?
-    @g = @graph.vis.selectAll('.x-ticks').data([0])
-    @g.enter().append('g').attr('class', 'x-ticks')
 
-    tickData = @tickOffsets().filter((tick) =>
-      @graph.x.range()[0] <= @graph.x(tick.value) <= @graph.x.range()[1])
-
-    ticks = @g.selectAll('g.x-tick')
-      .data(@tickOffsets(), (d) -> d.value)
+    ticks = @graph.vis.selectAll('g.x-tick')
+      .data(@tickOffsets())
 
     ticks.enter()
       .append('g')
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
-      .attr("transform",
-        (d) =>
-          "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
-      .append('text')
-      .attr("y", @marginTop)
-      .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
-      .attr("class", 'title')
-      .style("cursor", "ew-resize")
-      .on("mousedown.drag",  @_axisDrag)
-      .on("touchstart.drag", @_axisDrag);
-
 
     ticks
       .attr("transform",
@@ -72,6 +56,21 @@ class Tactile.AxisTime
           "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
 
     ticks.exit().remove()
+
+    @graph.vis.selectAll('g.x-tick').each((d, i)->
+      text = d3.select(@).selectAll("text").data([d])
+      text.enter()
+        .append("text")
+        .attr("class", "title")
+        .style("cursor", "ew-resize")
+        .on("mousedown.drag",  @_axisDrag)
+        .on("touchstart.drag", @_axisDrag);
+      text.exit().remove()
+    )
+
+    @graph.vis.selectAll("g.x-tick").selectAll("text")
+      .attr("y", @marginTop)
+      .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
 
   destroy: ->
     @g.remove()
