@@ -53,6 +53,15 @@ data = [
   actual: 3
   plan: undefined
 ]
+
+
+unit =
+  name: "month"
+  seconds: 86400 * 30.5
+  formatter: (d) =>
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months[d.getUTCMonth()]
+
 chart = new Tactile.Chart(
     autoScale: false
     xFrame: frameVal
@@ -63,7 +72,7 @@ chart = new Tactile.Chart(
   )
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'time', frame: frameVal, timeUnit:unit}, y: {dimension: "linear"}})
   .addSeries [
     name: "reach actual"
     renderer: "column"
