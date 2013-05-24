@@ -29,7 +29,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @setActive)# set active element if click on it
+      .on("mousedown", (d, i)=>
+        @setActive(d, i) # set active element if click on it
+        @hideCircles()
+      )
 
 
     @transition.selectAll(".#{@_nameToId()} rect")
@@ -60,16 +63,24 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     nodes.on "mouseout.hide-dragging-circle", (d, i) =>
       return if d is @active
       circ = @seriesDraggableCanvas().selectAll("#node-#{i}-#{d.x}")
+      return if d3.event.relatedTarget is circ.node()
       circ.style("display", "none")
-
-
 
     circ = @seriesDraggableCanvas().selectAll("circle")
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
-      .on("click", @setActive)# set active element if click on it
       .style("display", "none")
+      .on("mousedown", (d, i)=>
+        @setActive(d, i) # set active element if click on it
+        @hideCircles()
+      )
+      .on( "mouseout.hide-dragging-circle", (d, i) =>
+        return if d is @active
+        circ = @seriesDraggableCanvas().selectAll("#node-#{i}-#{d.x}")
+        return if d3.event.relatedTarget is circ.node()
+        circ.style("display", "none")
+      )
 
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
