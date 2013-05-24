@@ -823,7 +823,7 @@ Tactile.AreaRenderer = (function(_super) {
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('class', 'stroke').attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color);
     this.transition.selectAll("." + (this._nameToId()) + " path.stroke").attr("d", this.seriesStrokeFactory());
     circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
-    newCircs = circ.enter().append("svg:circle").on("click", this.setActive);
+    newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
     if ((_ref1 = this.dragger) != null) {
       _ref1.makeHandlers(newCircs);
     }
@@ -1102,31 +1102,28 @@ Tactile.AxisTime = (function() {
   };
 
   AxisTime.prototype.render = function(transition) {
-    var tickData, ticks,
+    var ticks,
       _this = this;
 
     if (this.graph.x == null) {
       return;
     }
-    this.g = this.graph.vis.selectAll('.x-ticks').data([0]);
-    this.g.enter().append('g').attr('class', 'x-ticks');
-    tickData = this.tickOffsets().filter(function(tick) {
-      var _ref;
-
-      return (_this.graph.x.range()[0] <= (_ref = _this.graph.x(tick.value)) && _ref <= _this.graph.x.range()[1]);
-    });
-    ticks = this.g.selectAll('g.x-tick').data(this.tickOffsets(), function(d) {
-      return d.value;
-    });
-    ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d) {
-      return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
-    }).append('text').attr("y", this.marginTop).text(function(d) {
-      return d.unit.formatter(new Date(d.value * 1000));
-    }).attr("class", 'title').style("cursor", "ew-resize").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
+    ticks = this.graph.vis.selectAll('g.x-tick').data(this.tickOffsets());
+    ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' '));
     ticks.attr("transform", function(d) {
       return "translate(" + (_this.graph.x(d.value)) + ", " + _this.graph.marginedHeight + ")";
     });
-    return ticks.exit().remove();
+    ticks.exit().remove();
+    this.graph.vis.selectAll('g.x-tick').each(function(d, i) {
+      var text;
+
+      text = d3.select(this).selectAll("text").data([d]);
+      text.enter().append("text").attr("class", "title").style("cursor", "ew-resize").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
+      return text.exit().remove();
+    });
+    return this.graph.vis.selectAll("g.x-tick").selectAll("text").attr("y", this.marginTop).text(function(d) {
+      return d.unit.formatter(new Date(d.value * 1000));
+    });
   };
 
   AxisTime.prototype.destroy = function() {
@@ -1544,7 +1541,10 @@ Tactile.ColumnRenderer = (function(_super) {
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
+    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", function(d, i) {
+      _this.setActive(d, i);
+      return _this.hideCircles();
+    });
     this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).attr("height", function(d) {
@@ -1567,10 +1567,25 @@ Tactile.ColumnRenderer = (function(_super) {
         return;
       }
       circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+      if (d3.event.relatedTarget === circ.node()) {
+        return;
+      }
       return circ.style("display", "none");
     });
     circ = this.seriesDraggableCanvas().selectAll("circle").data(this.series.stack);
-    newCircs = circ.enter().append("svg:circle").on("click", this.setActive).style("display", "none");
+    newCircs = circ.enter().append("svg:circle").style("display", "none").on("mousedown", function(d, i) {
+      _this.setActive(d, i);
+      return _this.hideCircles();
+    }).on("mouseout.hide-dragging-circle", function(d, i) {
+      if (d === _this.active) {
+        return;
+      }
+      circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+      if (d3.event.relatedTarget === circ.node()) {
+        return;
+      }
+      return circ.style("display", "none");
+    });
     if ((_ref2 = this.dragger) != null) {
       _ref2.makeHandlers(newCircs);
     }
@@ -2958,7 +2973,7 @@ Tactile.LineRenderer = (function(_super) {
       return;
     }
     circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
-    newCircs = circ.enter().append("svg:circle").on("click", this.setActive);
+    newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
     if ((_ref1 = this.dragger) != null) {
       _ref1.makeHandlers(newCircs);
     }
