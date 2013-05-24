@@ -60,7 +60,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .data(@series.stack)
 
     newCircs = circ.enter().append("svg:circle")
-      .on("click", @setActive)# set active element if click on it
+      .on("mousedown", @setActive)# set active element if click on it
 
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode(circ)
