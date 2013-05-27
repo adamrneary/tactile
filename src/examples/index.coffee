@@ -72,6 +72,9 @@ components = [
 ,
   shortLink:"zoom"
   title: "zoom"
+,
+  shortLink:"column-zoom"
+  title: "Column zoom"
 ]
 
 # core = [
