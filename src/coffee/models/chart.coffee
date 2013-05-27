@@ -148,8 +148,8 @@ class Tactile.Chart
     @initSeriesStackData()
     @_setupCanvas()
     @stackData()
-    @_checkXdomain()
-    @_checkYdomain()
+    @_checkXDomain()
+    @_checkYDomain()
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
@@ -163,6 +163,7 @@ class Tactile.Chart
     @updateCallbacks.forEach (callback) ->
       callback()
 
+    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     d3.select(@_element)
       .on("mousedown.plot-drag", @_plotDrag)
       .on("touchstart.plot-drag", @_plotDrag)
@@ -172,7 +173,6 @@ class Tactile.Chart
       .on("touchend.plot-drag",  @_mouseup)
       .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
         return if @autoScale
-        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
         @render(0)
       )
       )
@@ -498,45 +498,59 @@ class Tactile.Chart
     @axes()?.x?._mouseMove()
     @axes()?.y?._mouseMove()
 
-  _checkXdomain: ()=>
+  _checkXDomain: ()=>
     min = @x.domain()[0]
     max = @x.domain()[1]
 
+    min = @availableXFrame[0] if min < @availableXFrame[0]
+    min = @availableXFrame[1] if min > @availableXFrame[1]
+
+    max = @availableXFrame[1] if max > @availableXFrame[1]
+    max = @availableXFrame[1] if max < @availableXFrame[0]
+
     minXFrame = @utils.ourFunctor(@minXFrame, [min, max])
     if max - min < minXFrame
-      middle = (max+min) / 2
+      middle = (max + min) / 2
+      middle = @availableXFrame[1] - minXFrame / 2 if middle + minXFrame / 2 > @availableXFrame[1]
+      middle = @availableXFrame[0] + minXFrame / 2 if middle - minXFrame / 2 < @availableXFrame[0]
       min = middle - minXFrame / 2
       max = middle + minXFrame / 2
 
     maxXFrame = @utils.ourFunctor(@maxXFrame, [min, max])
     if max - min > maxXFrame
-      middle = (max+min) / 2
+      middle = (max + min) / 2
+      middle = @availableXFrame[1] - maxXFrame / 2 if middle + maxXFrame / 2 > @availableXFrame[1]
+      middle = @availableXFrame[0] + maxXFrame / 2 if middle - maxXFrame / 2 < @availableXFrame[0]
       min = middle - maxXFrame / 2
       max = middle + maxXFrame / 2
 
-    min = @availableXFrame[0] if min < @availableXFrame[0]
-    max = @availableXFrame[1] if max > @availableXFrame[1]
-
     @x.domain([min, max])
 
-  _checkYdomain: ()=>
+  _checkYDomain: ()=>
     min = @y.domain()[0]
     max = @y.domain()[1]
 
+    min = @availableYFrame[0] if min < @availableYFrame[0]
+    min = @availableYFrame[1] if min > @availableYFrame[1]
+
+    max = @availableYFrame[1] if max > @availableYFrame[1]
+    max = @availableYFrame[1] if max < @availableYFrame[0]
+
     minYFrame = @utils.ourFunctor(@minYFrame, [min, max])
     if max - min < minYFrame
-      middle = (max+min) / 2
+      middle = (max + min) / 2
+      middle = @availableYFrame[1] - minYFrame / 2 if middle + minYFrame / 2 > @availableYFrame[1]
+      middle = @availableYFrame[0] + minYFrame / 2 if middle - minYFrame / 2 < @availableYFrame[0]
       min = middle - minYFrame / 2
       max = middle + minYFrame / 2
 
     maxYFrame = @utils.ourFunctor(@maxYFrame, [min, max])
     if max - min > maxYFrame
-      middle = (max+min) / 2
+      middle = (max + min) / 2
+      middle = @availableYFrame[1] - maxYFrame / 2 if middle + maxYFrame / 2 > @availableYFrame[1]
+      middle = @availableYFrame[0] + maxYFrame / 2 if middle - maxYFrame / 2 < @availableYFrame[0]
       min = middle - maxYFrame / 2
       max = middle + maxYFrame / 2
-
-    min = @availableYFrame[0] if min < @availableYFrame[0]
-    max = @availableYFrame[1] if max > @availableYFrame[1]
 
     @y.domain([min, max])
 
