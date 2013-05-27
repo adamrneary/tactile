@@ -1,56 +1,56 @@
-frameVal = [1330560000, 1354320000]
-# time (period here) is unix milliseconds/1000
+frameVal = [1330560000000, 1354320000000]
+# time (period here) is unix milliseconds
 data = [
-  period: 1325376000
+  period: 1325376000000
   actual: 4
   plan: 1
 ,
-  period: 1328054500
+  period: 1328054500000
   actual: 5
   plan: 1
 ,
-  period: 1330560000
+  period: 1330560000000
   actual: 6
   plan: 2
 ,
-  period: 1333238400
+  period: 1333238400000
   actual: 7
   plan: 3
 ,
-  period: 1335830400
+  period: 1335830400000
   actual: 6
   plan: 5
 ,
-  period: 1338508800
+  period: 1338508800000
   actual: 5
   plan: 8
 ,
-  period: 1341100800
+  period: 1341100800000
   actual: 4
   plan: 5
 ,
-  period: 1343779200
+  period: 1343779200000
   actual: 5
   plan: 3
 ,
-  period: 1346457600
+  period: 1346457600000
   actual: 6
   plan: 2
 ,
-  period: 1349049600
+  period: 1349049600000
   actual: 7
   plan: 1
 ,
-  period: 1351728000
+  period: 1351728000000
   actual: 6
   plan: 1
 ,
-  period: 1354320000
+  period: 1354320000000
   actual: 5
   plan: 2
 ,
   period: undefined
-  actual: 3
+  actual: 30
   plan: undefined
 ]
 chart = new Tactile.Chart()
@@ -102,8 +102,8 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 1325376000
-  max: 1354320000
+  min: 1325376000000
+  max: 1354320000000
   values: frameVal
   range: true
   slide: (event, ui) ->

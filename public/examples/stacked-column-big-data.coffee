@@ -1,12 +1,12 @@
 maxCount = 100
-frameVal = [1330560000, 1330560000 + 2678400*maxCount]
+frameVal = [1330560000000, 1330560000000 + 2678400*maxCount]
 
 generateData = (count) =>
   data = []
   i = 0
   while i < count
     data[i] =
-      period: 1325376000+2678400*i
+      period: 1325376000000+2678400*i
       y0: Math.floor Math.random()*100
       y1: Math.floor Math.random()*100
       y2: Math.floor Math.random()*100
@@ -111,8 +111,8 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 1330560000
-  max: 1330560000 + 2678400*maxCount
+  min: 1330560000000
+  max: 1330560000000 + 2678400*maxCount
   values: frameVal
   range: true
   slide: (event, ui) ->

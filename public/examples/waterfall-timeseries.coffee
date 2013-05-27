@@ -1,37 +1,37 @@
-frameVal = [1325376000, 1343779200]
-# time (period here) is unix milliseconds/1000
+frameVal = [1325376000000, 1343779200000]
+# time (period here) is unix milliseconds
 data = [
-  period: 1325376000
+  period: 1325376000000
   customers: 100
   newCustomers: 10
   churnedCustomers: -20
 ,
-  period: 1328054500
+  period: 1328054500000
   customers: 90
   newCustomers: 11
   churnedCustomers: -15
 ,
-  period: 1330560000
+  period: 1330560000000
   customers: 86
   newCustomers: 12
   churnedCustomers: -200
 ,
-  period: 1333238400
+  period: 1333238400000
   customers: 88
   newCustomers: 14
   churnedCustomers: -9
 ,
-  period: 1335830400
+  period: 1335830400000
   customers: 93
   newCustomers: 16
   churnedCustomers: -8
 ,
-  period: 1338508800
+  period: 1338508800000
   customers: 101
   newCustomers: 20
   churnedCustomers: -7
 ,
-  period: 1341100800
+  period: 1341100800000
   customers: 114
   newCustomers: 30
   churnedCustomers: -6
@@ -41,7 +41,7 @@ data = [
   newCustomers: null
   churnedCustomers: -5
 ,
-  period: 1343779200
+  period: 1343779200000
   customers: 138
   newCustomers: 40
   churnedCustomers: -5
