@@ -45,7 +45,7 @@ xTickFormat = (d) ->
   if d > 99 then (d / 100).toFixed(2) + "★" else "#{(d*10).toFixed(2)}☢"
 
 yTickFormat = (d) ->
-  if d > 99 then (d / 100).toFixed() + "★" else "#{(d*10).toFixed()}☢"
+  if d > 99 then (d / 100).toFixed(1) + "★" else "#{(d*10).toFixed()}☢"
 
 chart = new Tactile.Chart(
     autoScale: false
@@ -54,6 +54,12 @@ chart = new Tactile.Chart(
     availableXFrame: [0, 15]
     availableYFrame: [0, 1000]
     minXFrame: 0.1
+    minYFrame: 100
+    margin:
+      top: 20
+      right: 20
+      bottom: 20
+      left: 30
   )
   .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: xTickFormat}, y: {dimension: "linear", tickFormat: yTickFormat}})
   .element($("#example_view")[0])
