@@ -69,24 +69,22 @@ class Tactile.Chart
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
 
-    xFrame = args.xFrame or @defaultXFrame
-    yFrame = args.yFrame or @defaultYFrame
-    @availableXFrame = args.availableXFrame or @defaultAvailableXFrame
-    @availableYFrame = args.availableYFrame or @defaultAvailableYFrame
-    @minXFrame = args.minXFrame or @defaultMinXFrame
-    @minYFrame = args.minYFrame or @defaultMinYFrame
-    @maxXFrame = args.maxXFrame or @defaultMaxXFrame
-    @maxYFrame = args.maxYFrame or @defaultMaxYFrame
 
     @x = d3.scale.linear()
-      .domain(xFrame)
       .range([0, @width()])
     @y = d3.scale.linear()
-      .domain(yFrame)
       .range([@height(), 0])
     @y.magnitude = d3.scale.linear()
-      .domain([0, @y.domain()[1] - @y.domain()[0]])
       .range([0, @height()])
+
+    @setXFrame xFrame: args.xFrame or @defaultXFrame
+    @setYFrame yFrame: args.yFrame or @defaultYFrame
+    @setAvailableXFrame availableXFrame: args.availableXFrame or @defaultAvailableXFrame
+    @setAvailableYFrame availableYFrame: args.availableYFrame or @defaultAvailableYFrame
+    @setMinXFrame minXFrame: args.minXFrame or @defaultMinXFrame
+    @setMinYFrame minYFrame: args.minYFrame or @defaultMinYFrame
+    @setMaxXFrame maxXFrame: args.maxXFrame or @defaultMaxXFrame
+    @setMaxYFrame maxYFrame: args.maxYFrame or @defaultMaxYFrame
 
   # Adds series to the chart and creates renderer instance for it
   # Note: you may pass a single object here or an array of them
@@ -102,6 +100,47 @@ class Tactile.Chart
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
     @
+
+  setXFrame: (args = {})=>
+    @xFrame = args.xFrame or @defaultXFrame
+    @x.domain(@xFrame)
+    @
+
+  setYFrame: (args = {})=>
+    @yFrame = args.yFrame or @defaultYFrame
+    @y.domain(@yFrame)
+    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+    @
+
+  setAvailableXFrame: (args = {})=>
+    @availableXFrame = args.availableXFrame or @defaultAvailableXFrame
+    @
+
+  setAvailableYFrame: (args = {})=>
+    @availableYFrame = args.availableYFrame or @defaultAvailableYFrame
+    @
+
+  setMinXFrame: (args = {})=>
+    @minXFrame = args.minXFrame or @defaultMinXFrame
+    @
+
+  setMinYFrame: (args = {})=>
+    @minYFrame = args.minYFrame or @defaultMinYFrame
+    @
+
+  setMaxXFrame: (args = {})=>
+    @maxXFrame = args.maxXFrame or @defaultMaxXFrame
+    @
+
+  setMaxYFrame: (args = {})=>
+    @maxYFrame = args.maxYFrame or @defaultMaxYFrame
+    @
+
+  autoScale: (val)=>
+    return @autoScale if val is undefined
+    @autoScale = val
+    @
+
 
   initSeriesStackData: (options = {overwrite: false}) ->
     return if @dataInitialized and not options.overwrite
