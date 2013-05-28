@@ -43,7 +43,11 @@ class Tactile.AxisTime
   render: (transition)->
     return unless @graph.x?
 
-    ticks = @graph.vis.selectAll('g.x-tick')
+    @g = @graph.vis.selectAll('g.x-ticks').data([0])
+    @g.enter().append('g').attr('class', 'x-ticks')
+
+
+    ticks = @g.selectAll('g.x-tick')
       .data(@tickOffsets())
 
     ticks.enter()
@@ -57,7 +61,7 @@ class Tactile.AxisTime
 
     ticks.exit().remove()
 
-    @graph.vis.selectAll('g.x-tick').each((d, i)->
+    @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
       text.enter()
         .append("text")
@@ -68,7 +72,7 @@ class Tactile.AxisTime
       text.exit().remove()
     )
 
-    @graph.vis.selectAll("g.x-tick").selectAll("text")
+    @g.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
       .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
 
