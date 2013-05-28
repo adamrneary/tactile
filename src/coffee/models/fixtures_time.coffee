@@ -18,6 +18,7 @@ class Tactile.FixturesTime
     ]
 
     @units =  [
+      # seconds: [time_in_milliseconds]
       name: "decade"
       seconds: 86400000 * 365.25 * 10
       formatter: (d) ->
@@ -96,5 +97,5 @@ class Tactile.FixturesTime
       rounded.setUTCMinutes 0
       rounded.setUTCSeconds 0
       rounded.setUTCMilliseconds 0
-      return rounded.getTime() / 1000
+      return rounded.getTime()
     Math.ceil(time / unit.seconds) * unit.seconds

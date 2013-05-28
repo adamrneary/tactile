@@ -236,7 +236,6 @@ class Tactile.Chart
       when "linear"
         @axesList[args.axis] = new Tactile.AxisLinear args
       when "time"
-        console.log "initAxes", "time"
         @axesList[args.axis] = new Tactile.AxisTime args
       else
         console.warn("Tactile error: #{args.dimension} is not currently implemented")

@@ -1,6 +1,5 @@
 class Tactile.AxisTime
   constructor: (options) ->
-    console.log "TactileAxisTime.constructor"
     @utils = new Tactile.Utils()
     @options = options
     @_checkOptions()
@@ -72,7 +71,6 @@ class Tactile.AxisTime
     @graph.vis.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
       .text((d) ->
-        console.log ".text((d) ->", d
         d.unit.formatter(new Date(d.value)))
 
   destroy: ->
