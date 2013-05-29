@@ -36,13 +36,18 @@ class Tactile.Chart
   autoScale: true
   defaultXFrame: [0, 1]
   defaultYFrame: [0, 1]
+  defaultY1Frame: [0, 1]
   defaultAvailableXFrame: [-Infinity, Infinity]
   defaultAvailableYFrame: [-Infinity, Infinity]
+  defaultAvailableY1Frame: [-Infinity, Infinity]
   defaultMinXFrame: 1
   defaultMinYFrame: 1
+  defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
+  defaultMaxY1Frame: Infinity
 
+  _lastYTranslate: 0
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
@@ -51,6 +56,7 @@ class Tactile.Chart
     @series = new Tactile.SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
+    @manipulateCallbacks = []
     @elementChangeCallbacks = []
     @timesRendered = 0
     @utils = new Tactile.Utils()
@@ -76,15 +82,23 @@ class Tactile.Chart
       .range([@height(), 0])
     @y.magnitude = d3.scale.linear()
       .range([0, @height()])
+    @y1 = d3.scale.linear()
+      .range([@height(), 0])
+    @y1.magnitude = d3.scale.linear()
+      .range([0, @height()])
 
-    @setXFrame xFrame: args.xFrame or @defaultXFrame
-    @setYFrame yFrame: args.yFrame or @defaultYFrame
-    @setAvailableXFrame availableXFrame: args.availableXFrame or @defaultAvailableXFrame
-    @setAvailableYFrame availableYFrame: args.availableYFrame or @defaultAvailableYFrame
-    @setMinXFrame minXFrame: args.minXFrame or @defaultMinXFrame
-    @setMinYFrame minYFrame: args.minYFrame or @defaultMinYFrame
-    @setMaxXFrame maxXFrame: args.maxXFrame or @defaultMaxXFrame
-    @setMaxYFrame maxYFrame: args.maxYFrame or @defaultMaxYFrame
+    @setXFrame args.xFrame or @defaultXFrame
+    @setYFrame args.yFrame or @defaultYFrame
+    @setY1Frame args.y1Frame or @defaultY1Frame
+    @setAvailableXFrame args.availableXFrame or @defaultAvailableXFrame
+    @setAvailableYFrame args.availableYFrame or @defaultAvailableYFrame
+    @setAvailableY1Frame args.availableY1Frame or @defaultAvailableY1Frame
+    @setMinXFrame args.minXFrame or @defaultMinXFrame
+    @setMinYFrame args.minYFrame or @defaultMinYFrame
+    @setMinY1Frame args.minY1Frame or @defaultMinY1Frame
+    @setMaxXFrame args.maxXFrame or @defaultMaxXFrame
+    @setMaxYFrame args.maxYFrame or @defaultMaxYFrame
+    @setMaxY1Frame args.maxY1Frame or @defaultMaxY1Frame
 
   # Adds series to the chart and creates renderer instance for it
   # Note: you may pass a single object here or an array of them
@@ -101,39 +115,57 @@ class Tactile.Chart
     @initRenderers(newSeries)
     @
 
-  setXFrame: (args = {})=>
-    @xFrame = args.xFrame or @defaultXFrame
+  setXFrame: (xFrame)=>
+    @xFrame = xFrame or @defaultXFrame
     @x.domain(@xFrame)
     @
 
-  setYFrame: (args = {})=>
-    @yFrame = args.yFrame or @defaultYFrame
+  setYFrame: (yFrame)=>
+    @yFrame = yFrame or @defaultYFrame
     @y.domain(@yFrame)
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @
 
-  setAvailableXFrame: (args = {})=>
-    @availableXFrame = args.availableXFrame or @defaultAvailableXFrame
+  setY1Frame: (y1Frame)=>
+    @y1Frame = y1Frame or @defaultY1Frame
+    @y1.domain(@y1Frame)
+    @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
     @
 
-  setAvailableYFrame: (args = {})=>
-    @availableYFrame = args.availableYFrame or @defaultAvailableYFrame
+  setAvailableXFrame: (availableXFrame)=>
+    @availableXFrame = availableXFrame or @defaultAvailableXFrame
     @
 
-  setMinXFrame: (args = {})=>
-    @minXFrame = args.minXFrame or @defaultMinXFrame
+  setAvailableYFrame: (availableYFrame)=>
+    @availableYFrame = availableYFrame or @defaultAvailableYFrame
     @
 
-  setMinYFrame: (args = {})=>
-    @minYFrame = args.minYFrame or @defaultMinYFrame
+  setAvailableY1Frame: (availableY1Frame)=>
+    @availableY1Frame = availableY1Frame or @defaultAvailableY1Frame
     @
 
-  setMaxXFrame: (args = {})=>
-    @maxXFrame = args.maxXFrame or @defaultMaxXFrame
+  setMinXFrame: (minXFrame)=>
+    @minXFrame = minXFrame or @defaultMinXFrame
     @
 
-  setMaxYFrame: (args = {})=>
-    @maxYFrame = args.maxYFrame or @defaultMaxYFrame
+  setMinYFrame: (minYFrame)=>
+    @minYFrame = minYFrame or @defaultMinYFrame
+    @
+
+  setMinY1Frame: (minY1Frame)=>
+    @minY1Frame = minY1Frame or @defaultMinY1Frame
+    @
+
+  setMaxXFrame: (maxXFrame)=>
+    @maxXFrame = maxXFrame or @defaultMaxXFrame
+    @
+
+  setMaxYFrame: (maxYFrame)=>
+    @maxYFrame = maxYFrame or @defaultMaxYFrame
+    @
+
+  setMaxY1Frame: (maxY1Frame)=>
+    @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
   autoScale: (val)=>
@@ -189,6 +221,7 @@ class Tactile.Chart
     @stackData()
     @_checkXDomain()
     @_checkYDomain()
+    @_checkY1Domain()
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
@@ -203,6 +236,8 @@ class Tactile.Chart
       callback()
 
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+    @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
+    zoom = d3.behavior.zoom()
     d3.select(@_element)
       .on("mousedown.plot-drag", @_plotDrag)
       .on("touchstart.plot-drag", @_plotDrag)
@@ -210,12 +245,19 @@ class Tactile.Chart
       .on("touchmove.drag", @_mousemove)
       .on("mouseup.plot-drag",   @_mouseup)
       .on("touchend.plot-drag",  @_mouseup)
-      .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
+      .call(zoom.x(@x).y(@y).on("zoom", ()=>
         return if @autoScale
+
+        dy = d3.event.translate[1] - @_lastYTranslate
+        dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
+        @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
+        @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
+        @_lastYTranslate = d3.event.translate[1];
+        @manipulateCallbacks.forEach (callback) ->
+          callback()
         @render(0)
       )
       )
-
     @timesRendered++
 
   update: ->
@@ -340,6 +382,9 @@ class Tactile.Chart
   onUpdate: (callback) ->
     @updateCallbacks.push callback
 
+  onManipulate: (callback) ->
+    @manipulateCallbacks.push callback
+
   onElementChange: (callback) ->
     @elementChangeCallbacks.push callback
 
@@ -395,19 +440,6 @@ class Tactile.Chart
     return @_element unless val
     @_element = val
 
-    d3.select(@_element)
-      .on("mousedown.plot-drag", @_plotDrag)
-      .on("touchstart.plot-drag", @_plotDrag)
-      .on("mousemove.drag", @_mousemove)
-      .on("touchmove.drag", @_mousemove)
-      .on("mouseup.plot-drag",   @_mouseup)
-      .on("touchend.plot-drag",  @_mouseup)
-      .call(d3.behavior.zoom().x(@x).y(@y).on("zoom", ()=>
-        return if @autoScale
-        @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
-        @render(0)
-      )
-      )
     @_setupCanvas()
     @elementChangeCallbacks.forEach (callback) -> callback()
     @
@@ -531,11 +563,14 @@ class Tactile.Chart
     d3.select("body").style("cursor", "auto")
     @axes()?.x?._mouseUp()
     @axes()?.y?._mouseUp()
+    @axes()?.y1?._mouseUp()
+    @_lastYTranslate = 0
 
   _mousemove: =>
     return if @autoScale
     @axes()?.x?._mouseMove()
     @axes()?.y?._mouseMove()
+    @axes()?.y1?._mouseMove()
 
   _checkXDomain: ()=>
     min = @x.domain()[0]
@@ -593,4 +628,31 @@ class Tactile.Chart
 
     @y.domain([min, max])
 
+  _checkY1Domain: ()=>
+    min = @y1.domain()[0]
+    max = @y1.domain()[1]
+
+    min = @availableY1Frame[0] if min < @availableY1Frame[0]
+    min = @availableY1Frame[1] if min > @availableY1Frame[1]
+
+    max = @availableY1Frame[1] if max > @availableY1Frame[1]
+    max = @availableY1Frame[1] if max < @availableY1Frame[0]
+
+    minY1Frame = @utils.ourFunctor(@minY1Frame, [min, max])
+    if max - min < minY1Frame
+      middle = (max + min) / 2
+      middle = @availableY1Frame[1] - minY1Frame / 2 if middle + minY1Frame / 2 > @availableY1Frame[1]
+      middle = @availableY1Frame[0] + minY1Frame / 2 if middle - minY1Frame / 2 < @availableY1Frame[0]
+      min = middle - minY1Frame / 2
+      max = middle + minY1Frame / 2
+
+    maxY1Frame = @utils.ourFunctor(@maxY1Frame, [min, max])
+    if max - min > maxY1Frame
+      middle = (max + min) / 2
+      middle = @availableY1Frame[1] - maxY1Frame / 2 if middle + maxY1Frame / 2 > @availableY1Frame[1]
+      middle = @availableY1Frame[0] + maxY1Frame / 2 if middle - maxY1Frame / 2 < @availableY1Frame[0]
+      min = middle - maxY1Frame / 2
+      max = middle + maxY1Frame / 2
+
+    @y1.domain([min, max])
 
