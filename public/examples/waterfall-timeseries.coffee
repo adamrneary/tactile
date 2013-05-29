@@ -1,37 +1,37 @@
-frameVal = [1325376000, 1343779200]
-# time (period here) is unix milliseconds/1000
+frameVal = [new Date(2012,  0, 1).getTime(), new Date(2012,  7, 1).getTime()] # = [2012-Jan, 2012-Aug]
+# time (period here) is unix milliseconds
 data = [
-  period: 1325376000
+  period: new Date(2012,  0, 1).getTime()
   customers: 100
   newCustomers: 10
   churnedCustomers: -20
 ,
-  period: 1328054500
+  period: new Date(2012,  1, 1).getTime()
   customers: 90
   newCustomers: 11
   churnedCustomers: -15
 ,
-  period: 1330560000
+  period: new Date(2012,  2, 1).getTime()
   customers: 86
   newCustomers: 12
   churnedCustomers: -200
 ,
-  period: 1333238400
+  period: new Date(2012,  3, 1).getTime()
   customers: 88
   newCustomers: 14
   churnedCustomers: -9
 ,
-  period: 1335830400
+  period: new Date(2012,  4, 1).getTime()
   customers: 93
   newCustomers: 16
   churnedCustomers: -8
 ,
-  period: 1338508800
+  period: new Date(2012,  5, 1).getTime()
   customers: 101
   newCustomers: 20
   churnedCustomers: -7
 ,
-  period: 1341100800
+  period: new Date(2012,  6, 1).getTime()
   customers: 114
   newCustomers: 30
   churnedCustomers: -6
@@ -41,7 +41,7 @@ data = [
   newCustomers: null
   churnedCustomers: -5
 ,
-  period: 1343779200
+  period: new Date(2012,  7, 1).getTime()
   customers: 138
   newCustomers: 40
   churnedCustomers: -5
@@ -90,8 +90,8 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 1325376000
-  max: 1354320000
+  min: new Date(2012,  0, 1).getTime()
+  max: new Date(2012, 11, 1).getTime()
   values: frameVal
   range: true
   slide: (event, ui) ->
