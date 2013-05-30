@@ -70,7 +70,8 @@ class Tactile.AxisTime
 
     @graph.vis.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
-      .text((d) -> d.unit.formatter(new Date(d.value * 1000)))
+      .text((d) ->
+        d.unit.formatter(new Date(d.value)))
 
   destroy: ->
     @g.remove()

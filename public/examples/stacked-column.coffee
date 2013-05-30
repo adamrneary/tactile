@@ -1,51 +1,51 @@
-frameVal = [1330560000, 1354320000]
+frameVal = [new Date(2012, 2, 1).getTime(), new Date(2012, 11, 1).getTime()] # = [2012-Mar-1, 2012-Dec-1]
 data = [
-  # time (period here) is unix milliseconds/1000
-  period: 1325376000
+  # time (period here) is unix milliseconds
+  period: new Date(2012,  0, 1).getTime()
   actual: 4
   plan: 1
 ,
-  period: 1328054400
+  period: new Date(2012,  1, 1).getTime()
   actual: 5
   plan: 1
 ,
-  period: 1330560000
+  period: new Date(2012,  2, 1).getTime()
   actual: 6
   plan: 2
 ,
-  period: 1333238400
+  period: new Date(2012,  3, 1).getTime()
   actual: 7
   plan: 3
 ,
-  period: 1335830400
+  period: new Date(2012,  4, 1).getTime()
   actual: 6
   plan: 5
 ,
-  period: 1338508800
+  period: new Date(2012,  5, 1).getTime()
   actual: 5
   plan: 8
 ,
-  period: 1341100800
+  period: new Date(2012,  6, 1).getTime()
   actual: 4
   plan: 5
 ,
-  period: 1343779200
+  period: new Date(2012,  7, 1).getTime()
   actual: 5
   plan: 3
 ,
-  period: 1346457600
+  period: new Date(2012,  8, 1).getTime()
   actual: 6
   plan: 2
 ,
-  period: 1349049600
+  period: new Date(2012,  9, 1).getTime()
   actual: 7
   plan: 1
 ,
-  period: 1351728000
+  period: new Date(2012, 10, 1).getTime()
   actual: 6
   plan: 1
 ,
-  period: 1354320000
+  period: new Date(2012, 11, 1).getTime()
   actual: 5
   plan: 2
 ]
@@ -119,8 +119,8 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 1325376000
-  max: 1354320000
+  min: new Date(2012,  0, 1).getTime()
+  max: new Date(2012, 11, 1).getTime()
   values: frameVal
   range: true
   slide: (event, ui) ->

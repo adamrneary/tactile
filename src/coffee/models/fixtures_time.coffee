@@ -18,58 +18,59 @@ class Tactile.FixturesTime
     ]
 
     @units =  [
+      # seconds: [time_in_milliseconds]
       name: "decade"
-      seconds: 86400 * 365.25 * 10
+      seconds: 86400000 * 365.25 * 10
       formatter: (d) ->
         parseInt(d.getUTCFullYear() / 10) * 10
     ,
       name: "year"
-      seconds: 86400 * 365.25
+      seconds: 86400000 * 365.25
       formatter: (d) ->
         d.getUTCFullYear()
     ,
       name: "month"
-      seconds: 86400 * 30.5
+      seconds: 86400000 * 30.5
       formatter: (d) =>
         @months[d.getUTCMonth()]
     ,
       name: "week"
-      seconds: 86400 * 7
+      seconds: 86400000 * 7
       formatter: (d) =>
         @formatDate d
     ,
       name: "day"
-      seconds: 86400
+      seconds: 86400000
       formatter: (d) ->
         d.getUTCDate()
     ,
       name: "6 hour"
-      seconds: 3600 * 6
+      seconds: 3600000 * 6
       formatter: (d) =>
         @formatTime d
     ,
       name: "hour"
-      seconds: 3600
+      seconds: 3600000
       formatter: (d) =>
         @formatTime d
     ,
       name: "15 minute"
-      seconds: 60 * 15
+      seconds: 60000 * 15
       formatter: (d) =>
         @formatTime d
     ,
       name: "minute"
-      seconds: 60
+      seconds: 60000
       formatter: (d) ->
         d.getUTCMinutes()
     ,
       name: "15 second"
-      seconds: 15
+      seconds: 15000
       formatter: (d) ->
         d.getUTCSeconds() + "s"
     ,
       name: "second"
-      seconds: 1
+      seconds: 1000
       formatter: (d) ->
         d.getUTCSeconds() + "s"
     ]
@@ -87,7 +88,7 @@ class Tactile.FixturesTime
 
   ceil: (time, unit) ->
     if unit.name is "year"
-      nearFuture = new Date((time + unit.seconds - 1) * 1000)
+      nearFuture = new Date((time + unit.seconds - 1))
       rounded = new Date(0)
       rounded.setUTCFullYear nearFuture.getUTCFullYear()
       rounded.setUTCMonth 0
@@ -96,5 +97,5 @@ class Tactile.FixturesTime
       rounded.setUTCMinutes 0
       rounded.setUTCSeconds 0
       rounded.setUTCMilliseconds 0
-      return rounded.getTime() / 1000
+      return rounded.getTime()
     Math.ceil(time / unit.seconds) * unit.seconds
