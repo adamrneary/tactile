@@ -75,6 +75,9 @@ components = [
 ,
   shortLink:"column-zoom"
   title: "Column zoom"
+,
+  shortLink:"dual-scaled-zoom"
+  title: "Secondary y-axis zoom"
 ]
 
 # core = [

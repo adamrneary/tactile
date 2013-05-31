@@ -43,7 +43,11 @@ class Tactile.AxisTime
   render: (transition)->
     return unless @graph.x?
 
-    ticks = @graph.vis.selectAll('g.x-tick')
+    @g = @graph.vis.selectAll('g.x-ticks').data([0])
+    @g.enter().append('g').attr('class', 'x-ticks')
+
+
+    ticks = @g.selectAll('g.x-tick')
       .data(@tickOffsets())
 
     ticks.enter()
@@ -57,18 +61,20 @@ class Tactile.AxisTime
 
     ticks.exit().remove()
 
-    @graph.vis.selectAll('g.x-tick').each((d, i)->
+    @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
       text.enter()
         .append("text")
         .attr("class", "title")
         .style("cursor", "ew-resize")
-        .on("mousedown.drag",  @_axisDrag)
-        .on("touchstart.drag", @_axisDrag);
       text.exit().remove()
     )
 
-    @graph.vis.selectAll("g.x-tick").selectAll("text")
+    @g.selectAll("text")
+      .on("mousedown.drag",  @_axisDrag)
+      .on("touchstart.drag", @_axisDrag)
+
+    @g.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
       .text((d) ->
         d.unit.formatter(new Date(d.value)))
@@ -110,10 +116,9 @@ class Tactile.AxisTime
     axis2 = axis.domain()[1]
     extent = axis2 - axis1
 
-    if rup isnt 0
-      change = @down / rup
-      new_domain = [axis1, axis1 + (extent * change)]
-      axis.domain(new_domain);
+    if rup - axis1 isnt 0
+      new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
+      axis.domain(new_domain)
 
     @graph.render(0)
 
@@ -123,5 +128,7 @@ class Tactile.AxisTime
   _mouseUp: =>
     return if isNaN(@down)
     @down = Math.NaN;
+    @graph.manipulateCallbacks.forEach (callback) ->
+      callback()
     d3.event.preventDefault()
     d3.event.stopPropagation()

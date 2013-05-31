@@ -78,7 +78,7 @@ class Tactile.AxisLinear
 
   _axisDrag: =>
     p = d3.svg.mouse(@graph.svg.node())
-    @down = if @horizontal then @graph.x.invert(p[0]) else @graph.y.invert(p[1])
+    @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
     d3.event.preventDefault()
     d3.event.stopPropagation()
 
@@ -86,16 +86,17 @@ class Tactile.AxisLinear
     return if isNaN(@down)
     p = d3.svg.mouse(@graph.svg.node())
     d3.select("body").style("cursor", if @horizontal then "ew-resize" else "ns-resize")
-    if @horizontal then axis = @graph.x else axis = @graph.y
+    axis = @graph[@options.axis]
 
     rup = axis.invert(if @horizontal then p[0] else p[1])
     axis1 = axis.domain()[0]
     axis2 = axis.domain()[1]
     extent = axis2 - axis1
 
-    if rup isnt 0
+    if rup - axis1 isnt 0
       change = @down / rup
       new_domain = [axis1, axis1 + (extent * change)]
+      new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain);
 
     @graph.render(0)
@@ -106,5 +107,7 @@ class Tactile.AxisLinear
   _mouseUp: =>
     return if isNaN(@down)
     @down = Math.NaN;
+    @graph.manipulateCallbacks.forEach (callback) ->
+      callback()
     d3.event.preventDefault()
     d3.event.stopPropagation()

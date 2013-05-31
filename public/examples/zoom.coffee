@@ -111,7 +111,7 @@ sl.slider
     chart.render()
 
 
-chart.onUpdate(()->
+chart.onManipulate(()->
   sl.slider
     min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
     max: if chart.x.domain()[1] > 15 then chart.x.domain()[1] else 15
