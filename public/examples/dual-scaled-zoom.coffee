@@ -41,7 +41,7 @@ chart = new Tactile.Chart()
   .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
   .element($("#example_view")[0])
   .data(data)
-  .autoScale(false)
+  .setAutoScale(false)
   .setXFrame([-1, 9])
   .setAvailableXFrame([-5, 20])
   .setMinXFrame(1)
@@ -81,10 +81,15 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 0
-  max: 8
+  min: -5
+  max: 20
   values: [0, 8]
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.x.domain(ui.values)
     chart.render()
+
+chart.onUpdate(()->
+  sl.slider
+    values: chart.x.domain()
+)

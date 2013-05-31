@@ -168,8 +168,7 @@ class Tactile.Chart
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
-  autoScale: (val)=>
-    return @autoScale if val is undefined
+  setAutoScale: (val)=>
     @autoScale = val
     @
 
@@ -253,6 +252,9 @@ class Tactile.Chart
         @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
         @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
         @_lastYTranslate = d3.event.translate[1];
+        @_checkXDomain()
+        @_checkYDomain()
+        @_checkY1Domain()
         @manipulateCallbacks.forEach (callback) ->
           callback()
         @render(0)
@@ -293,10 +295,9 @@ class Tactile.Chart
         .range([0, @height()])
 
       unless renderer.series.ofDefaultAxis()
-        @y1 = d3.scale.linear()
-          .domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
-          .range([@height(), 0])
-
+        @y1.domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
+           .range([@height(), 0])
+        @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
 
   axes: (args) ->
     return @axesList unless args
