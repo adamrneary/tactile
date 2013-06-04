@@ -78,6 +78,13 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     count = data.length
     barWidth = @graph.width() / count * (1 - @gapSize)
 
+  seriesWidth: =>
+    if @series.stack.length >= 2
+      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
+      width = stackWidth / (1 + @gapSize)
+    else
+      width = @graph.width() / (1 + @gapSize)
+
   _seriesBarWidth: =>
     if @series.stack.length >= 2
       stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
