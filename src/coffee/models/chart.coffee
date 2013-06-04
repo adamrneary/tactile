@@ -221,11 +221,13 @@ class Tactile.Chart
     @_checkXDomain()
     @_checkYDomain()
     @_checkY1Domain()
+    @_calculateXRange()
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer) if @autoScale
+      @_calculateXRange()
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
@@ -268,15 +270,6 @@ class Tactile.Chart
   discoverRange: (renderer) =>
     domain = renderer.domain()
     if renderer.cartesian
-      # TODO: This needs way prettier implementation
-      # It moves the range 'right' by the value of half width of a bar
-      # So if we have renderers including bar chart points are rendered in the
-      # center of each bar and not a single bar is cut off by the chart border
-      if @_containsColumnChart()
-        barWidth = @width() / renderer.series.stack.length / 2
-        rangeStart = barWidth
-        rangeEnd = @width() - barWidth
-
       xframe = [
         (if @axes().x?.frame?[0] then @axes().x.frame[0] else domain.x[0])
         (if @axes().x?.frame?[1] then @axes().x.frame[1] else domain.x[1])
@@ -287,7 +280,7 @@ class Tactile.Chart
       ]
 
       @x.domain(xframe)
-        .range([rangeStart || 0, rangeEnd || @width()])
+        .range([0, @width()])
       @y.domain(yframe)
         .range([@height(), 0])
       @y.magnitude
@@ -657,3 +650,24 @@ class Tactile.Chart
 
     @y1.domain([min, max])
 
+  _calculateXRange: ()=>
+    if @_containsColumnChart()
+      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
+
+      lastRange = @width()
+      dR = lastRange / 2
+      loop
+        @x.range([0, lastRange])
+        barWidth = renders[0].seriesWidth()
+        break if Math.abs(@width() - lastRange - barWidth) < 3
+        if @width() - lastRange - barWidth > 0
+          lastRange += dR
+        else
+          lastRange -= dR
+        dR = dR / 2
+
+      barWidth = renders[0].seriesWidth() / 2
+      rangeStart = barWidth
+      rangeEnd = @width() - barWidth
+
+    @x.range([rangeStart || 0, rangeEnd || @width()])

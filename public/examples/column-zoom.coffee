@@ -66,9 +66,9 @@ chart = new Tactile.Chart(
     autoScale: false
     xFrame: frameVal
     yFrame: [0, 10]
-    availableXFrame: [1330000000000, 1360000000000]
+    availableXFrame: [1330560000000, 1354320000000]
     availableYFrame: [0, 20]
-    minXFrame: 2678500
+    minXFrame: 267850000
   )
   .element($("#example_view")[0])
   .data(data)
