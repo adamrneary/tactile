@@ -12,6 +12,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
   initialize: =>
     @format = @series.format unless @series.format is undefined
+    @margin = @series.margin unless @series.margin is undefined
 
   render: (transition, transitionSpeed) ->
     @_checkData()
