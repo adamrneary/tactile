@@ -226,7 +226,7 @@ class Tactile.Chart
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
-      @discoverRange(renderer) if @autoScale
+      @discoverRange(renderer)
       @_calculateXRange()
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
@@ -268,6 +268,7 @@ class Tactile.Chart
     @render()
 
   discoverRange: (renderer) =>
+    return unless @autoScale
     domain = renderer.domain()
     if renderer.cartesian
       xframe = [
