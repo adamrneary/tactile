@@ -1,11 +1,9 @@
 (function() {
   describe('Area series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         x: 0,
@@ -56,7 +54,6 @@
   it('addSeries');
   it('slider', function() {
     var data, frameVal;
-
     frameVal = [0, 4];
     return data = [
       {
@@ -102,7 +99,6 @@
   it("Chart: check for disable all series");
   it("Chart: check setSize function", function(done) {
     var height, heightMargin, heightPadding, width, widthMargin, widthPadding;
-
     Chart = new window.Tactile.Chart();
     Chart.setSize({
       width: 700,
@@ -121,7 +117,6 @@
   });
   it("Chart: check height function", function(done) {
     var height, heightMargin, heightPadding;
-
     Chart = new window.Tactile.Chart();
     Chart = Chart.height(400);
     Chart.update();
@@ -133,7 +128,6 @@
   });
   it("Chart: check width function", function(done) {
     var width, widthMargin, widthPadding;
-
     Chart = new window.Tactile.Chart();
     Chart = Chart.width(680);
     Chart.update();
@@ -159,11 +153,9 @@
 (function() {
   describe('Column series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         period: 1325376000,
@@ -229,7 +221,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(700);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -253,11 +244,9 @@
 (function() {
   describe('Donut series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         label: "FL",
@@ -296,7 +285,6 @@
   it("Chart: check height function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(680);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -320,11 +308,9 @@
 (function() {
   describe('Gauge series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         value: 1,
@@ -344,7 +330,6 @@
   it("Chart: check height function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(700);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -368,11 +353,9 @@
 (function() {
   describe('Legend series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         x: 0,
@@ -427,7 +410,6 @@
   it("Chart: check height function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(700);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -451,11 +433,9 @@
 (function() {
   describe('Line series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         x: 0,
@@ -510,7 +490,6 @@
   it("Chart: check height function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(700);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -534,11 +513,9 @@
 (function() {
   describe('Multiple donuts timeframe', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         period: 1325376000,
@@ -605,7 +582,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(680);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -629,11 +605,9 @@
 (function() {
   describe('Multiple series timeframe', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         period: 1325376000,
@@ -700,7 +674,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(680);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -724,12 +697,10 @@
 (function() {
   describe('Scatter series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it('addSeries');
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         period: 1325376000,
@@ -794,7 +765,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(700);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -818,11 +788,9 @@
 (function() {
   describe('Sliding timeframe series', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         x: 0,
@@ -905,7 +873,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(680);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -929,11 +896,9 @@
 (function() {
   describe('Stacked columb timeframe', function() {
   var Chart;
-
   Chart = new Tactile.Chart();
   it("Chart: check data function", function() {
     var data;
-
     data = [
       {
         period: 1325376000,
@@ -1000,7 +965,6 @@
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
     var width, widthMargin, widthPadding;
-
     Chart = Chart.width(680);
     Chart.update();
     widthMargin = Chart.margin.left + Chart.margin.right;
@@ -1035,7 +999,6 @@
   describe('Donut series', function() {
   it('example', function() {
     var chart, data;
-
     data = [
       {
         label: "FL",
@@ -1095,7 +1058,6 @@
 (function() {
   describe('Chart', function() {
   var data, frameVal;
-
   frameVal = [0, 4];
   data = [
     {
@@ -1138,7 +1100,6 @@
   ];
   it('Chart: constructor', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart({
       unstack: false
     }).data(data).width(680).height(400).axes({
@@ -1151,7 +1112,6 @@
   });
   it('Chart: addSeries', function() {
     var enemies, friends, _chart;
-
     _chart = new window.Tactile.Chart();
     _chart.addSeries([
       {
@@ -1203,7 +1163,6 @@
   });
   it("Chart: check overwriting series", function() {
     var series, _chart;
-
     series = {
       name: "reach actual",
       renderer: "column"
@@ -1224,7 +1183,6 @@
   });
   it('Chart: initSeriesStackData', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1272,7 +1230,6 @@
   });
   it('Chart: render', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1284,7 +1241,6 @@
   });
   it('Chart: update', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1296,7 +1252,6 @@
   });
   it('Chart: discoverRange', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1307,7 +1262,6 @@
   });
   it('Chart: findAxis', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1318,7 +1272,6 @@
   });
   it('Chart: dataDomain', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1329,7 +1282,6 @@
   });
   it('Chart: stackData', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1340,7 +1292,6 @@
   });
   it('Chart: setSize function', function() {
     var height, heightMargin, heightPadding, width, widthMargin, widthPadding, _chart;
-
     _chart = new window.Tactile.Chart();
     _chart.setSize({
       width: 700,
@@ -1358,7 +1309,6 @@
   });
   it('Chart: onUpdate', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1369,7 +1319,6 @@
   });
   it('Chart: initRenderers', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1380,7 +1329,6 @@
   });
   it('Chart: renderersByType', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1391,7 +1339,6 @@
   });
   it('Chart: stackTransition', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1402,7 +1349,6 @@
   });
   it('Chart: unstackTransition', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart().data(data).width(680).height(400).axes({
       x: {
         dimension: "time",
@@ -1413,13 +1359,11 @@
   });
   it('Chart: element', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart();
     return assert(typeof _chart.element === 'function');
   });
   it('Chart: height function', function() {
     var height, heightMargin, heightPadding, _chart;
-
     _chart = new window.Tactile.Chart();
     _chart = _chart.height(400);
     _chart.update();
@@ -1430,7 +1374,6 @@
   });
   it('Chart: width function', function() {
     var width, widthMargin, widthPadding, _chart;
-
     _chart = new window.Tactile.Chart();
     _chart = _chart.width(680);
     _chart.update();
@@ -1441,14 +1384,12 @@
   });
   it('Chart: data function', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart();
     _chart.data(data);
     return assert(_chart._data === data);
   });
   it('Chart: linear axis function', function() {
     var axis, tickFormat, _chart;
-
     frameVal = [0, 4];
     _chart = new window.Tactile.Chart();
     tickFormat = function(d) {
@@ -1471,7 +1412,6 @@
   });
   it('Chart: mixed axis function', function() {
     var _chart;
-
     _chart = new window.Tactile.Chart();
     _chart.axes({
       x: {
@@ -1488,20 +1428,17 @@
   });
   it("Chart: for all series don't disabled", function() {
     var res, _chart;
-
     _chart = new window.Tactile.Chart();
     res = _chart._allSeriesDisabled();
     return assert(res);
   });
   it('Tactile.Chart().element is function', function() {
     var Chart;
-
     Chart = new window.Tactile.Chart();
     return assert(typeof Chart.element === 'function');
   });
   return it('Chart: for disable all series', function() {
     var res, _chart;
-
     _chart = new window.Tactile.Chart();
     _chart.series.disableAll();
     res = _chart._allSeriesDisabled();
@@ -1574,7 +1511,6 @@
   describe('Line series', function() {
   return it('example', function() {
     var chart, data, frameVal;
-
     frameVal = [0, 4];
     data = [
       {
@@ -1673,14 +1609,12 @@
   describe('Renderer base', function() {
   it('Renderer base: constructor', function() {
     var _rendererBase;
-
     _rendererBase = new window.Tactile.RendererBase();
     return assert(_rendererBase);
   });
   describe('Renderer base: domain', function() {
     it('when data given', function() {
       var obj, _rendererBase;
-
       _rendererBase = new window.Tactile.RendererBase();
       obj = [
         {
@@ -1698,7 +1632,6 @@
     });
     return it('without any data', function() {
       var stackedData, _rendererBase;
-
       _rendererBase = new window.Tactile.RendererBase();
       stackedData = [[]];
       _rendererBase['graph'] = {
