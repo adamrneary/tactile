@@ -163,7 +163,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)
-      .attr("cy", @_barY)
+      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
 
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
@@ -201,7 +201,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .delay(transitionSpeed/2)
-      .attr("cy", @_barY)
+      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values
