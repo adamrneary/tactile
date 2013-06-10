@@ -41,7 +41,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("y", @_barY)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
-#      .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
@@ -263,15 +262,11 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @yFunction()(d.y)
       else
         @yFunction()(0)
-
-#    @yFunction()(Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
     else
       if d.y > 0
         @yFunction()(d.y + d.y0)
       else
         @yFunction()(d.y0)
-
-#      @yFunction()(d.y0 + Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
 
   # Returns the index of this column renderer
   # For example: if this is the third renderer of
