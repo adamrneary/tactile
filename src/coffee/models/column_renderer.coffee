@@ -41,7 +41,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("y", @_barY)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
-      .attr("transform", @_transformMatrix)
+#      .attr("transform", @_transformMatrix)
       .attr("fill", @series.color)
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
@@ -86,10 +86,11 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode()
 
 
+
     @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-      .attr("cy", (d) => @_barY(d))
+      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
       .attr("r",
         (d) =>
           (if ("r" of d)
@@ -141,6 +142,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         circleOnHover: false
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+        placement: if d.y < 0 then "bottom" else "top"
 
 
   barWidth: ->
@@ -257,9 +259,19 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   _barY: (d) =>
     # if we want to display stacked bars y should be added y0 value
     if @unstack
-      @yFunction()(Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
+      if d.y > 0
+        @yFunction()(d.y)
+      else
+        @yFunction()(0)
+
+#    @yFunction()(Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
     else
-      @yFunction()(d.y0 + Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
+      if d.y > 0
+        @yFunction()(d.y + d.y0)
+      else
+        @yFunction()(d.y0)
+
+#      @yFunction()(d.y0 + Math.abs(d.y)) * (if d.y < 0 then -1 else 1)
 
   # Returns the index of this column renderer
   # For example: if this is the third renderer of
