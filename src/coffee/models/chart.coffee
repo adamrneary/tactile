@@ -265,8 +265,7 @@ class Tactile.Chart
           @manipulateCallbacks.forEach (callback) ->
             callback()
           @render(0, zooming: true)
-        )
-        )
+        ))
     @timesRendered++
 
   update: ->
