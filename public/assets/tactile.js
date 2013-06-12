@@ -3545,6 +3545,11 @@ Tactile.Chart = (function() {
     this.y.magnitude = d3.scale.linear().range([0, this.height()]);
     this.y1 = d3.scale.linear().range([this.height(), 0]);
     this.y1.magnitude = d3.scale.linear().range([0, this.height()]);
+    if (_.isUndefined(args.autoScale)) {
+      this.setAutoScale(true);
+    } else {
+      this.setAutoScale(args.autoScale);
+    }
     this.setXFrame(args.xFrame || this.defaultXFrame);
     this.setYFrame(args.yFrame || this.defaultYFrame);
     this.setY1Frame(args.y1Frame || this.defaultY1Frame);
@@ -3698,10 +3703,13 @@ Tactile.Chart = (function() {
     return this.dataInitialized = true;
   };
 
-  Chart.prototype.render = function(transitionSpeed) {
+  Chart.prototype.render = function(transitionSpeed, options) {
     var t, zoom, _ref, _ref1,
       _this = this;
 
+    if (options == null) {
+      options = {};
+    }
     if (this.renderers === void 0 || _.isEmpty(this.renderers) || this._allSeriesDisabled()) {
       if ((_ref = this.vis) != null) {
         _ref.remove();
@@ -3717,13 +3725,12 @@ Tactile.Chart = (function() {
     this._checkXDomain();
     this._checkYDomain();
     this._checkY1Domain();
-    this._calculateXRange();
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
     t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
     _.each(this.renderers, function(renderer) {
-      _this.discoverRange(renderer);
+      _this.discoverRange(renderer, options);
       _this._calculateXRange();
       return renderer.render(t, _this.timesRendered ? transitionSpeed : 0);
     });
@@ -3736,25 +3743,27 @@ Tactile.Chart = (function() {
     this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
     this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
     zoom = d3.behavior.zoom();
-    d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup).call(zoom.x(this.x).y(this.y).on("zoom", function() {
-      var dy, dy1;
+    d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup);
+    if (!this.autoScale) {
+      d3.select(this._element).call(zoom.x(this.x).y(this.y).on("zoom", function() {
+        var dy, dy1;
 
-      if (_this.autoScale) {
-        return;
-      }
-      dy = d3.event.translate[1] - _this._lastYTranslate;
-      dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
-      _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);
-      _this.y1.domain([_this.y1.domain()[0] * d3.event.scale, _this.y1.domain()[1] / d3.event.scale]);
-      _this._lastYTranslate = d3.event.translate[1];
-      _this._checkXDomain();
-      _this._checkYDomain();
-      _this._checkY1Domain();
-      _this.manipulateCallbacks.forEach(function(callback) {
-        return callback();
-      });
-      return _this.render(0);
-    }));
+        dy = d3.event.translate[1] - _this._lastYTranslate;
+        dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
+        _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);
+        _this.y1.domain([_this.y1.domain()[0] * d3.event.scale, _this.y1.domain()[1] / d3.event.scale]);
+        _this._lastYTranslate = d3.event.translate[1];
+        _this._checkXDomain();
+        _this._checkYDomain();
+        _this._checkY1Domain();
+        _this.manipulateCallbacks.forEach(function(callback) {
+          return callback();
+        });
+        return _this.render(0, {
+          zooming: true
+        });
+      }));
+    }
     return this.timesRendered++;
   };
 
@@ -3762,10 +3771,13 @@ Tactile.Chart = (function() {
     return this.render();
   };
 
-  Chart.prototype.discoverRange = function(renderer) {
+  Chart.prototype.discoverRange = function(renderer, options) {
     var domain, xframe, yframe, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
 
-    if (!this.autoScale) {
+    if (options == null) {
+      options = {};
+    }
+    if (options.zooming) {
       return;
     }
     domain = renderer.domain();

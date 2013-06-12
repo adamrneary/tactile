@@ -43,17 +43,10 @@ data = [
 
 chart = new Tactile.Chart(
     autoScale: false
-    xFrame: [0, 10]
-    yFrame: [0, 500]
-    availableXFrame: [0, 15]
-    availableYFrame: [0, 1000]
-    minXFrame: 0.1
+    minXFrame: 1
     minYFrame: 100
-    margin:
-      top: 20
-      right: 20
-      bottom: 20
-      left: 30
+    availableYFrame: [0, Infinity]
+    availableXFrame: [0, Infinity]
   )
   .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
@@ -96,9 +89,8 @@ sl.slider
     chart.render()
 
 
-chart.onManipulate(()->
+chart.onManipulate ->
   sl.slider
     min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
     max: if chart.x.domain()[1] > 15 then chart.x.domain()[1] else 15
     values: chart.x.domain()
-)

@@ -87,6 +87,9 @@ class Tactile.Chart
     @y1.magnitude = d3.scale.linear()
       .range([0, @height()])
 
+    # set autoscale to true by default
+    if _.isUndefined(args.autoScale) then @setAutoScale(true) else @setAutoScale(args.autoScale)
+
     @setXFrame args.xFrame or @defaultXFrame
     @setYFrame args.yFrame or @defaultYFrame
     @setY1Frame args.y1Frame or @defaultY1Frame
@@ -115,60 +118,60 @@ class Tactile.Chart
     @initRenderers(newSeries)
     @
 
-  setXFrame: (xFrame)=>
+  setXFrame: (xFrame) =>
     @xFrame = xFrame or @defaultXFrame
     @x.domain(@xFrame)
     @
 
-  setYFrame: (yFrame)=>
+  setYFrame: (yFrame) =>
     @yFrame = yFrame or @defaultYFrame
     @y.domain(@yFrame)
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @
 
-  setY1Frame: (y1Frame)=>
+  setY1Frame: (y1Frame) =>
     @y1Frame = y1Frame or @defaultY1Frame
     @y1.domain(@y1Frame)
     @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
     @
 
-  setAvailableXFrame: (availableXFrame)=>
+  setAvailableXFrame: (availableXFrame) =>
     @availableXFrame = availableXFrame or @defaultAvailableXFrame
     @
 
-  setAvailableYFrame: (availableYFrame)=>
+  setAvailableYFrame: (availableYFrame) =>
     @availableYFrame = availableYFrame or @defaultAvailableYFrame
     @
 
-  setAvailableY1Frame: (availableY1Frame)=>
+  setAvailableY1Frame: (availableY1Frame) =>
     @availableY1Frame = availableY1Frame or @defaultAvailableY1Frame
     @
 
-  setMinXFrame: (minXFrame)=>
+  setMinXFrame: (minXFrame) =>
     @minXFrame = minXFrame or @defaultMinXFrame
     @
 
-  setMinYFrame: (minYFrame)=>
+  setMinYFrame: (minYFrame) =>
     @minYFrame = minYFrame or @defaultMinYFrame
     @
 
-  setMinY1Frame: (minY1Frame)=>
+  setMinY1Frame: (minY1Frame) =>
     @minY1Frame = minY1Frame or @defaultMinY1Frame
     @
 
-  setMaxXFrame: (maxXFrame)=>
+  setMaxXFrame: (maxXFrame) =>
     @maxXFrame = maxXFrame or @defaultMaxXFrame
     @
 
-  setMaxYFrame: (maxYFrame)=>
+  setMaxYFrame: (maxYFrame) =>
     @maxYFrame = maxYFrame or @defaultMaxYFrame
     @
 
-  setMaxY1Frame: (maxY1Frame)=>
+  setMaxY1Frame: (maxY1Frame) =>
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
-  setAutoScale: (val)=>
+  setAutoScale: (val) =>
     @autoScale = val
     @
 
@@ -210,23 +213,24 @@ class Tactile.Chart
 
     @dataInitialized = true
 
-  render: (transitionSpeed)->
+  render: (transitionSpeed, options = {}) ->
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
       @vis?.remove()
       @draggableVis?.remove()
       return
+
     @initSeriesStackData()
     @_setupCanvas()
     @stackData()
     @_checkXDomain()
     @_checkYDomain()
     @_checkY1Domain()
-    @_calculateXRange()
+
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
-      @discoverRange(renderer)
+      @discoverRange(renderer, options)
       @_calculateXRange()
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
@@ -246,29 +250,30 @@ class Tactile.Chart
       .on("touchmove.drag", @_mousemove)
       .on("mouseup.plot-drag",   @_mouseup)
       .on("touchend.plot-drag",  @_mouseup)
-      .call(zoom.x(@x).y(@y).on("zoom", ()=>
-        return if @autoScale
 
-        dy = d3.event.translate[1] - @_lastYTranslate
-        dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
-        @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
-        @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
-        @_lastYTranslate = d3.event.translate[1];
-        @_checkXDomain()
-        @_checkYDomain()
-        @_checkY1Domain()
-        @manipulateCallbacks.forEach (callback) ->
-          callback()
-        @render(0)
-      )
-      )
+    unless @autoScale
+      d3.select(@_element)
+        .call(zoom.x(@x).y(@y).on("zoom", () =>
+          dy = d3.event.translate[1] - @_lastYTranslate
+          dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
+          @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
+          @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
+          @_lastYTranslate = d3.event.translate[1];
+          @_checkXDomain()
+          @_checkYDomain()
+          @_checkY1Domain()
+          @manipulateCallbacks.forEach (callback) ->
+            callback()
+          @render(0, zooming: true)
+        )
+        )
     @timesRendered++
 
   update: ->
     @render()
 
-  discoverRange: (renderer) =>
-    return unless @autoScale
+  discoverRange: (renderer, options = {}) =>
+    return if options.zooming
     domain = renderer.domain()
     if renderer.cartesian
       xframe = [
@@ -408,7 +413,7 @@ class Tactile.Chart
     @renderers = []
     @timesRendered = 0
 
-  stackTransition: (transitionSpeed)=>
+  stackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
@@ -418,7 +423,7 @@ class Tactile.Chart
       axis.render(t)
 
 
-  unstackTransition: (transitionSpeed)=>
+  unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
@@ -567,7 +572,7 @@ class Tactile.Chart
     @axes()?.y?._mouseMove()
     @axes()?.y1?._mouseMove()
 
-  _checkXDomain: ()=>
+  _checkXDomain: () =>
     min = @x.domain()[0]
     max = @x.domain()[1]
 
@@ -595,7 +600,7 @@ class Tactile.Chart
 
     @x.domain([min, max])
 
-  _checkYDomain: ()=>
+  _checkYDomain: () =>
     min = @y.domain()[0]
     max = @y.domain()[1]
 
@@ -623,7 +628,7 @@ class Tactile.Chart
 
     @y.domain([min, max])
 
-  _checkY1Domain: ()=>
+  _checkY1Domain: () =>
     min = @y1.domain()[0]
     max = @y1.domain()[1]
 
@@ -651,7 +656,7 @@ class Tactile.Chart
 
     @y1.domain([min, max])
 
-  _calculateXRange: ()=>
+  _calculateXRange: () =>
     if @_containsColumnChart()
       renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
