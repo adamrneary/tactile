@@ -36,16 +36,10 @@ data = [
   y: 332
   z: 490
 ,
-  x:9
+  x: 9
   y: undefined
   z: undefined
 ]
-
-xTickFormat = (d) ->
-  if d > 99 then (d / 100).toFixed(2) + "★" else "#{(d*10).toFixed(2)}☢"
-
-yTickFormat = (d) ->
-  if d > 99 then (d / 100).toFixed(1) + "★" else "#{(d*10).toFixed()}☢"
 
 chart = new Tactile.Chart(
     autoScale: false
@@ -61,7 +55,7 @@ chart = new Tactile.Chart(
       bottom: 20
       left: 30
   )
-  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: xTickFormat}, y: {dimension: "linear", tickFormat: yTickFormat}})
+  .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)
   .addSeries [
@@ -71,19 +65,10 @@ chart = new Tactile.Chart(
     isEditable: true
     tooltip: (d) ->
       d.y + " enemies"
-    dataTransform: (d) ->
-      x: d.x
-      y: d.y
   ,
     name: "friends"
-    dotSize: 2
     renderer: "line"
-    sigfigs: 1
     color: "#6060c0"
-    isEditable: (d, i) ->
-      d.x == 2
-    afterDrag: (d, y, i, draggedSeries, graph) ->
-      graph.data()[i].z = y
     tooltip: (d) ->
       d.y + " friends"
     dataTransform: (d) ->
