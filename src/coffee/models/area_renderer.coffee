@@ -15,6 +15,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @dragger = new Tactile.Dragger(renderer: @)
     if @series.dotSize?
       @dotSize = @series.dotSize
+    @unstack = @series.unstack unless @series.unstack is undefined
 
   seriesPathFactory: =>
     d3.svg.area()
