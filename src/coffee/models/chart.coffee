@@ -215,16 +215,19 @@ class Tactile.Chart
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer, options)
-      @_calculateXRange()
+
+    # related to the zooming/dragging
+    # must be called after @discoverRange, but it's not needed to run it for each renderer
+    @_checkXDomain()
+    @_checkYDomain()
+    @_checkY1Domain()
+    @_calculateXRange()
+
+    _.each @renderers, (renderer) =>
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
       axis.render(t)
-
-    # related to the zooming/dragging
-    @_checkXDomain()
-    @_checkYDomain()
-    @_checkY1Domain()
 
     @updateCallbacks.forEach (callback) ->
       callback()
@@ -252,6 +255,7 @@ class Tactile.Chart
           @_checkXDomain()
           @_checkYDomain()
           @_checkY1Domain()
+
           @manipulateCallbacks.forEach (callback) ->
             callback()
           @render(0, zooming: true)

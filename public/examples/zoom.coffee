@@ -83,15 +83,15 @@ $("#below-chart").html sl
 
 sl.slider
   min: 0
-  max: 10
+  max: 9
   values: chart.x.domain()
   range: true
   slide: (event, ui) ->
     chart.axes().x.frame = ui.values
     chart.render()
 
-chart.onManipulate ->
+chart.onUpdate ->
   sl.slider
     min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
-    max: if chart.x.domain()[1] > 10 then chart.x.domain()[1] else 10
+    max: if chart.x.domain()[1] > 9 then chart.x.domain()[1] else 9
     values: chart.x.domain()

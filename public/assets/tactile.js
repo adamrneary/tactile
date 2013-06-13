@@ -3711,16 +3711,18 @@ Tactile.Chart = (function() {
     }
     t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
     _.each(this.renderers, function(renderer) {
-      _this.discoverRange(renderer, options);
-      _this._calculateXRange();
+      return _this.discoverRange(renderer, options);
+    });
+    this._checkXDomain();
+    this._checkYDomain();
+    this._checkY1Domain();
+    this._calculateXRange();
+    _.each(this.renderers, function(renderer) {
       return renderer.render(t, _this.timesRendered ? transitionSpeed : 0);
     });
     _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
-    this._checkXDomain();
-    this._checkYDomain();
-    this._checkY1Domain();
     this.updateCallbacks.forEach(function(callback) {
       return callback();
     });
