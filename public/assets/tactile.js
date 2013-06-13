@@ -537,7 +537,11 @@ Tactile.SeriesSet = (function() {
             hoveredNode = _this.el.node().getBoundingClientRect();
           }
           center[0] = hoveredNode.left + hoveredNode.width / 2;
-          center[1] = hoveredNode.top;
+          if (_this.options.placement === "bottom") {
+            center[1] = hoveredNode.bottom;
+          } else {
+            center[1] = hoveredNode.top;
+          }
           if (_this.options.graph.series[0].renderer === "donut") {
             center[1] += hoveredNode.height / 2 - 1;
           }
@@ -775,7 +779,10 @@ Tactile.AreaRenderer = (function(_super) {
       renderer: this
     });
     if (this.series.dotSize != null) {
-      return this.dotSize = this.series.dotSize;
+      this.dotSize = this.series.dotSize;
+    }
+    if (this.series.unstack !== void 0) {
+      return this.unstack = this.series.unstack;
     }
   };
 
@@ -1558,7 +1565,7 @@ Tactile.ColumnRenderer = (function(_super) {
       return _this._filterNaNs(d, "x", "y");
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
-    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("transform", this._transformMatrix).attr("fill", this.series.color).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("fill", this.series.color).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
       return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
     });
     nodes.exit().remove();
@@ -1606,7 +1613,7 @@ Tactile.ColumnRenderer = (function(_super) {
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     }).attr("cy", function(d) {
-      return _this._barY(d);
+      return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
     }).attr("r", function(d) {
       if ("r" in d) {
         return d.r;
@@ -1679,7 +1686,8 @@ Tactile.ColumnRenderer = (function(_super) {
           text: _this.series.tooltip(d),
           circleOnHover: false,
           tooltipCircleContainer: _this.graph.vis.node(),
-          gravity: "right"
+          gravity: "right",
+          placement: d.y < 0 ? "bottom" : "top"
         };
       });
     }
@@ -1705,7 +1713,9 @@ Tactile.ColumnRenderer = (function(_super) {
     });
     transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
-    }).duration(transitionSpeed / 2).attr("cy", this._barY);
+    }).duration(transitionSpeed / 2).attr("cy", function(d) {
+      return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+    });
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
@@ -1736,7 +1746,9 @@ Tactile.ColumnRenderer = (function(_super) {
     }).attr("y", this._barY);
     return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
-    }).delay(transitionSpeed / 2).attr("cy", this._barY);
+    }).delay(transitionSpeed / 2).attr("cy", function(d) {
+      return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+    });
   };
 
   ColumnRenderer.prototype._transformMatrix = function(d) {
@@ -1809,9 +1821,17 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype._barY = function(d) {
     if (this.unstack) {
-      return this.yFunction()(Math.abs(d.y)) * (d.y < 0 ? -1 : 1);
+      if (d.y > 0) {
+        return this.yFunction()(d.y);
+      } else {
+        return this.yFunction()(0);
+      }
     } else {
-      return this.yFunction()(d.y0 + Math.abs(d.y)) * (d.y < 0 ? -1 : 1);
+      if (d.y > 0) {
+        return this.yFunction()(d.y + d.y0);
+      } else {
+        return this.yFunction()(d.y0);
+      }
     }
   };
 
@@ -3706,17 +3726,19 @@ Tactile.Chart = (function() {
     this.initSeriesStackData();
     this._setupCanvas();
     this.stackData();
-    if (transitionSpeed === void 0) {
-      transitionSpeed = this.transitionSpeed;
-    }
-    t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
     _.each(this.renderers, function(renderer) {
       return _this.discoverRange(renderer, options);
     });
     this._checkXDomain();
     this._checkYDomain();
     this._checkY1Domain();
-    this._calculateXRange();
+    if (!this.autoScale) {
+      this._calculateXRange();
+    }
+    if (transitionSpeed === void 0) {
+      transitionSpeed = this.transitionSpeed;
+    }
+    t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
     _.each(this.renderers, function(renderer) {
       return renderer.render(t, _this.timesRendered ? transitionSpeed : 0);
     });

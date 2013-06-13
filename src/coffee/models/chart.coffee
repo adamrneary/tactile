@@ -210,8 +210,6 @@ class Tactile.Chart
     @_setupCanvas()
     @stackData()
 
-    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
-    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       # discover domain for current renderer
       @discoverRange(renderer, options)
@@ -221,8 +219,10 @@ class Tactile.Chart
     @_checkXDomain()
     @_checkYDomain()
     @_checkY1Domain()
-    @_calculateXRange()
+    @_calculateXRange() unless @autoScale
 
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 

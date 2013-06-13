@@ -14,8 +14,8 @@ data = [
   plan: 2
 ,
   period: new Date(2012,  3, 1).getTime()
-  actual: 7
-  plan: 3
+  actual: -7
+  plan: -3
 ,
   period: new Date(2012,  4, 1).getTime()
   actual: 6
@@ -50,7 +50,10 @@ data = [
   plan: 2
 ]
 
-chart = new Tactile.Chart(unstack: false)
+chart = new Tactile.Chart(
+    unstack: false
+    min: "auto"
+  )
   .element($("#example_view")[0])
   .data(data)
   .axes
