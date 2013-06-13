@@ -600,6 +600,7 @@ class Tactile.Chart
       min = middle - maxXFrame / 2
       max = middle + maxXFrame / 2
 
+    @axes().x?.frame = [min, max]
     @x.domain([min, max])
 
   _checkYDomain: =>
@@ -633,6 +634,7 @@ class Tactile.Chart
       min = middle - maxYFrame / 2
       max = middle + maxYFrame / 2
 
+    @axes().y?.frame = [min, max]
     @y.domain([min, max])
 
   _checkY1Domain: =>
@@ -662,6 +664,7 @@ class Tactile.Chart
       min = middle - maxY1Frame / 2
       max = middle + maxY1Frame / 2
 
+    @axes().y1?.frame = [min, max]
     @y1.domain([min, max])
 
   _calculateXRange: =>

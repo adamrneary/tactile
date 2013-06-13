@@ -4194,7 +4194,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkXDomain = function() {
-    var domain, max, maxXFrame, middle, min, minXFrame, rangeEnd, rangeStart;
+    var domain, max, maxXFrame, middle, min, minXFrame, rangeEnd, rangeStart, _ref;
 
     min = this.x.domain()[0];
     max = this.x.domain()[1];
@@ -4240,11 +4240,14 @@ Tactile.Chart = (function() {
       min = middle - maxXFrame / 2;
       max = middle + maxXFrame / 2;
     }
+    if ((_ref = this.axes().x) != null) {
+      _ref.frame = [min, max];
+    }
     return this.x.domain([min, max]);
   };
 
   Chart.prototype._checkYDomain = function() {
-    var max, maxYFrame, middle, min, minYFrame, rangeEnd, rangeStart;
+    var max, maxYFrame, middle, min, minYFrame, rangeEnd, rangeStart, _ref;
 
     min = this.y.domain()[0];
     max = this.y.domain()[1];
@@ -4289,11 +4292,14 @@ Tactile.Chart = (function() {
       min = middle - maxYFrame / 2;
       max = middle + maxYFrame / 2;
     }
+    if ((_ref = this.axes().y) != null) {
+      _ref.frame = [min, max];
+    }
     return this.y.domain([min, max]);
   };
 
   Chart.prototype._checkY1Domain = function() {
-    var max, maxY1Frame, middle, min, minY1Frame, _ref;
+    var max, maxY1Frame, middle, min, minY1Frame, _ref, _ref1;
 
     min = this.y1.domain()[0];
     max = this.y1.domain()[1];
@@ -4335,6 +4341,9 @@ Tactile.Chart = (function() {
       }
       min = middle - maxY1Frame / 2;
       max = middle + maxY1Frame / 2;
+    }
+    if ((_ref1 = this.axes().y1) != null) {
+      _ref1.frame = [min, max];
     }
     return this.y1.domain([min, max]);
   };
