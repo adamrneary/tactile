@@ -42,12 +42,15 @@ data = [
 ]
 
 chart = new Tactile.Chart(
+    # turn the zoom on
     autoScale: false
-    minXFrame: 1
-    minYFrame: 100
-    availableYFrame: [0, Infinity]
-    availableXFrame: [0, Infinity]
+    # set minimum possible X range
+    minXFrame: 3
+    # set minimum possible Y range
+    minYFrame: 200
   )
+
+  # note that we're passing initial frame just like in a regular chart
   .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)

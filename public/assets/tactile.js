@@ -3464,12 +3464,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultY1Frame = [0, 1];
 
-  Chart.prototype.defaultAvailableXFrame = [-Infinity, Infinity];
-
-  Chart.prototype.defaultAvailableYFrame = [-Infinity, Infinity];
-
-  Chart.prototype.defaultAvailableY1Frame = [-Infinity, Infinity];
-
   Chart.prototype.defaultMinXFrame = 1;
 
   Chart.prototype.defaultMinYFrame = 1;
@@ -3512,9 +3506,6 @@ Tactile.Chart = (function() {
     this.setAvailableY1Frame = __bind(this.setAvailableY1Frame, this);
     this.setAvailableYFrame = __bind(this.setAvailableYFrame, this);
     this.setAvailableXFrame = __bind(this.setAvailableXFrame, this);
-    this.setY1Frame = __bind(this.setY1Frame, this);
-    this.setYFrame = __bind(this.setYFrame, this);
-    this.setXFrame = __bind(this.setXFrame, this);
     this.renderers = [];
     this.axesList = {};
     this.series = new Tactile.SeriesSet([], this);
@@ -3550,12 +3541,6 @@ Tactile.Chart = (function() {
     } else {
       this.setAutoScale(args.autoScale);
     }
-    this.setXFrame(args.xFrame || this.defaultXFrame);
-    this.setYFrame(args.yFrame || this.defaultYFrame);
-    this.setY1Frame(args.y1Frame || this.defaultY1Frame);
-    this.setAvailableXFrame(args.availableXFrame || this.defaultAvailableXFrame);
-    this.setAvailableYFrame(args.availableYFrame || this.defaultAvailableYFrame);
-    this.setAvailableY1Frame(args.availableY1Frame || this.defaultAvailableY1Frame);
     this.setMinXFrame(args.minXFrame || this.defaultMinXFrame);
     this.setMinYFrame(args.minYFrame || this.defaultMinYFrame);
     this.setMinY1Frame(args.minY1Frame || this.defaultMinY1Frame);
@@ -3586,25 +3571,12 @@ Tactile.Chart = (function() {
     return this;
   };
 
-  Chart.prototype.setXFrame = function(xFrame) {
-    this.xFrame = xFrame || this.defaultXFrame;
-    this.x.domain(this.xFrame);
-    return this;
-  };
+  /*
+    setAvailable[X|Y|Y1]Frame
+      min and max values that can be zoomed or moved to.
+      Computed if not given
+  */
 
-  Chart.prototype.setYFrame = function(yFrame) {
-    this.yFrame = yFrame || this.defaultYFrame;
-    this.y.domain(this.yFrame);
-    this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
-    return this;
-  };
-
-  Chart.prototype.setY1Frame = function(y1Frame) {
-    this.y1Frame = y1Frame || this.defaultY1Frame;
-    this.y1.domain(this.y1Frame);
-    this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
-    return this;
-  };
 
   Chart.prototype.setAvailableXFrame = function(availableXFrame) {
     this.availableXFrame = availableXFrame || this.defaultAvailableXFrame;
@@ -3621,6 +3593,13 @@ Tactile.Chart = (function() {
     return this;
   };
 
+  /*
+    setMin[X|Y|Y1]Frame
+      this is the minimum distance between points to which you can zoom in.
+      1 by default
+  */
+
+
   Chart.prototype.setMinXFrame = function(minXFrame) {
     this.minXFrame = minXFrame || this.defaultMinXFrame;
     return this;
@@ -3635,6 +3614,13 @@ Tactile.Chart = (function() {
     this.minY1Frame = minY1Frame || this.defaultMinY1Frame;
     return this;
   };
+
+  /*
+    setMax[X|Y|Y1]Frame
+    this is the maximum distance between points to which you can zoom out.
+    Infinity by default
+  */
+
 
   Chart.prototype.setMaxXFrame = function(maxXFrame) {
     this.maxXFrame = maxXFrame || this.defaultMaxXFrame;
@@ -3722,9 +3708,6 @@ Tactile.Chart = (function() {
     this.initSeriesStackData();
     this._setupCanvas();
     this.stackData();
-    this._checkXDomain();
-    this._checkYDomain();
-    this._checkY1Domain();
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
@@ -3737,6 +3720,9 @@ Tactile.Chart = (function() {
     _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
+    this._checkXDomain();
+    this._checkYDomain();
+    this._checkY1Domain();
     this.updateCallbacks.forEach(function(callback) {
       return callback();
     });
@@ -4183,10 +4169,16 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkXDomain = function() {
-    var max, maxXFrame, middle, min, minXFrame;
+    var domain, max, maxXFrame, middle, min, minXFrame, rangeEnd, rangeStart;
 
     min = this.x.domain()[0];
     max = this.x.domain()[1];
+    if (!this.availableXFrame) {
+      domain = this.dataDomain();
+      rangeStart = domain[0] -= domain[0] * 0.1;
+      rangeEnd = domain[1] += domain[1] * 0.1;
+      this.availableXFrame = [rangeStart, rangeEnd];
+    }
     if (min < this.availableXFrame[0]) {
       min = this.availableXFrame[0];
     }
@@ -4227,10 +4219,15 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkYDomain = function() {
-    var max, maxYFrame, middle, min, minYFrame;
+    var max, maxYFrame, middle, min, minYFrame, rangeEnd, rangeStart;
 
     min = this.y.domain()[0];
     max = this.y.domain()[1];
+    if (!this.availableYFrame) {
+      rangeStart = min -= min * 0.1;
+      rangeEnd = max += max * 0.1;
+      this.availableYFrame = [rangeStart, rangeEnd];
+    }
     if (min < this.availableYFrame[0]) {
       min = this.availableYFrame[0];
     }
@@ -4271,10 +4268,13 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkY1Domain = function() {
-    var max, maxY1Frame, middle, min, minY1Frame;
+    var max, maxY1Frame, middle, min, minY1Frame, _ref;
 
     min = this.y1.domain()[0];
     max = this.y1.domain()[1];
+    if ((_ref = this.availableY1Frame) == null) {
+      this.availableY1Frame = [min, max];
+    }
     if (min < this.availableY1Frame[0]) {
       min = this.availableY1Frame[0];
     }
