@@ -1029,7 +1029,9 @@ Tactile.AxisLinear = (function() {
       new_domain = [axis1, axis1 + extent * (this.down - axis1) / (rup - axis1)];
       axis.domain(new_domain);
     }
-    this.graph.render(0);
+    this.graph.render(0, {
+      zooming: true
+    });
     d3.event.preventDefault();
     return d3.event.stopPropagation();
   };
@@ -1190,7 +1192,9 @@ Tactile.AxisTime = (function() {
       new_domain = [axis1, axis1 + extent * (this.down - axis1) / (rup - axis1)];
       axis.domain(new_domain);
     }
-    this.graph.render(0);
+    this.graph.render(0, {
+      zooming: true
+    });
     d3.event.preventDefault();
     return d3.event.stopPropagation();
   };
