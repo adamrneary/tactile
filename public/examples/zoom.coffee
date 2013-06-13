@@ -45,7 +45,7 @@ chart = new Tactile.Chart(
     # turn the zoom on
     autoScale: false
     # set minimum possible X range
-    minXFrame: 3
+    minXFrame: 0.1
     # set minimum possible Y range
     minYFrame: 200
   )

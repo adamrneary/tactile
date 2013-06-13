@@ -272,12 +272,12 @@ class Tactile.Chart
     domain = renderer.domain()
     if renderer.cartesian
       xframe = [
-        (if @axes().x?.frame?[0] then @axes().x.frame[0] else domain.x[0])
-        (if @axes().x?.frame?[1] then @axes().x.frame[1] else domain.x[1])
+        (if @axes().x?.frame?[0]? then @axes().x.frame[0] else domain.x[0])
+        (if @axes().x?.frame?[1]? then @axes().x.frame[1] else domain.x[1])
       ]
       yframe = [
-        (if @axes().y?.frame?[0] then @axes().y.frame[0] else domain.y[0])
-        (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
+        (if @axes().y?.frame?[0]? then @axes().y.frame[0] else domain.y[0])
+        (if @axes().y?.frame?[1]? then @axes().y.frame[1] else domain.y[1])
       ]
 
       @x.domain(xframe)
@@ -570,7 +570,6 @@ class Tactile.Chart
   _checkXDomain: =>
     min = @x.domain()[0]
     max = @x.domain()[1]
-
     # compute the range if not set
     # maximum and minimum are 10% larger than the actual range
     unless @availableXFrame
