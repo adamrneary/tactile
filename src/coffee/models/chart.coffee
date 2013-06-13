@@ -32,8 +32,6 @@ class Tactile.Chart
       dimension: "linear"
       frame: [undefined, undefined]
 
-
-  autoScale: true
   defaultXFrame: [0, 1]
   defaultYFrame: [0, 1]
   defaultY1Frame: [0, 1]
@@ -243,8 +241,9 @@ class Tactile.Chart
       .on("touchend.plot-drag",  @_mouseup)
 
     unless @autoScale
-      d3.select(@_element)
+      d3.select(@svg[0][0])
         .call(zoom.x(@x).y(@y).on("zoom", =>
+          return if @autoScale
           dy = d3.event.translate[1] - @_lastYTranslate
           dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
           @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])

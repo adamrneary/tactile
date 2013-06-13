@@ -3456,8 +3456,6 @@ Tactile.Chart = (function() {
     }
   };
 
-  Chart.prototype.autoScale = true;
-
   Chart.prototype.defaultXFrame = [0, 1];
 
   Chart.prototype.defaultYFrame = [0, 1];
@@ -3731,9 +3729,12 @@ Tactile.Chart = (function() {
     zoom = d3.behavior.zoom();
     d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup);
     if (!this.autoScale) {
-      d3.select(this._element).call(zoom.x(this.x).y(this.y).on("zoom", function() {
+      d3.select(this.svg[0][0]).call(zoom.x(this.x).y(this.y).on("zoom", function() {
         var dy, dy1;
 
+        if (_this.autoScale) {
+          return;
+        }
         dy = d3.event.translate[1] - _this._lastYTranslate;
         dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
         _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);

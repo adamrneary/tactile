@@ -81,7 +81,6 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 
-
 sl.slider
   min: 0
   max: 10
