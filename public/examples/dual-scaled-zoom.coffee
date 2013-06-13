@@ -38,20 +38,22 @@ data = [
 ]
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
   .element($("#example_view")[0])
   .data(data)
   .setAutoScale(false)
-  .setXFrame([-1, 9])
-  .setAvailableXFrame([-5, 20])
-  .setMinXFrame(1)
-  .setYFrame([0, 350])
-  .setAvailableYFrame([0, 500])
-  .setMinYFrame(10)
-  .setY1Frame([0, 100])
-  .setAvailableY1Frame([0, 200])
+  .setAvailableXFrame([-1, 9])
+  .setMinXFrame(3)
+  .setAvailableYFrame([0, 400])
+  .setMinYFrame(20)
+  .setAvailableY1Frame([0, 150])
   .setMinY1Frame(10)
-  .addSeries [
+  .axes(
+    x: {dimension: 'linear', frame: [-1, 9]}
+    y: {dimension: "linear", frame: [0, 350]}
+    y1: {dimension: "linear", frame: [0, 100], tickFormat: (d) -> d + '%'}
+  )
+
+chart.addSeries [
     name: "enemies"
     renderer: "column"
     color: "#c05020"
@@ -62,8 +64,7 @@ chart = new Tactile.Chart()
     name: "friends"
     renderer: "line"
     color: "#6060c0"
-    tooltip: (d) ->
-      d.y + "%"
+    tooltip: (d) -> d.y + "%"
 
     dataTransform: (d) ->
       x: d.x
@@ -86,7 +87,7 @@ sl.slider
   values: [0, 8]
   range: true
   slide: (event, ui) ->
-    chart.x.domain(ui.values)
+    chart.axes().x.frame = ui.values
     chart.render()
 
 chart.onUpdate(()->
