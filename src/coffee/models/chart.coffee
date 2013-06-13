@@ -107,6 +107,8 @@ class Tactile.Chart
     @initRenderers(newSeries)
     @
 
+
+  # TODO: move next 9 methods away to a separate class. Zoomable or sth.
   ###
     setAvailable[X|Y|Y1]Frame
       min and max values that can be zoomed or moved to.
@@ -567,6 +569,8 @@ class Tactile.Chart
     @axes()?.y?._mouseMove()
     @axes()?.y1?._mouseMove()
 
+
+  # TODO: move away to a separate class. Zoomable or sth.
   _checkXDomain: =>
     min = @x.domain()[0]
     max = @x.domain()[1]

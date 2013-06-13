@@ -82,6 +82,7 @@ class Tactile.AxisLinear
     d3.event.preventDefault()
     d3.event.stopPropagation()
 
+  # TODO: this are almost identical across the axis classes.
   _mouseMove: =>
     return if isNaN(@down)
     p = d3.svg.mouse(@graph.svg.node())
