@@ -3,7 +3,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
 
   specificDefaults:
     format: d3.format("p")
-    barHeight: 40
+    barHeight: 30
 
   initialize: =>
     @format = @series.format unless @series.format is undefined
@@ -80,7 +80,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .text((d)->d.label)
-      .attr("transform", "translate(3 -8)")
+      .attr("transform", "translate(3 -5)")
 
     @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -91,7 +91,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.format Math.floor i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()-50} -8)")
+      .attr("transform", "translate(#{@graph.width()-50} -5)")
 
     @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -102,7 +102,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.format Math.floor i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()} -8)")
+      .attr("transform", "translate(#{@graph.width()} -5)")
 
     @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
