@@ -35,13 +35,14 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       )
 
 
+    console.log @series.color
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
-      .attr("fill", @series.color)
+      .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d, i))
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
@@ -102,8 +103,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         ("active" if d is @active), # apply active class for active element
         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))# apply editable class for editable element
       ].join(" "))
-      .attr("fill", (d) => (if d.dragged or d is @active then "white" else @series.color))
-      .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else "white"))
+      .attr("fill", (d, i) => (if d.dragged or d is @active then "white" else @utils.ourFunctor(@series.color, d, i)))
+      .attr("stroke", (d, i) => (if d.dragged or d is @active then @utils.ourFunctor(@series.color, d, i) else "white"))
       .attr("stroke-width", 2)
       .attr("id", (d, i) -> "node-#{i}-#{d.x}")
       .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
