@@ -76,5 +76,5 @@ sl.slider
   values: [0, 8]
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()

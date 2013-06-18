@@ -24,23 +24,21 @@ class Tactile.Chart
   defaultAxesOptions:
     x:
       dimension: "time"
-      frame: [undefined, undefined]
     y:
       dimension: "linear"
-      frame: [undefined, undefined]
     y1:
       dimension: "linear"
-      frame: [undefined, undefined]
 
-  defaultXFrame: [0, 1]
-  defaultYFrame: [0, 1]
-  defaultY1Frame: [0, 1]
   defaultMinXFrame: 1
   defaultMinYFrame: 1
   defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
   defaultMaxY1Frame: Infinity
+
+  _autoSetAvailableXFrame: false
+  _autoSetAvailableYFrame: false
+  _autoSetAvailableY1Frame: false
 
   _lastYTranslate: 0
 
@@ -72,12 +70,15 @@ class Tactile.Chart
 
 
     @x = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([0, @width()])
     @y = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([@height(), 0])
     @y.magnitude = d3.scale.linear()
       .range([0, @height()])
     @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([@height(), 0])
     @y1.magnitude = d3.scale.linear()
       .range([0, @height()])
@@ -160,6 +161,19 @@ class Tactile.Chart
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
+  setXFrame: (xFrame) =>
+    @x.domain(xFrame)
+    @
+
+  setYFrame: (yFrame) =>
+    @y.domain(yFrame)
+    @
+
+  setY1Frame: (y1Frame) =>
+    @y1.domain(y1Frame)
+    @
+
+
   setAutoScale: (val) =>
     @autoScale = val
     @
@@ -212,16 +226,14 @@ class Tactile.Chart
     @_setupCanvas()
     @stackData()
 
-    _.each @renderers, (renderer) =>
-      # discover domain for current renderer
-      @discoverRange(renderer, options)
+    @discoverRange()
 
     # related to the zooming/dragging
     # must be called after @discoverRange, but it's not needed to run it for each renderer
     @_checkXDomain()
     @_checkYDomain()
     @_checkY1Domain()
-    @_calculateXRange() unless @autoScale
+    @_calculateXRange()
 
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
@@ -231,8 +243,6 @@ class Tactile.Chart
     _.each @axesList, (axis) =>
       axis.render(t)
 
-    @updateCallbacks.forEach (callback) ->
-      callback()
 
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
@@ -264,36 +274,45 @@ class Tactile.Chart
         ))
     @timesRendered++
 
+    @updateCallbacks.forEach (callback) ->
+      callback()
+
   update: ->
     @render()
 
-  discoverRange: (renderer, options = {}) =>
-    # Don't compute the ranges if zooming/dragging is in progress
-    return if options.zooming
+  discoverRange: =>
+    xDomain = []
+    yDomain = []
+    y1Domain = []
+    _.each @renderers, (renderer) =>
+      if renderer.cartesian
+        domain = renderer.domain()
+        xDomain = domain.x
+        yDomain = domain.y
+        unless renderer.series.ofDefaultAxis()
+          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))]
 
-    domain = renderer.domain()
-    if renderer.cartesian
-      xframe = [
-        (if @axes().x?.frame?[0]? then @axes().x.frame[0] else domain.x[0])
-        (if @axes().x?.frame?[1]? then @axes().x.frame[1] else domain.x[1])
-      ]
-      yframe = [
-        (if @axes().y?.frame?[0]? then @axes().y.frame[0] else domain.y[0])
-        (if @axes().y?.frame?[1]? then @axes().y.frame[1] else domain.y[1])
-      ]
 
-      @x.domain(xframe)
-        .range([0, @width()])
-      @y.domain(yframe)
-        .range([@height(), 0])
-      @y.magnitude
-        .domain([0, domain.y[1] - domain.y[0]])
-        .range([0, @height()])
+    unless @availableXFrame then @_autoSetAvailableXFrame = true
+    unless @availableYFrame then @_autoSetAvailableYFrame = true
+    unless @availableY1Frame then @_autoSetAvailableY1Frame = true
 
-      unless renderer.series.ofDefaultAxis()
-        @y1.domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
-           .range([@height(), 0])
-        @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
+    if @_autoSetAvailableXFrame then @availableXFrame = xDomain
+    if @_autoSetAvailableYFrame then @availableYFrame = [yDomain[0] - yDomain[0]*0.1, yDomain[1] + yDomain[1]*0.1]
+    if @_autoSetAvailableY1Frame then @availableY1Frame = [y1Domain[0] - y1Domain[0]*0.1, y1Domain[1] + y1Domain[1]*0.1]
+
+    if _.isNaN(@x.domain()[0]) or _.isNaN(@x.domain()[1])
+      @x.domain(xDomain)
+
+    if _.isNaN(@y.domain()[0]) or _.isNaN(@y.domain()[1]) or @autoScale
+      @y.domain(yDomain)
+      @y.magnitude.domain([0, yDomain[1] - yDomain[0]])
+
+    if _.isNaN(@y1.domain()[0]) or _.isNaN(@y1.domain()[1]) or @autoScale
+      @y1.domain(y1Domain)
+      @y1.magnitude.domain([0, y1Domain[1] - y1Domain[0]])
+
+    @
 
   axes: (args) ->
     return @axesList unless args
@@ -574,13 +593,6 @@ class Tactile.Chart
   _checkXDomain: =>
     min = @x.domain()[0]
     max = @x.domain()[1]
-    # compute the range if not set
-    # maximum and minimum are 10% larger than the actual range
-    unless @availableXFrame
-      domain = @dataDomain()
-      rangeStart = domain[0] -= domain[0] * 0.1
-      rangeEnd = domain[1] += domain[1] * 0.1
-      @availableXFrame = [rangeStart, rangeEnd]
 
     min = @availableXFrame[0] if min < @availableXFrame[0]
     min = @availableXFrame[1] if min > @availableXFrame[1]
@@ -611,11 +623,6 @@ class Tactile.Chart
     min = @y.domain()[0]
     max = @y.domain()[1]
 
-    unless @availableYFrame
-      rangeStart = min -= min * 0.1
-      rangeEnd = max += max * 0.1
-      @availableYFrame = [rangeStart, rangeEnd]
-
     min = @availableYFrame[0] if min < @availableYFrame[0]
     min = @availableYFrame[1] if min > @availableYFrame[1]
 
@@ -645,7 +652,7 @@ class Tactile.Chart
     min = @y1.domain()[0]
     max = @y1.domain()[1]
 
-    @availableY1Frame ?= [min, max]
+    return unless @availableY1Frame
     min = @availableY1Frame[0] if min < @availableY1Frame[0]
     min = @availableY1Frame[1] if min > @availableY1Frame[1]
 

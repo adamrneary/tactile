@@ -18,11 +18,11 @@ generateData = (count) =>
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0])
   .data(generateData(30))
+  .setXFrame(frameVal)
   .axes
     y: "linear"
     x:
       dimension: "time"
-      frame: frameVal
       options:
         ticksTreatment: "align-middle"
 
@@ -116,5 +116,5 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()

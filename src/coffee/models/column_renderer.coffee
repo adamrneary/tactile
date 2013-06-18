@@ -34,7 +34,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @hideCircles()
       )
 
-
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
@@ -152,7 +151,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
-    @graph.discoverRange(@)
+    @graph.discoverRange()
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)
@@ -179,7 +178,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
-    @graph.discoverRange(@)
+    @graph.discoverRange()
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)

@@ -87,7 +87,7 @@ sl.slider
   values: chart.x.domain()
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.x.domain(ui.values)
     chart.render()
 
 chart.onUpdate ->
