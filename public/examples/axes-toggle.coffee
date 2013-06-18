@@ -28,9 +28,10 @@ data = [
 
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'time'}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)
+  .setXFrame(frameVal)
   .addSeries [
     name: "enemies"
     renderer: "line"
@@ -68,7 +69,7 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()
 
 turnOffAxes = $("<button class='btn btn-mini'>Turn off axes</button>")

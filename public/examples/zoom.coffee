@@ -36,32 +36,22 @@ data = [
   y: 332
   z: 490
 ,
-  x:9
+  x: 9
   y: undefined
   z: undefined
 ]
 
-xTickFormat = (d) ->
-  if d > 99 then (d / 100).toFixed(2) + "★" else "#{(d*10).toFixed(2)}☢"
-
-yTickFormat = (d) ->
-  if d > 99 then (d / 100).toFixed(1) + "★" else "#{(d*10).toFixed()}☢"
-
 chart = new Tactile.Chart(
+    # turn the zoom on
     autoScale: false
-    xFrame: [0, 10]
-    yFrame: [0, 500]
-    availableXFrame: [0, 15]
-    availableYFrame: [0, 1000]
-    minXFrame: 0.1
-    minYFrame: 100
-    margin:
-      top: 20
-      right: 20
-      bottom: 20
-      left: 30
+    # set minimum possible X range
+    minXFrame: 3
+    # set minimum possible Y range
+    minYFrame: 200
   )
-  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: xTickFormat}, y: {dimension: "linear", tickFormat: yTickFormat}})
+
+  # note that we're passing initial frame just like in a regular chart
+  .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)
   .addSeries [
@@ -71,19 +61,10 @@ chart = new Tactile.Chart(
     isEditable: true
     tooltip: (d) ->
       d.y + " enemies"
-    dataTransform: (d) ->
-      x: d.x
-      y: d.y
   ,
     name: "friends"
-    dotSize: 2
     renderer: "line"
-    sigfigs: 1
     color: "#6060c0"
-    isEditable: (d, i) ->
-      d.x == 2
-    afterDrag: (d, y, i, draggedSeries, graph) ->
-      graph.data()[i].z = y
     tooltip: (d) ->
       d.y + " friends"
     dataTransform: (d) ->
@@ -100,20 +81,17 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 
-
 sl.slider
   min: 0
-  max: 15
+  max: 9
   values: chart.x.domain()
   range: true
   slide: (event, ui) ->
     chart.x.domain(ui.values)
     chart.render()
 
-
-chart.onManipulate(()->
+chart.onUpdate ->
   sl.slider
     min: if chart.x.domain()[0] < 0 then chart.x.domain()[0] else 0
-    max: if chart.x.domain()[1] > 15 then chart.x.domain()[1] else 15
+    max: if chart.x.domain()[1] > 9 then chart.x.domain()[1] else 9
     values: chart.x.domain()
-)

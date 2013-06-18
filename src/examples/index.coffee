@@ -71,7 +71,7 @@ components = [
   title: "Stacked column big data"
 ,
   shortLink:"zoom"
-  title: "zoom"
+  title: "Zoom"
 ,
   shortLink:"column-zoom"
   title: "Column zoom"

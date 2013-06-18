@@ -38,20 +38,20 @@ data = [
 ]
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
   .element($("#example_view")[0])
   .data(data)
   .setAutoScale(false)
-  .setXFrame([-1, 9])
-  .setAvailableXFrame([-5, 20])
-  .setMinXFrame(1)
-  .setYFrame([0, 350])
-  .setAvailableYFrame([0, 500])
-  .setMinYFrame(10)
-  .setY1Frame([0, 100])
-  .setAvailableY1Frame([0, 200])
+  .setMinXFrame(3)
+  .setMinYFrame(20)
   .setMinY1Frame(10)
-  .addSeries [
+  .setXFrame(frameVal)
+  .axes(
+    x: {dimension: 'linear'}
+    y: {dimension: "linear"}
+    y1: {dimension: "linear", tickFormat: (d) -> d + '%'}
+  )
+
+chart.addSeries [
     name: "enemies"
     renderer: "column"
     color: "#c05020"
@@ -62,8 +62,7 @@ chart = new Tactile.Chart()
     name: "friends"
     renderer: "line"
     color: "#6060c0"
-    tooltip: (d) ->
-      d.y + "%"
+    tooltip: (d) -> d.y + "%"
 
     dataTransform: (d) ->
       x: d.x
@@ -81,12 +80,12 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: -5
-  max: 20
-  values: [0, 8]
+  min: 0
+  max: 8
+  values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.x.domain(ui.values)
+    chart.setXFrame(ui.values)
     chart.render()
 
 chart.onUpdate(()->

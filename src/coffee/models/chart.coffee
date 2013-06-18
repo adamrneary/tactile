@@ -24,28 +24,21 @@ class Tactile.Chart
   defaultAxesOptions:
     x:
       dimension: "time"
-      frame: [undefined, undefined]
     y:
       dimension: "linear"
-      frame: [undefined, undefined]
     y1:
       dimension: "linear"
-      frame: [undefined, undefined]
 
-
-  autoScale: true
-  defaultXFrame: [0, 1]
-  defaultYFrame: [0, 1]
-  defaultY1Frame: [0, 1]
-  defaultAvailableXFrame: [-Infinity, Infinity]
-  defaultAvailableYFrame: [-Infinity, Infinity]
-  defaultAvailableY1Frame: [-Infinity, Infinity]
   defaultMinXFrame: 1
   defaultMinYFrame: 1
   defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
   defaultMaxY1Frame: Infinity
+
+  _autoSetAvailableXFrame: false
+  _autoSetAvailableYFrame: false
+  _autoSetAvailableY1Frame: false
 
   _lastYTranslate: 0
 
@@ -77,22 +70,22 @@ class Tactile.Chart
 
 
     @x = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([0, @width()])
     @y = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([@height(), 0])
     @y.magnitude = d3.scale.linear()
       .range([0, @height()])
     @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
       .range([@height(), 0])
     @y1.magnitude = d3.scale.linear()
       .range([0, @height()])
 
-    @setXFrame args.xFrame or @defaultXFrame
-    @setYFrame args.yFrame or @defaultYFrame
-    @setY1Frame args.y1Frame or @defaultY1Frame
-    @setAvailableXFrame args.availableXFrame or @defaultAvailableXFrame
-    @setAvailableYFrame args.availableYFrame or @defaultAvailableYFrame
-    @setAvailableY1Frame args.availableY1Frame or @defaultAvailableY1Frame
+    # set autoscale to true by default
+    if _.isUndefined(args.autoScale) then @setAutoScale(true) else @setAutoScale(args.autoScale)
+
     @setMinXFrame args.minXFrame or @defaultMinXFrame
     @setMinYFrame args.minYFrame or @defaultMinYFrame
     @setMinY1Frame args.minY1Frame or @defaultMinY1Frame
@@ -115,60 +108,73 @@ class Tactile.Chart
     @initRenderers(newSeries)
     @
 
-  setXFrame: (xFrame)=>
-    @xFrame = xFrame or @defaultXFrame
-    @x.domain(@xFrame)
-    @
 
-  setYFrame: (yFrame)=>
-    @yFrame = yFrame or @defaultYFrame
-    @y.domain(@yFrame)
-    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
-    @
-
-  setY1Frame: (y1Frame)=>
-    @y1Frame = y1Frame or @defaultY1Frame
-    @y1.domain(@y1Frame)
-    @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
-    @
-
-  setAvailableXFrame: (availableXFrame)=>
+  # TODO: move next 9 methods away to a separate class. Zoomable or sth.
+  ###
+    setAvailable[X|Y|Y1]Frame
+      min and max values that can be zoomed or moved to.
+      Computed if not given
+  ###
+  setAvailableXFrame: (availableXFrame) =>
     @availableXFrame = availableXFrame or @defaultAvailableXFrame
     @
 
-  setAvailableYFrame: (availableYFrame)=>
+  setAvailableYFrame: (availableYFrame) =>
     @availableYFrame = availableYFrame or @defaultAvailableYFrame
     @
 
-  setAvailableY1Frame: (availableY1Frame)=>
+  setAvailableY1Frame: (availableY1Frame) =>
     @availableY1Frame = availableY1Frame or @defaultAvailableY1Frame
     @
 
-  setMinXFrame: (minXFrame)=>
+  ###
+    setMin[X|Y|Y1]Frame
+      this is the minimum distance between points to which you can zoom in.
+      1 by default
+  ###
+  setMinXFrame: (minXFrame) =>
     @minXFrame = minXFrame or @defaultMinXFrame
     @
 
-  setMinYFrame: (minYFrame)=>
+  setMinYFrame: (minYFrame) =>
     @minYFrame = minYFrame or @defaultMinYFrame
     @
 
-  setMinY1Frame: (minY1Frame)=>
+  setMinY1Frame: (minY1Frame) =>
     @minY1Frame = minY1Frame or @defaultMinY1Frame
     @
 
-  setMaxXFrame: (maxXFrame)=>
+  ###
+    setMax[X|Y|Y1]Frame
+    this is the maximum distance between points to which you can zoom out.
+    Infinity by default
+  ###
+  setMaxXFrame: (maxXFrame) =>
     @maxXFrame = maxXFrame or @defaultMaxXFrame
     @
 
-  setMaxYFrame: (maxYFrame)=>
+  setMaxYFrame: (maxYFrame) =>
     @maxYFrame = maxYFrame or @defaultMaxYFrame
     @
 
-  setMaxY1Frame: (maxY1Frame)=>
+  setMaxY1Frame: (maxY1Frame) =>
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
-  setAutoScale: (val)=>
+  setXFrame: (xFrame) =>
+    @x.domain(xFrame)
+    @
+
+  setYFrame: (yFrame) =>
+    @y.domain(yFrame)
+    @
+
+  setY1Frame: (y1Frame) =>
+    @y1.domain(y1Frame)
+    @
+
+
+  setAutoScale: (val) =>
     @autoScale = val
     @
 
@@ -210,31 +216,33 @@ class Tactile.Chart
 
     @dataInitialized = true
 
-  render: (transitionSpeed)->
+  render: (transitionSpeed, options = {}) ->
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
       @vis?.remove()
       @draggableVis?.remove()
       return
+
     @initSeriesStackData()
     @_setupCanvas()
     @stackData()
+
+    @discoverRange()
+
+    # related to the zooming/dragging
+    # must be called after @discoverRange, but it's not needed to run it for each renderer
     @_checkXDomain()
     @_checkYDomain()
     @_checkY1Domain()
-    @_calculateXRange() unless @autoScale
+    @_calculateXRange()
+
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
-      # discover domain for current renderer
-      @discoverRange(renderer)
-      @_calculateXRange()
       renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
       axis.render(t)
 
-    @updateCallbacks.forEach (callback) ->
-      callback()
 
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
@@ -246,52 +254,65 @@ class Tactile.Chart
       .on("touchmove.drag", @_mousemove)
       .on("mouseup.plot-drag",   @_mouseup)
       .on("touchend.plot-drag",  @_mouseup)
-      .call(zoom.x(@x).y(@y).on("zoom", ()=>
-        return if @autoScale
 
-        dy = d3.event.translate[1] - @_lastYTranslate
-        dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
-        @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
-        @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
-        @_lastYTranslate = d3.event.translate[1];
-        @_checkXDomain()
-        @_checkYDomain()
-        @_checkY1Domain()
-        @manipulateCallbacks.forEach (callback) ->
-          callback()
-        @render(0)
-      )
-      )
+    unless @autoScale
+      d3.select(@svg[0][0])
+        .call(zoom.x(@x).y(@y).on("zoom", =>
+          return if @autoScale
+          dy = d3.event.translate[1] - @_lastYTranslate
+          dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
+          @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
+          @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
+          @_lastYTranslate = d3.event.translate[1];
+          @_checkXDomain()
+          @_checkYDomain()
+          @_checkY1Domain()
+
+          @manipulateCallbacks.forEach (callback) ->
+            callback()
+          @render(0, zooming: true)
+        ))
     @timesRendered++
+
+    @updateCallbacks.forEach (callback) ->
+      callback()
 
   update: ->
     @render()
 
-  discoverRange: (renderer) =>
-    return unless @autoScale
-    domain = renderer.domain()
-    if renderer.cartesian
-      xframe = [
-        (if @axes().x?.frame?[0] then @axes().x.frame[0] else domain.x[0])
-        (if @axes().x?.frame?[1] then @axes().x.frame[1] else domain.x[1])
-      ]
-      yframe = [
-        (if @axes().y?.frame?[0] then @axes().y.frame[0] else domain.y[0])
-        (if @axes().y?.frame?[1] then @axes().y.frame[1] else domain.y[1])
-      ]
+  discoverRange: =>
+    xDomain = []
+    yDomain = []
+    y1Domain = []
+    _.each @renderers, (renderer) =>
+      if renderer.cartesian
+        domain = renderer.domain()
+        xDomain = domain.x
+        yDomain = domain.y
+        unless renderer.series.ofDefaultAxis()
+          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))]
 
-      @x.domain(xframe)
-        .range([0, @width()])
-      @y.domain(yframe)
-        .range([@height(), 0])
-      @y.magnitude
-        .domain([0, domain.y[1] - domain.y[0]])
-        .range([0, @height()])
 
-      unless renderer.series.ofDefaultAxis()
-        @y1.domain([0, d3.max(@series.ofAlternateScale().flat('y'))])
-           .range([@height(), 0])
-        @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
+    unless @availableXFrame then @_autoSetAvailableXFrame = true
+    unless @availableYFrame then @_autoSetAvailableYFrame = true
+    unless @availableY1Frame then @_autoSetAvailableY1Frame = true
+
+    if @_autoSetAvailableXFrame then @availableXFrame = xDomain
+    if @_autoSetAvailableYFrame then @availableYFrame = [yDomain[0] - yDomain[0]*0.1, yDomain[1] + yDomain[1]*0.1]
+    if @_autoSetAvailableY1Frame then @availableY1Frame = [y1Domain[0] - y1Domain[0]*0.1, y1Domain[1] + y1Domain[1]*0.1]
+
+    if _.isNaN(@x.domain()[0]) or _.isNaN(@x.domain()[1])
+      @x.domain(xDomain)
+
+    if _.isNaN(@y.domain()[0]) or _.isNaN(@y.domain()[1]) or @autoScale
+      @y.domain(yDomain)
+      @y.magnitude.domain([0, yDomain[1] - yDomain[0]])
+
+    if _.isNaN(@y1.domain()[0]) or _.isNaN(@y1.domain()[1]) or @autoScale
+      @y1.domain(y1Domain)
+      @y1.magnitude.domain([0, y1Domain[1] - y1Domain[0]])
+
+    @
 
   axes: (args) ->
     return @axesList unless args
@@ -408,7 +429,7 @@ class Tactile.Chart
     @renderers = []
     @timesRendered = 0
 
-  stackTransition: (transitionSpeed)=>
+  stackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
@@ -418,7 +439,7 @@ class Tactile.Chart
       axis.render(t)
 
 
-  unstackTransition: (transitionSpeed)=>
+  unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
@@ -567,7 +588,9 @@ class Tactile.Chart
     @axes()?.y?._mouseMove()
     @axes()?.y1?._mouseMove()
 
-  _checkXDomain: ()=>
+
+  # TODO: move away to a separate class. Zoomable or sth.
+  _checkXDomain: =>
     min = @x.domain()[0]
     max = @x.domain()[1]
 
@@ -593,9 +616,10 @@ class Tactile.Chart
       min = middle - maxXFrame / 2
       max = middle + maxXFrame / 2
 
+    @axes().x?.frame = [min, max]
     @x.domain([min, max])
 
-  _checkYDomain: ()=>
+  _checkYDomain: =>
     min = @y.domain()[0]
     max = @y.domain()[1]
 
@@ -621,12 +645,14 @@ class Tactile.Chart
       min = middle - maxYFrame / 2
       max = middle + maxYFrame / 2
 
+    @axes().y?.frame = [min, max]
     @y.domain([min, max])
 
-  _checkY1Domain: ()=>
+  _checkY1Domain: =>
     min = @y1.domain()[0]
     max = @y1.domain()[1]
 
+    return unless @availableY1Frame
     min = @availableY1Frame[0] if min < @availableY1Frame[0]
     min = @availableY1Frame[1] if min > @availableY1Frame[1]
 
@@ -649,9 +675,10 @@ class Tactile.Chart
       min = middle - maxY1Frame / 2
       max = middle + maxY1Frame / 2
 
+    @axes().y1?.frame = [min, max]
     @y1.domain([min, max])
 
-  _calculateXRange: ()=>
+  _calculateXRange: =>
     if @_containsColumnChart()
       renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 

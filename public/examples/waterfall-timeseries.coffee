@@ -50,7 +50,8 @@ data = [
 chart = new Tactile.Chart(min: 'auto')
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'time'}, y: {dimension: "linear"}})
+  .setXFrame(frameVal)
   .addSeries [
     name: "Customers"
     renderer: "waterfall"
@@ -90,10 +91,10 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: new Date(2012,  0, 1).getTime()
-  max: new Date(2012, 11, 1).getTime()
+  min: new Date(2012, 0, 1).getTime()
+  max: new Date(2012, 7, 1).getTime()
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()

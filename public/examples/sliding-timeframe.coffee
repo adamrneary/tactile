@@ -68,7 +68,8 @@ data = [
 chart = new Tactile.Chart(grid: true)
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: "time", frame: frameVal}})
+  .axes({x: {dimension: "time"}})
+  .setXFrame(frameVal)
   .addSeries [
     name: "xy"
     renderer: "line"
@@ -99,5 +100,5 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()

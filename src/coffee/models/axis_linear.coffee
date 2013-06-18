@@ -82,6 +82,7 @@ class Tactile.AxisLinear
     d3.event.preventDefault()
     d3.event.stopPropagation()
 
+  # TODO: this are almost identical across the axis classes.
   _mouseMove: =>
     return if isNaN(@down)
     p = d3.svg.mouse(@graph.svg.node())
@@ -99,7 +100,7 @@ class Tactile.AxisLinear
       new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain);
 
-    @graph.render(0)
+    @graph.render(0, zooming: true)
 
     d3.event.preventDefault()
     d3.event.stopPropagation()

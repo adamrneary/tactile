@@ -1,4 +1,19 @@
-frameVal = [1330560000000, 1354320000000]
+###
+Specific options for zoomable chart:
+available[X|Y|Y1]Frame
+  min and max values that can be zoomed or moved to.
+  Computed if not given
+
+min[X|Y|Y1]Frame
+  this is the minimum distance between points to which you can zoom in.
+  1 by default
+
+max[X|Y|Y1]Frame
+  this is the maximum distance between points to which you can zoom out.
+  Infinity by default
+###
+
+frameVal = [1333238400000, 1349049600000]
 # time (period here) is unix milliseconds/1000
 data = [
   period: 1325376000000
@@ -63,21 +78,28 @@ unit =
     months[d.getUTCMonth()]
 
 chart = new Tactile.Chart(
+    # turn the zoom on
     autoScale: false
-    xFrame: frameVal
-    yFrame: [0, 10]
+    # it's possible to zoom out to see all the periods in data
     availableXFrame: [1330560000000, 1354320000000]
+    # set the max zoom out Y value to be 20
     availableYFrame: [0, 20]
-    minXFrame: 267850000
+    # set minimum possible range to around 4 months
+    minXFrame: 7960587796
+    # ...and 4 points
+    minYFrame: 4
   )
+  .setXFrame(frameVal)
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: 'time', frame: frameVal, timeUnit:unit}, y: {dimension: "linear"}})
+  .axes(
+    # note that we're passing initial frame just like in a regular chart
+    x: dimension: 'time', timeUnit: unit
+    y: dimension: "linear")
   .addSeries [
-    name: "reach actual"
+    name: "actual"
     renderer: "column"
     sigfigs: 0
-    round: false
     color: "#c05020"
     isEditable: true
     tooltip: (d) ->
@@ -92,7 +114,6 @@ chart = new Tactile.Chart(
   ,
     name: "planned"
     renderer: "column"
-    round: false
     color: "#6060c0"
     isEditable: (d, i) ->
       d.x == 1325376000000
@@ -123,7 +144,7 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.x.domain(ui.values)
+    chart.setXFrame(ui.values)
     chart.render()
 
 chart.onUpdate(()->

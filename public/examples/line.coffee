@@ -45,8 +45,9 @@ tickFormat = (d) ->
   if d > 99 then d / 100 + "★" else "#{d*10}☢"
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'linear', frame: frameVal, tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
+  .axes({x: {dimension: 'linear', tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
   .element($("#example_view")[0])
+  .setXFrame(frameVal)
   .data(data)
   .addSeries [
     name: "enemies"
@@ -89,5 +90,5 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    chart.axes().x.frame = ui.values
+    chart.setXFrame(ui.values)
     chart.render()
