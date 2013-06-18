@@ -42,7 +42,6 @@ Tactile.RendererBase = (function() {
   RendererBase.prototype.domain = function() {
     var stackedData, topSeriesData, values, xMax, xMin, yMax, yMin,
       _this = this;
-
     values = [];
     stackedData = this.graph.stackedData || this.graph.stackData();
     topSeriesData = (this.unstack ? stackedData : [stackedData.slice(-1).shift()]);
@@ -67,8 +66,12 @@ Tactile.RendererBase = (function() {
         y: [0, 0]
       };
     }
-    xMin = stackedData[0][0].x;
-    xMax = stackedData[0][stackedData[0].length - 1].x;
+    xMin = _.min(stackedData[0], function(d) {
+      return d.x;
+    }).x;
+    xMax = _.max(stackedData[0], function(d) {
+      return d.x;
+    }).x;
     yMin = (this.graph.min === "auto" ? d3.min(values) : this.graph.min || 0);
     yMax = this.graph.max || d3.max(values);
     return {
@@ -84,7 +87,6 @@ Tactile.RendererBase = (function() {
   RendererBase.prototype.render = function(transition) {
     var line,
       _this = this;
-
     this._checkData();
     if (this.series.disabled) {
       this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]).remove();
@@ -107,7 +109,6 @@ Tactile.RendererBase = (function() {
 
   RendererBase.prototype.seriesCanvas = function() {
     var _ref, _ref1;
-
     if ((_ref = this.graph.vis) != null) {
       _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
     }
@@ -116,7 +117,6 @@ Tactile.RendererBase = (function() {
 
   RendererBase.prototype.seriesDraggableCanvas = function() {
     var _ref, _ref1;
-
     if ((_ref = this.graph.draggableVis) != null) {
       _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
     }
@@ -126,7 +126,6 @@ Tactile.RendererBase = (function() {
   RendererBase.prototype.configure = function(options) {
     var defaults,
       _this = this;
-
     if (this.specificDefaults != null) {
       defaults = _.extend({}, this.defaults, this.specificDefaults);
     }
@@ -138,7 +137,6 @@ Tactile.RendererBase = (function() {
 
   RendererBase.prototype["delete"] = function() {
     var _ref, _ref1;
-
     if ((_ref = this.seriesCanvas()) != null) {
       _ref.remove();
     }
@@ -147,14 +145,12 @@ Tactile.RendererBase = (function() {
 
   RendererBase.prototype._nameToId = function() {
     var _ref;
-
     this.utils.checkString(this.series.name, "series name");
     return (_ref = this.series.name) != null ? _ref.replace(/[^\w]/g, '-').toLowerCase() : void 0;
   };
 
   RendererBase.prototype._filterNaNs = function() {
     var args, d;
-
     d = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     return _.all(args, function(attr) {
       switch (typeof d[attr]) {
@@ -169,7 +165,6 @@ Tactile.RendererBase = (function() {
   RendererBase.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkNumber(d.x, "" + _this.name + " renderer data[" + i + "].x");
@@ -197,13 +192,13 @@ Tactile.DraggableRenderer = (function(_super) {
     this.increaseEditableValue = __bind(this.increaseEditableValue, this);
     this.setActive = __bind(this.setActive, this);
     this.selectPerviousEditableValue = __bind(this.selectPerviousEditableValue, this);
-    this.selectNextEditableValue = __bind(this.selectNextEditableValue, this);    _ref = DraggableRenderer.__super__.constructor.apply(this, arguments);
+    this.selectNextEditableValue = __bind(this.selectNextEditableValue, this);
+    _ref = DraggableRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
   DraggableRenderer.prototype.initialize = function() {
     var _this = this;
-
     this.active = null;
     this.graph.onElementChange(function() {
       return _this.graph.element().addEventListener("click", (function() {
@@ -219,7 +214,6 @@ Tactile.DraggableRenderer = (function(_super) {
     });
     return window.addEventListener("keydown", function(e) {
       var decrease, increase;
-
       switch (e.keyCode) {
         case 37:
           return _this.selectPerviousEditableValue();
@@ -253,7 +247,6 @@ Tactile.DraggableRenderer = (function(_super) {
 
   DraggableRenderer.prototype.selectNextEditableValue = function() {
     var i, setNext;
-
     if (!this.active) {
       return;
     }
@@ -281,7 +274,6 @@ Tactile.DraggableRenderer = (function(_super) {
 
   DraggableRenderer.prototype.selectPerviousEditableValue = function() {
     var i, setNext;
-
     if (!this.active) {
       return;
     }
@@ -342,7 +334,6 @@ Tactile.DraggableRenderer = (function(_super) {
   function Series(options) {
     var defaults,
       _this = this;
-
     if (options == null) {
       options = {};
     }
@@ -435,7 +426,6 @@ Tactile.SeriesSet = (function() {
 
   SeriesSet.prototype._exposeArray = function() {
     var _this = this;
-
     return _.each(this.array, function(val, key) {
       return _this[key] = val;
     });
@@ -444,7 +434,6 @@ Tactile.SeriesSet = (function() {
   SeriesSet.prototype.flat = function(key) {
     var transformed,
       _this = this;
-
     transformed = _.flatten(this.array.map(function(s) {
       return _this.graph._data.map(s.dataTransform);
     }), true);
@@ -498,7 +487,6 @@ Tactile.SeriesSet = (function() {
 
   Tooltip.prototype.appendTooltip = function() {
     var chartContainer, tip;
-
     chartContainer = d3.select(this.options.graph._element);
     if (Tooltip._spotlightMode && this.el.node().classList.contains("active")) {
       tip = chartContainer.select('.tooltip');
@@ -513,7 +501,6 @@ Tactile.SeriesSet = (function() {
   Tooltip.prototype.annotate = function() {
     var chartContainer, mouseMove, moveTip,
       _this = this;
-
     chartContainer = this.el.node().nearestViewportElement;
     if (this.options.tooltipCircleContainer) {
       this.tooltipCircleContainer = this.options.tooltipCircleContainer;
@@ -522,7 +509,6 @@ Tactile.SeriesSet = (function() {
     }
     moveTip = function(tip) {
       var center, hoveredNode;
-
       center = [0, 0];
       if (_this.options.placement === "mouse") {
         center = d3.mouse(_this.options.graph._element);
@@ -558,7 +544,6 @@ Tactile.SeriesSet = (function() {
     };
     this.el.on("mouseover", function() {
       var inner, tip;
-
       if (Tooltip._spotlightMode) {
         if (!_this.el.node().classList.contains("active")) {
           return;
@@ -589,7 +574,6 @@ Tactile.SeriesSet = (function() {
     }
     return this.el.on("mouseout", function() {
       var remover, tip;
-
       if (Tooltip._spotlightMode) {
         return;
       }
@@ -609,7 +593,6 @@ Tactile.SeriesSet = (function() {
 
   Tooltip.prototype._appendTipCircle = function() {
     var hoveredNode, svgNode;
-
     hoveredNode = this.el.node().getBBox();
     svgNode = d3.select(this.options.graph._element).select('svg').node();
     if (this.el.node().tagName === 'circle') {
@@ -634,7 +617,6 @@ Tactile.SeriesSet = (function() {
 
 d3.selection.prototype.tooltip = function(f) {
   var options, selection;
-
   selection = this;
   options = {};
   return selection.each(function(d, i) {
@@ -659,7 +641,6 @@ d3.selection.prototype.tooltip = function(f) {
 
   Utils.prototype.checkString = function(str, strName, d) {
     var check;
-
     check = true;
     if (typeof str !== "string") {
       console.warn("Tactile error: '" + strName + "' invalid type: " + str);
@@ -676,7 +657,6 @@ d3.selection.prototype.tooltip = function(f) {
 
   Utils.prototype.checkNumber = function(num, numName, d) {
     var check;
-
     check = true;
     if (typeof num !== "number") {
       console.warn("Tactile error: '" + numName + "' invalid type: " + num);
@@ -690,7 +670,6 @@ d3.selection.prototype.tooltip = function(f) {
 
   Utils.prototype.checkArray = function(arr, arrName, d) {
     var check;
-
     check = true;
     if (!_.isArray(arr)) {
       console.warn("Tactile error: '" + arrName + "' invalid type: " + arr);
@@ -704,7 +683,6 @@ d3.selection.prototype.tooltip = function(f) {
 
   Utils.prototype.checkFunction = function(func, funcName, d) {
     var check;
-
     check = true;
     if (!_.isFunction(func)) {
       console.warn("Tactile error: '" + funcName + "' invalid type: " + func);
@@ -718,7 +696,6 @@ d3.selection.prototype.tooltip = function(f) {
 
   Utils.prototype.checkObject = function(obj, objName, d) {
     var check;
-
     check = true;
     if (typeof str !== "object") {
       console.warn("Tactile error: '" + objName + "' invalid type: " + obj);
@@ -750,7 +727,8 @@ Tactile.AreaRenderer = (function(_super) {
     this.stackTransition = __bind(this.stackTransition, this);
     this.seriesStrokeFactory = __bind(this.seriesStrokeFactory, this);
     this.seriesPathFactory = __bind(this.seriesPathFactory, this);
-    this._y0 = __bind(this._y0, this);    _ref = AreaRenderer.__super__.constructor.apply(this, arguments);
+    this._y0 = __bind(this._y0, this);
+    _ref = AreaRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -788,7 +766,6 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.seriesPathFactory = function() {
     var _this = this;
-
     return d3.svg.area().defined(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).x(function(d) {
@@ -802,7 +779,6 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.seriesStrokeFactory = function() {
     var _this = this;
-
     return d3.svg.line().defined(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).x(function(d) {
@@ -815,7 +791,6 @@ Tactile.AreaRenderer = (function(_super) {
   AreaRenderer.prototype.render = function(transition) {
     var circ, newCircs, stroke, _ref1, _ref2,
       _this = this;
-
     this._checkData(this.series.stack);
     if (transition) {
       this.transition = transition;
@@ -890,13 +865,13 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
     this.unstack = false;
-    this.graph.discoverRange(this);
+    this.graph.discoverRange();
     return this.render(transition);
   };
 
   AreaRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
     this.unstack = true;
-    this.graph.discoverRange(this);
+    this.graph.discoverRange();
     return this.render(transition);
   };
 
@@ -915,13 +890,12 @@ Tactile.AxisLinear = (function() {
     this._mouseMove = __bind(this._mouseMove, this);
     this._axisDrag = __bind(this._axisDrag, this);
     this._checkOptions = __bind(this._checkOptions, this);
-    var _base, _ref;
-
+    var _base;
     this.utils = new Tactile.Utils();
     this.options = options;
     this._checkOptions();
     this.graph = options.graph;
-    if ((_ref = (_base = this.options).axis) == null) {
+    if ((_base = this.options).axis == null) {
       _base.axis = 'x';
     }
     this.horizontal = this.options.axis === 'x';
@@ -938,7 +912,6 @@ Tactile.AxisLinear = (function() {
 
   AxisLinear.prototype.render = function(transition) {
     var axis, className;
-
     if (this.graph[this.options.axis] == null) {
       return;
     }
@@ -957,12 +930,11 @@ Tactile.AxisLinear = (function() {
   };
 
   AxisLinear.prototype._setupForOrientation = function() {
-    var pixelsPerTick, _ref, _ref1;
-
+    var pixelsPerTick;
     pixelsPerTick = this.options.pixelsPerTick || 75;
     if (this.horizontal) {
       this.orientation = 'bottom';
-      if ((_ref = this.ticks) == null) {
+      if (this.ticks == null) {
         this.ticks = Math.floor(this.graph.width() / pixelsPerTick);
       }
       return this.translateString = "translate(0, " + (this.graph.height()) + ")";
@@ -974,13 +946,12 @@ Tactile.AxisLinear = (function() {
         this.orientation = 'right';
         this.translateString = "translate(" + (this.graph.width()) + ", 0)";
       }
-      return (_ref1 = this.ticks) != null ? _ref1 : this.ticks = Math.floor(this.graph.height() / pixelsPerTick);
+      return this.ticks != null ? this.ticks : this.ticks = Math.floor(this.graph.height() / pixelsPerTick);
     }
   };
 
   AxisLinear.prototype._checkOptions = function() {
     var _this = this;
-
     if (this.options.ticksTreatment != null) {
       this.utils.checkString(this.options.ticksTreatment, "AxisLinear options.ticksTreatment");
     }
@@ -1003,7 +974,6 @@ Tactile.AxisLinear = (function() {
 
   AxisLinear.prototype._axisDrag = function() {
     var p;
-
     p = d3.svg.mouse(this.graph.svg.node());
     this.down = this.horizontal ? this.graph[this.options.axis].invert(p[0]) : this.graph[this.options.axis].invert(p[1]);
     d3.event.preventDefault();
@@ -1012,7 +982,6 @@ Tactile.AxisLinear = (function() {
 
   AxisLinear.prototype._mouseMove = function() {
     var axis, axis1, axis2, change, extent, new_domain, p, rup;
-
     if (isNaN(this.down)) {
       return;
     }
@@ -1062,7 +1031,8 @@ Tactile.AxisTime = (function() {
     this._mouseUp = __bind(this._mouseUp, this);
     this._mouseMove = __bind(this._mouseMove, this);
     this._axisDrag = __bind(this._axisDrag, this);
-    this._checkOptions = __bind(this._checkOptions, this);    this.utils = new Tactile.Utils();
+    this._checkOptions = __bind(this._checkOptions, this);
+    this.utils = new Tactile.Utils();
     this.options = options;
     this._checkOptions();
     this.graph = options.graph;
@@ -1076,7 +1046,6 @@ Tactile.AxisTime = (function() {
 
   AxisTime.prototype.appropriateTimeUnit = function() {
     var domain, rangeSeconds, unit, units;
-
     unit = void 0;
     units = this.time.units;
     domain = this.graph.x.domain();
@@ -1091,7 +1060,6 @@ Tactile.AxisTime = (function() {
 
   AxisTime.prototype.tickOffsets = function() {
     var count, domain, i, offsets, runningTick, tickValue, unit;
-
     domain = this.graph.x.domain();
     unit = this.fixedTimeUnit || this.appropriateTimeUnit();
     count = Math.ceil((domain[1] - domain[0]) / unit.seconds);
@@ -1113,7 +1081,6 @@ Tactile.AxisTime = (function() {
   AxisTime.prototype.render = function(transition) {
     var ticks,
       _this = this;
-
     if (this.graph.x == null) {
       return;
     }
@@ -1127,7 +1094,6 @@ Tactile.AxisTime = (function() {
     ticks.exit().remove();
     this.g.selectAll('g.x-tick').each(function(d, i) {
       var text;
-
       text = d3.select(this).selectAll("text").data([d]);
       text.enter().append("text").attr("class", "title").style("cursor", "ew-resize");
       return text.exit().remove();
@@ -1145,7 +1111,6 @@ Tactile.AxisTime = (function() {
 
   AxisTime.prototype._checkOptions = function() {
     var _this = this;
-
     if (this.options.ticksTreatment != null) {
       this.utils.checkString(this.options.ticksTreatment, "AxisTime options.ticksTreatment");
     }
@@ -1168,7 +1133,6 @@ Tactile.AxisTime = (function() {
 
   AxisTime.prototype._axisDrag = function() {
     var p;
-
     p = d3.svg.mouse(this.graph.svg.node());
     this.down = this.graph.x.invert(p[0]);
     d3.event.preventDefault();
@@ -1177,7 +1141,6 @@ Tactile.AxisTime = (function() {
 
   AxisTime.prototype._mouseMove = function() {
     var axis, axis1, axis2, extent, new_domain, p, rup;
-
     if (isNaN(this.down)) {
       return;
     }
@@ -1231,7 +1194,8 @@ Tactile.BulletRenderer = (function(_super) {
     this._index = __bind(this._index, this);
     this._yOffset = __bind(this._yOffset, this);
     this._xOffset = __bind(this._xOffset, this);
-    this.initialize = __bind(this.initialize, this);    _ref = BulletRenderer.__super__.constructor.apply(this, arguments);
+    this.initialize = __bind(this.initialize, this);
+    _ref = BulletRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -1260,7 +1224,6 @@ Tactile.BulletRenderer = (function(_super) {
   BulletRenderer.prototype.render = function(transition, transitionSpeed) {
     var bars, oldData, render,
       _this = this;
-
     this._checkData();
     ({
       width: this.margin.width - this.margin.left - this.margin.right,
@@ -1272,7 +1235,6 @@ Tactile.BulletRenderer = (function(_super) {
     oldData = this.seriesCanvas().selectAll("g.bullet.bars").data();
     this.series.stack.forEach(function(d, i) {
       var _ref1;
-
       d.maxValue = d3.max([
         d3.max(d.ranges, function(d) {
           return d.value;
@@ -1289,12 +1251,10 @@ Tactile.BulletRenderer = (function(_super) {
     bars.exit().remove();
     this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
       var markers, measures, measuresData, ranges, rengesData, titles;
-
       titles = d3.select(this).selectAll("g.bullet.titles").data([d]);
       titles.enter().append("svg:g").attr("class", "bullet titles");
       d3.select(this).selectAll("g.bullet.titles").each(function(d, i) {
         var subtitle, title;
-
         title = d3.select(this).selectAll("text.bullet.title").data([d]);
         title.enter().append("text").attr("class", "bullet title");
         title.exit().remove();
@@ -1316,7 +1276,6 @@ Tactile.BulletRenderer = (function(_super) {
       ranges.enter().append("svg:g").attr("class", "bullet ranges");
       d3.select(this).selectAll("g.bullet.ranges").each(function(d, i) {
         var range;
-
         range = d3.select(this).selectAll("rect.bullet.range").data(d);
         range.enter().append("svg:rect").attr("class", "bullet range");
         return range.exit().remove();
@@ -1335,7 +1294,6 @@ Tactile.BulletRenderer = (function(_super) {
       measures.enter().append("svg:g").attr("class", "bullet measures");
       d3.select(this).selectAll("g.bullet.measures").each(function(d, i) {
         var measure;
-
         measure = d3.select(this).selectAll("rect.bullet.measure").data(d);
         measure.enter().append("svg:rect").attr("class", "bullet measure");
         return measure.exit().remove();
@@ -1344,7 +1302,6 @@ Tactile.BulletRenderer = (function(_super) {
       markers.enter().append("svg:g").attr("class", "bullet markers");
       return d3.select(this).selectAll("g.bullet.markers").each(function(d, i) {
         var marker;
-
         marker = d3.select(this).selectAll("line.bullet.marker").data(d);
         marker.enter().append("svg:line").attr("class", "bullet marker");
         return marker.exit().remove();
@@ -1367,7 +1324,6 @@ Tactile.BulletRenderer = (function(_super) {
     return this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
       var curEl, element, scal, scalOld, ticks,
         _this = this;
-
       scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       element = this;
@@ -1410,7 +1366,6 @@ Tactile.BulletRenderer = (function(_super) {
       ticks.enter().append("svg:g").attr("class", "bullet ticks");
       curEl.selectAll("g.bullet.ticks").each(function(d, i) {
         var tick, tickEnter;
-
         tick = d3.select(this).selectAll("g.bullet.tick").data(d);
         tickEnter = tick.enter().append("svg:g").attr("class", "bullet tick");
         tickEnter.append("svg:line").style("opacity", 1e-6).attr("y1", render.barHeight / 2).attr("y2", render.barHeight / 2 + 4).attr("x1", function(d) {
@@ -1447,7 +1402,6 @@ Tactile.BulletRenderer = (function(_super) {
 
   BulletRenderer.prototype._yOffset = function(d, i) {
     var yMargin;
-
     yMargin = (this.graph.height() - this.series.stack.length * this.barHeight - this.margin.top - this.margin.bottom) / (this.series.stack.length + 1);
     return yMargin + (this.barHeight + yMargin) * this._index(d, i) + this.margin.top;
   };
@@ -1463,7 +1417,6 @@ Tactile.BulletRenderer = (function(_super) {
   BulletRenderer.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkString(d.title, "" + _this.name + " renderer data[" + i + "].title");
@@ -1514,7 +1467,8 @@ Tactile.ColumnRenderer = (function(_super) {
     this.unstackTransition = __bind(this.unstackTransition, this);
     this.stackTransition = __bind(this.stackTransition, this);
     this.hideCircles = __bind(this.hideCircles, this);
-    this.render = __bind(this.render, this);    _ref = ColumnRenderer.__super__.constructor.apply(this, arguments);
+    this.render = __bind(this.render, this);
+    _ref = ColumnRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -1547,7 +1501,6 @@ Tactile.ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype.render = function(transition) {
     var circ, newCircs, nodes, _ref1, _ref2, _ref3,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -1569,20 +1522,20 @@ Tactile.ColumnRenderer = (function(_super) {
       return _this._filterNaNs(d, "x", "y");
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
-    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("fill", this.series.color).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+    }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+      return _this.utils.ourFunctor(_this.series.color, d, i);
+    }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
       return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
     });
     nodes.exit().remove();
     nodes.on("mouseover.show-dragging-circle", function(d, i, el) {
       var circ;
-
       _this.hideCircles();
       circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
       return circ.style("display", "");
     });
     nodes.on("mouseout.hide-dragging-circle", function(d, i) {
       var circ;
-
       if (d === _this.active) {
         return;
       }
@@ -1630,15 +1583,15 @@ Tactile.ColumnRenderer = (function(_super) {
       }
     }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
       return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
-    }).attr("fill", function(d) {
+    }).attr("fill", function(d, i) {
       if (d.dragged || d === _this.active) {
         return "white";
       } else {
-        return _this.series.color;
+        return _this.utils.ourFunctor(_this.series.color, d, i);
       }
-    }).attr("stroke", function(d) {
+    }).attr("stroke", function(d, i) {
       if (d.dragged || d === _this.active) {
-        return _this.series.color;
+        return _this.utils.ourFunctor(_this.series.color, d, i);
       } else {
         return "white";
       }
@@ -1669,7 +1622,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.hideCircles = function() {
     var _this = this;
-
     return this.seriesDraggableCanvas().selectAll("circle").style("display", function(d) {
       if (d === _this.active) {
         return "";
@@ -1681,7 +1633,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.setupTooltips = function() {
     var _this = this;
-
     if (this.series.tooltip) {
       return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
         return {
@@ -1699,7 +1650,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.barWidth = function() {
     var barWidth, count, data;
-
     data = this.series.stack;
     count = data.length;
     return barWidth = this.graph.width() / count * (1 - this.gapSize);
@@ -1707,9 +1657,8 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
     var _this = this;
-
     this.unstack = false;
-    this.graph.discoverRange(this);
+    this.graph.discoverRange();
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
@@ -1732,9 +1681,8 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
     var _this = this;
-
     this.unstack = true;
-    this.graph.discoverRange(this);
+    this.graph.discoverRange();
     transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
@@ -1757,7 +1705,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype._transformMatrix = function(d) {
     var matrix;
-
     matrix = [1, 0, 0, (d.y < 0 ? -1 : 1), 0, (d.y < 0 ? this.yFunction().magnitude(Math.abs(d.y)) * 2 : 0)];
     return "matrix(" + matrix.join(",") + ")";
   };
@@ -1772,7 +1719,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype.seriesWidth = function() {
     var stackWidth, width;
-
     if (this.series.stack.length >= 2) {
       stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
       return width = stackWidth / (1 + this.gapSize);
@@ -1784,7 +1730,6 @@ Tactile.ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype._seriesBarWidth = function() {
     var stackWidth, width,
       _this = this;
-
     if (this.series.stack.length >= 2) {
       stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
       width = stackWidth / (1 + this.gapSize);
@@ -1801,7 +1746,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype._barXOffset = function(seriesBarWidth) {
     var barXOffset, count;
-
     count = this.graph.renderersByType(this.name).length;
     if (count === 1 || !this.unstack) {
       return barXOffset = -seriesBarWidth / 2;
@@ -1812,7 +1756,6 @@ Tactile.ColumnRenderer = (function(_super) {
 
   ColumnRenderer.prototype._barX = function(d) {
     var initialX, seriesBarWidth, x;
-
     x = this.graph.x(d.x);
     seriesBarWidth = this._seriesBarWidth();
     initialX = x + this._barXOffset(seriesBarWidth);
@@ -1842,7 +1785,6 @@ Tactile.ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype._columnRendererIndex = function() {
     var renderers,
       _this = this;
-
     if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
       return 0;
     }
@@ -1899,7 +1841,8 @@ Tactile.DonutRenderer = (function(_super) {
     this.getOuterRadius = __bind(this.getOuterRadius, this);
     this.setupTooltips = __bind(this.setupTooltips, this);
     this.render = __bind(this.render, this);
-    this.initialize = __bind(this.initialize, this);    _ref = DonutRenderer.__super__.constructor.apply(this, arguments);
+    this.initialize = __bind(this.initialize, this);
+    _ref = DonutRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -1933,7 +1876,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype.render = function(transition, transitionSpeed) {
     var _this = this;
-
     this._checkData();
     this._setOuterRadius();
     this._setInnerRadius();
@@ -1945,7 +1887,6 @@ Tactile.DonutRenderer = (function(_super) {
     this.seriesCanvas().selectAll("donut-arc").data(this.series.stack).enter().append("path");
     this.transition.selectAll("." + (this._nameToId()) + " path").attr("class", "donut-arc").attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attr("d", function(d, i) {
       var arc;
-
       return arc = d3.svg.arc().startAngle(_this._startAngle(d, i)).endAngle(_this._endAngle(d, i)).innerRadius(_this.unstack ? _this.getInnerRadius() : _this.getStackedInnerRadius()).outerRadius(_this.unstack ? _this.getOuterRadius() : _this.getStackedOuterRadius())();
     }).attr("stroke", "white").attr("fill", (function(d) {
       return d.color;
@@ -1956,11 +1897,9 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype.setupTooltips = function() {
     var _this = this;
-
     if (this.series.tooltip) {
       return this.seriesCanvas().selectAll("path").tooltip(function(d, i) {
         var arc, center;
-
         arc = d3.svg.arc().startAngle(_this._startAngle(d, i)).endAngle(_this._endAngle(d, i)).innerRadius(_this.unstack ? _this.getInnerRadius() : _this.getStackedInnerRadius()).outerRadius(_this.unstack ? _this.getOuterRadius() : _this.getStackedOuterRadius());
         center = arc.centroid(d);
         center[0] -= 10;
@@ -1994,13 +1933,11 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.getMaxOuterRadius = function() {
     var max,
       _this = this;
-
     max = void 0;
     this.graph.renderers.filter(function(r) {
       return r.name === _this.name;
     }).forEach(function(r) {
       var radius;
-
       radius = r.getOuterRadius();
       if (!isNaN(radius) && (radius != null)) {
         if (!isNaN(max) && (max != null)) {
@@ -2018,13 +1955,11 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.getMaxInnerRadius = function() {
     var max,
       _this = this;
-
     max = void 0;
     this.graph.renderers.filter(function(r) {
       return r.name === _this.name;
     }).forEach(function(r) {
       var radius;
-
       radius = r.getInnerRadius();
       if (!isNaN(radius) && (radius != null)) {
         if (!isNaN(max) && (max != null)) {
@@ -2042,13 +1977,11 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.getMaxStackedOuterRadius = function() {
     var max,
       _this = this;
-
     max = void 0;
     this.graph.renderers.filter(function(r) {
       return r.name === _this.name;
     }).forEach(function(r) {
       var radius;
-
       radius = r.getStackedOuterRadius();
       if (!isNaN(radius) && (radius != null)) {
         if (!isNaN(max) && (max != null)) {
@@ -2066,13 +1999,11 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.getMaxStackedInnerRadius = function() {
     var max,
       _this = this;
-
     max = void 0;
     this.graph.renderers.filter(function(r) {
       return r.name === _this.name;
     }).forEach(function(r) {
       var radius;
-
       radius = r.getStackedInnerRadius();
       if (!isNaN(radius) && (radius != null)) {
         if (!isNaN(max) && (max != null)) {
@@ -2090,7 +2021,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
     var xMargin, xOffset, yMargin, yOffset,
       _this = this;
-
     if (!this.unstack) {
       return;
     }
@@ -2104,7 +2034,6 @@ Tactile.DonutRenderer = (function(_super) {
     transition.selectAll("." + (this._nameToId()) + " text.donut-label").delay(transitionSpeed / 3).duration(transitionSpeed / 3).attr("opacity", 0);
     return transition.selectAll("." + (this._nameToId()) + " path").delay(transitionSpeed * 2 / 3).duration(transitionSpeed / 3).attr("transform", "translate(" + (this._xOffset()) + "," + (this._yOffset()) + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
-
       iInnerRadius = d3.interpolate(_this.getInnerRadius(), _this.getStackedInnerRadius());
       iOuterRadius = d3.interpolate(_this.getOuterRadius(), _this.stackedOuterRadius);
       iStartAngle = d3.interpolate(_this._startAngle(d, i, true), _this._startAngle(d, i, false));
@@ -2118,7 +2047,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
     var xMargin, xOffset, yMargin, yOffset,
       _this = this;
-
     if (this.unstack) {
       return;
     }
@@ -2129,7 +2057,6 @@ Tactile.DonutRenderer = (function(_super) {
     yOffset = yMargin + this.getMaxStackedOuterRadius() + (this.getMaxStackedOuterRadius() - this.getMaxOuterRadius()) * Math.sin((2 * Math.PI / this._donutsCount()) * this._donutIndex(false) - Math.PI / 2);
     transition.selectAll("." + (this._nameToId()) + " path").duration(transitionSpeed / 3).attr("transform", "translate(" + xOffset + "," + yOffset + ")").attrTween("d", function(d, i) {
       var iEndAngle, iInnerRadius, iOuterRadius, iStartAngle;
-
       iInnerRadius = d3.interpolate(_this.getStackedInnerRadius(), _this.getInnerRadius());
       iOuterRadius = d3.interpolate(_this.getStackedOuterRadius(), _this.getOuterRadius());
       iStartAngle = d3.interpolate(_this._startAngle(d, i, false), _this._startAngle(d, i, true));
@@ -2150,7 +2077,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._xOffset = function() {
     var xMargin, xOffset;
-
     if (this.unstack) {
       xMargin = (this.graph.width() - this._donutsInLine(this._lineIndex()) * this.getMaxOuterRadius() * 2) / (this._donutsInLine(this._lineIndex()) + 1);
       return xOffset = this._indexInLine() * (xMargin + this.getMaxOuterRadius() * 2) + xMargin + this.getMaxOuterRadius();
@@ -2162,7 +2088,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._yOffset = function() {
     var yMargin, yOffset;
-
     if (this.unstack) {
       yMargin = (this.graph.height() - this._linesCount() * this.getMaxOuterRadius() * 2) / (this._linesCount() + 1);
       return yOffset = this._lineIndex() * (yMargin + this.getMaxOuterRadius() * 2) + yMargin + this.getMaxOuterRadius();
@@ -2175,7 +2100,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype._startAngle = function(d, i, unstack) {
     var arcStartAngle, dataAmount, k, scal,
       _this = this;
-
     if (unstack === void 0) {
       unstack = this.unstack;
     }
@@ -2205,7 +2129,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype._endAngle = function(d, i, unstack) {
     var arcEndAngle, dataAmount, k, scal,
       _this = this;
-
     if (unstack === void 0) {
       unstack = this.unstack;
     }
@@ -2235,7 +2158,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype._donutIndex = function(unstack) {
     var renderers,
       _this = this;
-
     if (unstack === void 0) {
       unstack = this.unstack;
     }
@@ -2262,7 +2184,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._donutsCount = function() {
     var _this = this;
-
     return this.graph.series.filter(function(d) {
       return d.renderer === _this.name;
     }).length();
@@ -2270,7 +2191,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._donutsInLine = function(lineIndex) {
     var lineCount;
-
     lineCount = Math.ceil(this._donutsCount() / this._donutsPerLine());
     if (lineIndex >= lineCount) {
       return 0;
@@ -2287,7 +2207,6 @@ Tactile.DonutRenderer = (function(_super) {
 
   DonutRenderer.prototype._calculateOuterRadius = function() {
     var donutHeig, donutWidth, donutsCount, donutsInLine, height, lastRadius, linesCount, margin, newRadius, width;
-
     donutsCount = this._donutsCount();
     width = this.graph.width();
     height = this.graph.height();
@@ -2349,7 +2268,6 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkNumber(d.value, "" + _this.name + " renderer data[" + i + "].value");
@@ -2371,7 +2289,8 @@ Tactile.Dragger = (function() {
     this.update = __bind(this.update, this);
     this._mouseUp = __bind(this._mouseUp, this);
     this._mouseMove = __bind(this._mouseMove, this);
-    this._datapointDrag = __bind(this._datapointDrag, this);    this.renderer = args.renderer;
+    this._datapointDrag = __bind(this._datapointDrag, this);
+    this.renderer = args.renderer;
     this.graph = this.renderer.graph;
     this.series = this.renderer.series;
     this.drawCircles = args.circles || false;
@@ -2398,7 +2317,6 @@ Tactile.Dragger = (function() {
   Dragger.prototype.updateDraggedNode = function() {
     var _ref,
       _this = this;
-
     if (((_ref = this.dragged) != null ? _ref.y : void 0) != null) {
       return this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
         return d === _this.dragged.d;
@@ -2431,7 +2349,6 @@ Tactile.Dragger = (function() {
   Dragger.prototype._mouseMove = function() {
     var hoveredNode, inverted, p, t, tip, value,
       _this = this;
-
     p = d3.svg.mouse(this.graph.draggableVis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
@@ -2457,7 +2374,6 @@ Tactile.Dragger = (function() {
   Dragger.prototype._mouseUp = function() {
     var _ref,
       _this = this;
-
     if (((_ref = this.dragged) != null ? _ref.y : void 0) == null) {
       return;
     }
@@ -2486,7 +2402,6 @@ Tactile.Dragger = (function() {
   Dragger.prototype._appendCircles = function(nodes) {
     var circs, renderer,
       _this = this;
-
     renderer = this.renderer;
     circs = this.renderer.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     circs.enter().append("svg:circle").style('display', 'none');
@@ -2520,7 +2435,6 @@ Tactile.Dragger = (function() {
     });
     nodes.on('mouseover.show-dragging-circle', function(d, i, el) {
       var circ;
-
       renderer.seriesDraggableCanvas().selectAll('circle:not(.active)').style('display', 'none');
       circ = renderer.seriesDraggableCanvas().select("#node-" + i + "-" + d.x);
       return circ.style('display', '');
@@ -2546,7 +2460,6 @@ Tactile.Dragger = (function() {
   Tactile.FixturesTime = (function() {
   function FixturesTime() {
     var _this = this;
-
     this.tzOffset = new Date().getTimezoneOffset() * 60;
     this.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     this.units = [
@@ -2636,7 +2549,6 @@ Tactile.Dragger = (function() {
 
   FixturesTime.prototype.ceil = function(time, unit) {
     var nearFuture, rounded;
-
     if (unit.name === "year") {
       nearFuture = new Date(time + unit.seconds - 1);
       rounded = new Date(0);
@@ -2668,7 +2580,8 @@ Tactile.GaugeRenderer = (function(_super) {
   __extends(GaugeRenderer, _super);
 
   function GaugeRenderer() {
-    this._checkData = __bind(this._checkData, this);    _ref = GaugeRenderer.__super__.constructor.apply(this, arguments);
+    this._checkData = __bind(this._checkData, this);
+    _ref = GaugeRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -2682,7 +2595,6 @@ Tactile.GaugeRenderer = (function(_super) {
   GaugeRenderer.prototype.render = function(transition, transitionSpeed) {
     var angleRange, lineData, maxAngle, minAngle, originTranslate, outerArc, plotAngle, plotValue, pointerHeadLength, pointerLine, pointerTailLength, pointerWidth, r, ringInset, ringWidth, scale, totalSizeDivide, translateHeight, translateWidth,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -2705,7 +2617,6 @@ Tactile.GaugeRenderer = (function(_super) {
     originTranslate = "translate(" + translateWidth + ", " + translateHeight + ")";
     this.seriesCanvas().each(function(d, i) {
       var arc, arc_value, max_label, min_label, pointer, pointer_circle, pointer_nail, value_label;
-
       arc = d3.select(this).selectAll("path.gauge.arc").data([d]);
       arc.enter().append("svg:path").attr("class", "gauge arc");
       arc.exit().remove();
@@ -2736,7 +2647,6 @@ Tactile.GaugeRenderer = (function(_super) {
     plotAngle = minAngle + (scale(plotValue) * angleRange);
     this.transition.selectAll("." + (this._nameToId()) + " path.gauge.arc-value").attr("transform", originTranslate).attrTween("d", function(d, i) {
       var iEndAngle;
-
       iEndAngle = d3.interpolate(_this.graph._deg2rad(_this.oldValueAngle), _this.graph._deg2rad(plotAngle));
       _this.oldValueAngle = plotAngle;
       return function(t) {
@@ -2753,7 +2663,6 @@ Tactile.GaugeRenderer = (function(_super) {
     this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
     return this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
       var i;
-
       i = d3.interpolate(this.textContent, _this.value);
       return function(t) {
         return this.textContent = Math.floor(i(t));
@@ -2771,7 +2680,6 @@ Tactile.GaugeRenderer = (function(_super) {
   GaugeRenderer.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkNumber(d.min, "" + _this.name + " renderer data[" + i + "].min");
@@ -2800,7 +2708,8 @@ Tactile.LeaderboardRenderer = (function(_super) {
     this._index = __bind(this._index, this);
     this._yOffset = __bind(this._yOffset, this);
     this._xOffset = __bind(this._xOffset, this);
-    this.initialize = __bind(this.initialize, this);    _ref = LeaderboardRenderer.__super__.constructor.apply(this, arguments);
+    this.initialize = __bind(this.initialize, this);
+    _ref = LeaderboardRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -2808,7 +2717,7 @@ Tactile.LeaderboardRenderer = (function(_super) {
 
   LeaderboardRenderer.prototype.specificDefaults = {
     format: d3.format("p"),
-    barHeight: 40
+    barHeight: 30
   };
 
   LeaderboardRenderer.prototype.initialize = function() {
@@ -2820,7 +2729,6 @@ Tactile.LeaderboardRenderer = (function(_super) {
   LeaderboardRenderer.prototype.render = function(transition, transitionSpeed) {
     var bars,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -2830,7 +2738,6 @@ Tactile.LeaderboardRenderer = (function(_super) {
     bars.exit().remove();
     this.seriesCanvas().selectAll("g.leaderboard.bars").each(function(d, i) {
       var bar, change, label, track, triangle, value;
-
       track = d3.select(this).selectAll("rect.leaderboard.track").data([d]);
       track.enter().append("svg:rect").attr("class", "leaderboard track");
       track.exit().remove();
@@ -2863,27 +2770,25 @@ Tactile.LeaderboardRenderer = (function(_super) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).text(function(d) {
       return d.label;
-    }).attr("transform", "translate(3 -8)");
+    }).attr("transform", "translate(3 -5)");
     this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
       var i;
-
       i = d3.interpolate(this.textContent, d.value);
       return function(t) {
         return this.textContent = _this.format(Math.floor(i(t)));
       };
-    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 50) + " -8)");
+    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 50) + " -5)");
     this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
       var i;
-
       i = d3.interpolate(this.textContent, d.change);
       return function(t) {
         return this.textContent = _this.format(Math.floor(i(t)));
       };
-    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + " -8)");
+    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + " -5)");
     this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("d", d3.svg.symbol().size(18).type(function(d) {
@@ -2925,7 +2830,6 @@ Tactile.LeaderboardRenderer = (function(_super) {
 
   LeaderboardRenderer.prototype._yOffset = function(d, i) {
     var yMargin;
-
     yMargin = (this.graph.height() - this.series.stack.length * this.barHeight) / (this.series.stack.length + 1);
     return yMargin + this.barHeight + (this.barHeight + yMargin) * this._index(d, i);
   };
@@ -2941,7 +2845,6 @@ Tactile.LeaderboardRenderer = (function(_super) {
   LeaderboardRenderer.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkString(d.color, "" + _this.name + " renderer data[" + i + "].label", d);
@@ -2967,7 +2870,8 @@ Tactile.LineRenderer = (function(_super) {
   __extends(LineRenderer, _super);
 
   function LineRenderer() {
-    this.render = __bind(this.render, this);    _ref = LineRenderer.__super__.constructor.apply(this, arguments);
+    this.render = __bind(this.render, this);
+    _ref = LineRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -2982,7 +2886,6 @@ Tactile.LineRenderer = (function(_super) {
 
   LineRenderer.prototype.seriesPathFactory = function() {
     var _this = this;
-
     return d3.svg.line().defined(function(d) {
       return !isNaN(d.y) && !isNaN(d.x) && (d.y != null) && (d.x != null);
     }).x(function(d) {
@@ -3005,7 +2908,6 @@ Tactile.LineRenderer = (function(_super) {
   LineRenderer.prototype.render = function(transition) {
     var circ, newCircs, _ref1, _ref2,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -3087,7 +2989,6 @@ Tactile.RangeSlider = (function() {
   function RangeSlider(options) {
     this.updateGraph = __bind(this.updateGraph, this);
     var _this = this;
-
     this.element = options.element;
     this.graph = options.graph;
     this.timeSliderClass = options.sliderClass;
@@ -3095,7 +2996,6 @@ Tactile.RangeSlider = (function() {
     this.initCallback = options.updateCallback || function() {};
     $(function() {
       var sliderContainer, values;
-
       values = options.values || [_this.graph.dataDomain()[0], _this.graph.dataDomain()[1]];
       _this.initCallback(values, _this.element);
       _this.updateGraph(values);
@@ -3122,7 +3022,6 @@ Tactile.RangeSlider = (function() {
     });
     this.graph.onUpdate(function() {
       var values;
-
       values = $(_this.element).slider("option", "values");
       $(_this.element).slider("option", "min", _this.graph.dataDomain()[0]);
       $(_this.element).slider("option", "max", _this.graph.dataDomain()[1]);
@@ -3159,7 +3058,8 @@ Tactile.ScatterRenderer = (function(_super) {
   __extends(ScatterRenderer, _super);
 
   function ScatterRenderer() {
-    this._checkData = __bind(this._checkData, this);    _ref = ScatterRenderer.__super__.constructor.apply(this, arguments);
+    this._checkData = __bind(this._checkData, this);
+    _ref = ScatterRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -3173,7 +3073,6 @@ Tactile.ScatterRenderer = (function(_super) {
   ScatterRenderer.prototype.render = function(transition) {
     var circ,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -3221,7 +3120,6 @@ Tactile.ScatterRenderer = (function(_super) {
   ScatterRenderer.prototype._checkData = function() {
     var data,
       _this = this;
-
     data = this.series.stack;
     return data.forEach(function(d, i) {
       _this.utils.checkNumber(d.x, "" + _this.name + " renderer data[" + i + "].x");
@@ -3250,7 +3148,8 @@ Tactile.WaterfallRenderer = (function(_super) {
     this._barX = __bind(this._barX, this);
     this._seriesBarWidth = __bind(this._seriesBarWidth, this);
     this.seriesWidth = __bind(this.seriesWidth, this);
-    this.render = __bind(this.render, this);    _ref = WaterfallRenderer.__super__.constructor.apply(this, arguments);
+    this.render = __bind(this.render, this);
+    _ref = WaterfallRenderer.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -3272,7 +3171,6 @@ Tactile.WaterfallRenderer = (function(_super) {
   WaterfallRenderer.prototype.render = function(transition) {
     var line, nodes, _ref1,
       _this = this;
-
     this._checkData();
     if (transition) {
       this.transition = transition;
@@ -3303,7 +3201,6 @@ Tactile.WaterfallRenderer = (function(_super) {
       return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
     }).attr("x2", function(d, i) {
       var gapCount, stackWidthCur;
-
       gapCount = _this.graph.series.filter(function(d) {
         return d.renderer === 'waterfall';
       }).length();
@@ -3329,7 +3226,6 @@ Tactile.WaterfallRenderer = (function(_super) {
 
   WaterfallRenderer.prototype.setupTooltips = function() {
     var _this = this;
-
     if (this.series.tooltip) {
       return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
         return {
@@ -3346,7 +3242,6 @@ Tactile.WaterfallRenderer = (function(_super) {
 
   WaterfallRenderer.prototype.barWidth = function() {
     var barWidth, count, data;
-
     data = this.series.stack;
     count = data.length;
     return barWidth = this.graph.width() / count * (1 - this.gapSize);
@@ -3354,7 +3249,6 @@ Tactile.WaterfallRenderer = (function(_super) {
 
   WaterfallRenderer.prototype.seriesWidth = function() {
     var stackWidth, width;
-
     if (this.series.stack.length >= 2) {
       stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
       return width = stackWidth / (1 + this.gapSize);
@@ -3366,7 +3260,6 @@ Tactile.WaterfallRenderer = (function(_super) {
   WaterfallRenderer.prototype._seriesBarWidth = function() {
     var stackWidth, width,
       _this = this;
-
     if (this.series.stack.length >= 2) {
       stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
       width = stackWidth / (1 + this.gapSize);
@@ -3380,14 +3273,12 @@ Tactile.WaterfallRenderer = (function(_super) {
 
   WaterfallRenderer.prototype._barXOffset = function(seriesBarWidth) {
     var barXOffset, count;
-
     count = this.graph.renderersByType(this.name).length;
     return barXOffset = -seriesBarWidth * count / 2;
   };
 
   WaterfallRenderer.prototype._barX = function(d) {
     var initialX, seriesBarWidth, x;
-
     x = this.graph.x(d.x);
     seriesBarWidth = this._seriesBarWidth();
     initialX = x + this._barXOffset(seriesBarWidth);
@@ -3405,7 +3296,6 @@ Tactile.WaterfallRenderer = (function(_super) {
   WaterfallRenderer.prototype._waterfalRendererIndex = function() {
     var renderers,
       _this = this;
-
     if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
       return 0;
     }
@@ -3467,24 +3357,15 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultAxesOptions = {
     x: {
-      dimension: "time",
-      frame: [void 0, void 0]
+      dimension: "time"
     },
     y: {
-      dimension: "linear",
-      frame: [void 0, void 0]
+      dimension: "linear"
     },
     y1: {
-      dimension: "linear",
-      frame: [void 0, void 0]
+      dimension: "linear"
     }
   };
-
-  Chart.prototype.defaultXFrame = [0, 1];
-
-  Chart.prototype.defaultYFrame = [0, 1];
-
-  Chart.prototype.defaultY1Frame = [0, 1];
 
   Chart.prototype.defaultMinXFrame = 1;
 
@@ -3498,11 +3379,16 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultMaxY1Frame = Infinity;
 
+  Chart.prototype._autoSetAvailableXFrame = false;
+
+  Chart.prototype._autoSetAvailableYFrame = false;
+
+  Chart.prototype._autoSetAvailableY1Frame = false;
+
   Chart.prototype._lastYTranslate = 0;
 
   function Chart(args) {
     var _this = this;
-
     if (args == null) {
       args = {};
     }
@@ -3519,6 +3405,9 @@ Tactile.Chart = (function() {
     this.stackTransition = __bind(this.stackTransition, this);
     this.discoverRange = __bind(this.discoverRange, this);
     this.setAutoScale = __bind(this.setAutoScale, this);
+    this.setY1Frame = __bind(this.setY1Frame, this);
+    this.setYFrame = __bind(this.setYFrame, this);
+    this.setXFrame = __bind(this.setXFrame, this);
     this.setMaxY1Frame = __bind(this.setMaxY1Frame, this);
     this.setMaxYFrame = __bind(this.setMaxYFrame, this);
     this.setMaxXFrame = __bind(this.setMaxXFrame, this);
@@ -3553,10 +3442,10 @@ Tactile.Chart = (function() {
     this.addSeries(args.series, {
       overwrite: true
     });
-    this.x = d3.scale.linear().range([0, this.width()]);
-    this.y = d3.scale.linear().range([this.height(), 0]);
+    this.x = d3.scale.linear().domain([NaN, NaN]).range([0, this.width()]);
+    this.y = d3.scale.linear().domain([NaN, NaN]).range([this.height(), 0]);
     this.y.magnitude = d3.scale.linear().range([0, this.height()]);
-    this.y1 = d3.scale.linear().range([this.height(), 0]);
+    this.y1 = d3.scale.linear().domain([NaN, NaN]).range([this.height(), 0]);
     this.y1.magnitude = d3.scale.linear().range([0, this.height()]);
     if (_.isUndefined(args.autoScale)) {
       this.setAutoScale(true);
@@ -3573,7 +3462,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype.addSeries = function(series, options) {
     var newSeries;
-
     if (options == null) {
       options = {
         overwrite: false
@@ -3659,6 +3547,21 @@ Tactile.Chart = (function() {
     return this;
   };
 
+  Chart.prototype.setXFrame = function(xFrame) {
+    this.x.domain(xFrame);
+    return this;
+  };
+
+  Chart.prototype.setYFrame = function(yFrame) {
+    this.y.domain(yFrame);
+    return this;
+  };
+
+  Chart.prototype.setY1Frame = function(y1Frame) {
+    this.y1.domain(y1Frame);
+    return this;
+  };
+
   Chart.prototype.setAutoScale = function(val) {
     this.autoScale = val;
     return this;
@@ -3667,7 +3570,6 @@ Tactile.Chart = (function() {
   Chart.prototype.initSeriesStackData = function(options) {
     var i, j, layout, maxLen, seriesData, stackedData, y00,
       _this = this;
-
     if (options == null) {
       options = {
         overwrite: false
@@ -3714,7 +3616,6 @@ Tactile.Chart = (function() {
   Chart.prototype.render = function(transitionSpeed, options) {
     var t, zoom, _ref, _ref1,
       _this = this;
-
     if (options == null) {
       options = {};
     }
@@ -3730,15 +3631,11 @@ Tactile.Chart = (function() {
     this.initSeriesStackData();
     this._setupCanvas();
     this.stackData();
-    _.each(this.renderers, function(renderer) {
-      return _this.discoverRange(renderer, options);
-    });
+    this.discoverRange();
     this._checkXDomain();
     this._checkYDomain();
     this._checkY1Domain();
-    if (!this.autoScale) {
-      this._calculateXRange();
-    }
+    this._calculateXRange();
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
@@ -3749,9 +3646,6 @@ Tactile.Chart = (function() {
     _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
-    this.updateCallbacks.forEach(function(callback) {
-      return callback();
-    });
     this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
     this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
     zoom = d3.behavior.zoom();
@@ -3759,7 +3653,6 @@ Tactile.Chart = (function() {
     if (!this.autoScale) {
       d3.select(this.svg[0][0]).call(zoom.x(this.x).y(this.y).on("zoom", function() {
         var dy, dy1;
-
         if (_this.autoScale) {
           return;
         }
@@ -3779,39 +3672,67 @@ Tactile.Chart = (function() {
         });
       }));
     }
-    return this.timesRendered++;
+    this.timesRendered++;
+    return this.updateCallbacks.forEach(function(callback) {
+      return callback();
+    });
   };
 
   Chart.prototype.update = function() {
     return this.render();
   };
 
-  Chart.prototype.discoverRange = function(renderer, options) {
-    var domain, xframe, yframe, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
-
-    if (options == null) {
-      options = {};
-    }
-    if (options.zooming) {
-      return;
-    }
-    domain = renderer.domain();
-    if (renderer.cartesian) {
-      xframe = [(((_ref = this.axes().x) != null ? (_ref1 = _ref.frame) != null ? _ref1[0] : void 0 : void 0) != null ? this.axes().x.frame[0] : domain.x[0]), (((_ref2 = this.axes().x) != null ? (_ref3 = _ref2.frame) != null ? _ref3[1] : void 0 : void 0) != null ? this.axes().x.frame[1] : domain.x[1])];
-      yframe = [(((_ref4 = this.axes().y) != null ? (_ref5 = _ref4.frame) != null ? _ref5[0] : void 0 : void 0) != null ? this.axes().y.frame[0] : domain.y[0]), (((_ref6 = this.axes().y) != null ? (_ref7 = _ref6.frame) != null ? _ref7[1] : void 0 : void 0) != null ? this.axes().y.frame[1] : domain.y[1])];
-      this.x.domain(xframe).range([0, this.width()]);
-      this.y.domain(yframe).range([this.height(), 0]);
-      this.y.magnitude.domain([0, domain.y[1] - domain.y[0]]).range([0, this.height()]);
-      if (!renderer.series.ofDefaultAxis()) {
-        this.y1.domain([0, d3.max(this.series.ofAlternateScale().flat('y'))]).range([this.height(), 0]);
-        return this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
+  Chart.prototype.discoverRange = function() {
+    var xDomain, y1Domain, yDomain,
+      _this = this;
+    xDomain = [];
+    yDomain = [];
+    y1Domain = [];
+    _.each(this.renderers, function(renderer) {
+      var domain;
+      if (renderer.cartesian) {
+        domain = renderer.domain();
+        xDomain = domain.x;
+        yDomain = domain.y;
+        if (!renderer.series.ofDefaultAxis()) {
+          return y1Domain = [0, d3.max(_this.series.ofAlternateScale().flat('y'))];
+        }
       }
+    });
+    if (!this.availableXFrame) {
+      this._autoSetAvailableXFrame = true;
     }
+    if (!this.availableYFrame) {
+      this._autoSetAvailableYFrame = true;
+    }
+    if (!this.availableY1Frame) {
+      this._autoSetAvailableY1Frame = true;
+    }
+    if (this._autoSetAvailableXFrame) {
+      this.availableXFrame = xDomain;
+    }
+    if (this._autoSetAvailableYFrame) {
+      this.availableYFrame = [yDomain[0] - yDomain[0] * 0.1, yDomain[1] + yDomain[1] * 0.1];
+    }
+    if (this._autoSetAvailableY1Frame) {
+      this.availableY1Frame = [y1Domain[0] - y1Domain[0] * 0.1, y1Domain[1] + y1Domain[1] * 0.1];
+    }
+    if (_.isNaN(this.x.domain()[0]) || _.isNaN(this.x.domain()[1])) {
+      this.x.domain(xDomain);
+    }
+    if (_.isNaN(this.y.domain()[0]) || _.isNaN(this.y.domain()[1]) || this.autoScale) {
+      this.y.domain(yDomain);
+      this.y.magnitude.domain([0, yDomain[1] - yDomain[0]]);
+    }
+    if (_.isNaN(this.y1.domain()[0]) || _.isNaN(this.y1.domain()[1]) || this.autoScale) {
+      this.y1.domain(y1Domain);
+      this.y1.magnitude.domain([0, y1Domain[1] - y1Domain[0]]);
+    }
+    return this;
   };
 
   Chart.prototype.axes = function(args) {
     var _this = this;
-
     if (!args) {
       return this.axesList;
     }
@@ -3820,7 +3741,6 @@ Tactile.Chart = (function() {
     });
     _.each(['x', 'y', 'y1'], function(k) {
       var defaults;
-
       if (args[k] != null) {
         defaults = {
           graph: _this,
@@ -3850,7 +3770,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype.dataDomain = function() {
     var data;
-
     data = this.renderers[0].series.stack;
     return [data[0].x, data.slice(-1).shift().x];
   };
@@ -3858,7 +3777,6 @@ Tactile.Chart = (function() {
   Chart.prototype.stackData = function() {
     var defaultScaleSeriesData, i, j, layout, maxLen, y00, _results,
       _this = this;
-
     defaultScaleSeriesData = this.series.active().ofDefaultAxis().array.map(function(s) {
       return _this._data.map(s.dataTransform);
     });
@@ -3893,7 +3811,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype.setSize = function(args) {
     var elHeight, elWidth, _ref;
-
     if (args == null) {
       args = {};
     }
@@ -3923,11 +3840,9 @@ Tactile.Chart = (function() {
   Chart.prototype.initRenderers = function(series) {
     var renderersSize,
       _this = this;
-
     renderersSize = this.renderers.length;
     return _.each(series, function(s, index) {
       var name, r, rendererClass, rendererOptions;
-
       name = s.renderer;
       if (!_this._renderers[name]) {
         throw "couldn't find renderer " + name;
@@ -3964,7 +3879,6 @@ Tactile.Chart = (function() {
   Chart.prototype.stackTransition = function(transitionSpeed) {
     var t,
       _this = this;
-
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
@@ -3986,7 +3900,6 @@ Tactile.Chart = (function() {
   Chart.prototype.unstackTransition = function(transitionSpeed) {
     var t,
       _this = this;
-
     if (transitionSpeed === void 0) {
       transitionSpeed = this.transitionSpeed;
     }
@@ -4050,7 +3963,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype._setupCanvas = function() {
     var clip, scatterClip, vis;
-
     $(this._element).addClass('graph-container');
     this.svg = this._findOrAppend({
       what: 'svg',
@@ -4097,7 +4009,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype._findOrAppend = function(options) {
     var element, found, node, selector;
-
     element = options["in"];
     node = options.what;
     selector = options.selector || node;
@@ -4111,7 +4022,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype._slice = function(d) {
     var _ref;
-
     if (!this._allRenderersCartesian()) {
       return true;
     }
@@ -4155,7 +4065,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype._mouseup = function() {
     var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-
     if (this.autoScale) {
       return;
     }
@@ -4180,7 +4089,6 @@ Tactile.Chart = (function() {
 
   Chart.prototype._mousemove = function() {
     var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-
     if (this.autoScale) {
       return;
     }
@@ -4198,16 +4106,9 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkXDomain = function() {
-    var domain, max, maxXFrame, middle, min, minXFrame, rangeEnd, rangeStart, _ref;
-
+    var max, maxXFrame, middle, min, minXFrame, _ref;
     min = this.x.domain()[0];
     max = this.x.domain()[1];
-    if (!this.availableXFrame) {
-      domain = this.dataDomain();
-      rangeStart = domain[0] -= domain[0] * 0.1;
-      rangeEnd = domain[1] += domain[1] * 0.1;
-      this.availableXFrame = [rangeStart, rangeEnd];
-    }
     if (min < this.availableXFrame[0]) {
       min = this.availableXFrame[0];
     }
@@ -4251,15 +4152,9 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkYDomain = function() {
-    var max, maxYFrame, middle, min, minYFrame, rangeEnd, rangeStart, _ref;
-
+    var max, maxYFrame, middle, min, minYFrame, _ref;
     min = this.y.domain()[0];
     max = this.y.domain()[1];
-    if (!this.availableYFrame) {
-      rangeStart = min -= min * 0.1;
-      rangeEnd = max += max * 0.1;
-      this.availableYFrame = [rangeStart, rangeEnd];
-    }
     if (min < this.availableYFrame[0]) {
       min = this.availableYFrame[0];
     }
@@ -4303,12 +4198,11 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._checkY1Domain = function() {
-    var max, maxY1Frame, middle, min, minY1Frame, _ref, _ref1;
-
+    var max, maxY1Frame, middle, min, minY1Frame, _ref;
     min = this.y1.domain()[0];
     max = this.y1.domain()[1];
-    if ((_ref = this.availableY1Frame) == null) {
-      this.availableY1Frame = [min, max];
+    if (!this.availableY1Frame) {
+      return;
     }
     if (min < this.availableY1Frame[0]) {
       min = this.availableY1Frame[0];
@@ -4346,15 +4240,14 @@ Tactile.Chart = (function() {
       min = middle - maxY1Frame / 2;
       max = middle + maxY1Frame / 2;
     }
-    if ((_ref1 = this.axes().y1) != null) {
-      _ref1.frame = [min, max];
+    if ((_ref = this.axes().y1) != null) {
+      _ref.frame = [min, max];
     }
     return this.y1.domain([min, max]);
   };
 
   Chart.prototype._calculateXRange = function() {
     var barWidth, dR, lastRange, rangeEnd, rangeStart, renders;
-
     if (this._containsColumnChart()) {
       renders = _.filter(this.renderers, function(r) {
         return r.name === 'column' || r.name === 'waterfall';
