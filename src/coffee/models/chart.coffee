@@ -161,6 +161,7 @@ class Tactile.Chart
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
+
   setXFrame: (xFrame) =>
     @x.domain(xFrame)
     @
@@ -175,6 +176,14 @@ class Tactile.Chart
 
 
   setAutoScale: (val) =>
+    if val
+      delete @availableXFrame
+      delete @availableYFrame
+      delete @availableY1Frame
+      @setXFrame([NaN, NaN])
+      @setYFrame([NaN, NaN])
+      @setY1Frame([NaN, NaN])
+
     @autoScale = val
     @
 
