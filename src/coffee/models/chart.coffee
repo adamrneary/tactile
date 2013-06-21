@@ -414,6 +414,13 @@ class Tactile.Chart
     @innerWidth = @marginedWidth - @padding.left - @padding.right
     @innerHeight = @marginedHeight - @padding.top - @padding.bottom
 
+    @x?.range([0, @width()])
+    @y?.range([@height(), 0])
+    @y?.magnitude.range([0, @height()])
+    @y1?.range([@height(), 0])
+    @y1?.range([0, @height()])
+
+
     @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
 
   onUpdate: (callback) ->
