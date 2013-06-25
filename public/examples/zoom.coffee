@@ -50,7 +50,6 @@ chart = new Tactile.Chart(
     minYFrame: 200
   )
 
-  # note that we're passing initial frame just like in a regular chart
   .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
   .setXFrame(frameVal)
   .element($("#example_view")[0])
