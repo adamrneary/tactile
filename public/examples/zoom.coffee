@@ -51,7 +51,8 @@ chart = new Tactile.Chart(
   )
 
   # note that we're passing initial frame just like in a regular chart
-  .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
+  .setXFrame(frameVal)
   .element($("#example_view")[0])
   .data(data)
   .addSeries [

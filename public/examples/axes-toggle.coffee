@@ -28,7 +28,7 @@ data = [
 
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'time'}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)
   .setXFrame(frameVal)
@@ -83,6 +83,7 @@ turnOffAxes.click (e) =>
   e.stopPropagation()
 
 turnOnAxes.click (e) =>
-  chart.axes({x: {dimension: 'time', frame: frameVal}, y: {dimension: "linear"}})
+  chart.setXFrame(frameVal)
+  chart.axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
   chart.render(1000)
   e.stopPropagation()
