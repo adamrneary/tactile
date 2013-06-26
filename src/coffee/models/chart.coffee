@@ -314,6 +314,11 @@ class Tactile.Chart
 
     @
 
+  yMin: (yMin) ->
+    return @min unless yMin
+    @min = yMin
+    @
+
   axes: (args) ->
     return @axesList unless args
 
