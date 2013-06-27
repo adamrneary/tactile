@@ -12,8 +12,7 @@ class Tactile.Chart
     'bullet': Tactile.BulletRenderer
 
   # default values
-  margin: {top: 20, right: 20, bottom: 20, left: 20}
-  padding: {top: 10, right: 10, bottom: 10, left: 10}
+  defaultPadding: {top: 10, right: 10, bottom: 10, left: 10}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -44,6 +43,7 @@ class Tactile.Chart
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
+    @padding = _.extend {}, @defaultPadding
     @renderers = []
     @axesList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -53,6 +53,8 @@ class Tactile.Chart
     @elementChangeCallbacks = []
     @timesRendered = 0
     @utils = new Tactile.Utils()
+
+    @_setupDomainAndRange()
 
     # chart size is handled with its own method
     @setSize
@@ -67,21 +69,6 @@ class Tactile.Chart
 
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
-
-
-    @x = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([0, @width()])
-    @y = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([@height(), 0])
-    @y.magnitude = d3.scale.linear()
-      .range([0, @height()])
-    @y1 = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([@height(), 0])
-    @y1.magnitude = d3.scale.linear()
-      .range([0, @height()])
 
     # set autoscale to true by default
     if _.isUndefined(args.autoScale) then @setAutoScale(true) else @setAutoScale(args.autoScale)
@@ -382,23 +369,40 @@ class Tactile.Chart
   # please note you have to call render() or update()
   # for this changes to be reflected in your chart
   #
-  # outerWith, outerHeight - no margins or paddings subtracted
-  # marginedWidth, marginedHeight - margins subtracted
-  # innerWidth, innerHeight - margins and paddings subtracted
+  # outerWith, outerHeight - no paddings subtracted
+  # innerWidth, innerHeight - paddings subtracted
   # width(), height() returns innerWidth as it's the most common used
   setSize: (args = {}) ->
-    elWidth = $(@_element).width()
+    elWidth  = $(@_element).width()
     elHeight = $(@_element).height()
 
     @outerWidth = args.width || elWidth || @defaultWidth
     @outerHeight = args.height || elHeight || @defaultHeight
 
-    @marginedWidth = @outerWidth - @margin.left - @margin.right
-    @marginedHeight = @outerHeight - @margin.top - @margin.bottom
-    @innerWidth = @marginedWidth - @padding.left - @padding.right
-    @innerHeight = @marginedHeight - @padding.top - @padding.bottom
+    @innerWidth = @outerWidth - @padding.left - @padding.right
+    @innerHeight = @outerHeight - @padding.top - @padding.bottom
 
     @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
+    @_updateRange()
+    @_setupCanvas()
+
+  _setupDomainAndRange: ->
+    @x = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y.magnitude = d3.scale.linear()
+    @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y1.magnitude = d3.scale.linear()
+    @_updateRange()
+
+  _updateRange: ->
+    @x.range([0, @width()])
+    @y.range([@height(), 0])
+    @y.magnitude.range([0, @height()])
+    @y1.range([@height(), 0])
+    @y1.magnitude.range([0, @height()])
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
@@ -488,7 +492,7 @@ class Tactile.Chart
   #############################################################################
 
   # Appends or updates all the chart canvas elements
-  # so it respects the margins and paddings
+  # so it respects the paddings
   # done by following this example: http://bl.ocks.org/3019563
   _setupCanvas: ->
     # need a constant class name for a containing div
@@ -499,21 +503,13 @@ class Tactile.Chart
       .attr('width', @outerWidth)
       .attr('height', @outerHeight)
 
-    vis = @_findOrAppend(what: 'g', in: @svg)
-      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
-
-    vis = @_findOrAppend(what: 'g', in: vis)
-      .attr("class", "outer-canvas")
-      .attr("width", @marginedWidth)
-      .attr("height", @marginedHeight)
-
     # this is the canvas on which all data should be drawn
-    @vis = @_findOrAppend(what: 'g', in: vis, selector: 'g.inner-canvas')
+    @vis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.inner-canvas')
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "inner-canvas")
 
     # this is the canvas on which all draggable data should be drawn
-    @draggableVis = @_findOrAppend(what: 'g', in: vis, selector: 'g.draggable-canvas')
+    @draggableVis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.draggable-canvas')
       .attr("transform", "translate(#{@padding.left},#{@padding.top})")
       .attr("class", "draggable-canvas")
 

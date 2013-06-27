@@ -101,7 +101,7 @@
   it("Chart: check for all series don't disabled");
   it("Chart: check for disable all series");
   it("Chart: check setSize function", function(done) {
-    var height, heightMargin, heightPadding, width, widthMargin, widthPadding;
+    var height, heightPadding, width, widthPadding;
 
     Chart = new window.Tactile.Chart();
     Chart.setSize({
@@ -109,37 +109,33 @@
       height: 450
     });
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    heightMargin = Chart.margin.top + Chart.margin.bottom;
     heightPadding = Chart.padding.top + Chart.padding.bottom;
-    width = widthMargin + widthPadding;
-    height = heightMargin + heightPadding;
+    width = widthPadding;
+    height = heightPadding;
     assert(Chart.width() === (700 - width));
     assert(Chart.height() === (450 - height));
     return done();
   });
   it("Chart: check height function", function(done) {
-    var height, heightMargin, heightPadding;
+    var height, heightPadding;
 
     Chart = new window.Tactile.Chart();
     Chart = Chart.height(400);
     Chart.update();
-    heightMargin = Chart.margin.top + Chart.margin.bottom;
     heightPadding = Chart.padding.top + Chart.padding.bottom;
-    height = heightMargin + heightPadding;
+    height = heightPadding;
     assert(Chart.height() === 400 - height);
     return done();
   });
   it("Chart: check width function", function(done) {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = new window.Tactile.Chart();
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = 680 - widthMargin - widthPadding;
+    width = 680 - widthPadding;
     assert(Chart.width() === width);
     return done();
   });
@@ -228,13 +224,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(700);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 700 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -295,13 +290,12 @@
   it("Chart: check setSize function");
   it("Chart: check height function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 680 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -343,13 +337,12 @@
   it("Chart: check setSize function");
   it("Chart: check height function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(700);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 700 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -426,13 +419,12 @@
   it("Chart: check setSize function");
   it("Chart: check height function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(700);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 700 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -509,13 +501,12 @@
   it("Chart: check setSize function");
   it("Chart: check height function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(700);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 700 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -604,13 +595,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 680 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -699,13 +689,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 680 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -793,13 +782,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(700);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 700 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -904,13 +892,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 680 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -999,13 +986,12 @@
   it("Chart: check height function");
   it("Chart: check setSize function");
   it("Chart: check width function", function() {
-    var width, widthMargin, widthPadding;
+    var width, widthPadding;
 
     Chart = Chart.width(680);
     Chart.update();
-    widthMargin = Chart.margin.left + Chart.margin.right;
     widthPadding = Chart.padding.left + Chart.padding.right;
-    width = widthMargin + widthPadding;
+    width = widthPadding;
     return assert(Chart.width() === 680 - width);
   });
   it('Tactile.Chart().render is function', function() {
@@ -1339,7 +1325,7 @@
     return assert(typeof _chart.stackData === 'function');
   });
   it('Chart: setSize function', function() {
-    var height, heightMargin, heightPadding, width, widthMargin, widthPadding, _chart;
+    var height, heightPadding, width, widthPadding, _chart;
 
     _chart = new window.Tactile.Chart();
     _chart.setSize({
@@ -1347,12 +1333,10 @@
       height: 450
     });
     _chart.update();
-    widthMargin = _chart.margin.left + _chart.margin.right;
     widthPadding = _chart.padding.left + _chart.padding.right;
-    heightMargin = _chart.margin.top + _chart.margin.bottom;
     heightPadding = _chart.padding.top + _chart.padding.bottom;
-    width = widthMargin + widthPadding;
-    height = heightMargin + heightPadding;
+    width = widthPadding;
+    height = heightPadding;
     assert(_chart.width() === 700 - width);
     return assert(_chart.height() === 450 - height);
   });
@@ -1418,25 +1402,23 @@
     return assert(typeof _chart.element === 'function');
   });
   it('Chart: height function', function() {
-    var height, heightMargin, heightPadding, _chart;
+    var height, heightPadding, _chart;
 
     _chart = new window.Tactile.Chart();
     _chart = _chart.height(400);
     _chart.update();
-    heightMargin = _chart.margin.top + _chart.margin.bottom;
     heightPadding = _chart.padding.top + _chart.padding.bottom;
-    height = heightMargin + heightPadding;
+    height = heightPadding;
     return assert(_chart.height() === 400 - height);
   });
   it('Chart: width function', function() {
-    var width, widthMargin, widthPadding, _chart;
+    var width, widthPadding, _chart;
 
     _chart = new window.Tactile.Chart();
     _chart = _chart.width(680);
     _chart.update();
-    widthMargin = _chart.margin.left + _chart.margin.right;
     widthPadding = _chart.padding.left + _chart.padding.right;
-    width = 680 - widthMargin - widthPadding;
+    width = 680 - widthPadding;
     return assert(_chart.width() === width);
   });
   it('Chart: data function', function() {

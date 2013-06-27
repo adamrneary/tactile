@@ -1,16 +1,13 @@
-class Tactile.AxisTime
+class Tactile.AxisTime extends Tactile.AxisBase
   constructor: (options) ->
-    @utils = new Tactile.Utils()
-    @options = options
+    @horizontal = true
+    super
     @_checkOptions()
 
-    @graph = options.graph
-    @ticksTreatment = options.ticksTreatment or "plain"
     @fixedTimeUnit = options.timeUnit
     @marginTop = options.paddingBottom or 5
     @time = new Tactile.FixturesTime()
     @grid = options.grid
-    @frame = options.frame
 
   appropriateTimeUnit: ->
     unit = undefined
@@ -57,7 +54,7 @@ class Tactile.AxisTime
     ticks
       .attr("transform",
         (d) =>
-          "translate(#{@graph.x(d.value)}, #{@graph.marginedHeight})")
+          "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
 
     ticks.exit().remove()
 
@@ -79,10 +76,6 @@ class Tactile.AxisTime
       .text((d) ->
         d.unit.formatter(new Date(d.value)))
 
-  destroy: ->
-    @g.remove()
-    delete @graph.axesList[@options.axis]
-
   _checkOptions: ()=>
     if @options.ticksTreatment?
       @utils.checkString(@options.ticksTreatment, "AxisTime options.ticksTreatment")
@@ -99,37 +92,3 @@ class Tactile.AxisTime
           @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
         )
 
-  _axisDrag: ()=>
-    p = d3.svg.mouse(@graph.svg.node())
-    @down = @graph.x.invert(p[0])
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
-
-  # TODO: this are almost identical across the axis classes.
-  _mouseMove: =>
-    return if isNaN(@down)
-    p = d3.svg.mouse(@graph.svg.node())
-    d3.select("body").style("cursor", "ew-resize")
-    axis = @graph.x
-
-    rup = axis.invert(p[0])
-    axis1 = axis.domain()[0]
-    axis2 = axis.domain()[1]
-    extent = axis2 - axis1
-
-    if rup - axis1 isnt 0
-      new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
-      axis.domain(new_domain)
-
-    @graph.render(0, zooming: true)
-
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
-
-  _mouseUp: =>
-    return if isNaN(@down)
-    @down = Math.NaN;
-    @graph.manipulateCallbacks.forEach (callback) ->
-      callback()
-    d3.event.preventDefault()
-    d3.event.stopPropagation()

@@ -42,7 +42,7 @@ data = [
 ]
 
 tickFormat = (d) ->
-  if d > 99 then d / 100 + "★" else "#{d*10}☢"
+  if d > 99 then "3000★" else "#{d*10}☢"
 
 chart = new Tactile.Chart()
   .axes({x: {dimension: 'linear', tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
@@ -77,7 +77,6 @@ chart = new Tactile.Chart()
   ]
 
 chart.render()
-
 $("#above-chart").html ''
 
 sl = $("<div>")
