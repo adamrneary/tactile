@@ -12,8 +12,8 @@ class Tactile.Chart
     'bullet': Tactile.BulletRenderer
 
   # default values
-  margin: {top: 20, right: 20, bottom: 20, left: 20}
-  padding: {top: 10, right: 10, bottom: 10, left: 10}
+  defaultMargin: {top: 0, right: 20, bottom: 0, left: 20}
+  defaultPadding: {top: 10, right: 10, bottom: 10, left: 10}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -44,6 +44,8 @@ class Tactile.Chart
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
+    @padding = _.extend {}, @defaultPadding
+    @margin = _.extend {}, @defaultMargin
     @renderers = []
     @axesList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -53,6 +55,8 @@ class Tactile.Chart
     @elementChangeCallbacks = []
     @timesRendered = 0
     @utils = new Tactile.Utils()
+
+    @_setupDomainAndRange()
 
     # chart size is handled with its own method
     @setSize
@@ -67,21 +71,6 @@ class Tactile.Chart
 
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
-
-
-    @x = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([0, @width()])
-    @y = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([@height(), 0])
-    @y.magnitude = d3.scale.linear()
-      .range([0, @height()])
-    @y1 = d3.scale.linear()
-      .domain([NaN, NaN])
-      .range([@height(), 0])
-    @y1.magnitude = d3.scale.linear()
-      .range([0, @height()])
 
     # set autoscale to true by default
     if _.isUndefined(args.autoScale) then @setAutoScale(true) else @setAutoScale(args.autoScale)
@@ -387,7 +376,7 @@ class Tactile.Chart
   # innerWidth, innerHeight - margins and paddings subtracted
   # width(), height() returns innerWidth as it's the most common used
   setSize: (args = {}) ->
-    elWidth = $(@_element).width()
+    elWidth  = $(@_element).width()
     elHeight = $(@_element).height()
 
     @outerWidth = args.width || elWidth || @defaultWidth
@@ -399,6 +388,26 @@ class Tactile.Chart
     @innerHeight = @marginedHeight - @padding.top - @padding.bottom
 
     @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
+    @_updateRange()
+    @_setupCanvas()
+
+  _setupDomainAndRange: ->
+    @x = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y.magnitude = d3.scale.linear()
+    @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
+    @y1.magnitude = d3.scale.linear()
+    @_updateRange()
+
+  _updateRange: ->
+    @x.range([0, @width()])
+    @y.range([@height(), 0])
+    @y.magnitude.range([0, @height()])
+    @y1.range([@height(), 0])
+    @y1.magnitude.range([0, @height()])
 
   onUpdate: (callback) ->
     @updateCallbacks.push callback
@@ -504,8 +513,6 @@ class Tactile.Chart
 
     vis = @_findOrAppend(what: 'g', in: vis)
       .attr("class", "outer-canvas")
-      .attr("width", @marginedWidth)
-      .attr("height", @marginedHeight)
 
     # this is the canvas on which all data should be drawn
     @vis = @_findOrAppend(what: 'g', in: vis, selector: 'g.inner-canvas')
