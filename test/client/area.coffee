@@ -171,12 +171,10 @@ describe 'Area series', ->
       width: 700
       height: 450
     Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
     widthPadding = Chart.padding.left + Chart.padding.right
-    heightMargin = Chart.margin.top + Chart.margin.bottom
     heightPadding = Chart.padding.top + Chart.padding.bottom
-    width =  widthMargin + widthPadding
-    height = heightMargin + heightPadding
+    width =  widthPadding
+    height = heightPadding
     assert Chart.width() is (700 - width)
     assert Chart.height() is (450 - height)
     done()
@@ -185,9 +183,8 @@ describe 'Area series', ->
     Chart = new window.Tactile.Chart()
     Chart = Chart.height(400)
     Chart.update()
-    heightMargin = Chart.margin.top + Chart.margin.bottom
     heightPadding = Chart.padding.top + Chart.padding.bottom
-    height = heightMargin + heightPadding
+    height = heightPadding
     assert Chart.height() is 400 - height
     done()
 
@@ -196,9 +193,8 @@ describe 'Area series', ->
     Chart = new window.Tactile.Chart()
     Chart = Chart.width(680)
     Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
     widthPadding = Chart.padding.left + Chart.padding.right
-    width = 680 - widthMargin - widthPadding
+    width = 680 - widthPadding
     assert Chart.width() is width
     done()
 

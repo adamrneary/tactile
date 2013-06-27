@@ -204,12 +204,10 @@ describe 'Chart', ->
       width: 700
       height: 450
     _chart.update()
-    widthMargin = _chart.margin.left + _chart.margin.right
     widthPadding = _chart.padding.left + _chart.padding.right
-    heightMargin = _chart.margin.top + _chart.margin.bottom
     heightPadding = _chart.padding.top + _chart.padding.bottom
-    width =  widthMargin + widthPadding
-    height = heightMargin + heightPadding
+    width =  widthPadding
+    height = heightPadding
     assert _chart.width() is 700 - width
     assert _chart.height() is 450 - height
 
@@ -268,18 +266,16 @@ describe 'Chart', ->
     _chart = new window.Tactile.Chart()
     _chart = _chart.height(400)
     _chart.update()
-    heightMargin = _chart.margin.top + _chart.margin.bottom
     heightPadding = _chart.padding.top + _chart.padding.bottom
-    height = heightMargin + heightPadding
+    height = heightPadding
     assert _chart.height() is 400 - height
 
   it 'Chart: width function', ->
     _chart = new window.Tactile.Chart()
     _chart = _chart.width(680)
     _chart.update()
-    widthMargin = _chart.margin.left + _chart.margin.right
     widthPadding = _chart.padding.left + _chart.padding.right
-    width = 680 - widthMargin - widthPadding
+    width = 680 - widthPadding
     assert _chart.width() is width
 
   it 'Chart: data function', ->

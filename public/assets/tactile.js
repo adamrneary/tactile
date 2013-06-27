@@ -980,9 +980,9 @@ Tactile.AxisBase = (function() {
     }
     side = this.options.axis === 'y' ? 'left' : 'right';
     if (destroy) {
-      this.graph.padding[side] -= 20;
+      this.graph.padding[side] -= 30;
     } else {
-      this.graph.padding[side] += 20;
+      this.graph.padding[side] += 30;
     }
     return this.graph.setSize();
   };
@@ -2760,7 +2760,7 @@ Tactile.GaugeRenderer = (function(_super) {
     this.transition.selectAll("." + (this._nameToId()) + " circle.gauge.pointer-nail").attr("transform", originTranslate).attr("r", this.graph.width() / 90);
     this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.min-label").text(this.min).attr("transform", "translate(" + (0.1 * this.graph.width()) + ",          " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
     this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.max-label").text(this.max).attr("transform", "translate(" + (0.90 * this.graph.width()) + ",            " + (1.15 * this.graph.height() * this.bottomOffset) + ")");
-    return this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.margin.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
+    return this.transition.selectAll("." + (this._nameToId()) + " text.gauge.label.value-label").attr("transform", "translate(" + ((this.graph.width() - this.graph.padding.right) / 1.95) + ", " + (1.20 * this.graph.height() * this.bottomOffset) + ")").tween("text", function(d) {
       var i;
 
       i = d3.interpolate(this.textContent, _this.value);
@@ -3446,13 +3446,6 @@ Tactile.Chart = (function() {
     'bullet': Tactile.BulletRenderer
   };
 
-  Chart.prototype.defaultMargin = {
-    top: 0,
-    right: 10,
-    bottom: 0,
-    left: 10
-  };
-
   Chart.prototype.defaultPadding = {
     top: 10,
     right: 10,
@@ -3538,7 +3531,6 @@ Tactile.Chart = (function() {
     this.setAvailableYFrame = __bind(this.setAvailableYFrame, this);
     this.setAvailableXFrame = __bind(this.setAvailableXFrame, this);
     this.padding = _.extend({}, this.defaultPadding);
-    this.margin = _.extend({}, this.defaultMargin);
     this.renderers = [];
     this.axesList = {};
     this.series = new Tactile.SeriesSet([], this);
@@ -3955,10 +3947,8 @@ Tactile.Chart = (function() {
     elHeight = $(this._element).height();
     this.outerWidth = args.width || elWidth || this.defaultWidth;
     this.outerHeight = args.height || elHeight || this.defaultHeight;
-    this.marginedWidth = this.outerWidth - this.margin.left - this.margin.right;
-    this.marginedHeight = this.outerHeight - this.margin.top - this.margin.bottom;
-    this.innerWidth = this.marginedWidth - this.padding.left - this.padding.right;
-    this.innerHeight = this.marginedHeight - this.padding.top - this.padding.bottom;
+    this.innerWidth = this.outerWidth - this.padding.left - this.padding.right;
+    this.innerHeight = this.outerHeight - this.padding.top - this.padding.bottom;
     if ((_ref = this.vis) != null) {
       _ref.attr('width', this.innerWidth).attr('height', this.innerHeight);
     }
@@ -4124,7 +4114,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype._setupCanvas = function() {
-    var clip, scatterClip, vis;
+    var clip, scatterClip;
 
     $(this._element).addClass('graph-container');
     this.svg = this._findOrAppend({
@@ -4132,22 +4122,14 @@ Tactile.Chart = (function() {
       "in": d3.select(this._element)
     });
     this.svg.attr('width', this.outerWidth).attr('height', this.outerHeight);
-    vis = this._findOrAppend({
-      what: 'g',
-      "in": this.svg
-    }).attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-    vis = this._findOrAppend({
-      what: 'g',
-      "in": vis
-    }).attr("class", "outer-canvas");
     this.vis = this._findOrAppend({
       what: 'g',
-      "in": vis,
+      "in": this.svg,
       selector: 'g.inner-canvas'
     }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
     this.draggableVis = this._findOrAppend({
       what: 'g',
-      "in": vis,
+      "in": this.svg,
       selector: 'g.draggable-canvas'
     }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "draggable-canvas");
     clip = this._findOrAppend({

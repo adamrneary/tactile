@@ -48,9 +48,9 @@ class Tactile.AxisBase
     return if @horizontal
     side = if @options.axis is 'y' then 'left' else 'right'
     if destroy
-      @graph.padding[side] -= 20
+      @graph.padding[side] -= 30
     else
-      @graph.padding[side] += 20
+      @graph.padding[side] += 30
 
     @graph.setSize()
 
