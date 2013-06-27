@@ -43,7 +43,7 @@ class Tactile.AxisLinear extends Tactile.AxisBase
     else
       if @options.axis == 'y'
         @orientation = 'left'
-        @translateString = "translate(0, 0)"
+        @translateString = "translate(-2, 0)"
       else
         @orientation = 'right'
         @translateString = "translate(#{@graph.width()}, 0)"
