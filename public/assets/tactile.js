@@ -966,7 +966,10 @@ Tactile.AxisBase = (function() {
     } else {
       this.graph.padding.bottom += 20;
     }
-    return this.graph.setSize();
+    return this.graph.setSize({
+      height: this.graph.outerHeight,
+      width: this.graph.outerWidth
+    });
   };
 
   AxisBase.prototype.handleSidePadding = function(destroy) {
@@ -984,7 +987,10 @@ Tactile.AxisBase = (function() {
     } else {
       this.graph.padding[side] += 30;
     }
-    return this.graph.setSize();
+    return this.graph.setSize({
+      height: this.graph.outerHeight,
+      width: this.graph.outerWidth
+    });
   };
 
   AxisBase.prototype._axisDrag = function() {

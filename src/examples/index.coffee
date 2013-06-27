@@ -26,6 +26,9 @@ cartesian = [
 # ,
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
+,
+  shortLink: "mini"
+  title: "Minichart"
 ]
 
 noncartesian = [

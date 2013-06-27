@@ -42,7 +42,7 @@ class Tactile.AxisBase
     else
       @graph.padding.bottom += 20
 
-    @graph.setSize()
+    @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
   handleSidePadding: (destroy = false) ->
     return if @horizontal
@@ -52,7 +52,7 @@ class Tactile.AxisBase
     else
       @graph.padding[side] += 30
 
-    @graph.setSize()
+    @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
 
   _axisDrag: =>
