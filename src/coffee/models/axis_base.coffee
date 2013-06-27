@@ -8,6 +8,7 @@ class Tactile.AxisBase
     @marginForBottomTicks = 10
 
     @handleBottomPadding()
+    @handleSidePadding()
 
 
   # TODO: this are almost identical across the axis classes.
@@ -43,6 +44,17 @@ class Tactile.AxisBase
 
     @graph.setSize()
 
+  handleSidePadding: (destroy = false) ->
+    return if @horizontal
+    side = if @options.axis is 'y' then 'left' else 'right'
+    if destroy
+      @graph.padding[side] -= 20
+    else
+      @graph.padding[side] += 20
+
+    @graph.setSize()
+
+
   _axisDrag: =>
     p = d3.svg.mouse(@graph.svg.node())
     @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
@@ -59,5 +71,6 @@ class Tactile.AxisBase
 
   destroy: ->
     @handleBottomPadding(true)
+    @handleSidePadding(true)
     @g.remove()
     delete @graph.axesList[@options.axis]

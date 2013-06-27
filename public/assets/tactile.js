@@ -925,6 +925,7 @@ Tactile.AxisBase = (function() {
     this.frame = options.frame;
     this.marginForBottomTicks = 10;
     this.handleBottomPadding();
+    this.handleSidePadding();
   }
 
   AxisBase.prototype._mouseMove = function() {
@@ -968,6 +969,24 @@ Tactile.AxisBase = (function() {
     return this.graph.setSize();
   };
 
+  AxisBase.prototype.handleSidePadding = function(destroy) {
+    var side;
+
+    if (destroy == null) {
+      destroy = false;
+    }
+    if (this.horizontal) {
+      return;
+    }
+    side = this.options.axis === 'y' ? 'left' : 'right';
+    if (destroy) {
+      this.graph.padding[side] -= 20;
+    } else {
+      this.graph.padding[side] += 20;
+    }
+    return this.graph.setSize();
+  };
+
   AxisBase.prototype._axisDrag = function() {
     var p;
 
@@ -991,6 +1010,7 @@ Tactile.AxisBase = (function() {
 
   AxisBase.prototype.destroy = function() {
     this.handleBottomPadding(true);
+    this.handleSidePadding(true);
     this.g.remove();
     return delete this.graph.axesList[this.options.axis];
   };
@@ -1055,7 +1075,7 @@ Tactile.AxisLinear = (function(_super) {
     } else {
       if (this.options.axis === 'y') {
         this.orientation = 'left';
-        this.translateString = "translate(0, 0)";
+        this.translateString = "translate(-2, 0)";
       } else {
         this.orientation = 'right';
         this.translateString = "translate(" + (this.graph.width()) + ", 0)";
