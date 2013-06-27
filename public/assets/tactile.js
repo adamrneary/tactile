@@ -3536,7 +3536,7 @@ Tactile.Chart = (function() {
     this.setAvailableY1Frame = __bind(this.setAvailableY1Frame, this);
     this.setAvailableYFrame = __bind(this.setAvailableYFrame, this);
     this.setAvailableXFrame = __bind(this.setAvailableXFrame, this);
-    this.padding = _.extend({}, this.defaultPadding);
+    this.padding = _.defaults({}, args.padding, this.defaultPadding);
     this.renderers = [];
     this.axesList = {};
     this.series = new Tactile.SeriesSet([], this);
@@ -4105,6 +4105,18 @@ Tactile.Chart = (function() {
     }
     this.setSize({
       width: val,
+      height: this.outerHeight
+    });
+    return this;
+  };
+
+  Chart.prototype.setPadding = function(val) {
+    if (!(val || _.isEmpty(val))) {
+      return this.padding;
+    }
+    this.padding = val;
+    this.setSize({
+      width: this.outerWidth,
       height: this.outerHeight
     });
     return this;

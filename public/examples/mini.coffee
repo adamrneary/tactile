@@ -1,7 +1,7 @@
 frameVal = [0, 4]
 data = [
   x: 0
-  y: 10
+  y: 0
   z: 0
 ,
   x: 1
@@ -39,7 +39,6 @@ data = [
 
 chart = new Tactile.Chart(height: 80, width: 80)
   .element($("#example_view")[0])
-  .axes({x: {dimension: 'linear'}})
   .data(data)
   .addSeries [
     name: "enemies"
@@ -59,5 +58,6 @@ chart = new Tactile.Chart(height: 80, width: 80)
       y: d.z
   ]
 
+chart.setPadding(top: 0, right: 0, bottom: 0, left: 0)
 chart.render()
 $("#above-chart").html ''

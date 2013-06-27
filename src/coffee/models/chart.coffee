@@ -43,7 +43,7 @@ class Tactile.Chart
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
-    @padding = _.extend {}, @defaultPadding
+    @padding = _.defaults {}, args.padding, @defaultPadding
     @renderers = []
     @axesList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -477,6 +477,13 @@ class Tactile.Chart
   width: (val) ->
     return (@innerWidth or @defaultWidth) unless val
     @setSize(width: val, height: @outerHeight)
+    @
+
+  setPadding: (val) ->
+    return (@padding) unless val or _.isEmpty(val)
+    # recalculate the range
+    @padding = val
+    @setSize(width: @outerWidth, height: @outerHeight)
     @
 
   data: (val) ->
