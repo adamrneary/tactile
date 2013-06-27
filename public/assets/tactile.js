@@ -3448,9 +3448,9 @@ Tactile.Chart = (function() {
 
   Chart.prototype.defaultMargin = {
     top: 0,
-    right: 20,
+    right: 10,
     bottom: 0,
-    left: 20
+    left: 10
   };
 
   Chart.prototype.defaultPadding = {
