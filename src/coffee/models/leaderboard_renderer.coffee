@@ -90,7 +90,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .tween("text", (d) ->
         i = d3.interpolate(@textContent, d.value)
         (t) ->
-          @textContent = _this.valueFormat Math.floor i(t)
+          @textContent = _this.valueFormat i(t)
       )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()-50} -5)")
@@ -101,7 +101,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .tween("text", (d) ->
         i = d3.interpolate(@textContent, d.change)
         (t) ->
-          @textContent = _this.changeFormat Math.floor i(t)
+          @textContent = _this.changeFormat i(t)
       )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()} -5)")
