@@ -653,6 +653,20 @@ d3.selection.prototype.tooltip = function(f) {
   Tactile.Utils = (function() {
   function Utils() {}
 
+  Utils.log = function(m) {
+    if (Tactile.debug !== true) {
+      return;
+    }
+    return console.log(m);
+  };
+
+  Utils.warn = function(m) {
+    if (Tactile.debug !== true) {
+      return;
+    }
+    return console.warn(m);
+  };
+
   Utils.prototype.ourFunctor = function() {
     if (typeof arguments[0] === 'function') {
       return arguments[0].apply(null, _.toArray(arguments).slice(1));
@@ -666,13 +680,13 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (typeof str !== "string") {
-      console.warn("Tactile error: '" + strName + "' invalid type: " + str);
+      Tactile.Utils.warn("Tactile error: '" + strName + "' invalid type: " + str + ", string expected");
       if (d != null) {
-        console.log(d);
+        Tactile.Utils.log(d);
       }
       check = false;
     } else if (!$.trim(str)) {
-      console.warn("Tactile error: '" + strName + "' empty");
+      Tactile.Utils.warn("Tactile error: '" + strName + "' empty");
       check = false;
     }
     return check;
@@ -683,9 +697,9 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (typeof num !== "number") {
-      console.warn("Tactile error: '" + numName + "' invalid type: " + num);
+      Tactile.Utils.warn("Tactile error: '" + numName + "' invalid type: " + num + ", number expected");
       if (d != null) {
-        console.log(d);
+        Tactile.Utils.log(d);
       }
       check = false;
     }
@@ -697,9 +711,9 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (!_.isArray(arr)) {
-      console.warn("Tactile error: '" + arrName + "' invalid type: " + arr);
+      Tactile.Utils.warn("Tactile error: '" + arrName + "' invalid type: " + arr + ", array expected");
       if (d != null) {
-        console.log(d);
+        Tactile.Utils.log(d);
       }
       check = false;
     }
@@ -711,9 +725,9 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (!_.isFunction(func)) {
-      console.warn("Tactile error: '" + funcName + "' invalid type: " + func);
+      Tactile.Utils.warn("Tactile error: '" + funcName + "' invalid type: " + func + ", function expected");
       if (d != null) {
-        console.log(d);
+        Tactile.Utils.log(d);
       }
       check = false;
     }
@@ -725,9 +739,9 @@ d3.selection.prototype.tooltip = function(f) {
 
     check = true;
     if (typeof str !== "object") {
-      console.warn("Tactile error: '" + objName + "' invalid type: " + obj);
+      Tactile.Utils.warn("Tactile error: '" + objName + "' invalid type: " + obj + ", object expected");
       if (d != null) {
-        console.log(d);
+        Tactile.Utils.log(d);
       }
       check = false;
     }
@@ -3896,7 +3910,7 @@ Tactile.Chart = (function() {
       case "time":
         return this.axesList[args.axis] = new Tactile.AxisTime(args);
       default:
-        return console.warn("Tactile error: " + args.dimension + " is not currently implemented");
+        return Tactile.Utils.warn("Tactile error: " + args.dimension + " is not currently implemented");
     }
   };
 
