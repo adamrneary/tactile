@@ -47,10 +47,11 @@ class Tactile.AxisBase
   handleSidePadding: (destroy = false) ->
     return if @horizontal
     side = if @options.axis is 'y' then 'left' else 'right'
+    # TODO: would be great if this could change according to the legth of the labels
     if destroy
-      @graph.padding[side] -= 30
+      @graph.padding[side] -= 35
     else
-      @graph.padding[side] += 30
+      @graph.padding[side] += 35
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
