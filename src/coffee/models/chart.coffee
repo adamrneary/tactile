@@ -327,7 +327,7 @@ class Tactile.Chart
       when "time"
         @axesList[args.axis] = new Tactile.AxisTime args
       else
-        console.warn("Tactile error: #{args.dimension} is not currently implemented")
+        Tactile.Utils.warn("Tactile error: #{args.dimension} is not currently implemented")
 
   # Used by range slider
   dataDomain: ->

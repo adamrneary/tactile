@@ -1,4 +1,11 @@
 class Tactile.Utils
+  @log: (m) ->
+    return unless Tactile.debug is true
+    console.log m
+
+  @warn: (m) ->
+    return unless Tactile.debug is true
+    console.warn m
 
   # similar in spirit to d3.functor()
   # https://github.com/mbostock/d3/wiki/Internals
@@ -12,11 +19,11 @@ class Tactile.Utils
     check = true
 
     if typeof str isnt "string"
-      console.warn("Tactile error: '#{strName}' invalid type: #{str}")
-      console.log d if d?
+      Tactile.Utils.warn("Tactile error: '#{strName}' invalid type: #{str}, string expected")
+      Tactile.Utils.log d if d?
       check = false
     else if !$.trim(str)
-      console.warn("Tactile error: '#{strName}' empty")
+      Tactile.Utils.warn("Tactile error: '#{strName}' empty")
       check = false
 
     check
@@ -25,8 +32,8 @@ class Tactile.Utils
     check = true
 
     if typeof num isnt "number"
-      console.warn("Tactile error: '#{numName}' invalid type: #{num}")
-      console.log d if d?
+      Tactile.Utils.warn("Tactile error: '#{numName}' invalid type: #{num}, number expected")
+      Tactile.Utils.log d if d?
       check = false
 
     check
@@ -34,8 +41,8 @@ class Tactile.Utils
   checkArray: (arr, arrName, d) ->
     check = true
     if !_.isArray(arr)
-      console.warn("Tactile error: '#{arrName}' invalid type: #{arr}")
-      console.log d if d?
+      Tactile.Utils.warn("Tactile error: '#{arrName}' invalid type: #{arr}, array expected")
+      Tactile.Utils.log d if d?
       check = false
 
     check
@@ -43,8 +50,8 @@ class Tactile.Utils
   checkFunction: (func, funcName, d) ->
     check = true
     if !_.isFunction(func)
-      console.warn("Tactile error: '#{funcName}' invalid type: #{func}")
-      console.log d if d?
+      Tactile.Utils.warn("Tactile error: '#{funcName}' invalid type: #{func}, function expected")
+      Tactile.Utils.log d if d?
       check = false
 
     check
@@ -52,8 +59,8 @@ class Tactile.Utils
   checkObject: (obj, objName, d) ->
     check = true
     if typeof str isnt "object"
-      console.warn("Tactile error: '#{objName}' invalid type: #{obj}")
-      console.log d if d?
+      Tactile.Utils.warn("Tactile error: '#{objName}' invalid type: #{obj}, object expected")
+      Tactile.Utils.log d if d?
       check = false
 
     check
