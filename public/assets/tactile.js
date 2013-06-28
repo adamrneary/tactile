@@ -5416,6 +5416,7 @@ Tactile.Chart = (function() {
 
   Chart.prototype.setSize = function(args) {
     var elHeight, elWidth, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+
     if (args == null) {
       args = {};
     }
