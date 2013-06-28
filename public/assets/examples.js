@@ -122,6 +122,7 @@ prepareLinks = function(route, el) {
 $(document).ready(function() {
   var Showcase, showcase;
 
+  Tactile.debug = true;
   _.map(cartesian, function(route) {
     return prepareLinks(route, $("#cartLinkList"));
   });

@@ -1,8 +1,6 @@
 (function() {
   window.Tactile || (window.Tactile = {});
 
-Tactile.debug = true;
-
 }).call(this);
 
 (function() {

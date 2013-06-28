@@ -113,6 +113,7 @@ prepareLinks = (route, el) ->
       $('body').append $("<script id='example_code'>#{source}</script>")
 
 $(document).ready ->
+  Tactile.debug = true
   _.map cartesian, (route) ->
     prepareLinks route, $("#cartLinkList")
   _.map noncartesian, (route) ->
