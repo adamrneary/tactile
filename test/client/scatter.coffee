@@ -129,9 +129,8 @@ describe 'Scatter series', ->
   it "Chart: check width function", ->
     Chart = Chart.width(700)
     Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
     widthPadding = Chart.padding.left + Chart.padding.right
-    width =  widthMargin + widthPadding
+    width = widthPadding
     assert Chart.width() is 700 - width
 
 

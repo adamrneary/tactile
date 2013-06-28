@@ -148,7 +148,7 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     # value label
     @transition.selectAll(".#{@_nameToId()} text.gauge.label.value-label")
       .attr("transform", "translate(#{( @graph.width() -
-          @graph.margin.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
+          @graph.padding.right ) / 1.95}, #{1.20 * @graph.height() * @bottomOffset})")
       .tween("text", (d) ->
         i = d3.interpolate(@textContent, _this.value)
         (t) ->

@@ -1,7 +1,7 @@
 frameVal = [0, 4]
 data = [
   x: 0
-  y: 10
+  y: -100
   z: 0
 ,
   x: 1
@@ -50,8 +50,9 @@ chart = new Tactile.Chart(
     minYFrame: 200
   )
 
-  # note that we're passing initial frame just like in a regular chart
-  .axes({x: {dimension: 'linear', frame: frameVal}, y: {dimension: "linear"}})
+  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
+  .setXFrame(frameVal)
+  .yMin('auto')
   .element($("#example_view")[0])
   .data(data)
   .addSeries [

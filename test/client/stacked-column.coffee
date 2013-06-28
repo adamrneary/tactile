@@ -171,9 +171,8 @@ describe 'Stacked columb timeframe', ->
   it "Chart: check width function", ->
     Chart = Chart.width(680)
     Chart.update()
-    widthMargin = Chart.margin.left + Chart.margin.right
     widthPadding = Chart.padding.left + Chart.padding.right
-    width =  widthMargin + widthPadding
+    width = widthPadding
     assert Chart.width() is 680 - width
 
 
