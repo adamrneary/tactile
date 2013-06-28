@@ -1050,6 +1050,7 @@ Tactile.AxisLinear = (function(_super) {
     this.tickFormat = options.tickFormat || function(d) {
       return d;
     };
+    this.tickValues = options.tickValues || null;
     this._setupForOrientation();
   }
 
@@ -1063,7 +1064,7 @@ Tactile.AxisLinear = (function(_super) {
     this.g = this.graph.vis.selectAll('.' + className).data([0]);
     this.g.enter().append("g").attr("class", [className, this.ticksTreatment].join(" "));
     this.g.attr("transform", this.translateString);
-    axis = d3.svg.axis().scale(this.graph[this.options.axis]).orient(this.orientation).tickFormat(this.tickFormat).ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize);
+    axis = d3.svg.axis().scale(this.graph[this.options.axis]).orient(this.orientation).tickFormat(this.tickFormat).ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize).tickValues(this.tickValues);
     transition.select('.' + className).call(axis);
     return this.g.selectAll("text").style("cursor", this.horizontal ? "ew-resize" : "ns-resize").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
   };
@@ -2822,13 +2823,17 @@ Tactile.LeaderboardRenderer = (function(_super) {
   LeaderboardRenderer.prototype.name = "leaderboard";
 
   LeaderboardRenderer.prototype.specificDefaults = {
-    format: d3.format("p"),
+    changeFormat: d3.format("p"),
+    valueFormat: d3.format("p"),
     barHeight: 30
   };
 
   LeaderboardRenderer.prototype.initialize = function() {
-    if (this.series.format !== void 0) {
-      return this.format = this.series.format;
+    if (this.series.changeFormat !== void 0) {
+      this.changeFormat = this.series.changeFormat;
+    }
+    if (this.series.valueFormat !== void 0) {
+      return this.valueFormat = this.series.valueFormat;
     }
   };
 
@@ -2886,7 +2891,7 @@ Tactile.LeaderboardRenderer = (function(_super) {
 
       i = d3.interpolate(this.textContent, d.value);
       return function(t) {
-        return this.textContent = _this.format(Math.floor(i(t)));
+        return this.textContent = _this.valueFormat(i(t));
       };
     }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 50) + " -5)");
     this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
@@ -2896,7 +2901,7 @@ Tactile.LeaderboardRenderer = (function(_super) {
 
       i = d3.interpolate(this.textContent, d.change);
       return function(t) {
-        return this.textContent = _this.format(Math.floor(i(t)));
+        return this.textContent = _this.changeFormat(i(t));
       };
     }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + " -5)");
     this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
@@ -3523,6 +3528,7 @@ Tactile.Chart = (function() {
     this.unstackTransition = __bind(this.unstackTransition, this);
     this.stackTransition = __bind(this.stackTransition, this);
     this.discoverRange = __bind(this.discoverRange, this);
+    this.setPadding = __bind(this.setPadding, this);
     this.setAutoScale = __bind(this.setAutoScale, this);
     this.setY1Frame = __bind(this.setY1Frame, this);
     this.setYFrame = __bind(this.setYFrame, this);
@@ -3680,7 +3686,24 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.setAutoScale = function(val) {
+    if (val) {
+      delete this.availableXFrame;
+      delete this.availableYFrame;
+      delete this.availableY1Frame;
+      this.setXFrame([NaN, NaN]);
+      this.setYFrame([NaN, NaN]);
+      this.setY1Frame([NaN, NaN]);
+    }
     this.autoScale = val;
+    return this;
+  };
+
+  Chart.prototype.setPadding = function(padding) {
+    if (!padding) {
+      return this.padding;
+    }
+    this.padding = padding;
+    this.setSize();
     return this;
   };
 
@@ -3803,7 +3826,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.discoverRange = function() {
-    var xDomain, y1Domain, yDomain,
+    var max, min, xDomain, y1Domain, yDomain,
       _this = this;
 
     xDomain = [];
@@ -3834,21 +3857,37 @@ Tactile.Chart = (function() {
       this.availableXFrame = xDomain;
     }
     if (this._autoSetAvailableYFrame) {
-      this.availableYFrame = [yDomain[0] - yDomain[0] * 0.1, yDomain[1] + yDomain[1] * 0.1];
+      min = yDomain[0];
+      max = yDomain[1];
+      if (yDomain[0] > 0 && yDomain[1] > 0) {
+        min = 0;
+      }
+      if (yDomain[0] < 0 && yDomain[1] < 0) {
+        max = 0;
+      }
+      this.availableYFrame = [min + min * 0.1, max + max * 0.1];
     }
     if (this._autoSetAvailableY1Frame) {
-      this.availableY1Frame = [y1Domain[0] - y1Domain[0] * 0.1, y1Domain[1] + y1Domain[1] * 0.1];
+      min = y1Domain[0];
+      max = y1Domain[1];
+      if (y1Domain[0] > 0 && y1Domain[1] > 0) {
+        min = 0;
+      }
+      if (y1Domain[0] < 0 && y1Domain[1] < 0) {
+        max = 0;
+      }
+      this.availableY1Frame = [min + min * 0.1, max + max * 0.1];
     }
     if (_.isNaN(this.x.domain()[0]) || _.isNaN(this.x.domain()[1])) {
-      this.x.domain(xDomain);
+      this.x.domain(this.availableXFrame);
     }
     if (_.isNaN(this.y.domain()[0]) || _.isNaN(this.y.domain()[1]) || this.autoScale) {
-      this.y.domain(yDomain);
-      this.y.magnitude.domain([0, yDomain[1] - yDomain[0]]);
+      this.y.domain(this.availableYFrame);
+      this.y.magnitude.domain([0, this.availableYFrame[1] - this.availableYFrame[0]]);
     }
     if (_.isNaN(this.y1.domain()[0]) || _.isNaN(this.y1.domain()[1]) || this.autoScale) {
-      this.y1.domain(y1Domain);
-      this.y1.magnitude.domain([0, y1Domain[1] - y1Domain[0]]);
+      this.y1.domain(this.availableY1Frame);
+      this.y1.magnitude.domain([0, this.availableY1Frame[1] - this.availableY1Frame[0]]);
     }
     return this;
   };
@@ -3944,7 +3983,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.setSize = function(args) {
-    var elHeight, elWidth, _ref;
+    var elHeight, elWidth, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
 
     if (args == null) {
       args = {};
@@ -3955,8 +3994,23 @@ Tactile.Chart = (function() {
     this.outerHeight = args.height || elHeight || this.defaultHeight;
     this.innerWidth = this.outerWidth - this.padding.left - this.padding.right;
     this.innerHeight = this.outerHeight - this.padding.top - this.padding.bottom;
-    if ((_ref = this.vis) != null) {
-      _ref.attr('width', this.innerWidth).attr('height', this.innerHeight);
+    if ((_ref = this.x) != null) {
+      _ref.range([0, this.width()]);
+    }
+    if ((_ref1 = this.y) != null) {
+      _ref1.range([this.height(), 0]);
+    }
+    if ((_ref2 = this.y) != null) {
+      _ref2.magnitude.range([0, this.height()]);
+    }
+    if ((_ref3 = this.y1) != null) {
+      _ref3.range([this.height(), 0]);
+    }
+    if ((_ref4 = this.y1) != null) {
+      _ref4.range([0, this.height()]);
+    }
+    if ((_ref5 = this.vis) != null) {
+      _ref5.attr('width', this.innerWidth).attr('height', this.innerHeight);
     }
     this._updateRange();
     return this._setupCanvas();
