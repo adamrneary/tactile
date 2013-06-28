@@ -174,6 +174,11 @@ class Tactile.Chart
     @autoScale = val
     @
 
+  setPadding: (padding) =>
+    return @padding unless padding
+    @padding = padding
+    @setSize()
+    @
 
   initSeriesStackData: (options = {overwrite: false}) ->
     return if @dataInitialized and not options.overwrite
