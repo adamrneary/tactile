@@ -46,6 +46,7 @@ class Tactile.Chart
     @padding = _.defaults {}, args.padding, @defaultPadding
     @renderers = []
     @axesList = {}
+    @gridList = {}
     @series = new Tactile.SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
@@ -244,6 +245,8 @@ class Tactile.Chart
     _.each @axesList, (axis) =>
       axis.render(t)
 
+    _.each @gridList, (grid) =>
+      grid.render(t)
 
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
@@ -344,6 +347,21 @@ class Tactile.Chart
         @initAxis _.extend defaults, args[k]
 
     @
+
+  grid: (args) ->
+    return @gridList unless args
+
+    # kill any old grids
+    _.each _.toArray(@gridList), (grid) -> grid.destroy()
+
+    _.each ['x', 'y', 'y1'], (k) =>
+      if args[k]?
+        defaults = {graph: @, grid: k}
+        @gridList[k] = new Tactile.Grid _.extend defaults, args[k]
+
+    console.log @gridList
+    @
+
 
   initAxis: (args) ->
     return unless @_allRenderersCartesian()
