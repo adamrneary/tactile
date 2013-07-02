@@ -102,9 +102,13 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
     @graph.discoverRange()
+    @graph._checkYDomain()
+    @graph._checkY1Domain()
     @render(transition)
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
     @graph.discoverRange()
+    @graph._checkYDomain()
+    @graph._checkY1Domain()
     @render(transition)
