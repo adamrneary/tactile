@@ -359,7 +359,6 @@ class Tactile.Chart
         defaults = {graph: @, grid: k}
         @gridList[k] = new Tactile.Grid _.extend defaults, args[k]
 
-    console.log @gridList
     @
 
 

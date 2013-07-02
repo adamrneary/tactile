@@ -8,9 +8,8 @@ class Tactile.Grid
     @graph = options.graph
     @lineWidth = options.lineWidth or @defaultOptions.lineWidth
     @color = options.color or @defaultOptions.color
-    @data = options.data or []
-    @horizontal = options.grid == 'x'
-    console.log options
+    @data = options.values or []
+    @horizontal = options.grid != 'x'
 
   render: (transition) ->
     className = "#{@options.grid}-grid"
