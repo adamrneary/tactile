@@ -2,11 +2,13 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   name: "leaderboard"
 
   specificDefaults:
-    format: d3.format("p")
+    changeFormat: d3.format("p")
+    valueFormat: d3.format("p")
     barHeight: 30
 
   initialize: =>
-    @format = @series.format unless @series.format is undefined
+    @changeFormat = @series.changeFormat unless @series.changeFormat is undefined
+    @valueFormat = @series.valueFormat unless @series.valueFormat is undefined
 
   render: (transition, transitionSpeed)->
     @_checkData()
@@ -88,7 +90,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .tween("text", (d) ->
         i = d3.interpolate(@textContent, d.value)
         (t) ->
-          @textContent = _this.format Math.floor i(t)
+          @textContent = _this.valueFormat i(t)
       )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()-50} -5)")
@@ -99,7 +101,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .tween("text", (d) ->
         i = d3.interpolate(@textContent, d.change)
         (t) ->
-          @textContent = _this.format Math.floor i(t)
+          @textContent = _this.changeFormat i(t)
       )
       .attr("text-anchor", "end")
       .attr("transform", "translate(#{@graph.width()} -5)")

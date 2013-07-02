@@ -111,11 +111,6 @@
 /* axes */
 
 .y-ticks,  .y1-ticks {
-  /* Don't display first tick of Y-axis */
-  g:first-child {
-    opacity: 0 !important;
-  }
-
   &.plain {
     path {
       fill: none;

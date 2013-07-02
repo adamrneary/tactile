@@ -12,7 +12,7 @@ class Tactile.Chart
     'bullet': Tactile.BulletRenderer
 
   # default values
-  defaultPadding: {top: 10, right: 10, bottom: 10, left: 10}
+  defaultPadding: {top: 30, right: 30, bottom: 30, left: 30}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -148,6 +148,7 @@ class Tactile.Chart
     @maxY1Frame = maxY1Frame or @defaultMaxY1Frame
     @
 
+
   setXFrame: (xFrame) =>
     @x.domain(xFrame)
     @
@@ -162,9 +163,22 @@ class Tactile.Chart
 
 
   setAutoScale: (val) =>
+    if val
+      delete @availableXFrame
+      delete @availableYFrame
+      delete @availableY1Frame
+      @setXFrame([NaN, NaN])
+      @setYFrame([NaN, NaN])
+      @setY1Frame([NaN, NaN])
+
     @autoScale = val
     @
 
+  setPadding: (padding) =>
+    return @padding unless padding
+    @padding = padding
+    @setSize()
+    @
 
   initSeriesStackData: (options = {overwrite: false}) ->
     return if @dataInitialized and not options.overwrite
@@ -285,19 +299,31 @@ class Tactile.Chart
     unless @availableY1Frame then @_autoSetAvailableY1Frame = true
 
     if @_autoSetAvailableXFrame then @availableXFrame = xDomain
-    if @_autoSetAvailableYFrame then @availableYFrame = [yDomain[0] - yDomain[0]*0.1, yDomain[1] + yDomain[1]*0.1]
-    if @_autoSetAvailableY1Frame then @availableY1Frame = [y1Domain[0] - y1Domain[0]*0.1, y1Domain[1] + y1Domain[1]*0.1]
+
+    if @_autoSetAvailableYFrame
+      min = yDomain[0]
+      max = yDomain[1]
+      if yDomain[0] > 0 and yDomain[1] > 0 then min = 0
+      if yDomain[0] < 0 and yDomain[1] < 0 then max = 0
+      @availableYFrame = [min + min*0.1, max + max*0.1]
+
+    if @_autoSetAvailableY1Frame
+      min = y1Domain[0]
+      max = y1Domain[1]
+      if y1Domain[0] > 0 and y1Domain[1] > 0 then min = 0
+      if y1Domain[0] < 0 and y1Domain[1] < 0 then max = 0
+      @availableY1Frame = [min + min*0.1, max + max*0.1]
 
     if _.isNaN(@x.domain()[0]) or _.isNaN(@x.domain()[1])
-      @x.domain(xDomain)
+      @x.domain(@availableXFrame)
 
     if _.isNaN(@y.domain()[0]) or _.isNaN(@y.domain()[1]) or @autoScale
-      @y.domain(yDomain)
-      @y.magnitude.domain([0, yDomain[1] - yDomain[0]])
+      @y.domain(@availableYFrame)
+      @y.magnitude.domain([0, @availableYFrame[1] - @availableYFrame[0]])
 
     if _.isNaN(@y1.domain()[0]) or _.isNaN(@y1.domain()[1]) or @autoScale
-      @y1.domain(y1Domain)
-      @y1.magnitude.domain([0, y1Domain[1] - y1Domain[0]])
+      @y1.domain(@availableY1Frame)
+      @y1.magnitude.domain([0, @availableY1Frame[1] - @availableY1Frame[0]])
 
     @
 
@@ -381,6 +407,13 @@ class Tactile.Chart
 
     @innerWidth = @outerWidth - @padding.left - @padding.right
     @innerHeight = @outerHeight - @padding.top - @padding.bottom
+
+    @x?.range([0, @width()])
+    @y?.range([@height(), 0])
+    @y?.magnitude.range([0, @height()])
+    @y1?.range([@height(), 0])
+    @y1?.range([0, @height()])
+
 
     @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
     @_updateRange()

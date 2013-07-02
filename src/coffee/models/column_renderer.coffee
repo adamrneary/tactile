@@ -152,6 +152,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
     @graph.discoverRange()
+    @graph._checkYDomain()
+    @graph._checkY1Domain()
+
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)
@@ -179,6 +182,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
     @graph.discoverRange()
+    @graph._checkYDomain()
+    @graph._checkY1Domain()
+
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)

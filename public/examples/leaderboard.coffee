@@ -47,7 +47,8 @@ chart = new Tactile.Chart(unstack: false)
   .addSeries
     name: "enemies"
     renderer: "leaderboard"
-    format: d3.format("d")
+    changeFormat: d3.format("f")
+    valueFormat: d3.format("f")
     dataTransform: (d) ->
       label: d.label
       value: d.value

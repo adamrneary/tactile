@@ -8,6 +8,7 @@ class Tactile.AxisLinear extends Tactile.AxisBase
     @tickSize = options.tickSize or 2
     @ticks = options.ticks
     @tickFormat = options.tickFormat or (d) -> d
+    @tickValues = options.tickValues or null
 
     @_setupForOrientation()
 
@@ -26,6 +27,7 @@ class Tactile.AxisLinear extends Tactile.AxisBase
       .ticks(@ticks)
       .tickSubdivide(0)
       .tickSize(@tickSize)
+      .tickValues(@tickValues);
 
     transition.select('.' + className).call(axis)
 
