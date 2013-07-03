@@ -23,10 +23,13 @@ class Tactile.Chart
   defaultAxesOptions:
     x:
       dimension: "time"
+      showZeroLine: false
     y:
       dimension: "linear"
+      showZeroLine: true
     y1:
       dimension: "linear"
+      showZeroLine: true
 
   defaultMinXFrame: 1
   defaultMinYFrame: 1
@@ -46,6 +49,7 @@ class Tactile.Chart
     @padding = _.defaults {}, args.padding, @defaultPadding
     @renderers = []
     @axesList = {}
+    @gridList = {}
     @series = new Tactile.SeriesSet([], @)
     @window = {}
     @updateCallbacks = []
@@ -244,6 +248,9 @@ class Tactile.Chart
     _.each @axesList, (axis) =>
       axis.render(t)
 
+    _.each @gridList, (grid) =>
+      grid.render(t)
+
     @_setupZoom()
     @timesRendered++
 
@@ -312,10 +319,24 @@ class Tactile.Chart
 
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k}
+        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k, showZeroLine: @defaultAxesOptions[k].showZeroLine}
         @initAxis _.extend defaults, args[k]
 
     @
+
+  grid: (args) ->
+    return @gridList unless args
+
+    # kill any old grids
+    _.each _.toArray(@gridList), (grid) -> grid.destroy()
+
+    _.each ['x', 'y', 'y1'], (k) =>
+      if args[k]?
+        defaults = {graph: @, grid: k}
+        @gridList[k] = new Tactile.Grid _.extend defaults, args[k]
+
+    @
+
 
   initAxis: (args) ->
     return unless @_allRenderersCartesian()
