@@ -82,7 +82,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .text((d)->d.label)
-      .attr("transform", "translate(3 -5)")
+      .attr("transform", "translate(3 -2)")
 
     @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -93,7 +93,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.valueFormat i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()-50} -5)")
+      .attr("transform", "translate(#{@graph.width()-40} -2)")
 
     @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -104,7 +104,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.changeFormat i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()} -5)")
+      .attr("transform", "translate(#{@graph.width()} -2)")
 
     @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -152,7 +152,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
-      .attr("transform", (d,i)=> "translate(#{@graph.width()-10},"+(@_yOffset(d, i)-22)+")")
+      .attr("transform", (d,i)=> "translate(#{@graph.width()-10},"+(@_yOffset(d, i)-16)+")")
 
   _xOffset: =>
 
