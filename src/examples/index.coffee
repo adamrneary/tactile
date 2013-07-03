@@ -52,6 +52,9 @@ noncartesian = [
 ]
 
 components = [
+  shortLink:"grid"
+  title: "Grid"
+,
   shortLink:"sliding-timeframe"
   title: "Sliding timeframe"
 ,

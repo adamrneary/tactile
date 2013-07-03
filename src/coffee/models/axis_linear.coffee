@@ -10,6 +10,10 @@ class Tactile.AxisLinear extends Tactile.AxisBase
     @tickFormat = options.tickFormat or (d) -> d
     @tickValues = options.tickValues or null
 
+    @showZeroLine = options.showZeroLine
+    @zeroLineColor = options.zeroLineColor or "#000000"
+    @zeroLineWidth = options.zeroLineWidth or 0.5
+
     @_setupForOrientation()
 
   render: (transition) ->
@@ -35,6 +39,27 @@ class Tactile.AxisLinear extends Tactile.AxisBase
       .style("cursor", if @horizontal then "ew-resize" else "ns-resize")
       .on("mousedown.drag",  @_axisDrag)
       .on("touchstart.drag", @_axisDrag);
+
+    # if needed add the zero line
+    className = "#{@options.axis}-zero-line"
+    @g = @graph.vis.selectAll('.' + className).data([0])
+    @g.enter().append("g").attr("class", className)
+
+    domain = @graph[@options.axis].domain()
+
+    line = @g.selectAll("line").data(if @showZeroLine and domain[0] < 0 and domain[1] > 0 then [0] else [])
+    line.enter()
+      .append("svg:line")
+
+    line.exit().remove()
+
+    transition.select('.' + className).selectAll("line")
+      .attr("x1", (d) => if @horizontal then @graph[@options.axis](d) else 0)
+      .attr("x2", (d) => if @horizontal then @graph[@options.axis](d) else @graph.width())
+      .attr("y1", (d) => if @horizontal then 0 else @graph[@options.axis](d))
+      .attr("y2", (d) => if @horizontal then @graph.height() else @graph[@options.axis](d))
+      .attr("stroke", @zeroLineColor)
+      .attr("stroke-width", @zeroLineWidth)
 
   _setupForOrientation: ->
     pixelsPerTick = @options.pixelsPerTick or 75
