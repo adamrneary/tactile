@@ -42,12 +42,12 @@ class Tactile.AxisLinear extends Tactile.AxisBase
 
     # if needed add the zero line
     className = "#{@options.axis}-zero-line"
-    @g = @graph.vis.selectAll('.' + className).data([0])
-    @g.enter().append("g").attr("class", className)
+    @g_zero = @graph.vis.selectAll('.' + className).data([0])
+    @g_zero.enter().append("g").attr("class", className)
 
     domain = @graph[@options.axis].domain()
 
-    line = @g.selectAll("line").data(if @showZeroLine and domain[0] < 0 and domain[1] > 0 then [0] else [])
+    line = @g_zero.selectAll("line").data(if @showZeroLine and domain[0] < 0 and domain[1] > 0 then [0] else [])
     line.enter()
       .append("svg:line")
 
@@ -92,3 +92,8 @@ class Tactile.AxisLinear extends Tactile.AxisBase
         @options.frame.forEach((d, i)=>
           @utils.checkNumber(d, "AxisLinear options.frame[#{i}]") if d?
         )
+
+  destroy: ->
+    super
+    @g_zero.remove()
+
