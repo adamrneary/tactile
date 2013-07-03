@@ -23,10 +23,13 @@ class Tactile.Chart
   defaultAxesOptions:
     x:
       dimension: "time"
+      showZeroLine: false
     y:
       dimension: "linear"
+      showZeroLine: true
     y1:
       dimension: "linear"
+      showZeroLine: true
 
   defaultMinXFrame: 1
   defaultMinYFrame: 1
@@ -343,7 +346,7 @@ class Tactile.Chart
 
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k}
+        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k, showZeroLine: @defaultAxesOptions[k].showZeroLine}
         @initAxis _.extend defaults, args[k]
 
     @
