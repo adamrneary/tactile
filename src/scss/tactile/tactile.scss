@@ -528,7 +528,7 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 
 /* Leaderboard */
 
-.leaderboard {
+.leaderboard-normal {
   &.label {
     fill: $grey;
     font-size: 20px;
@@ -568,6 +568,48 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
     stroke: none;
   }
 }
+
+.leaderboard-small {
+  &.label {
+    fill: $grey;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  &.value {
+    font-size: 20px;
+    fill: darken($grey, 40%);
+    text-anchor: end;
+    @include proxima-800();
+  }
+
+  &.change {
+    fill: $grey;
+    font-size: 10px;
+    @include proxima-bold();
+  }
+
+  .triangle-down {
+    fill: $danger;
+    stroke: none;
+  }
+
+  .triangle-up {
+    fill: $success;
+    stroke: none;
+  }
+
+  &.track {
+    fill: lighten($grey, 25%);
+    stroke: none;
+  }
+
+  &.bar {
+    fill: $primary;
+    stroke: none;
+  }
+}
+
 
 /* Gauge */
 

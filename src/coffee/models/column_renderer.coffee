@@ -151,6 +151,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
+    @graph.setYFrame([NaN, NaN])
+    @graph.setY1Frame([NaN, NaN])
     @graph.discoverRange()
     @graph._checkYDomain()
     @graph._checkY1Domain()
@@ -181,6 +183,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
+    @graph.setYFrame([NaN, NaN])
+    @graph.setY1Frame([NaN, NaN])
     @graph.discoverRange()
     @graph._checkYDomain()
     @graph._checkY1Domain()
