@@ -412,6 +412,8 @@ class Tactile.Chart
     @_updateRange()
     @_setupCanvas()
 
+    @
+
   _setupZoom: ->
     @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
     @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])

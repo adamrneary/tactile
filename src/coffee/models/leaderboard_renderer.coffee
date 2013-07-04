@@ -17,9 +17,14 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
 
     className = "leaderboard-" + @type
 
+    data = _.map @series.stack, (d, i) =>
+      d.lastData = @lastData?[i] or {barPosition: 0, change: 0, label: "", value: 0}
+      d
+
+    console.log data
     @transition = transition if transition
     bars = @seriesCanvas().selectAll("g." + className + ".bars")
-      .data(@series.stack)
+      .data(data)
 
     bars.enter()
       .append("svg:g")
@@ -92,7 +97,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
-        i = d3.interpolate(@textContent, d.value)
+        i = d3.interpolate(d.lastData?.value, d.value)
         (t) ->
           @textContent = _this.valueFormat i(t)
       )
@@ -103,7 +108,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
-        i = d3.interpolate(@textContent, d.change)
+        i = d3.interpolate(d.lastData?.change, d.change)
         (t) ->
           @textContent = _this.changeFormat i(t)
       )
@@ -157,6 +162,8 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("transform", (d, i) => "translate(#{@graph.width()-10}, #{(@_yOffset(d, i) - if @type is "normal" then 22 else 16)})")
+
+    @lastData = @series.stack
 
   _xOffset: =>
 
