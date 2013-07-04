@@ -5,54 +5,58 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     changeFormat: d3.format("p")
     valueFormat: d3.format("p")
     barHeight: 30
+    type: "normal"
 
   initialize: =>
     @changeFormat = @series.changeFormat unless @series.changeFormat is undefined
     @valueFormat = @series.valueFormat unless @series.valueFormat is undefined
+    @type = @series.type unless @series.type is undefined
 
   render: (transition, transitionSpeed)->
     @_checkData()
 
+    className = "leaderboard-" + @type
+
     @transition = transition if transition
-    bars = @seriesCanvas().selectAll("g.leaderboard.bars")
+    bars = @seriesCanvas().selectAll("g." + className + ".bars")
       .data(@series.stack)
 
     bars.enter()
       .append("svg:g")
-      .attr("class", "leaderboard bars")
+      .attr("class", className + " bars")
 
     bars.exit().remove()
 
-    @seriesCanvas().selectAll("g.leaderboard.bars")
+    @seriesCanvas().selectAll("g." + className + ".bars")
       .each((d, i)->
-        track = d3.select(@).selectAll("rect.leaderboard.track").data([d])
+        track = d3.select(@).selectAll("rect." + className + ".track").data([d])
         track.enter()
           .append("svg:rect")
-          .attr("class", "leaderboard track")
+          .attr("class", className + " track")
         track.exit().remove()
 
-        bar = d3.select(@).selectAll("rect.leaderboard.bar").data([d])
+        bar = d3.select(@).selectAll("rect." + className + ".bar").data([d])
         bar.enter()
           .append("svg:rect")
-          .attr("class", "leaderboard bar")
+          .attr("class", className + " bar")
         bar.exit().remove()
 
-        label = d3.select(@).selectAll("text.leaderboard.label").data([d])
+        label = d3.select(@).selectAll("text." + className + ".label").data([d])
         label.enter()
           .append("text")
-          .attr("class", "leaderboard label")
+          .attr("class", className + " label")
         label.exit().remove()
 
-        value = d3.select(@).selectAll("text.leaderboard.value").data([d])
+        value = d3.select(@).selectAll("text." + className + ".value").data([d])
         value.enter()
           .append("text")
-          .attr("class", "leaderboard value")
+          .attr("class", className + " value")
         value.exit().remove()
 
-        change = d3.select(@).selectAll("text.leaderboard.change").data([d])
+        change = d3.select(@).selectAll("text." + className + ".change").data([d])
         change.enter()
           .append("text")
-          .attr("class", "leaderboard change")
+          .attr("class", className + " change")
         change.exit().remove()
 
         triangle = d3.select(@).selectAll("path").data([d])
@@ -62,7 +66,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
         triangle
       )
 
-    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.track")
+    @transition.selectAll(".#{@_nameToId()} rect." + className + ".track")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("width", @graph.width())
@@ -70,7 +74,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("rx", 4)
       .attr("ry", 4)
 
-    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.bar")
+    @transition.selectAll(".#{@_nameToId()} rect." + className + ".bar")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("height", 6)
@@ -78,13 +82,13 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .attr("rx", 4)
       .attr("ry", 4)
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.label")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .text((d)->d.label)
-      .attr("transform", "translate(3 -2)")
+      .attr("transform", "translate(3, #{if @type is "normal" then -5 else -2})")
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
@@ -93,9 +97,9 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.valueFormat i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()-40} -2)")
+      .attr("transform", "translate(#{@graph.width()-40}, #{if @type is "normal" then -5 else -2})")
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .tween("text", (d) ->
@@ -104,7 +108,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
           @textContent = _this.changeFormat i(t)
       )
       .attr("text-anchor", "end")
-      .attr("transform", "translate(#{@graph.width()} -2)")
+      .attr("transform", "translate(#{@graph.width()}, #{if @type is "normal" then -5 else -2})")
 
     @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
@@ -118,31 +122,31 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
         else if d.change < 0 then "triangle-down"
       )
 
-    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.track")
+    @transition.selectAll(".#{@_nameToId()} rect." + className + ".track")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll(".#{@_nameToId()} rect.leaderboard.bar")
+    @transition.selectAll(".#{@_nameToId()} rect." + className + ".bar")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.label")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.value")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".value")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll(".#{@_nameToId()} text.leaderboard.change")
+    @transition.selectAll(".#{@_nameToId()} text." + className + ".change")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
@@ -152,7 +156,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
-      .attr("transform", (d,i)=> "translate(#{@graph.width()-10},"+(@_yOffset(d, i)-16)+")")
+      .attr("transform", (d, i) => "translate(#{@graph.width()-10}, #{(@_yOffset(d, i) - if @type is "normal" then 22 else 16)})")
 
   _xOffset: =>
 
