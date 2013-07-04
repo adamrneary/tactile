@@ -21,7 +21,6 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       d.lastData = @lastData?[i] or {barPosition: 0, change: 0, label: "", value: 0}
       d
 
-    console.log data
     @transition = transition if transition
     bars = @seriesCanvas().selectAll("g." + className + ".bars")
       .data(data)
