@@ -3,6 +3,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
   specificDefaults:
     format: d3.format("p")
+    tickCount: 5
     barHeight: 50
     margin:
       top: 5
@@ -13,6 +14,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
   initialize: =>
     @format = @series.format unless @series.format is undefined
     @margin = @series.margin unless @series.margin is undefined
+    @tickCount = @series.tickCount unless @series.tickCount is undefined
 
   render: (transition, transitionSpeed) ->
     @_checkData()
@@ -192,7 +194,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
 
       # append ticks
-      ticks = d3.select(@).selectAll("g.bullet.ticks").data([scal.ticks(8)])
+      ticks = d3.select(@).selectAll("g.bullet.ticks").data([scal.ticks(render.tickCount)])
       ticks.enter()
         .append("svg:g")
         .attr("class", "bullet ticks")
@@ -220,8 +222,8 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           .style("opacity", 1e-6)
           .remove()
       )
-      d3.select(@).selectAll("g.bullet.ticks line").data(scal.ticks(8))
-      d3.select(@).selectAll("g.bullet.ticks text").data(scal.ticks(8))
+      d3.select(@).selectAll("g.bullet.ticks line").data(scal.ticks(render.tickCount))
+      d3.select(@).selectAll("g.bullet.ticks text").data(scal.ticks(render.tickCount))
 
       # draw ticks
       render.seriesCanvas().selectAll(".#{render._nameToId()} g.bullet.ticks")
