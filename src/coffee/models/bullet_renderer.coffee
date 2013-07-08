@@ -244,7 +244,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .attr("y", render.barHeight/2 + 4)
         .attr("dy", "1em")
         .style("opacity", 1)
-        .text((d)-> d+"")
+        .text((d)-> render.format(d))
     )
 
 
