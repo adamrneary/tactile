@@ -574,9 +574,9 @@ class Tactile.Chart
       .attr('height', @outerHeight)
 
     # this is the canvas on which all data should be drawn
-    @vis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.inner-canvas')
+    @vis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.canvas')
       .attr("transform", "translate(#{@padding.left + @axisPadding.left},#{@padding.top + @axisPadding.top})")
-      .attr("class", "inner-canvas")
+      .attr("class", "canvas")
 
     # this is the canvas on which all draggable data should be drawn
     @draggableVis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.draggable-canvas')

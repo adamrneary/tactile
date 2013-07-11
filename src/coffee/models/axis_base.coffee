@@ -38,9 +38,9 @@ class Tactile.AxisBase
   handleBottomPadding: (destroy = false) ->
     return unless @horizontal
     if destroy
-      @graph.axisPadding.bottom -= 20
+      @graph.axisPadding.bottom -= 25
     else
-      @graph.axisPadding.bottom += 20
+      @graph.axisPadding.bottom += 25
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
