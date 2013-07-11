@@ -12,7 +12,8 @@ class Tactile.Chart
     'bullet': Tactile.BulletRenderer
 
   # default values
-  defaultPadding: {top: 30, right: 30, bottom: 30, left: 30}
+  defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
+  defaultAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -47,6 +48,8 @@ class Tactile.Chart
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @padding = _.defaults {}, args.padding, @defaultPadding
+    @axisPadding = _.defaults {}, args.axisPadding, @defaultAxisPadding
+
     @renderers = []
     @axesList = {}
     @gridList = {}
@@ -398,8 +401,8 @@ class Tactile.Chart
     @outerWidth = args.width || elWidth || @defaultWidth
     @outerHeight = args.height || elHeight || @defaultHeight
 
-    @innerWidth = @outerWidth - @padding.left - @padding.right
-    @innerHeight = @outerHeight - @padding.top - @padding.bottom
+    @innerWidth = @outerWidth - @padding.left - @padding.right - @axisPadding.left - @axisPadding.right
+    @innerHeight = @outerHeight - @padding.top - @padding.bottom - @axisPadding.top - @axisPadding.bottom
 
     @x?.range([0, @width()])
     @y?.range([@height(), 0])
@@ -571,13 +574,13 @@ class Tactile.Chart
       .attr('height', @outerHeight)
 
     # this is the canvas on which all data should be drawn
-    @vis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.inner-canvas')
-      .attr("transform", "translate(#{@padding.left},#{@padding.top})")
-      .attr("class", "inner-canvas")
+    @vis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.canvas')
+      .attr("transform", "translate(#{@padding.left + @axisPadding.left},#{@padding.top + @axisPadding.top})")
+      .attr("class", "canvas")
 
     # this is the canvas on which all draggable data should be drawn
     @draggableVis = @_findOrAppend(what: 'g', in: @svg, selector: 'g.draggable-canvas')
-      .attr("transform", "translate(#{@padding.left},#{@padding.top})")
+      .attr("transform", "translate(#{@padding.left + @axisPadding.left},#{@padding.top + @axisPadding.top})")
       .attr("class", "draggable-canvas")
 
     # Add the default clip path.
