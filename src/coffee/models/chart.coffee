@@ -12,7 +12,7 @@ class Tactile.Chart
     'bullet': Tactile.BulletRenderer
 
   # default values
-  defaultPadding: {top: 30, right: 30, bottom: 30, left: 30}
+  defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
