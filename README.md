@@ -1,6 +1,10 @@
 # Tactile
 Bad-ass interactive charts.
 
+## Installation
+
+    $ bower install git@github.com:activecell/tactile.git#0.x.x --save
+
 ## The five-minute setup.
 Check your system for local requirements (run until it passes!):
 
