@@ -879,6 +879,8 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
     this.unstack = false;
+    this.graph.setYFrame([NaN, NaN]);
+    this.graph.setY1Frame([NaN, NaN]);
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
@@ -887,6 +889,8 @@ Tactile.AreaRenderer = (function(_super) {
 
   AreaRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
     this.unstack = true;
+    this.graph.setYFrame([NaN, NaN]);
+    this.graph.setY1Frame([NaN, NaN]);
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
@@ -950,9 +954,11 @@ Tactile.AxisBase = (function() {
       return;
     }
     if (destroy) {
-      this.graph.padding.bottom -= 20;
+      this.graph.axisPadding.bottom -= 25;
+      this.graph.axisPadding.right -= 30;
     } else {
-      this.graph.padding.bottom += 20;
+      this.graph.axisPadding.bottom += 25;
+      this.graph.axisPadding.right += 30;
     }
     return this.graph.setSize({
       height: this.graph.outerHeight,
@@ -970,9 +976,13 @@ Tactile.AxisBase = (function() {
     }
     side = this.options.axis === 'y' ? 'left' : 'right';
     if (destroy) {
-      this.graph.padding[side] -= 35;
+      this.graph.axisPadding[side] -= 50;
+      this.graph.axisPadding.bottom -= 5;
+      this.graph.axisPadding.top -= 5;
     } else {
-      this.graph.padding[side] += 35;
+      this.graph.axisPadding[side] += 50;
+      this.graph.axisPadding.bottom += 5;
+      this.graph.axisPadding.top += 5;
     }
     return this.graph.setSize({
       height: this.graph.outerHeight,
@@ -1055,10 +1065,10 @@ Tactile.AxisLinear = (function(_super) {
     transition.select('.' + className).call(axis);
     this.g.selectAll("text").style("cursor", this.horizontal ? "ew-resize" : "ns-resize").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
     className = "" + this.options.axis + "-zero-line";
-    this.g = this.graph.vis.selectAll('.' + className).data([0]);
-    this.g.enter().append("g").attr("class", className);
+    this.g_zero = this.graph.vis.selectAll('.' + className).data([0]);
+    this.g_zero.enter().append("g").attr("class", className);
     domain = this.graph[this.options.axis].domain();
-    line = this.g.selectAll("line").data(this.showZeroLine && domain[0] < 0 && domain[1] > 0 ? [0] : []);
+    line = this.g_zero.selectAll("line").data(this.showZeroLine && domain[0] < 0 && domain[1] > 0 ? [0] : []);
     line.enter().append("svg:line");
     line.exit().remove();
     return transition.select('.' + className).selectAll("line").attr("x1", function(d) {
@@ -1129,6 +1139,11 @@ Tactile.AxisLinear = (function(_super) {
         });
       }
     }
+  };
+
+  AxisLinear.prototype.destroy = function() {
+    AxisLinear.__super__.destroy.apply(this, arguments);
+    return this.g_zero.remove();
   };
 
   return AxisLinear;
@@ -1267,6 +1282,7 @@ Tactile.BulletRenderer = (function(_super) {
 
   BulletRenderer.prototype.specificDefaults = {
     format: d3.format("p"),
+    tickCount: 5,
     barHeight: 50,
     margin: {
       top: 5,
@@ -1281,7 +1297,10 @@ Tactile.BulletRenderer = (function(_super) {
       this.format = this.series.format;
     }
     if (this.series.margin !== void 0) {
-      return this.margin = this.series.margin;
+      this.margin = this.series.margin;
+    }
+    if (this.series.tickCount !== void 0) {
+      return this.tickCount = this.series.tickCount;
     }
   };
 
@@ -1426,7 +1445,7 @@ Tactile.BulletRenderer = (function(_super) {
       }).attr("y1", 2).attr("y2", render.barHeight / 2 - 2).attr("stroke", function(d) {
         return d.color;
       }).attr("stroke-width", 2);
-      ticks = d3.select(this).selectAll("g.bullet.ticks").data([scal.ticks(8)]);
+      ticks = d3.select(this).selectAll("g.bullet.ticks").data([scal.ticks(render.tickCount)]);
       ticks.enter().append("svg:g").attr("class", "bullet ticks");
       curEl.selectAll("g.bullet.ticks").each(function(d, i) {
         var tick, tickEnter;
@@ -1442,8 +1461,8 @@ Tactile.BulletRenderer = (function(_super) {
         }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1e-6);
         return tick.exit().transition().duration(transitionSpeed).style("opacity", 1e-6).remove();
       });
-      d3.select(this).selectAll("g.bullet.ticks line").data(scal.ticks(8));
-      d3.select(this).selectAll("g.bullet.ticks text").data(scal.ticks(8));
+      d3.select(this).selectAll("g.bullet.ticks line").data(scal.ticks(render.tickCount));
+      d3.select(this).selectAll("g.bullet.ticks text").data(scal.ticks(render.tickCount));
       render.seriesCanvas().selectAll("." + (render._nameToId()) + " g.bullet.ticks").attr("transform", function(d, i) {
         return "translate(" + (render._xOffset(d, i)) + ", " + (render._yOffset(d, i)) + ")";
       });
@@ -1455,7 +1474,7 @@ Tactile.BulletRenderer = (function(_super) {
       return curEl.selectAll("." + (render._nameToId()) + " g.bullet.tick text").duration(transitionSpeed).attr("text-anchor", "middle").attr("x", function(d) {
         return scal(d);
       }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1).text(function(d) {
-        return d + "";
+        return render.format(d);
       });
     });
   };
@@ -1722,6 +1741,8 @@ Tactile.ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
     var _this = this;
     this.unstack = false;
+    this.graph.setYFrame([NaN, NaN]);
+    this.graph.setY1Frame([NaN, NaN]);
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
@@ -1748,6 +1769,8 @@ Tactile.ColumnRenderer = (function(_super) {
   ColumnRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
     var _this = this;
     this.unstack = true;
+    this.graph.setYFrame([NaN, NaN]);
+    this.graph.setY1Frame([NaN, NaN]);
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
@@ -2845,7 +2868,8 @@ Tactile.LeaderboardRenderer = (function(_super) {
   LeaderboardRenderer.prototype.specificDefaults = {
     changeFormat: d3.format("p"),
     valueFormat: d3.format("p"),
-    barHeight: 30
+    barHeight: 30,
+    type: "normal"
   };
 
   LeaderboardRenderer.prototype.initialize = function() {
@@ -2853,73 +2877,87 @@ Tactile.LeaderboardRenderer = (function(_super) {
       this.changeFormat = this.series.changeFormat;
     }
     if (this.series.valueFormat !== void 0) {
-      return this.valueFormat = this.series.valueFormat;
+      this.valueFormat = this.series.valueFormat;
+    }
+    if (this.series.type !== void 0) {
+      return this.type = this.series.type;
     }
   };
 
   LeaderboardRenderer.prototype.render = function(transition, transitionSpeed) {
-    var bars,
+    var bars, className, data,
       _this = this;
     this._checkData();
+    className = "leaderboard-" + this.type;
+    data = _.map(this.series.stack, function(d, i) {
+      var _ref1;
+      d.lastData = ((_ref1 = _this.lastData) != null ? _ref1[i] : void 0) || {
+        barPosition: 0,
+        change: 0,
+        label: "",
+        value: 0
+      };
+      return d;
+    });
     if (transition) {
       this.transition = transition;
     }
-    bars = this.seriesCanvas().selectAll("g.leaderboard.bars").data(this.series.stack);
-    bars.enter().append("svg:g").attr("class", "leaderboard bars");
+    bars = this.seriesCanvas().selectAll("g." + className + ".bars").data(data);
+    bars.enter().append("svg:g").attr("class", className + " bars");
     bars.exit().remove();
-    this.seriesCanvas().selectAll("g.leaderboard.bars").each(function(d, i) {
+    this.seriesCanvas().selectAll("g." + className + ".bars").each(function(d, i) {
       var bar, change, label, track, triangle, value;
-      track = d3.select(this).selectAll("rect.leaderboard.track").data([d]);
-      track.enter().append("svg:rect").attr("class", "leaderboard track");
+      track = d3.select(this).selectAll("rect." + className + ".track").data([d]);
+      track.enter().append("svg:rect").attr("class", className + " track");
       track.exit().remove();
-      bar = d3.select(this).selectAll("rect.leaderboard.bar").data([d]);
-      bar.enter().append("svg:rect").attr("class", "leaderboard bar");
+      bar = d3.select(this).selectAll("rect." + className + ".bar").data([d]);
+      bar.enter().append("svg:rect").attr("class", className + " bar");
       bar.exit().remove();
-      label = d3.select(this).selectAll("text.leaderboard.label").data([d]);
-      label.enter().append("text").attr("class", "leaderboard label");
+      label = d3.select(this).selectAll("text." + className + ".label").data([d]);
+      label.enter().append("text").attr("class", className + " label");
       label.exit().remove();
-      value = d3.select(this).selectAll("text.leaderboard.value").data([d]);
-      value.enter().append("text").attr("class", "leaderboard value");
+      value = d3.select(this).selectAll("text." + className + ".value").data([d]);
+      value.enter().append("text").attr("class", className + " value");
       value.exit().remove();
-      change = d3.select(this).selectAll("text.leaderboard.change").data([d]);
-      change.enter().append("text").attr("class", "leaderboard change");
+      change = d3.select(this).selectAll("text." + className + ".change").data([d]);
+      change.enter().append("text").attr("class", className + " change");
       change.exit().remove();
       triangle = d3.select(this).selectAll("path").data([d]);
       triangle.enter().append("svg:path");
       triangle.exit().remove();
       return triangle;
     });
-    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " rect.") + className + ".track").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("width", this.graph.width()).attr("height", 6).attr("rx", 4).attr("ry", 4);
-    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " rect.") + className + ".bar").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("height", 6).attr("width", function(d) {
       return _this.graph.width() * d.barPosition;
     }).attr("rx", 4).attr("ry", 4);
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).text(function(d) {
       return d.label;
-    }).attr("transform", "translate(3 -5)");
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
+    }).attr("transform", "translate(3, " + (this.type === "normal" ? -5 : -2) + ")");
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
-      var i;
-      i = d3.interpolate(this.textContent, d.value);
+      var i, _ref1;
+      i = d3.interpolate((_ref1 = d.lastData) != null ? _ref1.value : void 0, d.value);
       return function(t) {
         return this.textContent = _this.valueFormat(i(t));
       };
-    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 50) + " -5)");
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
+    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width() - 40) + ", " + (this.type === "normal" ? -5 : -2) + ")");
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".change").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).tween("text", function(d) {
-      var i;
-      i = d3.interpolate(this.textContent, d.change);
+      var i, _ref1;
+      i = d3.interpolate((_ref1 = d.lastData) != null ? _ref1.change : void 0, d.change);
       return function(t) {
         return this.textContent = _this.changeFormat(i(t));
       };
-    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + " -5)");
+    }).attr("text-anchor", "end").attr("transform", "translate(" + (this.graph.width()) + ", " + (this.type === "normal" ? -5 : -2) + ")");
     this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("d", d3.svg.symbol().size(18).type(function(d) {
@@ -2935,26 +2973,27 @@ Tactile.LeaderboardRenderer = (function(_super) {
         return "triangle-down";
       }
     });
-    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.track").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " rect.") + className + ".track").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("." + (this._nameToId()) + " rect.leaderboard.bar").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " rect.") + className + ".bar").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.label").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.value").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    this.transition.selectAll("." + (this._nameToId()) + " text.leaderboard.change").filter(function(d) {
+    this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".change").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-    return this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
+    this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("transform", function(d, i) {
-      return ("translate(" + (_this.graph.width() - 10) + ",") + (_this._yOffset(d, i) - 22) + ")";
+      return "translate(" + (_this.graph.width() - 10) + ", " + (_this._yOffset(d, i) - (_this.type === "normal" ? 22 : 16)) + ")";
     });
+    return this.lastData = this.series.stack;
   };
 
   LeaderboardRenderer.prototype._xOffset = function() {};
@@ -3459,10 +3498,17 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.defaultPadding = {
-    top: 30,
-    right: 30,
-    bottom: 30,
-    left: 30
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+  };
+
+  Chart.prototype.defaultAxisPadding = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
   };
 
   Chart.prototype.interpolation = 'monotone';
@@ -3546,6 +3592,7 @@ Tactile.Chart = (function() {
     this.setAvailableYFrame = __bind(this.setAvailableYFrame, this);
     this.setAvailableXFrame = __bind(this.setAvailableXFrame, this);
     this.padding = _.defaults({}, args.padding, this.defaultPadding);
+    this.axisPadding = _.defaults({}, args.axisPadding, this.defaultAxisPadding);
     this.renderers = [];
     this.axesList = {};
     this.gridList = {};
@@ -3757,7 +3804,7 @@ Tactile.Chart = (function() {
   };
 
   Chart.prototype.render = function(transitionSpeed, options) {
-    var t, zoom, _ref, _ref1,
+    var t, _ref, _ref1,
       _this = this;
     if (options == null) {
       options = {};
@@ -3792,32 +3839,7 @@ Tactile.Chart = (function() {
     _.each(this.gridList, function(grid) {
       return grid.render(t);
     });
-    this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
-    this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
-    zoom = d3.behavior.zoom();
-    d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup);
-    if (!this.autoScale) {
-      d3.select(this.svg[0][0]).call(zoom.x(this.x).y(this.y).on("zoom", function() {
-        var dy, dy1;
-        if (_this.autoScale) {
-          return;
-        }
-        dy = d3.event.translate[1] - _this._lastYTranslate;
-        dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
-        _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);
-        _this.y1.domain([_this.y1.domain()[0] * d3.event.scale, _this.y1.domain()[1] / d3.event.scale]);
-        _this._lastYTranslate = d3.event.translate[1];
-        _this._checkXDomain();
-        _this._checkYDomain();
-        _this._checkY1Domain();
-        _this.manipulateCallbacks.forEach(function(callback) {
-          return callback();
-        });
-        return _this.render(0, {
-          zooming: true
-        });
-      }));
-    }
+    this._setupZoom();
     this.timesRendered++;
     return this.updateCallbacks.forEach(function(callback) {
       return callback();
@@ -4010,8 +4032,8 @@ Tactile.Chart = (function() {
     elHeight = $(this._element).height();
     this.outerWidth = args.width || elWidth || this.defaultWidth;
     this.outerHeight = args.height || elHeight || this.defaultHeight;
-    this.innerWidth = this.outerWidth - this.padding.left - this.padding.right;
-    this.innerHeight = this.outerHeight - this.padding.top - this.padding.bottom;
+    this.innerWidth = this.outerWidth - this.padding.left - this.padding.right - this.axisPadding.left - this.axisPadding.right;
+    this.innerHeight = this.outerHeight - this.padding.top - this.padding.bottom - this.axisPadding.top - this.axisPadding.bottom;
     if ((_ref = this.x) != null) {
       _ref.range([0, this.width()]);
     }
@@ -4031,7 +4053,39 @@ Tactile.Chart = (function() {
       _ref5.attr('width', this.innerWidth).attr('height', this.innerHeight);
     }
     this._updateRange();
-    return this._setupCanvas();
+    this._setupCanvas();
+    return this;
+  };
+
+  Chart.prototype._setupZoom = function() {
+    var zoom,
+      _this = this;
+    this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
+    this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
+    zoom = d3.behavior.zoom();
+    d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup);
+    if (!this.autoScale) {
+      return d3.select(this.svg[0][0]).call(zoom.x(this.x).y(this.y).on("zoom", function() {
+        var dy, dy1;
+        if (_this.autoScale) {
+          return;
+        }
+        dy = d3.event.translate[1] - _this._lastYTranslate;
+        dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
+        _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);
+        _this.y1.domain([_this.y1.domain()[0] * d3.event.scale, _this.y1.domain()[1] / d3.event.scale]);
+        _this._lastYTranslate = d3.event.translate[1];
+        _this._checkXDomain();
+        _this._checkYDomain();
+        _this._checkY1Domain();
+        _this.manipulateCallbacks.forEach(function(callback) {
+          return callback();
+        });
+        return _this.render(0, {
+          zooming: true
+        });
+      }));
+    }
   };
 
   Chart.prototype._setupDomainAndRange = function() {
@@ -4118,6 +4172,7 @@ Tactile.Chart = (function() {
     _.each(this.renderersByType('donut'), function(r) {
       return r.stackTransition(t, transitionSpeed);
     });
+    this._setupZoom();
     return _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
@@ -4139,6 +4194,7 @@ Tactile.Chart = (function() {
     _.each(this.renderersByType('donut'), function(r) {
       return r.unstackTransition(t, transitionSpeed);
     });
+    this._setupZoom();
     return _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
@@ -4210,13 +4266,13 @@ Tactile.Chart = (function() {
     this.vis = this._findOrAppend({
       what: 'g',
       "in": this.svg,
-      selector: 'g.inner-canvas'
-    }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "inner-canvas");
+      selector: 'g.canvas'
+    }).attr("transform", "translate(" + (this.padding.left + this.axisPadding.left) + "," + (this.padding.top + this.axisPadding.top) + ")").attr("class", "canvas");
     this.draggableVis = this._findOrAppend({
       what: 'g',
       "in": this.svg,
       selector: 'g.draggable-canvas'
-    }).attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")").attr("class", "draggable-canvas");
+    }).attr("transform", "translate(" + (this.padding.left + this.axisPadding.left) + "," + (this.padding.top + this.axisPadding.top) + ")").attr("class", "draggable-canvas");
     clip = this._findOrAppend({
       what: 'clipPath',
       selector: '#clip',
