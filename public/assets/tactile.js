@@ -978,9 +978,11 @@ Tactile.AxisBase = (function() {
     if (destroy) {
       this.graph.axisPadding[side] -= 50;
       this.graph.axisPadding.bottom -= 5;
+      this.graph.axisPadding.top -= 5;
     } else {
       this.graph.axisPadding[side] += 50;
       this.graph.axisPadding.bottom += 5;
+      this.graph.axisPadding.top += 5;
     }
     return this.graph.setSize({
       height: this.graph.outerHeight,

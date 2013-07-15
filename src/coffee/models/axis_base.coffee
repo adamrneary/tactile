@@ -53,9 +53,11 @@ class Tactile.AxisBase
     if destroy
       @graph.axisPadding[side] -= 50
       @graph.axisPadding.bottom -= 5
+      @graph.axisPadding.top -= 5
     else
       @graph.axisPadding[side] += 50
       @graph.axisPadding.bottom += 5
+      @graph.axisPadding.top += 5
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
