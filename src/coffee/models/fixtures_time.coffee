@@ -98,4 +98,15 @@ class Tactile.FixturesTime
       rounded.setUTCSeconds 0
       rounded.setUTCMilliseconds 0
       return rounded.getTime()
+    if unit.name is "month"
+      nearFuture = new Date((time + unit.seconds - 1))
+      rounded = new Date(0)
+      rounded.setUTCFullYear nearFuture.getUTCFullYear()
+      rounded.setUTCMonth nearFuture.getMonth()
+      rounded.setUTCDate 1
+      rounded.setUTCHours 0
+      rounded.setUTCMinutes 0
+      rounded.setUTCSeconds 0
+      rounded.setUTCMilliseconds 0
+      return rounded.getTime()
     Math.ceil(time / unit.seconds) * unit.seconds
