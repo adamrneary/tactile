@@ -1223,22 +1223,20 @@ Tactile.AxisTime = (function(_super) {
   };
 
   AxisTime.prototype.tickOffsets = function() {
-    var count, domain, i, offsets, runningTick, tickValue, unit;
+    var domain, offsets, runningTick, tickValue, unit;
 
     domain = this.graph.x.domain();
     unit = this.fixedTimeUnit || this.appropriateTimeUnit();
-    count = Math.ceil((domain[1] - domain[0]) / unit.seconds);
-    runningTick = domain[0];
     offsets = [];
-    i = 0;
-    while (i <= count) {
-      tickValue = this.time.ceil(runningTick, unit);
-      runningTick = tickValue + unit.seconds / 2;
+    runningTick = domain[0];
+    tickValue = this.time.ceil(runningTick, unit);
+    while (tickValue <= domain[1]) {
       offsets.push({
         value: tickValue,
         unit: unit
       });
-      i++;
+      runningTick = tickValue + unit.seconds / 2;
+      tickValue = this.time.ceil(runningTick, unit);
     }
     return offsets;
   };
@@ -2743,6 +2741,18 @@ Tactile.Dragger = (function() {
       rounded = new Date(0);
       rounded.setUTCFullYear(nearFuture.getUTCFullYear());
       rounded.setUTCMonth(0);
+      rounded.setUTCDate(1);
+      rounded.setUTCHours(0);
+      rounded.setUTCMinutes(0);
+      rounded.setUTCSeconds(0);
+      rounded.setUTCMilliseconds(0);
+      return rounded.getTime();
+    }
+    if (unit.name === "month") {
+      nearFuture = new Date(time + unit.seconds - 1);
+      rounded = new Date(0);
+      rounded.setUTCFullYear(nearFuture.getUTCFullYear());
+      rounded.setUTCMonth(nearFuture.getMonth());
       rounded.setUTCDate(1);
       rounded.setUTCHours(0);
       rounded.setUTCMinutes(0);
