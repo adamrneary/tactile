@@ -10,8 +10,28 @@ class Tactile.Dragger
     @onDrag = @series.onDrag || ->
     @dragged = null
     @_bindMouseEvents()
-    # @power = Math.pow(10, (@series.sigfigs or 1))
+
+    # We need more documentation EVERYWHERE, but at least for this concept...
+    #
+    # Sigfigs stands for "significant figures."
+    #
+    # The idea within a dragger is that you shouldn't be able to arbitrarily
+    # drag a node anywhere along a continuous axis, expecting the user to
+    # differentiate between 4.5343928 and 4.5343929 (for example). In many
+    # cases, in fact, the data being modelled only makes sense as an integer.
+    #
+    # So, by default, we set sigfigs to 0 (meaning 0 decimal places), which
+    # constrains the user's drag destination to integers. If, however, the axis
+    # represents percentages, this will constrain to 0 or 100% (etc.). So in
+    # this case sigfigs = 4 would allow 14.52% (stored as 0.1452).
+    #
+    # In keeping with our "functor" strategery, the series can pass an integer
+    # or a function that returns an integer when applied to a data point passed
+    # as an argument.
+    sigfigs = @utils.ourFunctor(@series.sigfigs) ? 0
     @power = if @series.sigfigs? then Math.pow(10, @series.sigfigs) else 1
+
+
     @setSpeed = @renderer.transitionSpeed
     @timesRendered = 0
 
