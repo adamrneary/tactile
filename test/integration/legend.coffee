@@ -2,7 +2,7 @@
 
 scenario '#legend', 'legend chart', ->
   next 'renders example page', ->
-    @test.assertSelectorHasText '#example_header', 'Legend'
+    @test.assertSelectorHasText '#example_header', 'legend'
 
   next 'renders view', ->
     @test.assertExists 'div#example_view svg'
