@@ -15,6 +15,7 @@ Tactile.RendererBase = (function() {
     unstack: true,
     dotSize: 5,
     opacity: 1,
+    checkData: false,
     stroke: false,
     fill: false
   };
@@ -89,7 +90,9 @@ Tactile.RendererBase = (function() {
     var line,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (this.series.disabled) {
       this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]).remove();
       return;
@@ -668,10 +671,13 @@ d3.selection.prototype.tooltip = function(f) {
   };
 
   Utils.prototype.ourFunctor = function() {
-    if (typeof arguments[0] === 'function') {
-      return arguments[0].apply(null, _.toArray(arguments).slice(1));
-    } else {
-      return arguments[0];
+    switch (typeof arguments[0]) {
+      case void 0:
+        return void 0;
+      case 'function':
+        return arguments[0].apply(null, _.toArray(arguments).slice(1));
+      default:
+        return arguments[0];
     }
   };
 
@@ -1346,7 +1352,9 @@ Tactile.BulletRenderer = (function(_super) {
     var bars, oldData, render,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     ({
       width: this.margin.width - this.margin.left - this.margin.right,
       height: this.barHeight - this.margin.top - this.margin.bottom
@@ -1633,7 +1641,9 @@ Tactile.ColumnRenderer = (function(_super) {
     var circ, newCircs, nodes, _ref1, _ref2, _ref3,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (transition) {
       this.transition = transition;
     }
@@ -2029,7 +2039,9 @@ Tactile.DonutRenderer = (function(_super) {
   DonutRenderer.prototype.render = function(transition, transitionSpeed) {
     var _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     this._setOuterRadius();
     this._setInnerRadius();
     this._setStackedOuterRadius();
@@ -2797,7 +2809,9 @@ Tactile.GaugeRenderer = (function(_super) {
     var angleRange, lineData, maxAngle, minAngle, originTranslate, outerArc, plotAngle, plotValue, pointerHeadLength, pointerLine, pointerTailLength, pointerWidth, r, ringInset, ringWidth, scale, totalSizeDivide, translateHeight, translateWidth,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (transition) {
       this.transition = transition;
     }
@@ -3003,7 +3017,9 @@ Tactile.LeaderboardRenderer = (function(_super) {
     var bars, className, data,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     className = "leaderboard-" + this.type;
     data = _.map(this.series.stack, function(d, i) {
       var _ref1;
@@ -3201,7 +3217,9 @@ Tactile.LineRenderer = (function(_super) {
     var circ, newCircs, _ref1, _ref2,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (transition) {
       this.transition = transition;
     }
@@ -3369,7 +3387,9 @@ Tactile.ScatterRenderer = (function(_super) {
     var circ,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (transition) {
       this.transition = transition;
     }
@@ -3468,7 +3488,9 @@ Tactile.WaterfallRenderer = (function(_super) {
     var line, nodes, _ref1,
       _this = this;
 
-    this._checkData();
+    if (this.checkData) {
+      this._checkData();
+    }
     if (transition) {
       this.transition = transition;
     }

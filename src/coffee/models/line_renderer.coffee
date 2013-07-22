@@ -23,7 +23,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
 
   render: (transition)=>
-    @_checkData()
+    @_checkData() if @checkData
 
     @transition = transition if transition
     super(@transition)

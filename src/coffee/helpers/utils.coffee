@@ -36,10 +36,13 @@ class Tactile.Utils
   # function. If a function, it will apply the function to the data point in
   # order to return a string.
   ourFunctor: () ->
-    if typeof arguments[0] is 'function'
-      arguments[0].apply(null, _.toArray(arguments).slice(1))
-    else
-      arguments[0]
+    switch typeof arguments[0]
+      when undefined
+        undefined
+      when 'function'
+        arguments[0].apply(null, _.toArray(arguments).slice(1))
+      else
+        arguments[0]
 
   checkString: (str, strName, d) ->
     check = true

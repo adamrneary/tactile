@@ -6,7 +6,7 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     oldValueAngle: 0
 
   render: (transition, transitionSpeed)->
-    @_checkData()
+    @_checkData() if @checkData
     @transition = transition if transition
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
     ringInset = 0.300
