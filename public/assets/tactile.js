@@ -840,7 +840,9 @@ Tactile.AreaRenderer = (function(_super) {
     var circ, newCircs, stroke, _ref1, _ref2,
       _this = this;
 
-    this._checkData(this.series.stack);
+    if (this.checkData) {
+      this._checkData(this.series.stack);
+    }
     if (transition) {
       this.transition = transition;
     }
