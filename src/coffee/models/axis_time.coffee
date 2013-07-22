@@ -22,19 +22,19 @@ class Tactile.AxisTime extends Tactile.AxisBase
   tickOffsets: ->
     domain = @graph.x.domain()
     unit = @fixedTimeUnit or @appropriateTimeUnit()
-    count = Math.ceil((domain[1] - domain[0]) / unit.seconds)
-    runningTick = domain[0]
     offsets = []
-    i = 0
 
-    while i <= count
-      tickValue = @time.ceil(runningTick, unit)
-      runningTick = tickValue + unit.seconds / 2
+    runningTick = domain[0]
+    tickValue = @time.ceil(runningTick, unit)
+
+    while tickValue <= domain[1]
       offsets.push
         value: tickValue
         unit: unit
 
-      i++
+      runningTick = tickValue + unit.seconds / 2
+      tickValue = @time.ceil(runningTick, unit)
+
     offsets
 
   render: (transition)->
