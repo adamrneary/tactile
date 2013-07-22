@@ -11,12 +11,12 @@ class Tactile.RendererBase
     fill: false
 
   constructor: (options = {}) ->
+    @utils = new Tactile.Utils()
     @graph = options.graph
     @tension = options.tension or @tension
     @configure options
     # call constructor of inherited renderers
     @initialize?(options)
-    @utils = new Tactile.Utils()
 
   seriesPathFactory: ->
     #implement in subclass

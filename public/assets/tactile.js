@@ -26,13 +26,13 @@ Tactile.RendererBase = (function() {
     this._checkData = __bind(this._checkData, this);
     this._filterNaNs = __bind(this._filterNaNs, this);
     this.render = __bind(this.render, this);
+    this.utils = new Tactile.Utils();
     this.graph = options.graph;
     this.tension = options.tension || this.tension;
     this.configure(options);
     if (typeof this.initialize === "function") {
       this.initialize(options);
     }
-    this.utils = new Tactile.Utils();
   }
 
   RendererBase.prototype.seriesPathFactory = function() {};
@@ -941,8 +941,8 @@ Tactile.AxisBase = (function() {
     this._mouseUp = __bind(this._mouseUp, this);
     this._axisDrag = __bind(this._axisDrag, this);
     this._mouseMove = __bind(this._mouseMove, this);
-    this.graph = options.graph;
     this.utils = new Tactile.Utils();
+    this.graph = options.graph;
     this.ticksTreatment = options.ticksTreatment || "plain";
     this.frame = options.frame;
     this.marginForBottomTicks = 10;
@@ -2466,10 +2466,7 @@ Tactile.Dragger = (function() {
     this.update = __bind(this.update, this);
     this._mouseUp = __bind(this._mouseUp, this);
     this._mouseMove = __bind(this._mouseMove, this);
-    this._datapointDrag = __bind(this._datapointDrag, this);
-    var sigfigs, _ref;
-
-    this.renderer = args.renderer;
+    this._datapointDrag = __bind(this._datapointDrag, this);    this.renderer = args.renderer;
     this.graph = this.renderer.graph;
     this.series = this.renderer.series;
     this.drawCircles = args.circles || false;
@@ -2477,14 +2474,20 @@ Tactile.Dragger = (function() {
     this.onDrag = this.series.onDrag || function() {};
     this.dragged = null;
     this._bindMouseEvents();
-    sigfigs = (_ref = this.utils.ourFunctor(this.series.sigfigs)) != null ? _ref : 0;
-    this.power = this.series.sigfigs != null ? Math.pow(10, this.series.sigfigs) : 1;
+    this.power = this._calculateSigFigs();
     this.setSpeed = this.renderer.transitionSpeed;
     this.timesRendered = 0;
   }
 
   Dragger.prototype._bindMouseEvents = function() {
     return d3.select(this.graph._element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
+  };
+
+  Dragger.prototype._calculateSigFigs = function() {
+    var sigfigs, _ref;
+
+    sigfigs = (_ref = this.renderer.utils.ourFunctor(this.series.sigfigs)) != null ? _ref : 0;
+    return Math.pow(10, sigfigs);
   };
 
   Dragger.prototype.makeHandlers = function(nodes) {
@@ -3724,6 +3727,7 @@ Tactile.Chart = (function() {
     this.setAvailableY1Frame = __bind(this.setAvailableY1Frame, this);
     this.setAvailableYFrame = __bind(this.setAvailableYFrame, this);
     this.setAvailableXFrame = __bind(this.setAvailableXFrame, this);
+    this.utils = new Tactile.Utils();
     this.padding = _.defaults({}, args.padding, this.defaultPadding);
     this.axisPadding = _.defaults({}, args.axisPadding, this.defaultAxisPadding);
     this.renderers = [];
@@ -3735,7 +3739,6 @@ Tactile.Chart = (function() {
     this.manipulateCallbacks = [];
     this.elementChangeCallbacks = [];
     this.timesRendered = 0;
-    this.utils = new Tactile.Utils();
     this._setupDomainAndRange();
     this.setSize({
       width: args.width || this.defaultWidth,
