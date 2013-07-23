@@ -47,6 +47,7 @@ class Tactile.Chart
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
+    @utils = new Tactile.Utils()
     @padding = _.defaults {}, args.padding, @defaultPadding
     @axisPadding = _.defaults {}, args.axisPadding, @defaultAxisPadding
 
@@ -59,7 +60,6 @@ class Tactile.Chart
     @manipulateCallbacks = []
     @elementChangeCallbacks = []
     @timesRendered = 0
-    @utils = new Tactile.Utils()
 
     @_setupDomainAndRange()
 

@@ -35,7 +35,7 @@ There's so much good information in there! You'll learn so much! :-)
 
 ### Hacking on the code
 
-All code store in /src folder, that has a stucture:
+All code store in /src folder, that has a structure:
 
 * /src/coffee   - scripts
 * /src/scss     - styles

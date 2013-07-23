@@ -18,14 +18,14 @@ scenario '#line', 'line chart renders', ->
     @test.assertExists 'svg g.y-ticks'
 
   next 'SVG chart contains lines for enemies/friends', ->
-    @test.assertExists 'svg g#enemies'
-    @test.assertExists 'svg g#friends'
+    @test.assertExists 'svg g.enemies'
+    @test.assertExists 'svg g.friends'
 
   next 'svg and data corresponding', ->
-    @test.assertEval (() -> $('svg g#enemies circle').length is 9),
-      'SVG contains the same count of circles as the data'
-    @test.assertEval (() -> $('svg g#friends circle').length is 9),
-      'SVG contains the same count of circles as the data'
+    @test.assertEval (() -> $('svg g.enemies circle').length is 9),
+      'SVG contains the same count of enemies as the data'
+    @test.assertEval (() -> $('svg g.friends circle').length is 9),
+      'SVG contains the same count of friends as the data'
 
   pending 'tooltip popup'
   pending 'slider interval change'

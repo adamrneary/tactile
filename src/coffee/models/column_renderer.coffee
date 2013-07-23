@@ -16,7 +16,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @unstack = @series.unstack unless @series.unstack is undefined
 
   render: (transition)=>
-    @_checkData()
+    @_checkData() if @checkData
 
     @transition = transition if transition
     if (@series.disabled)

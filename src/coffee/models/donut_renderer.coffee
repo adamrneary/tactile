@@ -14,7 +14,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     @stackedIndex = @series.stackedIndex unless @series.stackedIndex is undefined
 
   render: (transition, transitionSpeed) =>
-    @_checkData()
+    @_checkData() if @checkData
 
     @_setOuterRadius()
     @_setInnerRadius()

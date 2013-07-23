@@ -6,17 +6,18 @@ class Tactile.RendererBase
     unstack: true
     dotSize: 5
     opacity: 1
+    checkData: false
 
     stroke: false
     fill: false
 
   constructor: (options = {}) ->
+    @utils = new Tactile.Utils()
     @graph = options.graph
     @tension = options.tension or @tension
     @configure options
     # call constructor of inherited renderers
     @initialize?(options)
-    @utils = new Tactile.Utils()
 
   seriesPathFactory: ->
     #implement in subclass
@@ -58,8 +59,8 @@ class Tactile.RendererBase
   yFunction: ->
     @graph[@series.yAxis]
 
-  render: (transition)=>
-    @_checkData()
+  render: (transition) =>
+    @_checkData() if @checkData
 
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
@@ -142,7 +143,7 @@ class Tactile.RendererBase
         when "number" then !isNaN(d[attr]) and d[attr]?
         when "string" then d[attr]?
 
-  _checkData: ()=>
+  _checkData: =>
     data = @series.stack
     data.forEach((d, i) =>
       @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")

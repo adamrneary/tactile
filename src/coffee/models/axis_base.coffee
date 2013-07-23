@@ -1,7 +1,7 @@
 class Tactile.AxisBase
   constructor: (@options) ->
-    @graph = options.graph
     @utils = new Tactile.Utils()
+    @graph = options.graph
     @ticksTreatment = options.ticksTreatment or "plain"
     @frame = options.frame
 

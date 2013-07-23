@@ -5,8 +5,8 @@ class Tactile.ScatterRenderer extends Tactile.RendererBase
     fill: true
     stroke: false
 
-  render: (transition)->
-    @_checkData()
+  render: (transition) ->
+    @_checkData() if @checkData
     @transition = transition if transition
     circ = @seriesCanvas().selectAll('circle')
       .data(@series.stack)
