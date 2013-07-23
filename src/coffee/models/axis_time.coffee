@@ -22,6 +22,11 @@ class Tactile.AxisTime extends Tactile.AxisBase
   tickOffsets: ->
     domain = @graph.x.domain()
     unit = @fixedTimeUnit or @appropriateTimeUnit()
+
+    if unit.name is "month"
+      domain[0] -= 86400000
+      domain[1] += 86400000
+
     offsets = []
 
     runningTick = domain[0]
