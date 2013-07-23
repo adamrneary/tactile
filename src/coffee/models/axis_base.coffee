@@ -29,61 +29,61 @@ class Tactile.AxisBase
       new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain)
 
-      @graph.render(0, zooming: true)
+    @graph.render(0, zooming: true)
 
-      d3.event.preventDefault()
-      d3.event.stopPropagation()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
 
-      handleBottomPadding: (destroy = false) ->
-      return unless @horizontal
+  handleBottomPadding: (destroy = false) ->
+    return unless @horizontal
 
-      if destroy
+    if destroy
       @graph.axisPadding.left = 0
       @graph.axisPadding.right = 0
       @graph.axisPadding.bottom = 0
       @graph.axisPadding.top = 0
-      else
+    else
       @graph.axisPadding.bottom = 15 if @graph.axisPadding.bottom < 15
       @graph.axisPadding.right = 15 if @graph.axisPadding.right < 15
 
-      @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
+    @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
-      handleSidePadding: (destroy = false) ->
-      return if @horizontal
-      side = if @options.axis is 'y' then 'left' else 'right'
+  handleSidePadding: (destroy = false) ->
+    return if @horizontal
+    side = if @options.axis is 'y' then 'left' else 'right'
 
       # TODO: would be great if this could change according to the legth of the labels
-      if destroy
+    if destroy
       @graph.axisPadding.left = 0
       @graph.axisPadding.right = 0
       @graph.axisPadding.bottom = 0
       @graph.axisPadding.top = 0
-      else
+    else
       @graph.axisPadding[side] = 35 if (@graph.axisPadding[side] < 35 && side == "right")
       @graph.axisPadding[side] = 48 if (@graph.axisPadding[side] < 48 && side == "left")
       @graph.axisPadding.bottom = 5 if (@graph.axisPadding.bottom < 5)
       @graph.axisPadding.top = 5 if (@graph.axisPadding.bottom < 5)
 
-      @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
+    @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
 
-      _axisDrag: =>
-      p = d3.svg.mouse(@graph.svg.node())
-      @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
-      d3.event.preventDefault()
-      d3.event.stopPropagation()
+  _axisDrag: =>
+    p = d3.svg.mouse(@graph.svg.node())
+    @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
-      _mouseUp: =>
-      return if isNaN(@down)
-      @down = Math.NaN;
-      @graph.manipulateCallbacks.forEach (callback) ->
+  _mouseUp: =>
+    return if isNaN(@down)
+    @down = Math.NaN;
+    @graph.manipulateCallbacks.forEach (callback) ->
       callback()
-      d3.event.preventDefault()
-      d3.event.stopPropagation()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
-      destroy: ->
-      @handleBottomPadding(true)
-      @handleSidePadding(true)
-      @g.remove()
-      delete @graph.axesList[@options.axis]
+  destroy: ->
+    @handleBottomPadding(true)
+    @handleSidePadding(true)
+    @g.remove()
+    delete @graph.axesList[@options.axis]
