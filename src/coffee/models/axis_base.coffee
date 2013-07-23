@@ -37,27 +37,30 @@ class Tactile.AxisBase
 
   handleBottomPadding: (destroy = false) ->
     return unless @horizontal
+
     if destroy
-      @graph.axisPadding.bottom -= 25
+      @graph.axisPadding.bottom = 25
       @graph.axisPadding.right -= 30
     else
-      @graph.axisPadding.bottom += 25
-      @graph.axisPadding.right += 30
+      @graph.axisPadding.bottom = 15 if @graph.axisPadding.bottom < 15
+      @graph.axisPadding.right = 12 if @graph.axisPadding.right < 12
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 
   handleSidePadding: (destroy = false) ->
     return if @horizontal
     side = if @options.axis is 'y' then 'left' else 'right'
-    # TODO: would be great if this could change according to the legth of the labels
+
+      # TODO: would be great if this could change according to the legth of the labels
     if destroy
+      console.log("destrpy")
       @graph.axisPadding[side] -= 50
       @graph.axisPadding.bottom -= 5
       @graph.axisPadding.top -= 5
     else
-      @graph.axisPadding[side] += 50
-      @graph.axisPadding.bottom += 5
-      @graph.axisPadding.top += 5
+      @graph.axisPadding[side] = 40 if (@graph.axisPadding[side] < 40 )
+      @graph.axisPadding.bottom = 5 if (@graph.axisPadding.bottom < 5)
+      @graph.axisPadding.top = 5 if (@graph.axisPadding.bottom < 5)
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
 

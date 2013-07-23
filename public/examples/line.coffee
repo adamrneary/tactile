@@ -45,7 +45,11 @@ tickFormat = (d) ->
   if d > 99 then "3000★" else "#{d*10}☢"
 
 chart = new Tactile.Chart()
-  .axes({x: {dimension: 'linear', tickFormat: tickFormat}, y: {dimension: "linear", tickFormat: tickFormat}})
+  .axes({
+    x: {dimension: 'linear', tickFormat: tickFormat},
+    y: {dimension: "linear", tickFormat: tickFormat},
+#    y1: {dimension: "linear", tickFormat: tickFormat}
+  })
   .element($("#example_view")[0])
   .setXFrame(frameVal)
   .data(data)
@@ -74,6 +78,22 @@ chart = new Tactile.Chart()
     dataTransform: (d) ->
       x: d.x
       y: d.z
+  ,
+    name: "friends"
+    dotSize: 2
+    renderer: "line"
+    sigfigs: 1
+    color: "#6060c0"
+    yAxis: 'y1'
+    isEditable: (d, i) ->
+      d.x == 2
+    afterDrag: (d, y, i, draggedSeries, graph) ->
+      graph.data()[i].z = y
+    tooltip: (d) ->
+      d.y + " friends"
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z + d.y
   ]
 
 chart.render()
