@@ -24,8 +24,8 @@ class Tactile.AxisTime extends Tactile.AxisBase
     unit = @fixedTimeUnit or @appropriateTimeUnit()
 
     if unit.name is "month"
-      domain[0] -= 86400000
-      domain[1] += 86400000
+      domain[0] -= 86400000*3
+      domain[1] += 86400000*3
 
     offsets = []
 
