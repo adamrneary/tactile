@@ -11,8 +11,8 @@ class Tactile.AxisLinear extends Tactile.AxisBase
     @tickValues = options.tickValues or null
 
     @showZeroLine = options.showZeroLine
-    @zeroLineColor = options.zeroLineColor or "#000000"
-    @zeroLineWidth = options.zeroLineWidth or 0.5
+    @zeroLineColor = options.zeroLineColor or "#231F20"
+    @zeroLineWidth = options.zeroLineWidth or 1
 
     @_setupForOrientation()
 
