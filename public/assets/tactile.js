@@ -992,11 +992,17 @@ Tactile.AxisBase = (function() {
       return;
     }
     if (destroy) {
-      this.graph.axisPadding.bottom -= 25;
-      this.graph.axisPadding.right -= 30;
+      this.graph.axisPadding.left = 0;
+      this.graph.axisPadding.right = 0;
+      this.graph.axisPadding.bottom = 0;
+      this.graph.axisPadding.top = 0;
     } else {
-      this.graph.axisPadding.bottom += 25;
-      this.graph.axisPadding.right += 30;
+      if (this.graph.axisPadding.bottom < 15) {
+        this.graph.axisPadding.bottom = 15;
+      }
+      if (this.graph.axisPadding.right < 15) {
+        this.graph.axisPadding.right = 15;
+      }
     }
     return this.graph.setSize({
       height: this.graph.outerHeight,
@@ -1015,13 +1021,23 @@ Tactile.AxisBase = (function() {
     }
     side = this.options.axis === 'y' ? 'left' : 'right';
     if (destroy) {
-      this.graph.axisPadding[side] -= 50;
-      this.graph.axisPadding.bottom -= 5;
-      this.graph.axisPadding.top -= 5;
+      this.graph.axisPadding.left = 0;
+      this.graph.axisPadding.right = 0;
+      this.graph.axisPadding.bottom = 0;
+      this.graph.axisPadding.top = 0;
     } else {
-      this.graph.axisPadding[side] += 50;
-      this.graph.axisPadding.bottom += 5;
-      this.graph.axisPadding.top += 5;
+      if (this.graph.axisPadding[side] < 35 && side === "right") {
+        this.graph.axisPadding[side] = 35;
+      }
+      if (this.graph.axisPadding[side] < 48 && side === "left") {
+        this.graph.axisPadding[side] = 48;
+      }
+      if (this.graph.axisPadding.bottom < 5) {
+        this.graph.axisPadding.bottom = 5;
+      }
+      if (this.graph.axisPadding.bottom < 5) {
+        this.graph.axisPadding.top = 5;
+      }
     }
     return this.graph.setSize({
       height: this.graph.outerHeight,
@@ -1088,8 +1104,8 @@ Tactile.AxisLinear = (function(_super) {
     };
     this.tickValues = options.tickValues || null;
     this.showZeroLine = options.showZeroLine;
-    this.zeroLineColor = options.zeroLineColor || "#000000";
-    this.zeroLineWidth = options.zeroLineWidth || 0.5;
+    this.zeroLineColor = options.zeroLineColor || "#231F20";
+    this.zeroLineWidth = options.zeroLineWidth || 1;
     this._setupForOrientation();
   }
 
@@ -1235,6 +1251,10 @@ Tactile.AxisTime = (function(_super) {
 
     domain = this.graph.x.domain();
     unit = this.fixedTimeUnit || this.appropriateTimeUnit();
+    if (unit.name === "month") {
+      domain[0] -= 86400000 * 3;
+      domain[1] += 86400000 * 3;
+    }
     offsets = [];
     runningTick = domain[0];
     tickValue = this.time.ceil(runningTick, unit);
