@@ -572,12 +572,12 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 .leaderboard-small {
   &.label {
     fill: $grey;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
   }
 
   &.value {
-    font-size: 20px;
+    font-size: 14px;
     fill: darken($grey, 40%);
     text-anchor: end;
     @include proxima-800();

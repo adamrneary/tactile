@@ -4,7 +4,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   specificDefaults:
     changeFormat: d3.format("p")
     valueFormat: d3.format("p")
-    barHeight: 30
+    barHeight: 15
     type: "normal"
 
   initialize: =>
