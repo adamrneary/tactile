@@ -70,10 +70,6 @@ class Tactile.Chart
     delete args.width if args.width?
     delete args.height if args.height?
 
-    # the remaining chart properties can be applied to the object directly
-    _.each args, (val, key) =>
-      @[key] = val
-
     # add series if passed in the constructor
     @addSeries(args.series, overwrite: true)
 
