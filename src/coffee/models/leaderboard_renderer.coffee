@@ -9,7 +9,6 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     labelLimit: Infinity
 
   initialize: =>
-    console.log "init leaderboard", @series
     @changeFormat = @series.changeFormat unless @series.changeFormat is undefined
     @valueFormat = @series.valueFormat unless @series.valueFormat is undefined
     @type = @series.type unless @series.type is undefined
