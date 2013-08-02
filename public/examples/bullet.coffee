@@ -128,6 +128,12 @@ chart = new Tactile.Chart(unstack: false)
       ranges: d.ranges
       measures: d.measures
       markers: d.markers
+    rangesTooltip: (d, i) ->
+      d.title+" range "+d.value
+    measuresTooltip: (d, i) ->
+      d.title+" measure "+d.value
+    markersTooltip: (d, i) ->
+      d.title+" marker "+d.value
 
 chart.render()
 
