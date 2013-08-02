@@ -168,6 +168,15 @@ class Tactile.Chart
     @y1.domain(y1Frame)
     @
 
+  resetXFrame: =>
+    @setXFrame([NaN, NaN])
+
+  resetYFrame: =>
+    @setYFrame([NaN, NaN])
+
+  resetY1Frame: =>
+    @setY1Frame([NaN, NaN])
+
 
   setAutoScale: (val) =>
     if val
