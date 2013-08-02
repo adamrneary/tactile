@@ -4,23 +4,29 @@ data = [
   ranges: [
     value: 150
     color: "#CCCCCC"
+    tooltip: "Revenue range1"
   ,
     value: 225
     color: "#DDDDDD"
+    tooltip: "Revenue range2"
   ,
     value: 350
     color: "#EEEEEE"
+    tooltip: "Revenue range3"
   ]
   measures: [
     value: 220
     color: "#4682B4"
+    tooltip: "Revenue measures1"
   ,
     value: 270
     color: "#B0C4DE"
+    tooltip: "Revenue measures2"
   ]
   markers: [
     value: 120
     color: "#FF3030"
+    tooltip: "Revenue markers"
   ]
 ,
   title: "Profit"

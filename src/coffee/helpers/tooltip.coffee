@@ -14,8 +14,6 @@ class Tactile.Tooltip
     Tooltip._spotlightMode
 
   constructor: (@el, @options) ->
-    #console.log  @options, '@options'
-    #console.log @el, '@el'
     @el = d3.select(@el)
     @annotate()
 
@@ -64,6 +62,12 @@ class Tactile.Tooltip
             center[1] = hoveredNode.bottom
           else
             center[1] = hoveredNode.top
+
+          if @options.placement is "right"
+            center[0] += hoveredNode.width / 2
+          if @options.placement is "left"
+            center[0] -= hoveredNode.width / 2
+
 
           if @options.graph.series[0].renderer is "donut"
             center[1] += (hoveredNode.height / 2 - 1)

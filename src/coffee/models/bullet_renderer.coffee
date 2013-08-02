@@ -249,6 +249,29 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .text((d)-> render.format(d))
     )
 
+    @seriesCanvas().selectAll(".bullet.range")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
+
+    @seriesCanvas().selectAll(".bullet.measure")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
+
+    @seriesCanvas().selectAll(".bullet.marker")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
 
   _xOffset: (d, i)=>
     @margin.left
