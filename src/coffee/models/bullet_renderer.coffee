@@ -61,12 +61,8 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         )
 
         # append ranges
-        rangesData = _.map d.ranges.slice(), (r) ->
-          r.title = d.title
-          r.subtitle = d.subtitle
-          r
-
-        rangesData.sort((a, b)->
+        rengesData = d.ranges.slice()
+        rengesData.sort((a, b)->
           if a.value > b.value
             -1
           else if a.value < b.value
@@ -74,7 +70,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           else
             0
         )
-        ranges = d3.select(@).selectAll("g.bullet.ranges").data([rangesData])
+        ranges = d3.select(@).selectAll("g.bullet.ranges").data([rengesData])
         ranges.enter()
           .append("svg:g")
           .attr("class", "bullet ranges")
@@ -88,11 +84,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         )
 
         # append measures
-        measuresData = _.map d.measures.slice(), (m) ->
-          m.title = d.title
-          m.subtitle = d.subtitle
-          m
-
+        measuresData = d.measures.slice()
         measuresData.sort((a, b)->
           if a.value > b.value
             -1
@@ -115,12 +107,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         )
 
         #append markers
-        markersData = _.map d.markers.slice(), (m) ->
-          m.title = d.title
-          m.subtitle = d.subtitle
-          m
-
-        markers = d3.select(@).selectAll("g.bullet.markers").data([markersData])
+        markers = d3.select(@).selectAll("g.bullet.markers").data([d.markers])
         markers.enter()
           .append("svg:g")
           .attr("class", "bullet markers")
@@ -262,31 +249,29 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         .text((d)-> render.format(d))
     )
 
-    # Add tooltips
-    if @series.rangesTooltip
-      @seriesCanvas().selectAll(".bullet.range")
-        .tooltip (d, i) =>
-          graph: @graph
-          text: @series.rangesTooltip(d, i)
-          gravity: "right"
-          placement: "right"
+    @seriesCanvas().selectAll(".bullet.range")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
 
-    if @series.measuresTooltip
-        @seriesCanvas().selectAll(".bullet.measure")
-        .tooltip (d, i) =>
-          graph: @graph
-          text: @series.measuresTooltip(d, i)
-          gravity: "right"
-          placement: "right"
+    @seriesCanvas().selectAll(".bullet.measure")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
 
-    if @series.markersTooltip
-        @seriesCanvas().selectAll(".bullet.marker")
-        .tooltip (d, i) =>
-          graph: @graph
-          text: @series.markersTooltip(d, i)
-          gravity: "right"
-          placement: "right"
-
+    @seriesCanvas().selectAll(".bullet.marker")
+      .filter((d, i) => d.tooltip)
+      .tooltip (d, i) =>
+        graph: @.graph
+        text: d.tooltip
+        gravity: "right"
+        placement: "right"
 
   _xOffset: (d, i)=>
     @margin.left
