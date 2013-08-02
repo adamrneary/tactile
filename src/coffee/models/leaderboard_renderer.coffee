@@ -4,13 +4,15 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
   specificDefaults:
     changeFormat: d3.format("p")
     valueFormat: d3.format("p")
-    barHeight: 30
+    barHeight: 15
     type: "normal"
+    labelLimit: Infinity
 
   initialize: =>
     @changeFormat = @series.changeFormat unless @series.changeFormat is undefined
     @valueFormat = @series.valueFormat unless @series.valueFormat is undefined
     @type = @series.type unless @series.type is undefined
+    @labelLimit = @series.labelLimit unless @series.labelLimit is undefined
 
   render: (transition, transitionSpeed)->
     @_checkData() if @checkData
@@ -89,7 +91,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     @transition.selectAll(".#{@_nameToId()} text." + className + ".label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
-      .text((d)->d.label)
+      .text((d) => if d.label.length > @labelLimit + 2 then d.label.slice(0, @labelLimit) + "..." else d.label)
       .attr("transform", "translate(3, #{if @type is "normal" then -5 else -2})")
 
     @transition.selectAll(".#{@_nameToId()} text." + className + ".value")
