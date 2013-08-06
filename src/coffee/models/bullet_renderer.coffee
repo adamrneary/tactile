@@ -28,6 +28,8 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     @series.stack.forEach((d, i) ->
         d.maxValue = d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value), d3.max(d.markers, (d) -> d.value)])
         d.maxValueOld = oldData[i]?.maxValue
+        d.minValue = d3.min([d3.min(d.ranges, (d) -> d.value), d3.min(d.measures, (d) -> d.value), d3.min(d.markers, (d) -> d.value)])
+        d.minValueOld = oldData[i]?.minValue
     )
 
     bars = @seriesCanvas().selectAll("g.bullet.bars")
@@ -63,9 +65,9 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         # append ranges
         rengesData = d.ranges.slice()
         rengesData.sort((a, b)->
-          if a.value > b.value
+          if Math.abs(a.value) > Math.abs(b.value)
             -1
-          else if a.value < b.value
+          else if Math.abs(a.value) < Math.abs(b.value)
             1
           else
             0
@@ -86,9 +88,9 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
         # append measures
         measuresData = d.measures.slice()
         measuresData.sort((a, b)->
-          if a.value > b.value
+          if Math.abs(a.value) > Math.abs(b.value)
             -1
-          else if a.value < b.value
+          else if Math.abs(a.value) < Math.abs(b.value)
             1
           else
             0
@@ -142,14 +144,30 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
     render = @
     @seriesCanvas().selectAll("g.bullet.bars").each((d, i) ->
-      scal = d3.scale.linear()
-        .domain([0, d.maxValue])
-        .range([0, render.graph.width() - render.margin.left - render.margin.right])
+      if d.minValue < 0 and d.maxValue < 0
+        scal = d3.scale.linear()
+          .domain([d.minValue, 0])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
-      scalOld = d3.scale.linear()
-        .domain([0, d.maxValueOld])
-        .range([0, render.graph.width() - render.margin.left - render.margin.right])
+        scalOld = d3.scale.linear()
+          .domain([d.minValueOld, 0])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
+      else if d.minValue > 0 and d.maxValue > 0
+        scal = d3.scale.linear()
+          .domain([0, d.maxValue])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
+        scalOld = d3.scale.linear()
+          .domain([0, d.maxValueOld])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
+      else
+        scal = d3.scale.linear()
+          .domain([d.minValue, d.maxValue])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
+
+        scalOld = d3.scale.linear()
+          .domain([d.minValueOld, d.maxValueOld])
+          .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
       element = @
       curEl = render.transition.selectAll(".#{render._nameToId()} g.bullet.bars")
@@ -162,8 +180,9 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
       curEl.selectAll(".#{render._nameToId()} rect.bullet.range")
         .filter((d) => render._filterNaNs(d, 'value', 'color'))
         .duration(transitionSpeed)
+        .attr("x", (d) => if d.value > 0 then scal(0) else scal(d.value))
         .attr("height", render.barHeight/2)
-        .attr("width", (d) => scal(d.value))
+        .attr("width", (d) => if d.value > 0  then scal(d.value) - scal(0) else scal(0) - scal(d.value))
         .attr("fill", (d) -> d.color)
 
       # draw measures
@@ -173,9 +192,10 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
       curEl.selectAll(".#{render._nameToId()} rect.bullet.measure")
         .filter((d) => render._filterNaNs(d, 'value', 'color'))
         .duration(transitionSpeed)
+        .attr("x", (d) => if d.value > 0 then scal(0) else scal(d.value))
         .attr("height", render.barHeight / 2 / 3)
         .attr("transform", "translate(0, #{render.barHeight / 2 / 3})")
-        .attr("width", (d) => scal(d.value))
+        .attr("width", (d) => if d.value > 0  then scal(d.value) - scal(0) else scal(0) - scal(d.value))
         .attr("fill", (d) -> d.color)
 
       # draw markers
