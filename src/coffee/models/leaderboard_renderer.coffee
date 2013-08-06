@@ -91,7 +91,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     @transition.selectAll(".#{@_nameToId()} text." + className + ".label")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
-      .text((d) => if d.label.length > @labelLimit + 2 then d.label.slice(0, @labelLimit) + "..." else d.label)
+      .text((d) => if d.label.length > @labelLimit + 2 then "#{d.label.slice(0, @labelLimit)}…" else d.label)
       .attr("transform", "translate(3, #{if @type is "normal" then -5 else -2})")
 
     @transition.selectAll(".#{@_nameToId()} text." + className + ".value")

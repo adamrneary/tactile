@@ -549,6 +549,12 @@ Tactile.SeriesSet = (function() {
           } else {
             center[1] = hoveredNode.top;
           }
+          if (_this.options.placement === "right") {
+            center[0] += hoveredNode.width / 2;
+          }
+          if (_this.options.placement === "left") {
+            center[0] -= hoveredNode.width / 2;
+          }
           if (_this.options.graph.series[0].renderer === "donut") {
             center[1] += hoveredNode.height / 2 - 1;
           }
@@ -1479,7 +1485,7 @@ Tactile.BulletRenderer = (function(_super) {
       return d.subtitle;
     }).attr("transform", "translate(3 -8)").attr("dy", "1em").attr("text-anchor", "end");
     render = this;
-    return this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
+    this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
       var curEl, element, scal, scalOld, ticks,
         _this = this;
 
@@ -1553,6 +1559,36 @@ Tactile.BulletRenderer = (function(_super) {
       }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1).text(function(d) {
         return render.format(d);
       });
+    });
+    this.seriesCanvas().selectAll(".bullet.range").filter(function(d, i) {
+      return d.tooltip;
+    }).tooltip(function(d, i) {
+      return {
+        graph: _this.graph,
+        text: d.tooltip,
+        gravity: "right",
+        placement: "right"
+      };
+    });
+    this.seriesCanvas().selectAll(".bullet.measure").filter(function(d, i) {
+      return d.tooltip;
+    }).tooltip(function(d, i) {
+      return {
+        graph: _this.graph,
+        text: d.tooltip,
+        gravity: "right",
+        placement: "right"
+      };
+    });
+    return this.seriesCanvas().selectAll(".bullet.marker").filter(function(d, i) {
+      return d.tooltip;
+    }).tooltip(function(d, i) {
+      return {
+        graph: _this.graph,
+        text: d.tooltip,
+        gravity: "right",
+        placement: "right"
+      };
     });
   };
 
@@ -2786,7 +2822,8 @@ Tactile.Dragger = (function() {
       return rounded.getTime();
     }
     if (unit.name === "month") {
-      nearFuture = new Date(time + unit.seconds - 1);
+      nearFuture = new Date(time);
+      nearFuture.setUTCMonth(nearFuture.getUTCMonth() + 1, 15);
       rounded = new Date(0);
       rounded.setUTCFullYear(nearFuture.getUTCFullYear());
       rounded.setUTCMonth(nearFuture.getMonth());
@@ -3019,8 +3056,9 @@ Tactile.LeaderboardRenderer = (function(_super) {
   LeaderboardRenderer.prototype.specificDefaults = {
     changeFormat: d3.format("p"),
     valueFormat: d3.format("p"),
-    barHeight: 30,
-    type: "normal"
+    barHeight: 15,
+    type: "normal",
+    labelLimit: Infinity
   };
 
   LeaderboardRenderer.prototype.initialize = function() {
@@ -3031,7 +3069,10 @@ Tactile.LeaderboardRenderer = (function(_super) {
       this.valueFormat = this.series.valueFormat;
     }
     if (this.series.type !== void 0) {
-      return this.type = this.series.type;
+      this.type = this.series.type;
+    }
+    if (this.series.labelLimit !== void 0) {
+      return this.labelLimit = this.series.labelLimit;
     }
   };
 
@@ -3094,7 +3135,11 @@ Tactile.LeaderboardRenderer = (function(_super) {
     this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).text(function(d) {
-      return d.label;
+      if (d.label.length > _this.labelLimit + 2) {
+        return "" + (d.label.slice(0, _this.labelLimit)) + "…";
+      } else {
+        return d.label;
+      }
     }).attr("transform", "translate(3, " + (this.type === "normal" ? -5 : -2) + ")");
     this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".value").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
@@ -3759,6 +3804,9 @@ Tactile.Chart = (function() {
     this.discoverRange = __bind(this.discoverRange, this);
     this.setPadding = __bind(this.setPadding, this);
     this.setAutoScale = __bind(this.setAutoScale, this);
+    this.resetY1Frame = __bind(this.resetY1Frame, this);
+    this.resetYFrame = __bind(this.resetYFrame, this);
+    this.resetXFrame = __bind(this.resetXFrame, this);
     this.setY1Frame = __bind(this.setY1Frame, this);
     this.setYFrame = __bind(this.setYFrame, this);
     this.setXFrame = __bind(this.setXFrame, this);
@@ -3914,6 +3962,18 @@ Tactile.Chart = (function() {
   Chart.prototype.setY1Frame = function(y1Frame) {
     this.y1.domain(y1Frame);
     return this;
+  };
+
+  Chart.prototype.resetXFrame = function() {
+    return this.setXFrame([NaN, NaN]);
+  };
+
+  Chart.prototype.resetYFrame = function() {
+    return this.setYFrame([NaN, NaN]);
+  };
+
+  Chart.prototype.resetY1Frame = function() {
+    return this.setY1Frame([NaN, NaN]);
   };
 
   Chart.prototype.setAutoScale = function(val) {
