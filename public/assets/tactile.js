@@ -1216,17 +1216,17 @@ Tactile.AxisTime = (function(_super) {
   };
 
   AxisTime.prototype.tickOffsets = function() {
-    var domain, offsets, runningTick, tickValue, unit;
+    var domain, domainMax, domainMin, offsets, runningTick, tickValue, unit;
     domain = this.graph.x.domain();
     unit = this.fixedTimeUnit || this.appropriateTimeUnit();
     if (unit.name === "month") {
-      domain[0] -= 86400000 * 3;
-      domain[1] += 86400000 * 3;
+      domainMin = domain[0] - 86400000 * 3;
+      domainMax = domain[1] + 86400000 * 3;
     }
     offsets = [];
-    runningTick = domain[0];
+    runningTick = domainMin;
     tickValue = this.time.ceil(runningTick, unit);
-    while (tickValue <= domain[1]) {
+    while (tickValue <= domainMax) {
       offsets.push({
         value: tickValue,
         unit: unit

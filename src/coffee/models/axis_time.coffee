@@ -24,15 +24,15 @@ class Tactile.AxisTime extends Tactile.AxisBase
     unit = @fixedTimeUnit or @appropriateTimeUnit()
 
     if unit.name is "month"
-      domain[0] -= 86400000*3
-      domain[1] += 86400000*3
+      domainMin = domain[0] - 86400000*3
+      domainMax = domain[1] + 86400000*3
 
     offsets = []
 
-    runningTick = domain[0]
+    runningTick = domainMin
     tickValue = @time.ceil(runningTick, unit)
 
-    while tickValue <= domain[1]
+    while tickValue <= domainMax
       offsets.push
         value: tickValue
         unit: unit
