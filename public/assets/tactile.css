@@ -394,9 +394,10 @@
   /* line 192 */
   .x-tick.align-start .title, .x-ticks.align-start .title {
     text-anchor: start; }
-  /* line 196 */
-  .x-tick.align-start .title, .x-ticks.align-start .title {
-    text-anchor: middle; }
+
+/* line 197 */
+.x-tick.small .title {
+  font-size: 10px; }
 
 /* line 201 */
 .x-tick.glow .title, .y-ticks.glow text {

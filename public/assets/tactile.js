@@ -1222,6 +1222,9 @@ Tactile.AxisTime = (function(_super) {
     if (unit.name === "month") {
       domainMin = domain[0] - 86400000 * 3;
       domainMax = domain[1] + 86400000 * 3;
+    } else {
+      domainMin = domain[0];
+      domainMax = domain[1];
     }
     offsets = [];
     runningTick = domainMin;
