@@ -1,5 +1,18 @@
-# Tactile
-Bad-ass interactive charts.
+# Tactile | _Bad-ass interactive charts._
+
+Tactile is a javascript charting library using D3. It is designed to be highly interactive.
+
+There are lots of js charting libraries emerging these days, and many of them are calling themselves "interactive," but few are actually interactive. Sure, if you update underlying data using an external UI control, and the chart is properly bound to that underlying data, the chart will re-render and thusly be "interactive."
+
+But even better is a library that allows the user to interact with the chart directly:
+
+* Drag columns, lines, or other chart series elements to update data
+* Manage data updates through agnostic callbacks
+* Drag the chart body to scroll laterally or -- optionally -- vertically
+* Drag the axes to scale them
+* Double-click the chart body to zoom in, and shift-double-click to zoom out
+
+This library achieves these goals and more, providing a platform for a truly rich user experience.
 
 ## Installation
 
