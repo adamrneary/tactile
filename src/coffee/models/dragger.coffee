@@ -72,7 +72,7 @@ class Tactile.Dragger
     # lock the tooltip on the dragged element
     return unless @renderer.utils.ourFunctor(@series.isEditable, d, i)
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
-    @dragged = {d: d, i: i, y: d.y, x: d.x}
+    @dragged = {d: d, i: i, y: d.y, x: d.x, y0: d.y0}
     @update()
     d3.event.preventDefault()
     d3.event.stopPropagation()
@@ -101,7 +101,10 @@ class Tactile.Dragger
       @renderer.transitionSpeed = 0
       inverted = @renderer.yFunction().invert(Math.max(0, Math.min(@graph.height(), p[1])))
       value = Math.round(inverted * @power) / @power
-      @dragged.y = value
+      if @renderer.unstack
+        @dragged.y = value
+      else
+        @dragged.y = value - @dragged.y0
       @onDrag(@dragged, @series, @graph)
       @update()
       d3.event.preventDefault()

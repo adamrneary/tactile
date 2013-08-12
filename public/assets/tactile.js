@@ -2545,7 +2545,8 @@ Tactile.Dragger = (function() {
       d: d,
       i: i,
       y: d.y,
-      x: d.x
+      x: d.x,
+      y0: d.y0
     };
     this.update();
     d3.event.preventDefault();
@@ -2569,7 +2570,11 @@ Tactile.Dragger = (function() {
       this.renderer.transitionSpeed = 0;
       inverted = this.renderer.yFunction().invert(Math.max(0, Math.min(this.graph.height(), p[1])));
       value = Math.round(inverted * this.power) / this.power;
-      this.dragged.y = value;
+      if (this.renderer.unstack) {
+        this.dragged.y = value;
+      } else {
+        this.dragged.y = value - this.dragged.y0;
+      }
       this.onDrag(this.dragged, this.series, this.graph);
       this.update();
       d3.event.preventDefault();
