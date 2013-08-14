@@ -44,7 +44,7 @@ class Tactile.AxisBase
       @graph.axisPadding.bottom = 0
       @graph.axisPadding.top = 0
     else
-      @graph.axisPadding.bottom = 15 if @graph.axisPadding.bottom < 15
+      @graph.axisPadding.bottom = 20 if @graph.axisPadding.bottom < 20
       @graph.axisPadding.right = 15 if @graph.axisPadding.right < 15
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
