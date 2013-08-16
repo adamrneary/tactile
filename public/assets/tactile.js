@@ -973,8 +973,8 @@ Tactile.AxisBase = (function() {
       this.graph.axisPadding.bottom = 0;
       this.graph.axisPadding.top = 0;
     } else {
-      if (this.graph.axisPadding.bottom < 15) {
-        this.graph.axisPadding.bottom = 15;
+      if (this.graph.axisPadding.bottom < 20) {
+        this.graph.axisPadding.bottom = 20;
       }
       if (this.graph.axisPadding.right < 15) {
         this.graph.axisPadding.right = 15;

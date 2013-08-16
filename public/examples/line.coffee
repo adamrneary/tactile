@@ -44,7 +44,7 @@ data = [
 tickFormat = (d) ->
   if d > 99 then "3000★" else "#{d*10}☢"
 
-chart = new Tactile.Chart()
+chart = new Tactile.Chart(padding: {top: 0, right: 0, bottom: 5, left: 0})
   .axes({
     x: {dimension: 'linear', tickFormat: tickFormat},
     y: {dimension: "linear", tickFormat: tickFormat},
