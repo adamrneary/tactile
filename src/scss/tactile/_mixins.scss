@@ -288,19 +288,19 @@
 
 @mixin base-font() {
   color: $dark-grey;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-size: 12px;
   //text-transform: lowercase;
 }
 
 @mixin proxima-bold() {
-  font-family: 'ProximaNova', sans-serif;
+  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: bold;
   text-transform: uppercase;
 }
 
 @mixin proxima-800() {
-  font-family: 'ProximaNova', sans-serif;
+  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: 800;
   text-transform: uppercase;
 }

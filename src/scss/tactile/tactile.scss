@@ -642,7 +642,8 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 
 /*Bullet*/
 .bullet {
-  font: 10px sans-serif;
+  font-size: 10px;
+  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   &.title {
     font-size: 14px;
     font-weight: bold;
