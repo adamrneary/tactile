@@ -1003,8 +1003,8 @@ Tactile.AxisBase = (function() {
       this.graph.axisPadding.bottom = 0;
       this.graph.axisPadding.top = 0;
     } else {
-      if (this.graph.axisPadding.bottom < 15) {
-        this.graph.axisPadding.bottom = 15;
+      if (this.graph.axisPadding.bottom < 20) {
+        this.graph.axisPadding.bottom = 20;
       }
       if (this.graph.axisPadding.right < 15) {
         this.graph.axisPadding.right = 15;
@@ -1253,18 +1253,21 @@ Tactile.AxisTime = (function(_super) {
   };
 
   AxisTime.prototype.tickOffsets = function() {
-    var domain, offsets, runningTick, tickValue, unit;
+    var domain, domainMax, domainMin, offsets, runningTick, tickValue, unit;
 
     domain = this.graph.x.domain();
     unit = this.fixedTimeUnit || this.appropriateTimeUnit();
     if (unit.name === "month") {
-      domain[0] -= 86400000 * 3;
-      domain[1] += 86400000 * 3;
+      domainMin = domain[0] - 86400000 * 3;
+      domainMax = domain[1] + 86400000 * 3;
+    } else {
+      domainMin = domain[0];
+      domainMax = domain[1];
     }
     offsets = [];
-    runningTick = domain[0];
+    runningTick = domainMin;
     tickValue = this.time.ceil(runningTick, unit);
-    while (tickValue <= domain[1]) {
+    while (tickValue <= domainMax) {
       offsets.push({
         value: tickValue,
         unit: unit
@@ -1392,7 +1395,7 @@ Tactile.BulletRenderer = (function(_super) {
     }
     oldData = this.seriesCanvas().selectAll("g.bullet.bars").data();
     this.series.stack.forEach(function(d, i) {
-      var _ref1;
+      var _ref1, _ref2;
 
       d.maxValue = d3.max([
         d3.max(d.ranges, function(d) {
@@ -1403,7 +1406,17 @@ Tactile.BulletRenderer = (function(_super) {
           return d.value;
         })
       ]);
-      return d.maxValueOld = (_ref1 = oldData[i]) != null ? _ref1.maxValue : void 0;
+      d.maxValueOld = (_ref1 = oldData[i]) != null ? _ref1.maxValue : void 0;
+      d.minValue = d3.min([
+        d3.min(d.ranges, function(d) {
+          return d.value;
+        }), d3.min(d.measures, function(d) {
+          return d.value;
+        }), d3.min(d.markers, function(d) {
+          return d.value;
+        })
+      ]);
+      return d.minValueOld = (_ref2 = oldData[i]) != null ? _ref2.minValue : void 0;
     });
     bars = this.seriesCanvas().selectAll("g.bullet.bars").data(this.series.stack);
     bars.enter().append("svg:g").attr("class", "bullet bars");
@@ -1425,9 +1438,9 @@ Tactile.BulletRenderer = (function(_super) {
       });
       rengesData = d.ranges.slice();
       rengesData.sort(function(a, b) {
-        if (a.value > b.value) {
+        if (Math.abs(a.value) > Math.abs(b.value)) {
           return -1;
-        } else if (a.value < b.value) {
+        } else if (Math.abs(a.value) < Math.abs(b.value)) {
           return 1;
         } else {
           return 0;
@@ -1444,9 +1457,9 @@ Tactile.BulletRenderer = (function(_super) {
       });
       measuresData = d.measures.slice();
       measuresData.sort(function(a, b) {
-        if (a.value > b.value) {
+        if (Math.abs(a.value) > Math.abs(b.value)) {
           return -1;
-        } else if (a.value < b.value) {
+        } else if (Math.abs(a.value) < Math.abs(b.value)) {
           return 1;
         } else {
           return 0;
@@ -1489,8 +1502,16 @@ Tactile.BulletRenderer = (function(_super) {
       var curEl, element, scal, scalOld, ticks,
         _this = this;
 
-      scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
-      scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      if (d.minValue < 0 && d.maxValue < 0) {
+        scal = d3.scale.linear().domain([d.minValue, 0]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+        scalOld = d3.scale.linear().domain([d.minValueOld, 0]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      } else if (d.minValue > 0 && d.maxValue > 0) {
+        scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+        scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      } else {
+        scal = d3.scale.linear().domain([d.minValue, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+        scalOld = d3.scale.linear().domain([d.minValueOld, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
+      }
       element = this;
       curEl = render.transition.selectAll("." + (render._nameToId()) + " g.bullet.bars").filter(function() {
         return this === element;
@@ -1500,8 +1521,18 @@ Tactile.BulletRenderer = (function(_super) {
       });
       curEl.selectAll("." + (render._nameToId()) + " rect.bullet.range").filter(function(d) {
         return render._filterNaNs(d, 'value', 'color');
-      }).duration(transitionSpeed).attr("height", render.barHeight / 2).attr("width", function(d) {
-        return scal(d.value);
+      }).duration(transitionSpeed).attr("x", function(d) {
+        if (d.value > 0) {
+          return scal(0);
+        } else {
+          return scal(d.value);
+        }
+      }).attr("height", render.barHeight / 2).attr("width", function(d) {
+        if (d.value > 0) {
+          return scal(d.value) - scal(0);
+        } else {
+          return scal(0) - scal(d.value);
+        }
       }).attr("fill", function(d) {
         return d.color;
       });
@@ -1510,8 +1541,18 @@ Tactile.BulletRenderer = (function(_super) {
       });
       curEl.selectAll("." + (render._nameToId()) + " rect.bullet.measure").filter(function(d) {
         return render._filterNaNs(d, 'value', 'color');
-      }).duration(transitionSpeed).attr("height", render.barHeight / 2 / 3).attr("transform", "translate(0, " + (render.barHeight / 2 / 3) + ")").attr("width", function(d) {
-        return scal(d.value);
+      }).duration(transitionSpeed).attr("x", function(d) {
+        if (d.value > 0) {
+          return scal(0);
+        } else {
+          return scal(d.value);
+        }
+      }).attr("height", render.barHeight / 2 / 3).attr("transform", "translate(0, " + (render.barHeight / 2 / 3) + ")").attr("width", function(d) {
+        if (d.value > 0) {
+          return scal(d.value) - scal(0);
+        } else {
+          return scal(0) - scal(d.value);
+        }
       }).attr("fill", function(d) {
         return d.color;
       });
@@ -2593,7 +2634,8 @@ Tactile.Dragger = (function() {
       d: d,
       i: i,
       y: d.y,
-      x: d.x
+      x: d.x,
+      y0: d.y0
     };
     this.update();
     d3.event.preventDefault();
@@ -2618,7 +2660,11 @@ Tactile.Dragger = (function() {
       this.renderer.transitionSpeed = 0;
       inverted = this.renderer.yFunction().invert(Math.max(0, Math.min(this.graph.height(), p[1])));
       value = Math.round(inverted * this.power) / this.power;
-      this.dragged.y = value;
+      if (this.renderer.unstack) {
+        this.dragged.y = value;
+      } else {
+        this.dragged.y = value - this.dragged.y0;
+      }
       this.onDrag(this.dragged, this.series, this.graph);
       this.update();
       d3.event.preventDefault();
@@ -3785,8 +3831,6 @@ Tactile.Chart = (function() {
   Chart.prototype._lastYTranslate = 0;
 
   function Chart(args) {
-    var _this = this;
-
     if (args == null) {
       args = {};
     }
@@ -3842,9 +3886,6 @@ Tactile.Chart = (function() {
     if (args.height != null) {
       delete args.height;
     }
-    _.each(args, function(val, key) {
-      return _this[key] = val;
-    });
     this.addSeries(args.series, {
       overwrite: true
     });

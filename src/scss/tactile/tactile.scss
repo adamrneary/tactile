@@ -192,10 +192,10 @@
   &.align-start .title {
     text-anchor: start;
   }
+}
 
-  &.align-start .title {
-    text-anchor: middle;
-  }
+.x-tick.small .title {
+  font-size: 10px;
 }
 
 .x-tick.glow .title, .y-ticks.glow text {
