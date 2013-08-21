@@ -27,7 +27,7 @@ data = [
 ]
 
 
-chart = new Tactile.Chart()
+chart = new Tactile.Chart(padding: {top: 0, right: 0, bottom: 5, left: 0})
   .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})
   .element($("#example_view")[0])
   .data(data)

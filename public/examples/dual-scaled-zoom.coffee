@@ -37,7 +37,7 @@ data = [
   z: 100
 ]
 
-chart = new Tactile.Chart()
+chart = new Tactile.Chart(padding: {top: 0, right: 0, bottom: 5, left: 0})
   .element($("#example_view")[0])
   .data(data)
   .setAutoScale(false)
