@@ -48,6 +48,7 @@ chart = new Tactile.Chart(
     minXFrame: 3
     # set minimum possible Y range
     minYFrame: 200
+    padding: {top: 0, right: 0, bottom: 5, left: 0}
   )
 
   .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}})

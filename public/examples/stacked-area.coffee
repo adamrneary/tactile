@@ -37,7 +37,7 @@ data = [
   z: 490
 ]
 
-chart = new Tactile.Chart(unstack: false)
+chart = new Tactile.Chart(padding: {top: 0, right: 0, bottom: 5, left: 0}, unstack: false)
   .element($("#example_view")[0])
   .data(data)
   .setXFrame(frameVal)
