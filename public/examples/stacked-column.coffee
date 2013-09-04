@@ -14,8 +14,8 @@ data = [
   plan: 2
 ,
   period: new Date(2012,  3, 1).getTime()
-  actual: -7
-  plan: -3
+  actual: 7
+  plan: 3
 ,
   period: new Date(2012,  4, 1).getTime()
   actual: 6
