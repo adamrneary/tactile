@@ -61,7 +61,7 @@ class Tactile.AxisBase
       @graph.axisPadding.top = 0
     else
       @graph.axisPadding[side] = 35 if (@graph.axisPadding[side] < 35 && side == "right")
-      @graph.axisPadding[side] = 48 if (@graph.axisPadding[side] < 48 && side == "left")
+      @graph.axisPadding[side] = 55 if (@graph.axisPadding[side] < 55 && side == "left")
       @graph.axisPadding.bottom = 5 if (@graph.axisPadding.bottom < 5)
       @graph.axisPadding.top = 5 if (@graph.axisPadding.bottom < 5)
 
