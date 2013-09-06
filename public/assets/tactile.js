@@ -1035,8 +1035,8 @@ Tactile.AxisBase = (function() {
       if (this.graph.axisPadding[side] < 35 && side === "right") {
         this.graph.axisPadding[side] = 35;
       }
-      if (this.graph.axisPadding[side] < 48 && side === "left") {
-        this.graph.axisPadding[side] = 48;
+      if (this.graph.axisPadding[side] < 55 && side === "left") {
+        this.graph.axisPadding[side] = 55;
       }
       if (this.graph.axisPadding.bottom < 5) {
         this.graph.axisPadding.bottom = 5;

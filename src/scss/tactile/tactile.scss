@@ -13,7 +13,7 @@
 }
 
 #chart-container {
-  border: 1px solid #E6E6E6;
+  border: 1px solid $silver-grey-60;
   margin-top: 20px;
   position: relative;
   .uncategorized {
@@ -22,12 +22,12 @@
     right: 0;
     padding: 4px;
     z-index: 1;
-    border-left: 1px solid #E6E6E6;
-    border-bottom: 1px solid #E6E6E6;
+    border-left: 1px solid $silver-grey-60;
+    border-bottom: 1px solid $silver-grey-60;
     background: #fff;
   }
   .empty {
-    background: #F2F2F3;
+    background: $silver-grey-60;
     color: #9B9DA1;
     font-weight: bold;
     height: 150px;
@@ -73,13 +73,13 @@
   }
 
   path {
-    stroke: $primary;
+    stroke: $alloy-orange-30;
     stroke-width: 2;
   }
   rect {
     stroke-width: .3;
     stroke: white;
-    fill: $primary;
+    fill: $alloy-orange-30;
   }
 }
 
@@ -232,7 +232,7 @@
 
   &.yAxis {
     line, path {
-      stroke: $grey;
+      stroke: $silver-grey-30;
       stroke-width: 2px;
     }
 
@@ -293,7 +293,7 @@
         height: 6px;
         border-radius: 1em;
         box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2);
-        &.point-noise { background-color: $grey }
+        &.point-noise { background-color: $silver-grey-30 }
         &.point-dogs { background-color: $danger }
         &.point-sprouts { background-color: $info }
         &.point-stars { background-color: $success }
@@ -304,7 +304,7 @@
 
 .chart-legend {
   margin: 0 0 10px 10px;
-  color: $heading-black;
+  color: $silver-grey-10;
   overflow: hidden;
 
   .legend-item {
@@ -315,7 +315,7 @@
 
     &.off {
       .text {
-        color: #ccc;
+        color: $silver-grey-10;
       }
     }
 
@@ -331,7 +331,7 @@
       border-radius: 3px;
       width: 6px;
       height: 6px;
-      border: 1px solid #E6E6E6;
+      border: 1px solid $silver-grey-60;
       margin-right: 8px;
       margin-top: 5px;
     }
@@ -370,7 +370,7 @@
     border-radius: 3px;
     padding: 6px;
     opacity: 0.5;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $silver-grey-60;
     font-size: 12px;
     position: absolute;
     background: white;
@@ -495,7 +495,7 @@ rect.colorless {
 // LINE
 
 .ui-button {
-  border: 1px solid $grey;
+  border: 1px solid $silver-grey-30;
   padding: 5px;
 }
 
@@ -505,7 +505,7 @@ path {
   }
 
   &.sparkline {
-    stroke: $primary;
+    stroke: $alloy-orange-30;
     stroke-width: 1px;
     fill: none;
   }
@@ -526,20 +526,20 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 
 .leaderboard-normal {
   &.label {
-    fill: $grey;
+    fill: $silver-grey-10;
     font-size: 20px;
     font-weight: bold;
   }
 
   &.value {
     font-size: 27px;
-    fill: darken($grey, 40%);
+    fill: $silver-grey-10;
     text-anchor: end;
     @include proxima-800();
   }
 
   &.change {
-    fill: $grey;
+    fill: $silver-grey-40;
     font-size: 12px;
     @include proxima-bold();
   }
@@ -555,32 +555,32 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   }
 
   &.track {
-    fill: lighten($grey, 25%);
+    fill: $silver-grey-60;
     stroke: none;
   }
 
   &.bar {
-    fill: $primary;
+    fill: $alloy-orange-30;
     stroke: none;
   }
 }
 
 .leaderboard-small {
   &.label {
-    fill: $grey;
+    fill: $silver-grey-10;
     font-size: 15px;
     font-weight: bold;
   }
 
   &.value {
     font-size: 20px;
-    fill: darken($grey, 40%);
+    fill: $silver-grey-10;
     text-anchor: end;
     @include proxima-800();
   }
 
   &.change {
-    fill: $grey;
+    fill: $silver-grey-40;
     font-size: 10px;
     @include proxima-bold();
   }
@@ -596,12 +596,12 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   }
 
   &.track {
-    fill: lighten($grey, 25%);
+    fill: $silver-grey-60;
     stroke: none;
   }
 
   &.bar {
-    fill: $primary;
+    fill: $alloy-orange-30;
     stroke: none;
   }
 }
@@ -611,26 +611,26 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
 
 .gauge {
   &.arc {
-    fill: lighten($grey, 25%);
+    fill: $silver-grey-60;
   }
 
   &.arc-value {
-    fill: $primary;
+    fill: $alloy-orange-30;
   }
 
   &.pointer-circle {
-    fill: $lighter-grey;
-    stroke: $heading-grey;
+    fill: $silver-grey-60;
+    stroke: $silver-grey-10;
   }
 
   &.pointer, &.pointer-nail {
     stroke: none;
-    fill: darken($grey, 35%);
+    fill: $silver-grey-10;
   }
 
   &.label {
     font-size: 27px;
-    fill: darken($grey, 40%);
+    fill: $silver-grey-10;
     text-anchor: middle;
     @include proxima-800();
   }
@@ -643,11 +643,11 @@ div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
   &.title {
     font-size: 14px;
     font-weight: bold;
-    fill: darken($grey, 40%);
+    fill: $silver-grey-10;
   }
 
   &.subtitle {
-    fill: $grey;
+    fill: $silver-grey-30;
     font-size: 10px;
   }
 }

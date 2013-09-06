@@ -1,29 +1,3 @@
-// Primary palette
-$primary:         #30878F;
-$primary-light:   #DAE1E9;
-$primary-dark:    #00455B;
-$secondary:       #005568;
-$secondary-light: lighten($secondary, 10%);
-$secondary-dark:  #013144;
-$green:           #c4d33e;
-$light-green:     #B4d037;
-$dark-green:      #99B718;
-
-$black:         #231F20;
-$dark-grey:     lighten($black, 25%);
-$grey:          lighten($black, 50%);
-$light-grey:    lighten($black, 75%);
-$lighter-grey:  lighten($black, 85%);
-$white:         #fff;
-
-$heading-grey:  #BFBFBF;
-$heading-black: #404040;
-
-$link-color: #006B75;
-
-$plan: lighten($primary-light, 15%);
-$border-grey: #e6e6e6;
-
 // Chart palette
 $dark-blue-10: #0B3748;
 $dark-blue-20: #254E5D;
@@ -105,4 +79,4 @@ $danger-light:    #ffdacf; // sampled from air psd
 $info:            #19affe; // sampled from air psd
 $info-light:      #b8f6ff; // sampled from air psd
 $inverse:         $dark-grey-50;
-$inverse-light:   $light-grey;
+$inverse-light:   $silver-grey-60;
