@@ -139,7 +139,7 @@ class Tactile.RendererBase
     # http://www.w3schools.com/css/css_id_class.asp2
     # TODO: Do NOT start an ID name with a number! It will not work in Mozilla/Firefox.
     # TODO: Do NOT start a class name with a number! This is only supported in Internet Explorer.
-    name = "_#{name}" if /^\d/.test(name21)
+    name = "_#{name}" if /^\d/.test(name)
     name
 
   _filterNaNs: (d, args...) =>
