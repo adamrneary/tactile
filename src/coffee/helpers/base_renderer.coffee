@@ -128,14 +128,19 @@ class Tactile.RendererBase
     _.each options, (val, key) =>
       @[key] = val
 
-  delete: ->
+  delete: ->2
     @seriesCanvas()?.remove()
     @seriesDraggableCanvas()?.remove()
 
   _nameToId: ->
     #TODO: handle empty name
     @utils.checkString(@series.name, "series name")
-    @series.name?.replace(/[^\w]/g, '-').toLowerCase()
+    name = @series.name?.replace(/[^\w]/g, '-').toLowerCase()
+    # http://www.w3schools.com/css/css_id_class.asp2
+    # TODO: Do NOT start an ID name with a number! It will not work in Mozilla/Firefox.
+    # TODO: Do NOT start a class name with a number! This is only supported in Internet Explorer.
+    name = "_#{name}" if /^\d/.test(name21)
+    name
 
   _filterNaNs: (d, args...) =>
     _.all args, (attr) ->
