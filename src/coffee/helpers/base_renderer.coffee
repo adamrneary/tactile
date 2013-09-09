@@ -128,7 +128,7 @@ class Tactile.RendererBase
     _.each options, (val, key) =>
       @[key] = val
 
-  delete: ->2
+  delete: ->
     @seriesCanvas()?.remove()
     @seriesDraggableCanvas()?.remove()
 
