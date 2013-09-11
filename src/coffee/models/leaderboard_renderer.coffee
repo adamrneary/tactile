@@ -84,7 +84,9 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .duration(transitionSpeed / 2)
       .attr("height", 6)
-      .attr("width", (d)=>@graph.width()*d.barPosition)
+      .attr("width", (d) =>
+        width = @graph.width()*d.barPosition
+        if width < 0 then 0 else width)
       .attr("rx", 4)
       .attr("ry", 4)
 

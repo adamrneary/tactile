@@ -1344,7 +1344,7 @@ Tactile.BulletRenderer = (function(_super) {
   };
 
   BulletRenderer.prototype.render = function(transition, transitionSpeed) {
-    var bars, oldData, render,
+    var bars, render,
       _this = this;
     if (this.checkData) {
       this._checkData();
@@ -1356,9 +1356,7 @@ Tactile.BulletRenderer = (function(_super) {
     if (transition) {
       this.transition = transition;
     }
-    oldData = this.seriesCanvas().selectAll("g.bullet.bars").data();
     this.series.stack.forEach(function(d, i) {
-      var _ref1, _ref2;
       d.maxValue = d3.max([
         d3.max(d.ranges, function(d) {
           return d.value;
@@ -1368,8 +1366,7 @@ Tactile.BulletRenderer = (function(_super) {
           return d.value;
         })
       ]);
-      d.maxValueOld = (_ref1 = oldData[i]) != null ? _ref1.maxValue : void 0;
-      d.minValue = d3.min([
+      return d.minValue = d3.min([
         d3.min(d.ranges, function(d) {
           return d.value;
         }), d3.min(d.measures, function(d) {
@@ -1378,7 +1375,6 @@ Tactile.BulletRenderer = (function(_super) {
           return d.value;
         })
       ]);
-      return d.minValueOld = (_ref2 = oldData[i]) != null ? _ref2.minValue : void 0;
     });
     bars = this.seriesCanvas().selectAll("g.bullet.bars").data(this.series.stack);
     bars.enter().append("svg:g").attr("class", "bullet bars");
@@ -1456,17 +1452,14 @@ Tactile.BulletRenderer = (function(_super) {
     }).attr("transform", "translate(3 -8)").attr("dy", "1em").attr("text-anchor", "end");
     render = this;
     this.seriesCanvas().selectAll("g.bullet.bars").each(function(d, i) {
-      var curEl, element, scal, scalOld, ticks,
+      var curEl, element, scal, ticks,
         _this = this;
       if (d.minValue < 0 && d.maxValue < 0) {
         scal = d3.scale.linear().domain([d.minValue, 0]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
-        scalOld = d3.scale.linear().domain([d.minValueOld, 0]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       } else if (d.minValue > 0 && d.maxValue > 0) {
         scal = d3.scale.linear().domain([0, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
-        scalOld = d3.scale.linear().domain([0, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       } else {
         scal = d3.scale.linear().domain([d.minValue, d.maxValue]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
-        scalOld = d3.scale.linear().domain([d.minValueOld, d.maxValueOld]).range([0, render.graph.width() - render.margin.left - render.margin.right]);
       }
       element = this;
       curEl = render.transition.selectAll("." + (render._nameToId()) + " g.bullet.bars").filter(function() {
@@ -1531,12 +1524,12 @@ Tactile.BulletRenderer = (function(_super) {
         tick = d3.select(this).selectAll("g.bullet.tick").data(d);
         tickEnter = tick.enter().append("svg:g").attr("class", "bullet tick");
         tickEnter.append("svg:line").style("opacity", 1e-6).attr("y1", render.barHeight / 2).attr("y2", render.barHeight / 2 + 4).attr("x1", function(d) {
-          return scalOld(d);
+          return scal(d);
         }).attr("x2", function(d) {
-          return scalOld(d);
+          return scal(d);
         });
         tickEnter.append("text").attr("x", function(d) {
-          return scalOld(d);
+          return scal(d);
         }).attr("y", render.barHeight / 2 + 4).attr("dy", "1em").style("opacity", 1e-6);
         return tick.exit().transition().duration(transitionSpeed).style("opacity", 1e-6).remove();
       });
@@ -3078,7 +3071,13 @@ Tactile.LeaderboardRenderer = (function(_super) {
     this.transition.selectAll(("." + (this._nameToId()) + " rect.") + className + ".bar").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
     }).duration(transitionSpeed / 2).attr("height", 6).attr("width", function(d) {
-      return _this.graph.width() * d.barPosition;
+      var width;
+      width = _this.graph.width() * d.barPosition;
+      if (width < 0) {
+        return 0;
+      } else {
+        return width;
+      }
     }).attr("rx", 4).attr("ry", 4);
     this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".label").filter(function(d) {
       return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
@@ -3532,7 +3531,7 @@ Tactile.WaterfallRenderer = (function(_super) {
       if (i === 0) {
         return _this._barX(d, i) - _this._seriesBarWidth();
       } else {
-        stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x);
+        stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x) || 0;
         return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? stackWidthCur - _this._seriesBarWidth() * gapCount : 0) - _this._seriesBarWidth();
       }
     }).attr("y1", function(d) {

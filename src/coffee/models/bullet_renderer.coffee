@@ -24,12 +24,9 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
 
     @transition = transition if transition
 
-    oldData = @seriesCanvas().selectAll("g.bullet.bars").data()
     @series.stack.forEach((d, i) ->
         d.maxValue = d3.max([d3.max(d.ranges, (d) -> d.value), d3.max(d.measures, (d) -> d.value), d3.max(d.markers, (d) -> d.value)])
-        d.maxValueOld = oldData[i]?.maxValue
         d.minValue = d3.min([d3.min(d.ranges, (d) -> d.value), d3.min(d.measures, (d) -> d.value), d3.min(d.markers, (d) -> d.value)])
-        d.minValueOld = oldData[i]?.minValue
     )
 
     bars = @seriesCanvas().selectAll("g.bullet.bars")
@@ -149,24 +146,14 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           .domain([d.minValue, 0])
           .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
-        scalOld = d3.scale.linear()
-          .domain([d.minValueOld, 0])
-          .range([0, render.graph.width() - render.margin.left - render.margin.right])
       else if d.minValue > 0 and d.maxValue > 0
         scal = d3.scale.linear()
           .domain([0, d.maxValue])
           .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
-        scalOld = d3.scale.linear()
-          .domain([0, d.maxValueOld])
-          .range([0, render.graph.width() - render.margin.left - render.margin.right])
       else
         scal = d3.scale.linear()
           .domain([d.minValue, d.maxValue])
-          .range([0, render.graph.width() - render.margin.left - render.margin.right])
-
-        scalOld = d3.scale.linear()
-          .domain([d.minValueOld, d.maxValueOld])
           .range([0, render.graph.width() - render.margin.left - render.margin.right])
 
       element = @
@@ -228,11 +215,11 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
           .style("opacity", 1e-6)
           .attr("y1", render.barHeight/2)
           .attr("y2", render.barHeight/2 + 4)
-          .attr("x1", (d) -> scalOld(d))
-          .attr("x2", (d) -> scalOld(d))
+          .attr("x1", (d) -> scal(d))
+          .attr("x2", (d) -> scal(d))
 
         tickEnter.append("text")
-          .attr("x", (d) -> scalOld(d))
+          .attr("x", (d) -> scal(d))
           .attr("y", render.barHeight/2 + 4)
           .attr("dy", "1em")
           .style("opacity", 1e-6)
