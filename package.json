@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "coffee-script": "~1.6.2",
-    "showcase": "0.3.6",
+    "showcase": "https://github.com/activecell/showcase/tarball/grunt",
     "kss": "~0.3.6"
   },
   "devDependencies": {
