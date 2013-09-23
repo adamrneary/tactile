@@ -24,7 +24,6 @@ app.get '/styleguide', isAuth, (req, res) ->
     return res.send(500, err) if err
     res.render 'examples/styleguide',
       sections: getSections('tactile.scss', "#{__dirname}/views/sections", styleguide)
-
 app.start()
 
 # Generate docco documenation

@@ -12,15 +12,15 @@
     <link rel="stylesheet" href="vendor/test/mocha.css">
     <script src="vendor/test/chai.js"></script>
     <script src="vendor/test/mocha.js"></script>
-    <script src="testem.js"></script>
-    <script src="assets/tactile.js" data-cover></script>
+    <script src="/testem.js"></script>
+    <script src="assets/compiled/tactile.js" data-cover></script>
 
     <!-- Blanket -->
     <script src="vendor/test/blanket.js" data-cover-only="tactile"></script>
     <script>mocha.setup('bdd');</script>
 
     <!-- Include tests -->
-    <script src="assets/unit_tests.js"></script>
+    <script src="assets/compiled/unit_tests.js"></script>
   </head>
   <body>
     <div id="mocha"></div>

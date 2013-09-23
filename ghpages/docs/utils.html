@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>utils.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="base_renderer.html">
+                base_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="draggable_renderer.html">
+                draggable_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="series.html">
+                series.coffee
+              </a>
+            
+              
+              <a class="source" href="series_set.html">
+                series_set.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.coffee
+              </a>
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_base.html">
+                axis_base.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_linear.html">
+                axis_linear.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="bullet_renderer.html">
+                bullet_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="chart.html">
+                chart.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="grid.html">
+                grid.coffee
+              </a>
+            
+              
+              <a class="source" href="leaderboard_renderer.html">
+                leaderboard_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="waterfall_renderer.html">
+                waterfall_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>utils.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Utils</span></span>
+  <span class="property">@log</span>: (m) -&gt;
+    <span class="keyword">return</span> <span class="keyword">unless</span> Tactile.debug <span class="keyword">is</span> <span class="literal">true</span>
+    console.log m
+
+  <span class="property">@warn</span>: (m) -&gt;
+    <span class="keyword">return</span> <span class="keyword">unless</span> Tactile.debug <span class="keyword">is</span> <span class="literal">true</span>
+    console.warn m</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>A note about out &quot;Functor&quot; strategy:</p>
+<p>In order to create truly data-driven interactive charts, we want to be able
+to allow to not only configure charts in advance, but also to be able to
+configure charts using the data itself.</p>
+<p>To achieve this, we need to be able to pass functions to the same methods
+that we would pass static values. ourFunctor() provides a simple, reusable
+mechanism to support this. Quite simply, if the first argument is a static
+value, it returns it. If the first argument is a function, it applies any
+subsequent arguments to that function and returns the result</p>
+<p>similar in spirit to d3.functor()
+<a href="https://github.com/mbostock/d3/wiki/Internals">https://github.com/mbostock/d3/wiki/Internals</a></p>
+<p>Example:
+chartSeriesA =
+  name: &quot;Actual&quot;
+  tooltip: &quot;Actual&quot;</p>
+<p>chartSeriesB =
+  name: &quot;Actual&quot;
+  tooltip: (d) -&gt;
+    &quot;#{d.value} is fantastic!&quot;</p>
+<p>In the above example, you can see that tooltip accepts a string or a
+function. If a function, it will apply the function to the data point in
+order to return a string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  ourFunctor: () -&gt;
+    <span class="keyword">switch</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>]
+      <span class="keyword">when</span> <span class="literal">undefined</span>
+        <span class="literal">undefined</span>
+      <span class="keyword">when</span> <span class="string">'function'</span>
+        arguments[<span class="number">0</span>].apply(<span class="literal">null</span>, _.toArray(arguments).slice(<span class="number">1</span>))
+      <span class="keyword">else</span>
+        arguments[<span class="number">0</span>]
+
+  checkString: (str, strName, d) -&gt;
+    check = <span class="literal">true</span>
+
+    <span class="keyword">if</span> <span class="keyword">typeof</span> str <span class="keyword">isnt</span> <span class="string">"string"</span>
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{strName}</span>' invalid type: <span class="subst">#{str}</span>, string expected"</span>)
+      Tactile.Utils.log d <span class="keyword">if</span> d?
+      check = <span class="literal">false</span>
+    <span class="keyword">else</span> <span class="keyword">if</span> !$.trim(str)
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{strName}</span>' empty"</span>)
+      check = <span class="literal">false</span>
+
+    check
+
+  checkNumber: (num, numName, d) -&gt;
+    check = <span class="literal">true</span>
+
+    <span class="keyword">if</span> <span class="keyword">typeof</span> num <span class="keyword">isnt</span> <span class="string">"number"</span>
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{numName}</span>' invalid type: <span class="subst">#{num}</span>, number expected"</span>)
+      Tactile.Utils.log d <span class="keyword">if</span> d?
+      check = <span class="literal">false</span>
+
+    check
+
+  checkArray: (arr, arrName, d) -&gt;
+    check = <span class="literal">true</span>
+    <span class="keyword">if</span> !_.isArray(arr)
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{arrName}</span>' invalid type: <span class="subst">#{arr}</span>, array expected"</span>)
+      Tactile.Utils.log d <span class="keyword">if</span> d?
+      check = <span class="literal">false</span>
+
+    check
+
+  checkFunction: (func, funcName, d) -&gt;
+    check = <span class="literal">true</span>
+    <span class="keyword">if</span> !_.isFunction(func)
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{funcName}</span>' invalid type: <span class="subst">#{func}</span>, function expected"</span>)
+      Tactile.Utils.log d <span class="keyword">if</span> d?
+      check = <span class="literal">false</span>
+
+    check
+
+  checkObject: (obj, objName, d) -&gt;
+    check = <span class="literal">true</span>
+    <span class="keyword">if</span> <span class="keyword">typeof</span> str <span class="keyword">isnt</span> <span class="string">"object"</span>
+      Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{objName}</span>' invalid type: <span class="subst">#{obj}</span>, object expected"</span>)
+      Tactile.Utils.log d <span class="keyword">if</span> d?
+      check = <span class="literal">false</span>
+
+    check</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -116,7 +116,7 @@ prepareLinks = (route, el) ->
       $('body').append $("<script id='example_code'>#{source}</script>")
 
 $(document).ready ->
-  Tactile.debug = true
+  Tactile.debug = true;
   _.map cartesian, (route) ->
     prepareLinks route, $("#cartLinkList")
   _.map noncartesian, (route) ->
@@ -128,7 +128,7 @@ $(document).ready ->
 
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
-  Backbone.history.start()
+#  Backbone.history.start()
 
   showcase.navigate "/#line"  unless window.location.hash
 

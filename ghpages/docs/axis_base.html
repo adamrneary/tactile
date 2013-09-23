@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>axis_base.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="base_renderer.html">
+                base_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="draggable_renderer.html">
+                draggable_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="series.html">
+                series.coffee
+              </a>
+            
+              
+              <a class="source" href="series_set.html">
+                series_set.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.coffee
+              </a>
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_base.html">
+                axis_base.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_linear.html">
+                axis_linear.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="bullet_renderer.html">
+                bullet_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="chart.html">
+                chart.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="grid.html">
+                grid.coffee
+              </a>
+            
+              
+              <a class="source" href="leaderboard_renderer.html">
+                leaderboard_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="waterfall_renderer.html">
+                waterfall_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>axis_base.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AxisBase</span></span>
+  constructor: (<span class="property">@options</span>) -&gt;
+    <span class="property">@utils</span> = <span class="keyword">new</span> Tactile.Utils()
+    <span class="property">@graph</span> = options.graph
+    <span class="property">@ticksTreatment</span> = options.ticksTreatment <span class="keyword">or</span> <span class="string">"plain"</span>
+    <span class="property">@frame</span> = options.frame
+
+    <span class="property">@marginForBottomTicks</span> = <span class="number">10</span>
+
+    <span class="property">@handleBottomPadding</span>()
+    <span class="property">@handleSidePadding</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>TODO: this are almost identical across the axis classes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _mouseMove: =&gt;
+    <span class="keyword">return</span> <span class="keyword">if</span> isNaN(<span class="property">@down</span>)
+    p = d3.svg.mouse(<span class="property">@graph</span>.svg.node())
+    d3.select(<span class="string">"body"</span>).style(<span class="string">"cursor"</span>, <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="string">"ew-resize"</span> <span class="keyword">else</span> <span class="string">"ns-resize"</span>)
+    axis = <span class="property">@graph</span>[<span class="property">@options</span>.axis]
+
+    rup = axis.invert(<span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> p[<span class="number">0</span>] <span class="keyword">else</span> p[<span class="number">1</span>])
+    axis1 = axis.domain()[<span class="number">0</span>]
+    axis2 = axis.domain()[<span class="number">1</span>]
+    extent = axis2 - axis1
+
+    <span class="keyword">if</span> rup - axis1 <span class="keyword">isnt</span> <span class="number">0</span>
+      change = <span class="property">@down</span> / rup
+      new_domain = [axis1, axis1 + (extent * change)]
+      new_domain = [axis1, axis1 + extent*(<span class="property">@down</span> - axis1)/(rup - axis1)]
+      axis.domain(new_domain)
+
+    <span class="property">@graph</span>.render(<span class="number">0</span>, zooming: <span class="literal">true</span>)
+
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+
+  handleBottomPadding: (destroy = <span class="literal">false</span>) -&gt;
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@horizontal</span>
+
+    <span class="keyword">if</span> destroy
+      <span class="property">@graph</span>.axisPadding.left = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.right = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.top = <span class="number">0</span>
+    <span class="keyword">else</span>
+      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">20</span> <span class="keyword">if</span> <span class="property">@graph</span>.axisPadding.bottom &lt; <span class="number">20</span>
+      <span class="property">@graph</span>.axisPadding.right = <span class="number">15</span> <span class="keyword">if</span> <span class="property">@graph</span>.axisPadding.right &lt; <span class="number">15</span>
+
+    <span class="property">@graph</span>.setSize(height: <span class="property">@graph</span>.outerHeight, width: <span class="property">@graph</span>.outerWidth)
+
+  handleSidePadding: (destroy = <span class="literal">false</span>) -&gt;
+    <span class="keyword">return</span> <span class="keyword">if</span> <span class="property">@horizontal</span>
+    side = <span class="keyword">if</span> <span class="property">@options</span>.axis <span class="keyword">is</span> <span class="string">'y'</span> <span class="keyword">then</span> <span class="string">'left'</span> <span class="keyword">else</span> <span class="string">'right'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>TODO: would be great if this could change according to the legth of the labels</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> destroy
+      <span class="property">@graph</span>.axisPadding.left = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.right = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">0</span>
+      <span class="property">@graph</span>.axisPadding.top = <span class="number">0</span>
+    <span class="keyword">else</span>
+      <span class="property">@graph</span>.axisPadding[side] = <span class="number">35</span> <span class="keyword">if</span> (<span class="property">@graph</span>.axisPadding[side] &lt; <span class="number">35</span> &amp;&amp; side == <span class="string">"right"</span>)
+      <span class="property">@graph</span>.axisPadding[side] = <span class="number">55</span> <span class="keyword">if</span> (<span class="property">@graph</span>.axisPadding[side] &lt; <span class="number">55</span> &amp;&amp; side == <span class="string">"left"</span>)
+      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">5</span> <span class="keyword">if</span> (<span class="property">@graph</span>.axisPadding.bottom &lt; <span class="number">5</span>)
+      <span class="property">@graph</span>.axisPadding.top = <span class="number">5</span> <span class="keyword">if</span> (<span class="property">@graph</span>.axisPadding.bottom &lt; <span class="number">5</span>)
+
+    <span class="property">@graph</span>.setSize(height: <span class="property">@graph</span>.outerHeight, width: <span class="property">@graph</span>.outerWidth)
+
+
+  _axisDrag: =&gt;
+    p = d3.svg.mouse(<span class="property">@graph</span>.svg.node())
+    <span class="property">@down</span> = <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis].invert(p[<span class="number">0</span>]) <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis].invert(p[<span class="number">1</span>])
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  _mouseUp: =&gt;
+    <span class="keyword">return</span> <span class="keyword">if</span> isNaN(<span class="property">@down</span>)
+    <span class="property">@down</span> = Math.NaN;
+    <span class="property">@graph</span>.manipulateCallbacks.forEach (callback) -&gt;
+      callback()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  destroy: -&gt;
+    <span class="property">@handleBottomPadding</span>(<span class="literal">true</span>)
+    <span class="property">@handleSidePadding</span>(<span class="literal">true</span>)
+    <span class="property">@g</span>.remove()
+    <span class="keyword">delete</span> <span class="property">@graph</span>.axesList[<span class="property">@options</span>.axis]</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

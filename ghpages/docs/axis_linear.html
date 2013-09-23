@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>axis_linear.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="base_renderer.html">
+                base_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="draggable_renderer.html">
+                draggable_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="series.html">
+                series.coffee
+              </a>
+            
+              
+              <a class="source" href="series_set.html">
+                series_set.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.coffee
+              </a>
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_base.html">
+                axis_base.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_linear.html">
+                axis_linear.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="bullet_renderer.html">
+                bullet_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="chart.html">
+                chart.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="grid.html">
+                grid.coffee
+              </a>
+            
+              
+              <a class="source" href="leaderboard_renderer.html">
+                leaderboard_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="waterfall_renderer.html">
+                waterfall_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>axis_linear.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AxisLinear</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">AxisBase</span></span>
+  constructor: (options) -&gt;
+    options.axis ?= <span class="string">'x'</span>
+    <span class="property">@horizontal</span> = options.axis == <span class="string">'x'</span>
+    <span class="keyword">super</span>
+
+    <span class="property">@_checkOptions</span>()
+    <span class="property">@tickSize</span> = options.tickSize <span class="keyword">or</span> <span class="number">2</span>
+    <span class="property">@ticks</span> = options.ticks
+    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> (d) -&gt; d
+    <span class="property">@tickValues</span> = options.tickValues <span class="keyword">or</span> <span class="literal">null</span>
+
+    <span class="property">@showZeroLine</span> = options.showZeroLine
+    <span class="property">@zeroLineColor</span> = options.zeroLineColor <span class="keyword">or</span> <span class="string">"#231F20"</span>
+    <span class="property">@zeroLineWidth</span> = options.zeroLineWidth <span class="keyword">or</span> <span class="number">1</span>
+
+    <span class="property">@_setupForOrientation</span>()
+
+  render: (transition) -&gt;
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis]?
+    className = <span class="string">"<span class="subst">#{@options.axis}</span>-ticks"</span>
+    <span class="property">@g</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
+    <span class="property">@g</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, [className, <span class="property">@ticksTreatment</span>].join(<span class="string">" "</span>))
+
+    <span class="property">@g</span>.attr(<span class="string">"transform"</span>, <span class="property">@translateString</span>)
+
+    axis = d3.svg.axis()
+      .scale(<span class="property">@graph</span>[<span class="property">@options</span>.axis])
+      .orient(<span class="property">@orientation</span>)
+      .tickFormat(<span class="property">@tickFormat</span>)
+      .ticks(<span class="property">@ticks</span>)
+      .tickSubdivide(<span class="number">0</span>)
+      .tickSize(<span class="property">@tickSize</span>)
+      .tickValues(<span class="property">@tickValues</span>);
+
+    transition.select(<span class="string">'.'</span> + className).call(axis)
+
+    <span class="property">@g</span>.selectAll(<span class="string">"text"</span>)
+      .style(<span class="string">"cursor"</span>, <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="string">"ew-resize"</span> <span class="keyword">else</span> <span class="string">"ns-resize"</span>)
+      .<span class="literal">on</span>(<span class="string">"mousedown.drag"</span>,  <span class="property">@_axisDrag</span>)
+      .<span class="literal">on</span>(<span class="string">"touchstart.drag"</span>, <span class="property">@_axisDrag</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>if needed add the zero line</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    className = <span class="string">"<span class="subst">#{@options.axis}</span>-zero-line"</span>
+    <span class="property">@g_zero</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
+    <span class="property">@g_zero</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, className)
+
+    domain = <span class="property">@graph</span>[<span class="property">@options</span>.axis].domain()
+
+    line = <span class="property">@g_zero</span>.selectAll(<span class="string">"line"</span>).data(<span class="keyword">if</span> <span class="property">@showZeroLine</span> <span class="keyword">and</span> domain[<span class="number">0</span>] &lt; <span class="number">0</span> <span class="keyword">and</span> domain[<span class="number">1</span>] &gt; <span class="number">0</span> <span class="keyword">then</span> [<span class="number">0</span>] <span class="keyword">else</span> [])
+    line.enter()
+      .append(<span class="string">"svg:line"</span>)
+
+    line.exit().remove()
+
+    transition.select(<span class="string">'.'</span> + className).selectAll(<span class="string">"line"</span>)
+      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="number">0</span>)
+      .attr(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="property">@graph</span>.width())
+      .attr(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))
+      .attr(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.height() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))
+      .attr(<span class="string">"stroke"</span>, <span class="property">@zeroLineColor</span>)
+      .attr(<span class="string">"stroke-width"</span>, <span class="property">@zeroLineWidth</span>)
+
+  _setupForOrientation: -&gt;
+    pixelsPerTick = <span class="property">@options</span>.pixelsPerTick <span class="keyword">or</span> <span class="number">75</span>
+    <span class="keyword">if</span> <span class="property">@horizontal</span>
+      <span class="property">@orientation</span> = <span class="string">'bottom'</span>
+      <span class="property">@ticks</span> ?= Math.floor(<span class="property">@graph</span>.width() / pixelsPerTick)
+      <span class="property">@translateString</span> = <span class="string">"translate(0, <span class="subst">#{(@graph.height() + @marginForBottomTicks)}</span>)"</span>
+    <span class="keyword">else</span>
+      <span class="keyword">if</span> <span class="property">@options</span>.axis == <span class="string">'y'</span>
+        <span class="property">@orientation</span> = <span class="string">'left'</span>
+        <span class="property">@translateString</span> = <span class="string">"translate(-2, 0)"</span>
+      <span class="keyword">else</span>
+        <span class="property">@orientation</span> = <span class="string">'right'</span>
+        <span class="property">@translateString</span> = <span class="string">"translate(<span class="subst">#{@graph.width()}</span>, 0)"</span>
+
+      <span class="property">@ticks</span> ?= Math.floor(<span class="property">@graph</span>.height() / pixelsPerTick)
+
+  _checkOptions: =&gt;
+    <span class="keyword">if</span> <span class="property">@options</span>.ticksTreatment?
+      <span class="property">@utils</span>.checkString(<span class="property">@options</span>.ticksTreatment, <span class="string">"AxisLinear options.ticksTreatment"</span>)
+
+    <span class="keyword">if</span> <span class="property">@options</span>.tickSize?
+      <span class="property">@utils</span>.checkNumber(<span class="property">@options</span>.tickSize, <span class="string">"AxisLinear options.tickSize"</span>)
+
+    <span class="keyword">if</span> <span class="property">@options</span>.tickFormat?
+      <span class="property">@utils</span>.checkFunction(<span class="property">@options</span>.tickFormat, <span class="string">"AxisLinear options.tickFormat"</span>)
+
+    <span class="keyword">if</span> <span class="property">@options</span>.frame?
+      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(<span class="property">@options</span>.frame, <span class="string">"AxisLinear options.frame"</span>)
+        <span class="property">@options</span>.frame.forEach((d, i)=&gt;
+          <span class="property">@utils</span>.checkNumber(d, <span class="string">"AxisLinear options.frame[<span class="subst">#{i}</span>]"</span>) <span class="keyword">if</span> d?
+        )
+
+  destroy: -&gt;
+    <span class="keyword">super</span>
+    <span class="property">@g_zero</span>.remove()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

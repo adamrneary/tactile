@@ -6,8 +6,11 @@
 public/docs
 
 .idea
+.sass-cache
+.grunt
 
 .rvmrc
 build/
 test/cov/
 test/reports/
+assets/compiled/

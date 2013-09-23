@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>waterfall_renderer.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="base_renderer.html">
+                base_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="draggable_renderer.html">
+                draggable_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="series.html">
+                series.coffee
+              </a>
+            
+              
+              <a class="source" href="series_set.html">
+                series_set.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.coffee
+              </a>
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_base.html">
+                axis_base.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_linear.html">
+                axis_linear.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="bullet_renderer.html">
+                bullet_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="chart.html">
+                chart.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="grid.html">
+                grid.coffee
+              </a>
+            
+              
+              <a class="source" href="leaderboard_renderer.html">
+                leaderboard_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="waterfall_renderer.html">
+                waterfall_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>waterfall_renderer.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">WaterfallRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
+  name: <span class="string">"waterfall"</span>
+
+  specificDefaults:
+    gapSize: <span class="number">0.15</span>
+    round: <span class="literal">true</span>
+    unstack: <span class="literal">true</span>
+
+  initialize: (options = {}) -&gt;
+    <span class="property">@gapSize</span> = options.gapSize || <span class="property">@gapSize</span>
+
+  render: (transition)=&gt;
+    <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
+
+    <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
+    <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
+      <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack).remove()
+      <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"line"</span>).data(<span class="property">@series</span>.stack).remove()
+      <span class="keyword">return</span>
+
+    nodes = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack)
+    nodes.enter()
+      .append(<span class="string">"svg:rect"</span>)
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
+      .<span class="literal">on</span>(<span class="string">"click"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
+
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
+      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))
+      .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))
+      .attr(<span class="string">"y"</span>, (d)=&gt; <span class="property">@_barY</span>(d))
+      .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
+      .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))
+      .attr(<span class="string">"fill"</span>, <span class="property">@series</span>.color)
+
+    nodes.exit().remove()
+
+    line = <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"line"</span>).data(<span class="property">@series</span>.stack)
+    line.enter()
+      .append(<span class="string">"svg:line"</span>)
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
+
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> line"</span>)
+      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))
+      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))
+      .attr(<span class="string">"x2"</span>, (d, i) =&gt;
+        gapCount = <span class="property">@graph</span>.series.filter(
+          (d) =&gt;
+            d.renderer == <span class="string">'waterfall'</span>
+        ).length()
+        <span class="keyword">if</span> i <span class="keyword">is</span> <span class="number">0</span>
+          <span class="property">@_barX</span>(d, i) - <span class="property">@_seriesBarWidth</span>()
+        <span class="keyword">else</span>
+          stackWidthCur = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[i].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[i-<span class="number">1</span>].x) || <span class="number">0</span>
+          <span class="property">@_barX</span>(d, i)-(<span class="keyword">if</span>  <span class="property">@_waterfalRendererIndex</span>() <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> stackWidthCur - <span class="property">@_seriesBarWidth</span>()*gapCount <span class="keyword">else</span> <span class="number">0</span>) - <span class="property">@_seriesBarWidth</span>()
+      )
+      .attr(<span class="string">"y1"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))
+      .attr(<span class="string">"y2"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))
+      .attr(<span class="string">"stroke"</span>, <span class="string">"#BEBEBE"</span>)
+      .attr(<span class="string">"stroke-width"</span>, (d, i)=&gt;
+        <span class="keyword">if</span> (<span class="property">@_waterfalRendererIndex</span>() <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">and</span> i <span class="keyword">is</span> <span class="number">0</span>) <span class="keyword">or</span> (<span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.fromBaseline, d, i)) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="number">1</span>)
+
+    <span class="property">@setupTooltips</span>()
+
+  setupTooltips: -&gt;
+    <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).tooltip (d, i) =&gt;
+        circleColor: <span class="property">@series</span>.color
+        graph: <span class="property">@graph</span>
+        text: <span class="property">@series</span>.tooltip(d)
+        circleOnHover: <span class="literal">false</span>
+        tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
+        gravity: <span class="string">"right"</span>
+
+
+  barWidth: -&gt;
+    data = <span class="property">@series</span>.stack
+    count = data.length
+    barWidth = <span class="property">@graph</span>.width() / count * (<span class="number">1</span> - <span class="property">@gapSize</span>)
+
+  seriesWidth: =&gt;
+    <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
+      stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
+      width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+    <span class="keyword">else</span>
+      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+
+  _seriesBarWidth: =&gt;
+    <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
+      stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
+      width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+    <span class="keyword">else</span>
+      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+
+    width = width / <span class="property">@graph</span>.series.filter(
+      (d) =&gt;
+        d.renderer == <span class="string">'waterfall'</span>
+    ).length()
+
+  _barXOffset: (seriesBarWidth) -&gt;
+    count = <span class="property">@graph</span>.renderersByType(<span class="property">@name</span>).length
+    barXOffset = -seriesBarWidth * count / <span class="number">2</span>
+
+  _barX: (d) =&gt;
+    x = <span class="property">@graph</span>.x(d.x)
+    seriesBarWidth = <span class="property">@_seriesBarWidth</span>()
+    initialX = x + <span class="property">@_barXOffset</span>(seriesBarWidth)
+    initialX + (<span class="property">@_waterfalRendererIndex</span>() * seriesBarWidth)
+
+  _barY: (d, i) =&gt;
+    <span class="keyword">if</span> d.y &gt; <span class="number">0</span>
+      <span class="property">@graph</span>.y(d.y + d.y00)
+    <span class="keyword">else</span>
+      <span class="property">@graph</span>.y(d.y00)
+
+  _waterfalRendererIndex: -&gt;
+    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> <span class="property">@rendererIndex</span> == <span class="number">0</span> || <span class="property">@rendererIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>
+    renderers = <span class="property">@graph</span>.renderers.slice(<span class="number">0</span>, <span class="property">@rendererIndex</span>)
+    _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
