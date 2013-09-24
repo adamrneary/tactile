@@ -2,12 +2,12 @@
 # locally grunt src -> assets
 # move/test to showcase
 
-# TODO: grunt watch
-# TODO: grunt coffeescript
-# TODO: grunt scss(compass/sass)
+# TODO: grunt watch +
+# TODO: grunt coffeescript +
+# TODO: grunt scss(compass/sass) +
 # TODO: grunt kss
 # TODO: grunt concat/uglify
-# TODO: grunt copy examples/list
+# TODO: grunt copy examples/list +
 
 path = require("path")
 getPath = (p)->
@@ -28,7 +28,6 @@ module.exports = (grunt) ->
         disabled: no
         src: ["**/*"]
 
-#    dc:
     docco:
       options:
         layout : "parallel"
@@ -43,12 +42,6 @@ module.exports = (grunt) ->
           join: true
         files:
           "ghpages/assets/compiled/tactile.js": [
-#            "src/coffee/index.coffee"
-#            "src/coffee/**/*.coffee"
-#            "src/coffee/models/chart.coffee"
-#            ]
-#          "src/coffee/**/*.coffee"
-
             "src/coffee/index.coffee"
             "src/coffee/helpers/base_renderer.coffee"
             "src/coffee/helpers/draggable_renderer.coffee"
@@ -56,15 +49,14 @@ module.exports = (grunt) ->
             "src/coffee/helpers/series_set.coffee"
             "src/coffee/helpers/tooltip.coffee"
             "src/coffee/helpers/utils.coffee"
-#          ]
-#
+
             "src/coffee/models/area_renderer.coffee"
             "src/coffee/models/axis_base.coffee"
             "src/coffee/models/axis_linear.coffee"
             "src/coffee/models/axis_time.coffee"
             "src/coffee/models/bullet_renderer.coffee"
             "src/coffee/models/column_renderer.coffee"
-            "src/coffee/models/donut_renterer.coffee"
+            "src/coffee/models/donut_renderer.coffee"
             "src/coffee/models/dragger.coffee"
             "src/coffee/models/fixtures_time.coffee"
             "src/coffee/models/gauge_renderer.coffee"
@@ -77,9 +69,8 @@ module.exports = (grunt) ->
 
             "src/coffee/models/chart.coffee"
           ]
-#            "src/coffee/**/*.coffee"
-          "ghpages/assets/compiled/examples.js":   "src/examples/index.coffee"
 
+          "ghpages/assets/compiled/examples.js":   "src/examples/index.coffee"
 
           "ghpages/assets/compiled/unit_tests.js": [
             "test/client/area.coffee"
@@ -125,49 +116,52 @@ module.exports = (grunt) ->
           "test/**/*.coffee"
         ]
         tasks: ["coffee"]
+
       compass:
         files: ["src/scss/tactile"]
         tasks: ["compass"]
 
-    kss:
+    ksstraverse:
       options:
-        template: "views/examples/styleguide.hbs"
-        styles: "src/scss/**/*.scss"
-        preprocessor: "scss"
-
+        markdown: false
+        base: "src/scss"
+        name: "styleguide"
+        dstpath: "ghpages/"
       files:
-        src: "src/scss/"
-        dest:"ghpages/styleguide"
+        srcname: "tactile.scss"
 
-    hbs:
-      view:
-        src: ["views/examples/styleguide.hbs"]
-        dest: "ghpages/1/"
-        cwd: "./"
-        rules: [
-          url: "views/examples/styleguide.hbs"
-          layout: "views/examples/layout.hbs"
-        ]
-#        ,
-#          url: "html/foo/**/*.html"
-#          layout: "html/foo/foo_layout.hbt"
-#        ,
-#          url: "html/foo/**/*.json"
-#          layout: "html/foo/data_post.hbt"
-#        ]
+    copy:
+      main:
+        files:
+          [
+            expand: true, cwd: "src/examples/list/", src: ["*.coffee"], dest: "ghpages/examples/"
+          ]
 
 
+#    # TEMP?
+    grunt.registerMultiTask "ksstraverse", "compiled styleguide with hbs", () ->
+      kss = require "kss"
+      fs  = require "fs"
+      handlebars = require "handlebars"
+      done = this.async()
 
-    # TEMP?
-    grunt.loadNpmTasks "grunt-hbs"
+      kss.traverse "#{__dirname}/src/scss", { markdown: false }, (err, styleguide) ->
+        return console.log(err) if err
+        sections = require('showcase').getSections("tactile.scss", "#{__dirname}/views/sections", styleguide)
+        source = fs.readFileSync("views/examples/styleguide.hbs").toString()
+        template = handlebars.compile(source);
+        html = template(sections: sections)
+#        console.log "outputdir", this.options().dstpath + this.options().name + ".html"
+        fs.writeFileSync("ghpages/styleguide.html", html)
+        done()
+
+#    grunt.loadTasks "#{__dirname}/tasks/"
     grunt.loadNpmTasks "grunt-contrib-coffee"
     grunt.loadNpmTasks "grunt-contrib-compass"
     grunt.loadNpmTasks "grunt-contrib-watch"
     grunt.loadNpmTasks "grunt-docco-multi"
-    grunt.loadNpmTasks "grunt-kss"
     grunt.loadNpmTasks "grunt-gh-pages"
-
-
+    grunt.loadNpmTasks "grunt-contrib-copy"
     grunt.registerTask "compile-assets", [
       "coffee"
       "compass"

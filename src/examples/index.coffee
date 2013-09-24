@@ -96,7 +96,7 @@ components = [
 
 showcaseObject = routes: {}
 prepareLinks = (route, el) ->
-  link = $("<a>").attr("href", "/#" + route.shortLink).text(route.title)
+  link = $("<a>").attr("href", "#" + route.shortLink).text(route.title)
   el.append $("<li>").append(link)
   showcaseObject.routes[route.shortLink] = route.shortLink
   showcaseObject[route.shortLink] = ->
@@ -130,6 +130,6 @@ $(document).ready ->
   showcase = new Showcase()
 #  Backbone.history.start()
 
-  showcase.navigate "/#line"  unless window.location.hash
+  showcase.navigate "#line"  unless window.location.hash
 
 

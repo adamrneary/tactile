@@ -95,7 +95,7 @@ showcaseObject = {
 
 prepareLinks = function(route, el) {
   var link;
-  link = $("<a>").attr("href", "/#" + route.shortLink).text(route.title);
+  link = $("<a>").attr("href", "#" + route.shortLink).text(route.title);
   el.append($("<li>").append(link));
   showcaseObject.routes[route.shortLink] = route.shortLink;
   return showcaseObject[route.shortLink] = function() {
@@ -134,7 +134,7 @@ $(document).ready(function() {
   Showcase = Backbone.Router.extend(showcaseObject);
   showcase = new Showcase();
   if (!window.location.hash) {
-    return showcase.navigate("/#line");
+    return showcase.navigate("#line");
   }
 });
 
