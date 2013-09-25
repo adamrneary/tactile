@@ -126,9 +126,9 @@ module.exports = (grunt) ->
         markdown: false
         base: "src/scss"
         name: "styleguide"
-        dstpath: "ghpages/"
       files:
         srcname: "tactile.scss"
+        dstpath: "ghpages/"
 
     copy:
       main:
@@ -138,24 +138,24 @@ module.exports = (grunt) ->
           ]
 
 
-#    # TEMP?
-    grunt.registerMultiTask "ksstraverse", "compiled styleguide with hbs", () ->
-      kss = require "kss"
-      fs  = require "fs"
-      handlebars = require "handlebars"
-      done = this.async()
+##    # TEMP?
+#    grunt.registerMultiTask "ksstraverse", "compiled styleguide with hbs", () ->
+#      kss = require "kss"
+#      fs  = require "fs"
+#      handlebars = require "handlebars"
+#      done = this.async()
+#
+#      kss.traverse "#{__dirname}/src/scss", { markdown: false }, (err, styleguide) ->
+#        return console.log(err) if err
+#        sections = require('showcase').getSections("tactile.scss", "#{__dirname}/views/sections", styleguide)
+#        source = fs.readFileSync("views/examples/styleguide.hbs").toString()
+#        template = handlebars.compile(source);
+#        html = template(sections: sections)
+##        console.log "outputdir", this.options().dstpath + this.options().name + ".html"
+#        fs.writeFileSync("ghpages/styleguide.html", html)
+#        done()
 
-      kss.traverse "#{__dirname}/src/scss", { markdown: false }, (err, styleguide) ->
-        return console.log(err) if err
-        sections = require('showcase').getSections("tactile.scss", "#{__dirname}/views/sections", styleguide)
-        source = fs.readFileSync("views/examples/styleguide.hbs").toString()
-        template = handlebars.compile(source);
-        html = template(sections: sections)
-#        console.log "outputdir", this.options().dstpath + this.options().name + ".html"
-        fs.writeFileSync("ghpages/styleguide.html", html)
-        done()
-
-#    grunt.loadTasks "#{__dirname}/tasks/"
+    grunt.loadTasks "#{__dirname}/tasks/"
     grunt.loadNpmTasks "grunt-contrib-coffee"
     grunt.loadNpmTasks "grunt-contrib-compass"
     grunt.loadNpmTasks "grunt-contrib-watch"

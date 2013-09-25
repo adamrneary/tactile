@@ -3,10 +3,12 @@ fs  = require "fs"
 handlebars = require "handlebars"
 module.exports = (grunt) ->
   grunt.registerMultiTask "ksstraverse", "compiled styleguide with hbs", () ->
-    console.log "test", this.options()
-    console.log "test", this.data.srcname
+    console.log "option", this.options()
+    console.log "srcname", this.data.srcname
 
-#    done = this.async()
+    done = this.async()
+    data = this.data.srcname
+    options = this.options()
 
 #    #     generate there styleguide page
 #    return console.log "Please input base path for grunt-ksstraverse options" if this.options().base == null
@@ -21,10 +23,10 @@ module.exports = (grunt) ->
 #    kss.traverse "#{__dirname}/"+this.options().base, { markdown: this.options().markdown }, (err, styleguide) ->
     kss.traverse "#{__dirname}/../src/scss", { markdown: false }, (err, styleguide) ->
       return console.log(err) if err
-      sections = require('showcase').getSections(this.data.srcname, "#{__dirname}/views/sections", styleguide)
-      source = fs.readFileSync("views/examples/" + this.options().name + ".hbs").toString()
+      sections = require('showcase').getSections(data.srcname, "views/sections", styleguide)
+      source = fs.readFileSync("views/examples/" + options.name + ".hbs").toString()
       template = handlebars.compile(source);
       html = template(sections: sections)
-      console.log "outputdir", this.options().dstpath + this.options().name + ".html"
-      fs.writeFileSync(this.options().dstpath + this.options().name + ".html", html)
+      console.log "outputdir", data.dstpath + options.name + ".html"
+      fs.writeFileSync(data.dstpath + options.name + ".html", html)
       done()
