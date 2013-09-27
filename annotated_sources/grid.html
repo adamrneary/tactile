@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>grid.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="base_renderer.html">
+                base_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="draggable_renderer.html">
+                draggable_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="series.html">
+                series.coffee
+              </a>
+            
+              
+              <a class="source" href="series_set.html">
+                series_set.coffee
+              </a>
+            
+              
+              <a class="source" href="tooltip.html">
+                tooltip.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.coffee
+              </a>
+            
+              
+              <a class="source" href="area_renderer.html">
+                area_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_base.html">
+                axis_base.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_linear.html">
+                axis_linear.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.html">
+                axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="bullet_renderer.html">
+                bullet_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="chart.html">
+                chart.coffee
+              </a>
+            
+              
+              <a class="source" href="column_renderer.html">
+                column_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="donut_renderer.html">
+                donut_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="dragger.html">
+                dragger.coffee
+              </a>
+            
+              
+              <a class="source" href="fixtures_time.html">
+                fixtures_time.coffee
+              </a>
+            
+              
+              <a class="source" href="gauge_renderer.html">
+                gauge_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="grid.html">
+                grid.coffee
+              </a>
+            
+              
+              <a class="source" href="leaderboard_renderer.html">
+                leaderboard_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="line_renderer.html">
+                line_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="range_slider.html">
+                range_slider.coffee
+              </a>
+            
+              
+              <a class="source" href="scatter_renderer.html">
+                scatter_renderer.coffee
+              </a>
+            
+              
+              <a class="source" href="waterfall_renderer.html">
+                waterfall_renderer.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>grid.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Grid</span></span>
+  defaultOptions:
+      lineWidth: <span class="number">0.5</span>
+      color: <span class="string">"#000000"</span>
+
+  constructor: (<span class="property">@options</span>) -&gt;
+    <span class="property">@utils</span> = <span class="keyword">new</span> Tactile.Utils()
+    <span class="property">@graph</span> = options.graph
+    <span class="property">@lineWidth</span> = options.lineWidth <span class="keyword">or</span> <span class="property">@defaultOptions</span>.lineWidth
+    <span class="property">@color</span> = options.color <span class="keyword">or</span> <span class="property">@defaultOptions</span>.color
+    <span class="property">@data</span> = options.values <span class="keyword">or</span> []
+    <span class="property">@horizontal</span> = options.grid != <span class="string">'x'</span>
+
+  render: (transition) -&gt;
+    className = <span class="string">"<span class="subst">#{@options.grid}</span>-grid"</span>
+    <span class="property">@g</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
+    <span class="property">@g</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, className)
+
+    line = <span class="property">@g</span>.selectAll(<span class="string">"line"</span>).data(<span class="property">@data</span>)
+    line.enter()
+      .append(<span class="string">"svg:line"</span>)
+
+    line.exit().remove()
+
+    transition.select(<span class="string">'.'</span> + className).selectAll(<span class="string">"line"</span>)
+      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))
+      .attr(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.width() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))
+      .attr(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="number">0</span>)
+      .attr(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="property">@graph</span>.height())
+      .attr(<span class="string">"stroke"</span>, <span class="property">@color</span>)
+      .attr(<span class="string">"stroke-width"</span>, <span class="property">@lineWidth</span>)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
