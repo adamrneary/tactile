@@ -185,7 +185,7 @@ module.exports = (grunt) ->
       "compile-handlebars"
       "compile-styleguide"
 #      "gh-pages"
-      #      "clean:afterpush"
+#      "clean:afterpush"
       #      "watch"
     ]
 
