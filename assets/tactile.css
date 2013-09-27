@@ -1,357 +1,222 @@
-/* line 69, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-10 {
-  fill: #0b3748;
-}
+  fill: #0b3748; }
 
-/* line 70, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-20 {
-  fill: #254e5d;
-}
+  fill: #254e5d; }
 
-/* line 71, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-30 {
-  fill: #3f6672;
-}
+  fill: #3f6672; }
 
-/* line 72, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-40 {
-  fill: #597d88;
-}
+  fill: #597d88; }
 
-/* line 73, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-50 {
-  fill: #73959d;
-}
+  fill: #73959d; }
 
-/* line 74, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-blue-60 {
-  fill: #8eadb3;
-}
+  fill: #8eadb3; }
 
-/* line 77, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-10 {
-  fill: #0c1b75;
-}
+  fill: #0c1b75; }
 
-/* line 78, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-20 {
-  fill: #263683;
-}
+  fill: #263683; }
 
-/* line 79, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-30 {
-  fill: #405192;
-}
+  fill: #405192; }
 
-/* line 80, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-40 {
-  fill: #5a6ca1;
-}
+  fill: #5a6ca1; }
 
-/* line 81, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-50 {
-  fill: #7487b0;
-}
+  fill: #7487b0; }
 
-/* line 82, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-blue-60 {
-  fill: #8fa3bf;
-}
+  fill: #8fa3bf; }
 
-/* line 85, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-10 {
-  fill: #003fc1;
-}
+  fill: #003fc1; }
 
-/* line 86, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-20 {
-  fill: #2058c8;
-}
+  fill: #2058c8; }
 
-/* line 87, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-30 {
-  fill: #4072d0;
-}
+  fill: #4072d0; }
 
-/* line 88, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-40 {
-  fill: #608bd7;
-}
+  fill: #608bd7; }
 
-/* line 89, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-50 {
-  fill: #80a5df;
-}
+  fill: #80a5df; }
 
-/* line 90, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-azure-60 {
-  fill: #a0bfe7;
-}
+  fill: #a0bfe7; }
 
-/* line 93, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-10 {
-  fill: #4727c0;
-}
+  fill: #4727c0; }
 
-/* line 94, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-20 {
-  fill: #6043c8;
-}
+  fill: #6043c8; }
 
-/* line 95, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-30 {
-  fill: #795fd0;
-}
+  fill: #795fd0; }
 
-/* line 96, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-40 {
-  fill: #927bd8;
-}
+  fill: #927bd8; }
 
-/* line 97, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-50 {
-  fill: #ab87e0;
-}
+  fill: #ab87e0; }
 
-/* line 98, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-light-blue-60 {
-  fill: #c5b3e9;
-}
+  fill: #c5b3e9; }
 
-/* line 101, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-10 {
-  fill: #4e0002;
-}
+  fill: #4e0002; }
 
-/* line 102, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-20 {
-  fill: #671e20;
-}
+  fill: #671e20; }
 
-/* line 103, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-30 {
-  fill: #813d3f;
-}
+  fill: #813d3f; }
 
-/* line 104, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-40 {
-  fill: #9a5c5d;
-}
+  fill: #9a5c5d; }
 
-/* line 105, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-50 {
-  fill: #b47b7c;
-}
+  fill: #b47b7c; }
 
-/* line 106, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-barn-red-60 {
-  fill: #ce9a9b;
-}
+  fill: #ce9a9b; }
 
-/* line 109, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-10 {
-  fill: #d21e17;
-}
+  fill: #d21e17; }
 
-/* line 110, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-20 {
-  fill: #d83c36;
-}
+  fill: #d83c36; }
 
-/* line 111, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-30 {
-  fill: #de5a55;
-}
+  fill: #de5a55; }
 
-/* line 112, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-40 {
-  fill: #e47975;
-}
+  fill: #e47975; }
 
-/* line 113, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-50 {
-  fill: #ea9794;
-}
+  fill: #ea9794; }
 
-/* line 114, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-scarlet-red-60 {
-  fill: #f0b6b4;
-}
+  fill: #f0b6b4; }
 
-/* line 117, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-10 {
-  fill: #c07200;
-}
+  fill: #c07200; }
 
-/* line 118, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-20 {
-  fill: #c98621;
-}
+  fill: #c98621; }
 
-/* line 119, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-30 {
-  fill: #d39a42;
-}
+  fill: #d39a42; }
 
-/* line 120, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-40 {
-  fill: #ddaf63;
-}
+  fill: #ddaf63; }
 
-/* line 121, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-50 {
-  fill: #e7c384;
-}
+  fill: #e7c384; }
 
-/* line 122, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-alloy-orange-60 {
-  fill: #f1d8a6;
-}
+  fill: #f1d8a6; }
 
-/* line 125, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-10 {
-  fill: #623c1c;
-}
+  fill: #623c1c; }
 
-/* line 126, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-20 {
-  fill: #79593d;
-}
+  fill: #79593d; }
 
-/* line 127, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-30 {
-  fill: #90765f;
-}
+  fill: #90765f; }
 
-/* line 128, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-40 {
-  fill: #a79380;
-}
+  fill: #a79380; }
 
-/* line 129, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-50 {
-  fill: #beb0a2;
-}
+  fill: #beb0a2; }
 
-/* line 130, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-brown-60 {
-  fill: #d6cdc4;
-}
+  fill: #d6cdc4; }
 
-/* line 133, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-10 {
-  fill: #777777;
-}
+  fill: #777777; }
 
-/* line 134, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-20 {
-  fill: #8a8a8a;
-}
+  fill: #8a8a8a; }
 
-/* line 135, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-30 {
-  fill: #9d9d9d;
-}
+  fill: #9d9d9d; }
 
-/* line 136, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-40 {
-  fill: #b1b1b1;
-}
+  fill: #b1b1b1; }
 
-/* line 137, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-50 {
-  fill: #c4c4c4;
-}
+  fill: #c4c4c4; }
 
-/* line 138, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-silver-grey-60 {
-  fill: #d8d8d8;
-}
+  fill: #d8d8d8; }
 
-/* line 141, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-10 {
-  fill: #414343;
-}
+  fill: #414343; }
 
-/* line 142, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-20 {
-  fill: #4d4f4f;
-}
+  fill: #4d4f4f; }
 
-/* line 143, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-30 {
-  fill: #5a5b5b;
-}
+  fill: #5a5b5b; }
 
-/* line 144, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-40 {
-  fill: #676868;
-}
+  fill: #676868; }
 
-/* line 145, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-50 {
-  fill: #747474;
-}
+  fill: #747474; }
 
-/* line 146, ../../src/scss/tactile/_tactile_colors.scss */
 .tactile-dark-grey-60 {
-  fill: #818181;
-}
+  fill: #818181; }
 
-/* line 9, ../../src/scss/tactile/tactile.scss */
 #chart {
   width: 938px;
   height: 300px;
-  overflow: hidden;
-}
+  overflow: hidden; }
 
-/* line 15, ../../src/scss/tactile/tactile.scss */
 #chart-container {
   border: 1px solid #d8d8d8;
   margin-top: 20px;
-  position: relative;
-}
-/* line 19, ../../src/scss/tactile/tactile.scss */
-#chart-container .uncategorized {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 4px;
-  z-index: 1;
-  border-left: 1px solid #d8d8d8;
-  border-bottom: 1px solid #d8d8d8;
-  background: #fff;
-}
-/* line 29, ../../src/scss/tactile/tactile.scss */
-#chart-container .empty {
-  background: #d8d8d8;
-  color: #9B9DA1;
-  font-weight: bold;
-  height: 150px;
-  font-size: 18px;
-  line-height: 18px;
-  padding-top: 132px;
-  text-align: center;
-  width: 938px;
-}
+  position: relative; }
+  #chart-container .uncategorized {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px;
+    z-index: 1;
+    border-left: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+    background: white; }
+  #chart-container .empty {
+    background: #d8d8d8;
+    color: #9b9da1;
+    font-weight: bold;
+    height: 150px;
+    font-size: 18px;
+    line-height: 18px;
+    padding-top: 132px;
+    text-align: center;
+    width: 938px; }
 
 /* graph */
-/* line 43, ../../src/scss/tactile/tactile.scss */
 .chart-container {
-  position: relative;
-}
+  position: relative; }
 
-/* line 47, ../../src/scss/tactile/tactile.scss */
 .chart-widget {
-  padding-left: 0;
-}
+  padding-left: 0; }
 
-/* line 51, ../../src/scss/tactile/tactile.scss */
 .main-d3-chart.graph-container {
-  left: 15px;
-}
+  left: 15px; }
 
-/* line 55, ../../src/scss/tactile/tactile.scss */
 .graph-container svg * {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -361,296 +226,194 @@
   See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
   */
   -ms-user-select: none;
-  user-select: none;
-}
+  user-select: none; }
 
 /* Specific rules for mini-charts */
-/* line 70, ../../src/scss/tactile/tactile.scss */
 .mini-chart-container.graph-container .gauge path {
-  stroke: none;
-}
-/* line 75, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .mini-chart-container.graph-container path {
   stroke: #d39a42;
-  stroke-width: 2;
-}
-/* line 79, ../../src/scss/tactile/tactile.scss */
+  stroke-width: 2; }
 .mini-chart-container.graph-container rect {
-  stroke-width: .3;
+  stroke-width: 0.3;
   stroke: white;
-  fill: #d39a42;
-}
+  fill: #d39a42; }
 
-/* line 86, ../../src/scss/tactile/tactile.scss */
 .mini-chart-container {
-  height: 38px;
-}
+  height: 38px; }
 
-/* line 90, ../../src/scss/tactile/tactile.scss */
 .metric-inner-container {
-  height: 225px;
-}
+  height: 225px; }
 
-/* line 94, ../../src/scss/tactile/tactile.scss */
 .metric-inner-container, .graph-container {
-  position: relative;
-}
-/* line 97, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container svg, .graph-container svg {
-  display: block;
-  overflow: hidden;
-}
+  position: relative; }
+  .metric-inner-container svg, .graph-container svg {
+    display: block;
+    overflow: hidden; }
 
 /* axes */
-/* line 111, ../../src/scss/tactile/tactile.scss */
 .y-ticks.plain path, .y1-ticks.plain path {
   fill: none;
-  stroke: none;
-}
-/* line 116, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .y-ticks.plain .tick, .y1-ticks.plain .tick {
-  stroke: none;
-}
-/* line 120, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .y-ticks path, .y1-ticks path {
   fill: none;
-  stroke: #808080;
-}
-/* line 125, ../../src/scss/tactile/tactile.scss */
+  stroke: grey; }
 .y-ticks .tick, .y1-ticks .tick {
   stroke: rgba(0, 0, 0, 0.16);
   stroke-width: 2px;
-  shape-rendering: crisp-edges;
-}
-/* line 132, ../../src/scss/tactile/tactile.scss */
+  shape-rendering: crisp-edges; }
 .y-ticks text, .y1-ticks text {
   opacity: 0.5;
   fill: black;
   font-size: 11px;
   text-transform: uppercase;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
-/* line 143, ../../src/scss/tactile/tactile.scss */
 .y-grid .tick {
   z-index: -1;
   stroke: rgba(0, 0, 0, 0.2);
   stroke-width: 1px;
-  stroke-dasharray: 1 1;
-}
-/* line 149, ../../src/scss/tactile/tactile.scss */
+  stroke-dasharray: 1 1; }
 .y-grid path {
   fill: none;
-  stroke: none;
-}
+  stroke: none; }
 
-/* line 157, ../../src/scss/tactile/tactile.scss */
 .x-ticks.plain path {
   fill: none;
-  stroke: none;
-}
+  stroke: none; }
 
-/* line 163, ../../src/scss/tactile/tactile.scss */
 .x-tick, .x-ticks {
   fill: black;
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 0px;
-}
-/* line 164, ../../src/scss/tactile/tactile.scss */
-.x-tick.grid, .x-ticks.grid {
-  border-left: 1px dotted rgba(0, 0, 0, 0.2);
-}
-/* line 175, ../../src/scss/tactile/tactile.scss */
-.x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: bold;
-  opacity: 0.5;
-  white-space: nowrap;
-  text-anchor: middle;
-}
-/* line 184, ../../src/scss/tactile/tactile.scss */
-.x-tick.align-end .title, .x-ticks.align-end .title {
-  text-anchor: end;
-}
-/* line 188, ../../src/scss/tactile/tactile.scss */
-.x-tick.align-start .title, .x-ticks.align-start .title {
-  text-anchor: start;
-}
+  width: 0px; }
+  .x-tick.grid, .x-ticks.grid {
+    border-left: 1px dotted rgba(0, 0, 0, 0.2); }
+  .x-tick .title, .x-tick text, .x-ticks .title, .x-ticks text {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0.5;
+    white-space: nowrap;
+    text-anchor: middle; }
+  .x-tick.align-end .title, .x-ticks.align-end .title {
+    text-anchor: end; }
+  .x-tick.align-start .title, .x-ticks.align-start .title {
+    text-anchor: start; }
 
-/* line 193, ../../src/scss/tactile/tactile.scss */
 .x-tick.small .title {
-  font-size: 10px;
-}
+  font-size: 10px; }
 
-/* line 197, ../../src/scss/tactile/tactile.scss */
 .x-tick.glow .title, .y-ticks.glow text {
   fill: black;
   color: black;
-  text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1);
-}
+  text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1), 1px -1px 0 rgba(255, 255, 255, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.1), 0px 1px 0 rgba(255, 255, 255, 0.1), 0px -1px 0 rgba(255, 255, 255, 0.1), 1px 0px 0 rgba(255, 255, 255, 0.1), -1px 0px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(255, 255, 255, 0.1); }
 
-/* line 207, ../../src/scss/tactile/tactile.scss */
 .x-tick.inverse .title, .y-ticks.inverse text {
   fill: white;
   color: white;
-  text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8);
-}
+  text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.8), 1px -1px 0 rgba(0, 0, 0, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8), 0px 1px 0 rgba(0, 0, 0, 0.8), 0px -1px 0 rgba(0, 0, 0, 0.8), 1px 0px 0 rgba(0, 0, 0, 0.8), -1px 0px 0 rgba(0, 0, 0, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.8); }
 
-/* line 217, ../../src/scss/tactile/tactile.scss */
 #y-axis {
   position: absolute;
   bottom: 0;
   width: 20px;
-  left: 5px;
-}
+  left: 5px; }
 
-/* line 224, ../../src/scss/tactile/tactile.scss */
 .y-axis {
-  fill: none;
-}
+  fill: none; }
 
-/* line 229, ../../src/scss/tactile/tactile.scss */
 .axis.yAxis, .axis.xAxis {
   text-transform: uppercase !important;
   font-size: 11px;
   font-weight: bold;
-  fill: #9d9d9d;
-}
-/* line 234, ../../src/scss/tactile/tactile.scss */
+  fill: #9d9d9d; }
 .axis.yAxis line, .axis.yAxis path {
   stroke: #9d9d9d;
-  stroke-width: 2px;
-}
-/* line 239, ../../src/scss/tactile/tactile.scss */
+  stroke-width: 2px; }
 .axis.yAxis .domain {
-  stroke: none;
-}
+  stroke: none; }
 
-/* line 245, ../../src/scss/tactile/tactile.scss */
 .axis {
-  shape-rendering: crispEdges;
-}
+  shape-rendering: crispEdges; }
 
-/* line 250, ../../src/scss/tactile/tactile.scss */
 .xAxis.axis line {
-  stroke: #fff;
-}
-/* line 254, ../../src/scss/tactile/tactile.scss */
+  stroke: white; }
 .xAxis.axis .minor {
-  stroke-opacity: .5;
-}
-/* line 258, ../../src/scss/tactile/tactile.scss */
+  stroke-opacity: 0.5; }
 .xAxis.axis path {
-  display: none;
-}
+  display: none; }
 
-/* line 263, ../../src/scss/tactile/tactile.scss */
 .yAxis.axis line, .yAxis.axis path {
   fill: none;
-  stroke: #000;
-}
+  stroke: black; }
 
 /* legend */
-/* line 271, ../../src/scss/tactile/tactile.scss */
 #main-chart-legend .well {
   display: inline-block;
-  padding: 5px;
-}
-/* line 276, ../../src/scss/tactile/tactile.scss */
+  padding: 5px; }
 #main-chart-legend .chart-legend {
   margin: 1px 0 0 15px;
   padding: 5px 0 0 0;
   list-style: none;
-  *zoom: 1;
-}
-/* line 167, ../../src/scss/tactile/_mixins.scss */
-#main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
-  display: table;
-  content: "";
-}
-/* line 171, ../../src/scss/tactile/_mixins.scss */
-#main-chart-legend .chart-legend:after {
-  clear: both;
-}
-/* line 282, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li {
-  float: left;
-  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
-  margin: 0 15px 5px 0;
-}
-/* line 287, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li span {
-  display: inline-block;
-  position: relative;
-  top: -2px;
-  margin: 0 6px 0 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 1em;
-  box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2);
-}
-/* line 296, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li span.point-noise {
-  background-color: #9d9d9d;
-}
-/* line 297, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li span.point-dogs {
-  background-color: #dc6e59;
-}
-/* line 298, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li span.point-sprouts {
-  background-color: #19affe;
-}
-/* line 299, ../../src/scss/tactile/tactile.scss */
-#main-chart-legend .chart-legend li span.point-stars {
-  background-color: #8ac16f;
-}
+  *zoom: 1; }
+  #main-chart-legend .chart-legend:before, #main-chart-legend .chart-legend:after {
+    display: table;
+    content: ""; }
+  #main-chart-legend .chart-legend:after {
+    clear: both; }
+  #main-chart-legend .chart-legend li {
+    float: left;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+    margin: 0 15px 5px 0; }
+    #main-chart-legend .chart-legend li span {
+      display: inline-block;
+      position: relative;
+      top: -2px;
+      margin: 0 6px 0 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 1em;
+      box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), inset 1px 1px 1px rgba(0, 0, 0, 0.2); }
+      #main-chart-legend .chart-legend li span.point-noise {
+        background-color: #9d9d9d; }
+      #main-chart-legend .chart-legend li span.point-dogs {
+        background-color: #dc6e59; }
+      #main-chart-legend .chart-legend li span.point-sprouts {
+        background-color: #19affe; }
+      #main-chart-legend .chart-legend li span.point-stars {
+        background-color: #8ac16f; }
 
-/* line 305, ../../src/scss/tactile/tactile.scss */
 .chart-legend {
   margin: 0 0 10px 10px;
   color: #777777;
-  overflow: hidden;
-}
-/* line 310, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item {
-  float: left;
-  list-style: none;
-  overflow: hidden;
-  margin-right: 10px;
-}
-/* line 317, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item.off .text {
-  color: #777777;
-}
-/* line 322, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item:hover {
-  cursor: pointer;
-}
-/* line 326, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item .color, .chart-legend .legend-item .text {
-  float: left;
-}
-/* line 330, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item .color {
-  border-radius: 3px;
-  width: 6px;
-  height: 6px;
-  border: 1px solid #d8d8d8;
-  margin-right: 8px;
-  margin-top: 5px;
-}
-/* line 339, ../../src/scss/tactile/tactile.scss */
-.chart-legend .legend-item .text {
-  font-size: 14px;
-  line-height: 16px;
-}
+  overflow: hidden; }
+  .chart-legend .legend-item {
+    float: left;
+    list-style: none;
+    overflow: hidden;
+    margin-right: 10px; }
+    .chart-legend .legend-item.off .text {
+      color: #777777; }
+    .chart-legend .legend-item:hover {
+      cursor: pointer; }
+    .chart-legend .legend-item .color, .chart-legend .legend-item .text {
+      float: left; }
+    .chart-legend .legend-item .color {
+      border-radius: 3px;
+      width: 6px;
+      height: 6px;
+      border: 1px solid #d8d8d8;
+      margin-right: 8px;
+      margin-top: 5px; }
+    .chart-legend .legend-item .text {
+      font-size: 14px;
+      line-height: 16px; }
 
 /* hover detail */
-/* line 348, ../../src/scss/tactile/tactile.scss */
 .metric-inner-container .detail, .graph-container .detail {
   position: absolute;
   top: 0;
@@ -662,311 +425,212 @@
   -moz-transition: opacity 0.25s linear;
   -ms-transition: opacity 0.25s linear;
   -o-transition: opacity 0.25s linear;
-  transition: opacity 0.25s linear;
-}
-/* line 357, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail.inactive, .graph-container .detail.inactive {
-  opacity: 0;
-}
-/* line 361, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail.no-line, .graph-container .detail.no-line {
-  background: none;
-}
-/* line 365, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .item.active, .graph-container .detail .item.active {
-  opacity: 1;
-}
-/* line 369, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .x_label, .graph-container .detail .x_label {
-  border-radius: 3px;
-  padding: 6px;
-  opacity: 0.5;
-  border: 1px solid #d8d8d8;
-  font-size: 12px;
-  position: absolute;
-  background: white;
-  white-space: nowrap;
-}
-/* line 379, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .item, .graph-container .detail .item {
-  text-transform: none;
-  position: absolute;
-  z-index: 2;
-  border-radius: 3px;
-  padding: 0.25em;
-  font-size: 12px;
-  opacity: 0;
-  background: rgba(0, 0, 0, 0.4);
-  color: white;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  margin-left: 1em;
-  margin-top: -1em;
-  white-space: nowrap;
-}
-/* line 393, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .item.active, .graph-container .detail .item.active {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.8);
-}
-/* line 397, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .item:before, .graph-container .detail .item:before {
-  content: "\25c2";
-  position: absolute;
-  left: -0.5em;
-  color: rgba(0, 0, 0, 0.7);
-  width: 0;
-}
-/* line 405, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .dot, .graph-container .detail .dot {
-  width: 4px;
-  height: 4px;
-  margin-left: -3px;
-  margin-top: -4px;
-  border-radius: 5px;
-  position: absolute;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  background: white;
-  border-width: 2px;
-  border-style: solid;
-  display: none;
-  background-clip: padding-box;
-}
-/* line 418, ../../src/scss/tactile/tactile.scss */
-.metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
-  display: block;
-}
+  transition: opacity 0.25s linear; }
+  .metric-inner-container .detail.inactive, .graph-container .detail.inactive {
+    opacity: 0; }
+  .metric-inner-container .detail.no-line, .graph-container .detail.no-line {
+    background: none; }
+  .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
+    opacity: 1; }
+  .metric-inner-container .detail .x_label, .graph-container .detail .x_label {
+    border-radius: 3px;
+    padding: 6px;
+    opacity: 0.5;
+    border: 1px solid #d8d8d8;
+    font-size: 12px;
+    position: absolute;
+    background: white;
+    white-space: nowrap; }
+  .metric-inner-container .detail .item, .graph-container .detail .item {
+    text-transform: none;
+    position: absolute;
+    z-index: 2;
+    border-radius: 3px;
+    padding: 0.25em;
+    font-size: 12px;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    margin-left: 1em;
+    margin-top: -1em;
+    white-space: nowrap; }
+    .metric-inner-container .detail .item.active, .graph-container .detail .item.active {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.8); }
+    .metric-inner-container .detail .item:before, .graph-container .detail .item:before {
+      content: "\25c2";
+      position: absolute;
+      left: -0.5em;
+      color: rgba(0, 0, 0, 0.7);
+      width: 0; }
+  .metric-inner-container .detail .dot, .graph-container .detail .dot {
+    width: 4px;
+    height: 4px;
+    margin-left: -3px;
+    margin-top: -4px;
+    border-radius: 5px;
+    position: absolute;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    background: white;
+    border-width: 2px;
+    border-style: solid;
+    display: none;
+    background-clip: padding-box; }
+    .metric-inner-container .detail .dot.active, .graph-container .detail .dot.active {
+      display: block; }
 
-/* line 425, ../../src/scss/tactile/tactile.scss */
 .graph-container .tooltip {
   padding: 0;
   margin: 0;
-  white-space: nowrap;
-}
-/* line 431, ../../src/scss/tactile/tactile.scss */
+  white-space: nowrap; }
 .graph-container .tooltip.right {
   padding-left: 5px;
   margin-left: 10px;
-  margin-top: -11px;
-}
+  margin-top: -11px; }
 
 /* sankey */
-/* line 445, ../../src/scss/tactile/tactile.scss */
 .sankey-chart .node {
-  stroke: #fff;
-  stroke-width: 2px;
-}
-/* line 450, ../../src/scss/tactile/tactile.scss */
+  stroke: white;
+  stroke-width: 2px; }
 .sankey-chart .link {
   fill: none;
-  stroke: #000;
-  opacity: .3;
-}
-/* line 455, ../../src/scss/tactile/tactile.scss */
+  stroke: black;
+  opacity: 0.3; }
 .sankey-chart .link.on {
-  stroke: #F00;
-  opacity: .7;
-}
-/* line 460, ../../src/scss/tactile/tactile.scss */
+  stroke: red;
+  opacity: 0.7; }
 .sankey-chart .node {
-  stroke: none;
-}
+  stroke: none; }
 
 /* ScatterChart stylings */
 /* Designers: I used an SVG viewbox to dynamically resize the chart  */
 /* http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute */
 /* You may find a better way to resize dynamically. */
 /* Please don't hesitate to contact me for any info: esbullington on github */
-/* line 475, ../../src/scss/tactile/tactile.scss */
 .scatter circle.low {
-  fill: #dc6e59;
-}
-/* line 476, ../../src/scss/tactile/tactile.scss */
+  fill: #dc6e59; }
 .scatter circle.mid {
-  fill: #19affe;
-}
-/* line 477, ../../src/scss/tactile/tactile.scss */
+  fill: #19affe; }
 .scatter circle.high {
-  fill: #8ac16f;
-}
+  fill: #8ac16f; }
 
-/* line 481, ../../src/scss/tactile/tactile.scss */
 .graph-container circle.tip-hovered {
-  stroke-width: 1;
-}
+  stroke-width: 1; }
 
-/* line 486, ../../src/scss/tactile/tactile.scss */
 .draggable-node-chart circle.selected, .draggable-node-chart circle:hover, .draggableLine circle.selected, .draggableLine circle:hover {
-  fill: #f1d8a6;
-}
+  fill: #f1d8a6; }
 
-/* line 491, ../../src/scss/tactile/tactile.scss */
 rect.colorless {
-  fill: #5a6ca1;
-}
+  fill: #5a6ca1; }
 
-/* line 497, ../../src/scss/tactile/tactile.scss */
 .ui-button {
   border: 1px solid #9d9d9d;
-  padding: 5px;
-}
+  padding: 5px; }
 
-/* line 503, ../../src/scss/tactile/tactile.scss */
 path.colorless {
-  stroke: #405192;
-}
-/* line 507, ../../src/scss/tactile/tactile.scss */
+  stroke: #405192; }
 path.sparkline {
   stroke: #d39a42;
   stroke-width: 1px;
-  fill: none;
-}
-/* line 512, ../../src/scss/tactile/tactile.scss */
+  fill: none; }
 path.line {
   fill: none;
-  stroke-width: 2px;
-}
-/* line 516, ../../src/scss/tactile/tactile.scss */
+  stroke-width: 2px; }
 path.area {
-  fill: #e7e7e7;
-}
+  fill: #e7e7e7; }
 
-/* line 521, ../../src/scss/tactile/tactile.scss */
 div.tipsy.help-tip.seg-tipsy .tipsy-inner div {
-  padding: 6px;
-}
+  padding: 6px; }
 
 /* Leaderboard */
-/* line 528, ../../src/scss/tactile/tactile.scss */
 .leaderboard-normal.label {
   fill: #777777;
   font-size: 20px;
-  font-weight: bold;
-}
-/* line 534, ../../src/scss/tactile/tactile.scss */
+  font-weight: bold; }
 .leaderboard-normal.value {
   font-size: 27px;
   fill: #777777;
   text-anchor: end;
   font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: 800;
-  text-transform: uppercase;
-}
-/* line 541, ../../src/scss/tactile/tactile.scss */
+  text-transform: uppercase; }
 .leaderboard-normal.change {
   fill: #b1b1b1;
   font-size: 12px;
   font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: bold;
-  text-transform: uppercase;
-}
-/* line 547, ../../src/scss/tactile/tactile.scss */
+  text-transform: uppercase; }
 .leaderboard-normal .triangle-down {
   fill: #dc6e59;
-  stroke: none;
-}
-/* line 552, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-normal .triangle-up {
   fill: #8ac16f;
-  stroke: none;
-}
-/* line 557, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-normal.track {
   fill: #d8d8d8;
-  stroke: none;
-}
-/* line 562, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-normal.bar {
   fill: #405192;
-  stroke: none;
-}
+  stroke: none; }
 
-/* line 569, ../../src/scss/tactile/tactile.scss */
 .leaderboard-small.label {
   fill: #777777;
   font-size: 15px;
-  font-weight: bold;
-}
-/* line 575, ../../src/scss/tactile/tactile.scss */
+  font-weight: bold; }
 .leaderboard-small.value {
   font-size: 20px;
   fill: #777777;
   text-anchor: end;
   font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: 800;
-  text-transform: uppercase;
-}
-/* line 582, ../../src/scss/tactile/tactile.scss */
+  text-transform: uppercase; }
 .leaderboard-small.change {
   fill: #b1b1b1;
   font-size: 10px;
   font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: bold;
-  text-transform: uppercase;
-}
-/* line 588, ../../src/scss/tactile/tactile.scss */
+  text-transform: uppercase; }
 .leaderboard-small .triangle-down {
   fill: #dc6e59;
-  stroke: none;
-}
-/* line 593, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-small .triangle-up {
   fill: #8ac16f;
-  stroke: none;
-}
-/* line 598, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-small.track {
   fill: #d8d8d8;
-  stroke: none;
-}
-/* line 603, ../../src/scss/tactile/tactile.scss */
+  stroke: none; }
 .leaderboard-small.bar {
   fill: #405192;
-  stroke: none;
-}
+  stroke: none; }
 
 /* Gauge */
-/* line 613, ../../src/scss/tactile/tactile.scss */
 .gauge.arc {
-  fill: #d8d8d8;
-}
-/* line 617, ../../src/scss/tactile/tactile.scss */
+  fill: #d8d8d8; }
 .gauge.arc-value {
-  fill: #405192;
-}
-/* line 621, ../../src/scss/tactile/tactile.scss */
+  fill: #405192; }
 .gauge.pointer-circle {
   fill: #d8d8d8;
-  stroke: #777777;
-}
-/* line 626, ../../src/scss/tactile/tactile.scss */
+  stroke: #777777; }
 .gauge.pointer, .gauge.pointer-nail {
   stroke: none;
-  fill: #777777;
-}
-/* line 631, ../../src/scss/tactile/tactile.scss */
+  fill: #777777; }
 .gauge.label {
   font-size: 27px;
   fill: #777777;
   text-anchor: middle;
   font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
   font-weight: 800;
-  text-transform: uppercase;
-}
+  text-transform: uppercase; }
 
 /*Bullet*/
-/* line 640, ../../src/scss/tactile/tactile.scss */
 .bullet {
   font-size: 10px;
-  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif;
-}
-/* line 643, ../../src/scss/tactile/tactile.scss */
-.bullet.title {
-  font-size: 14px;
-  font-weight: bold;
-  fill: #777777;
-}
-/* line 649, ../../src/scss/tactile/tactile.scss */
-.bullet.subtitle {
-  fill: #9d9d9d;
-  font-size: 10px;
-}
+  font-family: 'ProximaNova', "Helvetica Neue", Helvetica, sans-serif; }
+  .bullet.title {
+    font-size: 14px;
+    font-weight: bold;
+    fill: #777777; }
+  .bullet.subtitle {
+    fill: #9d9d9d;
+    font-size: 10px; }
