@@ -1,9 +1,7 @@
 .DS_Store
 /bower_components
 /node_modules
-
-.sass-cache/
-public/docs
+/ghpages
 
 .idea
 .sass-cache
@@ -13,4 +11,3 @@ public/docs
 build/
 test/cov/
 test/reports/
-assets/compiled/

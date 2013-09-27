@@ -128,8 +128,5 @@ $(document).ready ->
 
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
-#  Backbone.history.start()
-
-  showcase.navigate "#line"  unless window.location.hash
-
-
+#  showcase.navigate "#line"  unless window.location.hash
+  window.location.hash = "#line"

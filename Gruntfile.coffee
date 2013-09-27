@@ -1,27 +1,10 @@
-# see config.coffee, showcase/lib/brunch
-# locally grunt src -> assets
-# move/test to showcase
-
-# TODO: grunt watch +
-# TODO: grunt coffeescript +
-# TODO: grunt scss(compass/sass) +
-# TODO: grunt kss
-# TODO: grunt concat/uglify
-# TODO: grunt copy examples/list +
-
-path = require("path")
-getPath = (p)->
-  path.resolve __dirname, p
-
-
 module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
 
-
     "gh-pages":
       options:
-        base: getPath("ghpages")
+        base: "#{__dirname}/ghpages"
         branch: "gh-pages"
         repo: "git@github.com:activecell/tactile.git"
       ghp:
@@ -31,7 +14,8 @@ module.exports = (grunt) ->
     docco:
       options:
         layout : "parallel"
-        output : "ghpages/docs/"
+        output : "ghpages/annotated_sources/"
+        timeout: 1000
       docs:
         disabled: no
         src: "src/coffee/**/*.coffee"
@@ -41,8 +25,9 @@ module.exports = (grunt) ->
         options:
           join: true
         files:
-          "ghpages/assets/compiled/tactile.js": [
+          "ghpages/assets/tactile.js": [
             "src/coffee/index.coffee"
+
             "src/coffee/helpers/base_renderer.coffee"
             "src/coffee/helpers/draggable_renderer.coffee"
             "src/coffee/helpers/series.coffee"
@@ -70,9 +55,9 @@ module.exports = (grunt) ->
             "src/coffee/models/chart.coffee"
           ]
 
-          "ghpages/assets/compiled/examples.js":   "src/examples/index.coffee"
+          "ghpages/assets/examples.js":   "src/examples/index.coffee"
 
-          "ghpages/assets/compiled/unit_tests.js": [
+          "ghpages/assets/unit_tests.js": [
             "test/client/area.coffee"
             "test/client/column.coffee"
             "test/client/donut.coffee"
@@ -103,11 +88,32 @@ module.exports = (grunt) ->
             "test/unit/tooltip_test.coffee"
           ]
 
-    compass:
-      compileJoined:
+    sass:
+      tactile:
         options:
-          sassDir: 'src/scss/tactile/'
-          cssDir: 'ghpages/assets/compiled/'
+          outputStyle: 'expanded'
+        files:
+          'ghpages/assets/tactile.css': 'src/scss/tactile/tactile.scss'
+
+    clean:
+      afterpush:[
+        "ghpages"
+      ]
+
+    copy:
+      examples:
+        files: [
+          expand: true, cwd: "src/examples/list/", src: ["*.coffee"], dest: "ghpages/examples/"
+        ]
+      testrunner:
+        files: [
+          expand: true, cwd: "test/", src: ["test_runner.html"], dest: "ghpages/"
+        ]
+      d3:
+        files: [
+          expand: true, cwd: "node_modules/showcase/vendor/js/", src: ["d3.js"], dest: "ghpages/assets/"
+        ]
+
 
     watch:
       coffee:
@@ -117,62 +123,70 @@ module.exports = (grunt) ->
         ]
         tasks: ["coffee"]
 
-      compass:
+      sass:
         files: ["src/scss/tactile"]
-        tasks: ["compass"]
+        tasks: ["sass"]
 
-    ksstraverse:
+    styleguide:
       options:
         markdown: false
-        base: "src/scss"
+        base: "#{__dirname}/"
         name: "styleguide"
       files:
+        templatepath: "views/examples/"
+        scsssrc: "src/scss/"
         srcname: "tactile.scss"
+        sections: "views/sections/"
         dstpath: "ghpages/"
 
-    copy:
-      main:
-        files:
-          [
-            expand: true, cwd: "src/examples/list/", src: ["*.coffee"], dest: "ghpages/examples/"
-          ]
+    symlink:
+      fonts:
+        src: "node_modules/showcase/vendor/fonts/"
+        dest: "ghpages/fonts"
+      images:
+        src: "node_modules/showcase/vendor/images/"
+        dest: "ghpages/images"
+      vendor:
+        src: "node_modules/showcase/vendor/"
+        dest: "ghpages/vendor"
 
+    "compile-handlebars":
+      index:
+        template: "views/layout.hbs"
+        templateData: {body: "EmptyPage"}
+        output: "ghpages/index.html"
+      home:
+        template: "{{{datablock}}}"
+        templateData: {datablock: "EmptyPage"}
+        output: "ghpages/home.html"
+      demo:
+        template: "views/examples/index.hbs"
+        templateData: {demoblock: "<script src='assets/examples.js' defer></script>"}
+        output: "ghpages/demo.html"
 
-##    # TEMP?
-#    grunt.registerMultiTask "ksstraverse", "compiled styleguide with hbs", () ->
-#      kss = require "kss"
-#      fs  = require "fs"
-#      handlebars = require "handlebars"
-#      done = this.async()
-#
-#      kss.traverse "#{__dirname}/src/scss", { markdown: false }, (err, styleguide) ->
-#        return console.log(err) if err
-#        sections = require('showcase').getSections("tactile.scss", "#{__dirname}/views/sections", styleguide)
-#        source = fs.readFileSync("views/examples/styleguide.hbs").toString()
-#        template = handlebars.compile(source);
-#        html = template(sections: sections)
-##        console.log "outputdir", this.options().dstpath + this.options().name + ".html"
-#        fs.writeFileSync("ghpages/styleguide.html", html)
-#        done()
-
-    grunt.loadTasks "#{__dirname}/tasks/"
-    grunt.loadNpmTasks "grunt-contrib-coffee"
-    grunt.loadNpmTasks "grunt-contrib-compass"
-    grunt.loadNpmTasks "grunt-contrib-watch"
-    grunt.loadNpmTasks "grunt-docco-multi"
-    grunt.loadNpmTasks "grunt-gh-pages"
-    grunt.loadNpmTasks "grunt-contrib-copy"
     grunt.registerTask "compile-assets", [
       "coffee"
-      "compass"
+      "sass"
     ]
 
     grunt.registerTask "compile-docs", [
       "docco"
     ]
 
+    grunt.registerTask "compile-styleguide", [
+      "styleguide"
+    ]
+
     grunt.registerTask "default", [
       "compile-assets"
-      "watch"
+      "compile-docs"
+      "copy"
+      "symlink"
+      "compile-handlebars"
+      "compile-styleguide"
+#      "gh-pages"
+      #      "clean:afterpush"
+      #      "watch"
     ]
-#    grunt.loadNpmTasks "showcase"
+
+    grunt.loadNpmTasks "showcase"
