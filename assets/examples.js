@@ -30,6 +30,9 @@
     }, {
       shortLink: "mini",
       title: "Minichart"
+    }, {
+      shortLink: "activecell-examples",
+      title: "Activecell Examples"
     }
   ];
 
