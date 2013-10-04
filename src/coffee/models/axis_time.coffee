@@ -21,6 +21,23 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   tickOffsets: ->
     domain = @graph.x.domain()
+    # if      domain.length <= 12 months
+    #   do this logic
+    #   or replace it all
+    # else if domain.length > 12 months
+    #   offsets = [] = _aggregatedByMonth()
+
+    # _aggregatedByMonth() shuld return array of
+    # [
+    #   value: unixTimeStamp
+    #   label: "Jan", "Feb", ... || "Jan - Mar", "Apr - Jun", ... || Year
+    #   secondaryLabel: Optional???
+    # ]
+
+
+
+
+
     unit = @fixedTimeUnit or @appropriateTimeUnit()
 
     if unit.name is "month"
@@ -53,7 +70,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
 
     ticks = @g.selectAll('g.x-tick')
-      .data(@tickOffsets())
+      .data(@_getLabels(@graph.x.domain()))
 
     ticks.enter()
       .append('g')
@@ -81,8 +98,11 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
     @g.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
-      .text((d) ->
-        d.unit.formatter(new Date(d.value)))
+      .text((d) -> d.label)
+      .append("tspan")
+        .attr("y", @marginTop + @fontSize)
+        .attr("x", 0)
+        .text (d) -> d.secondary
 
   _checkOptions: ()=>
     if @options.ticksTreatment?
@@ -100,3 +120,77 @@ class Tactile.AxisTime extends Tactile.AxisBase
           @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
         )
 
+  _getLabels: (timeFrame) ->
+    labels = []
+
+    date = [new Date(timeFrame[0]), new Date(timeFrame[1])]
+
+    #calculate count of month in timeFrame
+    startYear = date[0].getFullYear()
+    startMonth = date[0].getMonth()
+
+    endYear = date[1].getFullYear()
+    endMonth = date[1].getMonth()
+
+    range = (endYear - startYear) * 12 + (endMonth - startMonth) + 1
+
+    if range <= 12
+      for i in [0..range - 1]
+        tmpDate = new Date(timeFrame[0])
+        tmpDate.setMonth(startMonth + i);
+        labels.push
+          value: tmpDate.getTime()
+          label: tmpDate.toUTCString().split(' ')[2]
+          secondary: tmpDate.getFullYear().toString()
+
+    # Else if there are 36 or fewer periods to display, we will display
+    # quarterly data and aggregate
+    else if 12 < range <= 36
+      grouper = 3
+      for i in [0 .. (range - 1)] by grouper
+        item = {}
+
+        startDate = new Date(timeFrame[0])
+        startDate.setMonth(startMonth + i)
+        endDate = new Date(timeFrame[0])
+        endDate.setMonth(startMonth + i + grouper - 1)
+
+        item.value = startDate.getTime()
+
+        item.label = "#{startDate.toUTCString().split(' ')[2]} - #{endDate.toUTCString().split(' ')[2]}"
+        if startDate.getTime() is date[1].getTime()
+          item.label = startDate.toUTCString().split(' ')[2]
+        else if endDate.getTime() > date[1].getTime()
+          endDate = date[1]
+          item.label = "#{startDate.toUTCString().split(' ')[2]} - #{endDate.toUTCString().split(' ')[2]}"
+        item.secondary = "#{endDate.getFullYear()}"
+
+        labels.push item
+
+    # If there are more than 36 columns to display, we will display annual
+    # data and aggregate.
+    #
+    # TODO: We should probably explode gracefully if there are more than
+    # 144 periods to display
+    else
+      grouper = 12
+      for i in [0 .. (range - 1)] by grouper
+        item = {}
+        item.secondary = ""
+
+        startDate = new Date(timeFrame[0])
+        startDate.setMonth(startMonth + i)
+        endDate = new Date(timeFrame[0])
+        endDate.setMonth(startMonth + i + grouper - 1)
+
+        item.value = startDate.getTime()
+        if endDate.getTime() > date[1].getTime()
+          endDate = date[1]
+
+        if startDate.getMonth() is 0 # Jan
+          item.label = "#{startDate.getFullYear()}"
+        else
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()} - #{startDate.getMonth()}/#{endDate.getFullYear()}"
+
+        labels.push item
+    labels

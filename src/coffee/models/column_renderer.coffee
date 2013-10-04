@@ -7,6 +7,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     round: true
     unstack: true
 
+
   initialize: (options = {}) ->
     super
     @dragger = new Tactile.Dragger(renderer: @)
@@ -15,8 +16,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @unstack = @series.unstack unless @series.unstack is undefined
 
   render: (transition)=>
-#    console.log "this.series.stack", this.series.stack
-    console.log "AGGREGATE", @_aggregateData(this.series.stack)
     @_checkData() if @checkData
 
     @transition = transition if transition
