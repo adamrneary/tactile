@@ -29,6 +29,12 @@ cartesian = [
 ,
   shortLink: "mini"
   title: "Minichart"
+,
+  shortLink: "activecell-examples"
+  title: "Activecell Examples"
+,
+  shortLink: "aggregated_data"
+  title: "Column Aggregated Data Chart"
 ]
 
 noncartesian = [
@@ -129,4 +135,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#line"
+  window.location.hash = "#aggregated_data"

@@ -10,6 +10,7 @@ class Tactile.Chart
     'waterfall': Tactile.WaterfallRenderer
     'leaderboard': Tactile.LeaderboardRenderer
     'bullet': Tactile.BulletRenderer
+    'aggcolumn': Tactile.AggColumnRenderer
 
   # default values
   defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
@@ -508,6 +509,7 @@ class Tactile.Chart
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('aggcolumn'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     @_setupZoom()
@@ -518,6 +520,7 @@ class Tactile.Chart
   unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('aggcolumn'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
@@ -638,7 +641,7 @@ class Tactile.Chart
     _.uniq(_.map(@series.array, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
-    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
+    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
@@ -756,7 +759,7 @@ class Tactile.Chart
 
   _calculateXRange: =>
     if @_containsColumnChart()
-      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
+      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
 
       lastRange = @width()
       dR = lastRange / 2

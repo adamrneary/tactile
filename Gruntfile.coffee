@@ -41,6 +41,7 @@ module.exports = (grunt) ->
             "src/coffee/models/axis_time.coffee"
             "src/coffee/models/bullet_renderer.coffee"
             "src/coffee/models/column_renderer.coffee"
+            "src/coffee/models/aggregate_column_renderer.coffee"
             "src/coffee/models/donut_renderer.coffee"
             "src/coffee/models/dragger.coffee"
             "src/coffee/models/fixtures_time.coffee"
@@ -105,6 +106,7 @@ module.exports = (grunt) ->
         files: [
           expand: true, cwd: "src/examples/list/", src: ["*.coffee"], dest: "ghpages/examples/"
         ]
+
       testrunner:
         files: [
           expand: true, cwd: "test/", src: ["test_runner.html"], dest: "ghpages/"
