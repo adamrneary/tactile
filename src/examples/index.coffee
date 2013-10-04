@@ -96,7 +96,7 @@ components = [
 
 showcaseObject = routes: {}
 prepareLinks = (route, el) ->
-  link = $("<a>").attr("href", "/#" + route.shortLink).text(route.title)
+  link = $("<a>").attr("href", "#" + route.shortLink).text(route.title)
   el.append $("<li>").append(link)
   showcaseObject.routes[route.shortLink] = route.shortLink
   showcaseObject[route.shortLink] = ->
@@ -116,7 +116,7 @@ prepareLinks = (route, el) ->
       $('body').append $("<script id='example_code'>#{source}</script>")
 
 $(document).ready ->
-  Tactile.debug = true
+  Tactile.debug = true;
   _.map cartesian, (route) ->
     prepareLinks route, $("#cartLinkList")
   _.map noncartesian, (route) ->
@@ -128,8 +128,5 @@ $(document).ready ->
 
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
-  Backbone.history.start()
-
-  showcase.navigate "/#line"  unless window.location.hash
-
-
+#  showcase.navigate "#line"  unless window.location.hash
+  window.location.hash = "#line"

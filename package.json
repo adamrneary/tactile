@@ -4,25 +4,17 @@
   "description": "Bad-ass interactive charts",
   "private": true,
   "scripts": {
-    "test": "./node_modules/testem/testem.js  -f test/testem.json ci && ./script/casper test/integration/",
-    "test-server": "./node_modules/testem/testem.js -f test/testem.json",
-    "start": "node index.js",
-    "build": "./node_modules/brunch/bin/brunch build"
+    "test": "grunt && ./node_modules/testem/testem.js -f test/testem.json ci && grunt clean:afterpush"
   },
   "engines": {
     "node": "0.10.x"
   },
   "dependencies": {
-    "coffee-script": "~1.6.2",
-    "showcase": "0.3.6",
-    "kss": "~0.3.6"
+    "showcase": "git://github.com/activecell/showcase.git#grunt",
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9"
   },
   "devDependencies": {
-    "brunch": "~1.6.2",
-    "javascript-brunch": "~1.5.1",
-    "coffee-script-brunch": "~1.5.1",
-    "css-brunch": "~1.5.1",
-    "sass-brunch": "~1.5.1",
-    "testem": "~0.3.17"
+    "testem": "~0.3.27"
   }
 }
