@@ -33,6 +33,9 @@
     }, {
       shortLink: "activecell-examples",
       title: "Activecell Examples"
+    }, {
+      shortLink: "aggregated_data",
+      title: "Column Aggregated Data Chart"
     }
   ];
 
@@ -136,7 +139,7 @@
     });
     Showcase = Backbone.Router.extend(showcaseObject);
     showcase = new Showcase();
-    return window.location.hash = "#line";
+    return window.location.hash = "#aggregated_data";
   });
 
 }).call(this);

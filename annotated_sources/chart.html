@@ -54,6 +54,11 @@
               </a>
             
               
+              <a class="source" href="aggregate_column_renderer.html">
+                aggregate_column_renderer.coffee
+              </a>
+            
+              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -185,7 +190,8 @@
     <span class="string">'donut'</span>: Tactile.DonutRenderer
     <span class="string">'waterfall'</span>: Tactile.WaterfallRenderer
     <span class="string">'leaderboard'</span>: Tactile.LeaderboardRenderer
-    <span class="string">'bullet'</span>: Tactile.BulletRenderer</pre></div></div>
+    <span class="string">'bullet'</span>: Tactile.BulletRenderer
+    <span class="string">'aggcolumn'</span>: Tactile.AggColumnRenderer</pre></div></div>
             
         </li>
         
@@ -949,6 +955,7 @@ width(), height() returns innerWidth as it&#39;s the most common used</p>
     transitionSpeed = <span class="property">@transitionSpeed</span> <span class="keyword">if</span> transitionSpeed <span class="keyword">is</span> <span class="literal">undefined</span>
     t = <span class="property">@svg</span>.transition().duration(transitionSpeed)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
     _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
     _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
     <span class="property">@_setupZoom</span>()
@@ -959,6 +966,7 @@ width(), height() returns innerWidth as it&#39;s the most common used</p>
   unstackTransition: (transitionSpeed) =&gt;
     transitionSpeed = <span class="property">@transitionSpeed</span> <span class="keyword">if</span> transitionSpeed <span class="keyword">is</span> <span class="literal">undefined</span>
     t = <span class="property">@svg</span>.transition().duration(transitionSpeed)
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
     _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
     _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
     _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
@@ -1262,7 +1270,7 @@ See range_slider for a clue how it&#39;s used</p>
     _.uniq(_.map(<span class="property">@series</span>.array, (s) -&gt; s.renderer)).length &gt; <span class="number">1</span>
 
   _containsColumnChart: -&gt;
-    _.any(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
+    _.any(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'aggcolumn'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
 
   _allRenderersCartesian: -&gt;
     _.every(<span class="property">@renderers</span>, (r) -&gt; r.cartesian <span class="keyword">is</span> <span class="literal">true</span>)
@@ -1391,7 +1399,7 @@ See range_slider for a clue how it&#39;s used</p>
 
   _calculateXRange: =&gt;
     <span class="keyword">if</span> <span class="property">@_containsColumnChart</span>()
-      renders = _.filter(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
+      renders = _.filter(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'aggcolumn'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
 
       lastRange = <span class="property">@width</span>()
       dR = lastRange / <span class="number">2</span>

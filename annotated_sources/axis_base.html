@@ -54,6 +54,11 @@
               </a>
             
               
+              <a class="source" href="aggregate_column_renderer.html">
+                aggregate_column_renderer.coffee
+              </a>
+            
+              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -166,6 +171,7 @@
     <span class="property">@utils</span> = <span class="keyword">new</span> Tactile.Utils()
     <span class="property">@graph</span> = options.graph
     <span class="property">@ticksTreatment</span> = options.ticksTreatment <span class="keyword">or</span> <span class="string">"plain"</span>
+    <span class="property">@fontSize</span>  = <span class="keyword">if</span> <span class="property">@ticksTreatement</span> <span class="keyword">then</span> <span class="number">10</span> <span class="keyword">else</span> <span class="number">12</span>
     <span class="property">@frame</span> = options.frame
 
     <span class="property">@marginForBottomTicks</span> = <span class="number">10</span>
@@ -218,7 +224,7 @@
       <span class="property">@graph</span>.axisPadding.bottom = <span class="number">0</span>
       <span class="property">@graph</span>.axisPadding.top = <span class="number">0</span>
     <span class="keyword">else</span>
-      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">20</span> <span class="keyword">if</span> <span class="property">@graph</span>.axisPadding.bottom &lt; <span class="number">20</span>
+      <span class="property">@graph</span>.axisPadding.bottom = <span class="number">30</span> <span class="keyword">if</span> <span class="property">@graph</span>.axisPadding.bottom &lt; <span class="number">30</span>
       <span class="property">@graph</span>.axisPadding.right = <span class="number">15</span> <span class="keyword">if</span> <span class="property">@graph</span>.axisPadding.right &lt; <span class="number">15</span>
 
     <span class="property">@graph</span>.setSize(height: <span class="property">@graph</span>.outerHeight, width: <span class="property">@graph</span>.outerWidth)

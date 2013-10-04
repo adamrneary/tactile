@@ -1,5 +1,5 @@
 (function() {
-  var _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
+  var _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __slice = [].slice,
     __hasProp = {}.hasOwnProperty,
@@ -898,6 +898,7 @@
       this.utils = new Tactile.Utils();
       this.graph = options.graph;
       this.ticksTreatment = options.ticksTreatment || "plain";
+      this.fontSize = this.ticksTreatement ? 10 : 12;
       this.frame = options.frame;
       this.marginForBottomTicks = 10;
       this.handleBottomPadding();
@@ -942,8 +943,8 @@
         this.graph.axisPadding.bottom = 0;
         this.graph.axisPadding.top = 0;
       } else {
-        if (this.graph.axisPadding.bottom < 20) {
-          this.graph.axisPadding.bottom = 20;
+        if (this.graph.axisPadding.bottom < 30) {
+          this.graph.axisPadding.bottom = 30;
         }
         if (this.graph.axisPadding.right < 15) {
           this.graph.axisPadding.right = 15;
@@ -1203,7 +1204,7 @@
       }
       this.g = this.graph.vis.selectAll('g.x-ticks').data([0]);
       this.g.enter().append('g').attr('class', 'x-ticks');
-      ticks = this.g.selectAll('g.x-tick').data(this.tickOffsets());
+      ticks = this.g.selectAll('g.x-tick').data(this._getLabels(this.graph.x.domain()));
       ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' '));
       ticks.attr("transform", function(d) {
         return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
@@ -1217,7 +1218,9 @@
       });
       this.g.selectAll("text").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
       return this.g.selectAll("g.x-tick").selectAll("text").attr("y", this.marginTop).text(function(d) {
-        return d.unit.formatter(new Date(d.value));
+        return d.label;
+      }).append("tspan").attr("y", this.marginTop + this.fontSize).attr("x", 0).text(function(d) {
+        return d.secondary;
       });
     };
 
@@ -1241,6 +1244,68 @@
           });
         }
       }
+    };
+
+    AxisTime.prototype._getLabels = function(timeFrame) {
+      var date, endDate, endMonth, endYear, grouper, i, item, labels, range, startDate, startMonth, startYear, tmpDate, _i, _j, _k, _ref2, _ref3, _ref4;
+      labels = [];
+      date = [new Date(timeFrame[0]), new Date(timeFrame[1])];
+      startYear = date[0].getFullYear();
+      startMonth = date[0].getMonth();
+      endYear = date[1].getFullYear();
+      endMonth = date[1].getMonth();
+      range = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+      if (range <= 12) {
+        for (i = _i = 0, _ref2 = range - 1; 0 <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+          tmpDate = new Date(timeFrame[0]);
+          tmpDate.setMonth(startMonth + i);
+          labels.push({
+            value: tmpDate.getTime(),
+            label: tmpDate.toUTCString().split(' ')[2],
+            secondary: tmpDate.getFullYear().toString()
+          });
+        }
+      } else if ((12 < range && range <= 36)) {
+        grouper = 3;
+        for (i = _j = 0, _ref3 = range - 1; grouper > 0 ? _j <= _ref3 : _j >= _ref3; i = _j += grouper) {
+          item = {};
+          startDate = new Date(timeFrame[0]);
+          startDate.setMonth(startMonth + i);
+          endDate = new Date(timeFrame[0]);
+          endDate.setMonth(startMonth + i + grouper - 1);
+          item.value = startDate.getTime();
+          item.label = "" + (startDate.toUTCString().split(' ')[2]) + " - " + (endDate.toUTCString().split(' ')[2]);
+          if (startDate.getTime() === date[1].getTime()) {
+            item.label = startDate.toUTCString().split(' ')[2];
+          } else if (endDate.getTime() > date[1].getTime()) {
+            endDate = date[1];
+            item.label = "" + (startDate.toUTCString().split(' ')[2]) + " - " + (endDate.toUTCString().split(' ')[2]);
+          }
+          item.secondary = "" + (endDate.getFullYear());
+          labels.push(item);
+        }
+      } else {
+        grouper = 12;
+        for (i = _k = 0, _ref4 = range - 1; grouper > 0 ? _k <= _ref4 : _k >= _ref4; i = _k += grouper) {
+          item = {};
+          item.secondary = "";
+          startDate = new Date(timeFrame[0]);
+          startDate.setMonth(startMonth + i);
+          endDate = new Date(timeFrame[0]);
+          endDate.setMonth(startMonth + i + grouper - 1);
+          item.value = startDate.getTime();
+          if (endDate.getTime() > date[1].getTime()) {
+            endDate = date[1];
+          }
+          if (startDate.getMonth() === 0) {
+            item.label = "" + (startDate.getFullYear());
+          } else {
+            item.label = "" + (startDate.getMonth() + 1) + "/" + (startDate.getFullYear()) + " - " + (startDate.getMonth()) + "/" + (endDate.getFullYear());
+          }
+          labels.push(item);
+        }
+      }
+      return labels;
     };
 
     return AxisTime;
@@ -1928,6 +1993,422 @@
 
   })(Tactile.DraggableRenderer);
 
+  Tactile.AggColumnRenderer = (function(_super) {
+    __extends(AggColumnRenderer, _super);
+
+    function AggColumnRenderer() {
+      this._barY = __bind(this._barY, this);
+      this._barX = __bind(this._barX, this);
+      this._seriesBarWidth = __bind(this._seriesBarWidth, this);
+      this.seriesWidth = __bind(this.seriesWidth, this);
+      this._edgeRatio = __bind(this._edgeRatio, this);
+      this._transformMatrix = __bind(this._transformMatrix, this);
+      this.unstackTransition = __bind(this.unstackTransition, this);
+      this.stackTransition = __bind(this.stackTransition, this);
+      this.hideCircles = __bind(this.hideCircles, this);
+      this.render = __bind(this.render, this);
+      _ref4 = AggColumnRenderer.__super__.constructor.apply(this, arguments);
+      return _ref4;
+    }
+
+    AggColumnRenderer.prototype.name = "aggcolumn";
+
+    AggColumnRenderer.prototype.specificDefaults = {
+      gapSize: 0.15,
+      tension: null,
+      round: true,
+      unstack: true,
+      dinGapSize: 0.15
+    };
+
+    AggColumnRenderer.prototype.initialize = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      AggColumnRenderer.__super__.initialize.apply(this, arguments);
+      this.dragger = new Tactile.Dragger({
+        renderer: this
+      });
+      this.gapSize = options.gapSize || this.gapSize;
+      if (this.series.round !== void 0) {
+        this.round = this.series.round;
+      }
+      if (this.series.unstack !== void 0) {
+        return this.unstack = this.series.unstack;
+      }
+    };
+
+    AggColumnRenderer.prototype.render = function(transition) {
+      var circ, data, newCircs, nodes, _ref5, _ref6, _ref7,
+        _this = this;
+      if (this.checkData) {
+        this._checkData();
+      }
+      data = this._aggregateData(this.series.stack);
+      if (transition) {
+        this.transition = transition;
+      }
+      if (this.series.disabled) {
+        if ((_ref5 = this.dragger) != null) {
+          _ref5.timesRendered = 0;
+        }
+        this.seriesCanvas().selectAll("rect").data(data).remove();
+        this.seriesDraggableCanvas().selectAll("circle").data(data).remove();
+        return;
+      }
+      nodes = this.seriesCanvas().selectAll("rect").data(data);
+      nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", function(d, i) {
+        _this.setActive(d, i);
+        return _this.hideCircles();
+      });
+      this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).filter(function(d) {
+        return _this.yFunction().magnitude(Math.abs(d.y));
+      }).attr("height", function(d) {
+        return _this.yFunction().magnitude(Math.abs(d.y));
+      }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+        return _this.utils.ourFunctor(_this.series.color, d, i);
+      }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+        return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
+      });
+      nodes.exit().remove();
+      nodes.on("mouseover.show-dragging-circle", function(d, i, el) {
+        var circ;
+        _this.hideCircles();
+        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+        return circ.style("display", "");
+      });
+      nodes.on("mouseout.hide-dragging-circle", function(d, i) {
+        var circ;
+        if (d === _this.active) {
+          return;
+        }
+        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+        if (d3.event.relatedTarget === circ.node()) {
+          return;
+        }
+        return circ.style("display", "none");
+      });
+      circ = this.seriesDraggableCanvas().selectAll("circle").data(data);
+      newCircs = circ.enter().append("svg:circle").style("display", "none").on("mousedown", function(d, i) {
+        _this.setActive(d, i);
+        return _this.hideCircles();
+      }).on("mouseout.hide-dragging-circle", function(d, i) {
+        if (d === _this.active) {
+          return;
+        }
+        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+        if (d3.event.relatedTarget === circ.node()) {
+          return;
+        }
+        return circ.style("display", "none");
+      });
+      if ((_ref6 = this.dragger) != null) {
+        _ref6.makeHandlers(newCircs);
+      }
+      if ((_ref7 = this.dragger) != null) {
+        _ref7.updateDraggedNode();
+      }
+      this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).attr("cx", function(d) {
+        return _this._barX(d) + _this._seriesBarWidth() / 2;
+      }).attr("cy", function(d) {
+        return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+      }).attr("r", function(d) {
+        if ("r" in d) {
+          return d.r;
+        } else {
+          if (d.dragged || d === _this.active) {
+            return _this.dotSize + 1;
+          } else {
+            return _this.dotSize;
+          }
+        }
+      }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
+        return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
+      }).attr("fill", function(d, i) {
+        if (d.dragged || d === _this.active) {
+          return "white";
+        } else {
+          return _this.utils.ourFunctor(_this.series.color, d, i);
+        }
+      }).attr("stroke", function(d, i) {
+        if (d.dragged || d === _this.active) {
+          return _this.utils.ourFunctor(_this.series.color, d, i);
+        } else {
+          return "white";
+        }
+      }).attr("stroke-width", 2).attr("id", function(d, i) {
+        return "node-" + i + "-" + d.x;
+      }).style("cursor", function(d, i) {
+        if (_this.utils.ourFunctor(_this.series.isEditable, d, i)) {
+          return "ns-resize";
+        } else {
+          return "auto";
+        }
+      });
+      circ.exit().remove();
+      if (this.series.tooltip) {
+        circ.tooltip(function(d, i) {
+          return {
+            circleColor: _this.series.color,
+            graph: _this.graph,
+            text: _this.series.tooltip(d),
+            circleOnHover: true,
+            tooltipCircleContainer: _this.graph.vis.node(),
+            gravity: "right"
+          };
+        });
+      }
+      return this.setupTooltips();
+    };
+
+    AggColumnRenderer.prototype.hideCircles = function() {
+      var _this = this;
+      return this.seriesDraggableCanvas().selectAll("circle").style("display", function(d) {
+        if (d === _this.active) {
+          return "";
+        } else {
+          return "none";
+        }
+      });
+    };
+
+    AggColumnRenderer.prototype.setupTooltips = function() {
+      var _this = this;
+      if (this.series.tooltip) {
+        return this.seriesCanvas().selectAll("rect").tooltip(function(d, i) {
+          return {
+            circleColor: _this.series.color,
+            graph: _this.graph,
+            text: _this.series.tooltip(d),
+            circleOnHover: false,
+            tooltipCircleContainer: _this.graph.vis.node(),
+            gravity: "right",
+            placement: d.y < 0 ? "bottom" : "top"
+          };
+        });
+      }
+    };
+
+    AggColumnRenderer.prototype.barWidth = function() {
+      var barWidth, count, data;
+      data = this.series.stack;
+      count = data.length;
+      return barWidth = this.graph.width() / count * (1 - this.dinGapSize);
+    };
+
+    AggColumnRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
+      var _this = this;
+      this.unstack = false;
+      this.graph.setYFrame([NaN, NaN]);
+      this.graph.setY1Frame([NaN, NaN]);
+      this.graph.discoverRange();
+      this.graph._checkYDomain();
+      this.graph._checkY1Domain();
+      transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
+        return _this.graph.y.magnitude(Math.abs(d.y));
+      });
+      transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).duration(transitionSpeed / 2).attr("cy", function(d) {
+        return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+      });
+      transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
+      return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).delay(transitionSpeed / 2).attr("cx", function(d) {
+        return _this._barX(d) + _this._seriesBarWidth() / 2;
+      });
+    };
+
+    AggColumnRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
+      var _this = this;
+      this.unstack = true;
+      this.graph.setYFrame([NaN, NaN]);
+      this.graph.setY1Frame([NaN, NaN]);
+      this.graph.discoverRange();
+      this.graph._checkYDomain();
+      this.graph._checkY1Domain();
+      transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
+      transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).duration(transitionSpeed / 2).attr("cx", function(d) {
+        return _this._barX(d) + _this._seriesBarWidth() / 2;
+      });
+      transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).delay(transitionSpeed / 2).attr("height", function(d) {
+        return _this.graph.y.magnitude(Math.abs(d.y));
+      }).attr("y", this._barY);
+      return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+        return _this._filterNaNs(d, "x", "y");
+      }).delay(transitionSpeed / 2).attr("cy", function(d) {
+        return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+      });
+    };
+
+    AggColumnRenderer.prototype._transformMatrix = function(d) {
+      var matrix;
+      matrix = [1, 0, 0, (d.y < 0 ? -1 : 1), 0, (d.y < 0 ? this.yFunction().magnitude(Math.abs(d.y)) * 2 : 0)];
+      return "matrix(" + matrix.join(",") + ")";
+    };
+
+    AggColumnRenderer.prototype._edgeRatio = function() {
+      if (this.series.round) {
+        return Math.round(0.05783 * this._seriesBarWidth() + 1);
+      } else {
+        return 0;
+      }
+    };
+
+    AggColumnRenderer.prototype.seriesWidth = function() {
+      var stackWidth, width;
+      if (this.series.stack.length >= 2) {
+        stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
+        return width = stackWidth / (1 + this.dinGapSize);
+      } else {
+        return width = this.graph.width() / (1 + this.dinGapSize);
+      }
+    };
+
+    AggColumnRenderer.prototype._seriesBarWidth = function() {
+      var stack, stackWidth, width,
+        _this = this;
+      stack = this._aggregateData(this.series.stack);
+      console.log("dinGapSize", this.dinGapSize, "lengthStack", stack.length);
+      if (stack.length >= 2) {
+        stackWidth = this.graph.x(stack[1].x) - this.graph.x(stack[0].x);
+        width = stackWidth / (1 + this.dinGapSize);
+      } else {
+        width = this.graph.width() / (1 + this.dinGapSize);
+      }
+      if (this.unstack) {
+        width = width / this.graph.series.filter(function(d) {
+          return d.renderer === "aggcolumn";
+        }).array.length;
+      }
+      return width;
+    };
+
+    AggColumnRenderer.prototype._barXOffset = function(seriesBarWidth) {
+      var barXOffset, count;
+      count = this.graph.renderersByType(this.name).length;
+      if (count === 1 || !this.unstack) {
+        return barXOffset = -seriesBarWidth / 2;
+      } else {
+        return barXOffset = -seriesBarWidth * count / 2;
+      }
+    };
+
+    AggColumnRenderer.prototype._barX = function(d) {
+      var initialX, seriesBarWidth, x;
+      x = this.graph.x(d.x);
+      seriesBarWidth = this._seriesBarWidth();
+      initialX = x + this._barXOffset(seriesBarWidth);
+      if (this.unstack) {
+        return initialX + (this._columnRendererIndex() * seriesBarWidth);
+      } else {
+        return initialX;
+      }
+    };
+
+    AggColumnRenderer.prototype._barY = function(d) {
+      if (this.unstack) {
+        if (d.y > 0) {
+          return this.yFunction()(d.y);
+        } else {
+          return this.yFunction()(0);
+        }
+      } else {
+        if (d.y > 0) {
+          return this.yFunction()(d.y + d.y0);
+        } else {
+          return this.yFunction()(d.y0);
+        }
+      }
+    };
+
+    AggColumnRenderer.prototype._columnRendererIndex = function() {
+      var renderers,
+        _this = this;
+      if (this.rendererIndex === 0 || this.rendererIndex === void 0) {
+        return 0;
+      }
+      renderers = this.graph.renderers.slice(0, this.rendererIndex);
+      return _.filter(renderers, function(r) {
+        return r.name === _this.name;
+      }).length;
+    };
+
+    AggColumnRenderer.prototype._aggregateData = function(data) {
+      var aggdata, end, grouper, i, range, start, tmp, xDomain, _i, _j, _ref5, _ref6;
+      xDomain = this.graph.x.domain();
+      data = _.filter(data, function(d) {
+        return d.x >= xDomain[0] && d.x <= xDomain[1];
+      });
+      aggdata = [];
+      range = data.length;
+      this.dinGapSize = this.gapSize / range;
+      if (range <= 12) {
+        return data;
+      } else if ((12 < range && range <= 36)) {
+        grouper = 3;
+        for (i = _i = 0, _ref5 = range - 1; grouper > 0 ? _i <= _ref5 : _i >= _ref5; i = _i += grouper) {
+          tmp = [];
+          start = i;
+          end = i + grouper - 1;
+          if (end > range - 1) {
+            end = range - 1;
+          }
+          tmp.x = data[start].x;
+          tmp.y = 0;
+          tmp.y0 = 0;
+          tmp.y00 = 0;
+          _.each(data.slice(start, end + 1), function(item) {
+            tmp.y = tmp.y + item.y;
+            tmp.y0 = tmp.y0 + item.y0;
+            return tmp.y00 = tmp.y00 + item.y00;
+          });
+          aggdata.push(tmp);
+        }
+        return aggdata;
+      } else {
+        grouper = 12;
+        for (i = _j = 0, _ref6 = range - 1; grouper > 0 ? _j <= _ref6 : _j >= _ref6; i = _j += grouper) {
+          tmp = [];
+          start = i;
+          end = i + grouper - 1;
+          if (end > range - 1) {
+            end = range - 1;
+          }
+          tmp.x = data[start].x;
+          tmp.y = 0;
+          tmp.y0 = 0;
+          tmp.y00 = 0;
+          _.each(data.slice(start, end + 1), function(item) {
+            tmp.y = tmp.y + item.y;
+            tmp.y0 = tmp.y0 + item.y0;
+            return tmp.y00 = tmp.y00 + item.y00;
+          });
+          aggdata.push(tmp);
+        }
+        return aggdata;
+      }
+    };
+
+    return AggColumnRenderer;
+
+  })(Tactile.DraggableRenderer);
+
   Tactile.DonutRenderer = (function(_super) {
     var Tactile;
 
@@ -1964,8 +2445,8 @@
       this.setupTooltips = __bind(this.setupTooltips, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
-      _ref4 = DonutRenderer.__super__.constructor.apply(this, arguments);
-      return _ref4;
+      _ref5 = DonutRenderer.__super__.constructor.apply(this, arguments);
+      return _ref5;
     }
 
     Tactile = window.Tactile || {};
@@ -2427,8 +2908,8 @@
     };
 
     Dragger.prototype._calculateSigFigs = function() {
-      var sigfigs, _ref5;
-      sigfigs = (_ref5 = this.renderer.utils.ourFunctor(this.series.sigfigs)) != null ? _ref5 : 0;
+      var sigfigs, _ref6;
+      sigfigs = (_ref6 = this.renderer.utils.ourFunctor(this.series.sigfigs)) != null ? _ref6 : 0;
       return Math.pow(10, sigfigs);
     };
 
@@ -2440,9 +2921,9 @@
     };
 
     Dragger.prototype.updateDraggedNode = function() {
-      var _ref5,
+      var _ref6,
         _this = this;
-      if (((_ref5 = this.dragged) != null ? _ref5.y : void 0) != null) {
+      if (((_ref6 = this.dragged) != null ? _ref6.y : void 0) != null) {
         return this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
           return d === _this.dragged.d;
         }).each(function(d) {
@@ -2502,9 +2983,9 @@
     };
 
     Dragger.prototype._mouseUp = function() {
-      var _ref5,
+      var _ref6,
         _this = this;
-      if (((_ref5 = this.dragged) != null ? _ref5.y : void 0) == null) {
+      if (((_ref6 = this.dragged) != null ? _ref6.y : void 0) == null) {
         return;
       }
       if (this.dragged) {
@@ -2713,8 +3194,8 @@
 
     function GaugeRenderer() {
       this._checkData = __bind(this._checkData, this);
-      _ref5 = GaugeRenderer.__super__.constructor.apply(this, arguments);
-      return _ref5;
+      _ref6 = GaugeRenderer.__super__.constructor.apply(this, arguments);
+      return _ref6;
     }
 
     GaugeRenderer.prototype.name = "gauge";
@@ -2891,8 +3372,8 @@
       this._yOffset = __bind(this._yOffset, this);
       this._xOffset = __bind(this._xOffset, this);
       this.initialize = __bind(this.initialize, this);
-      _ref6 = LeaderboardRenderer.__super__.constructor.apply(this, arguments);
-      return _ref6;
+      _ref7 = LeaderboardRenderer.__super__.constructor.apply(this, arguments);
+      return _ref7;
     }
 
     LeaderboardRenderer.prototype.name = "leaderboard";
@@ -2928,8 +3409,8 @@
       }
       className = "leaderboard-" + this.type;
       data = _.map(this.series.stack, function(d, i) {
-        var _ref7;
-        d.lastData = ((_ref7 = _this.lastData) != null ? _ref7[i] : void 0) || {
+        var _ref8;
+        d.lastData = ((_ref8 = _this.lastData) != null ? _ref8[i] : void 0) || {
           barPosition: 0,
           change: 0,
           label: "",
@@ -2991,8 +3472,8 @@
       this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".value").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).duration(transitionSpeed / 2).tween("text", function(d) {
-        var i, _ref7;
-        i = d3.interpolate((_ref7 = d.lastData) != null ? _ref7.value : void 0, d.value);
+        var i, _ref8;
+        i = d3.interpolate((_ref8 = d.lastData) != null ? _ref8.value : void 0, d.value);
         return function(t) {
           return this.textContent = _this.valueFormat(i(t));
         };
@@ -3000,8 +3481,8 @@
       this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".change").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).duration(transitionSpeed / 2).tween("text", function(d) {
-        var i, _ref7;
-        i = d3.interpolate((_ref7 = d.lastData) != null ? _ref7.change : void 0, d.change);
+        var i, _ref8;
+        i = d3.interpolate((_ref8 = d.lastData) != null ? _ref8.change : void 0, d.change);
         return function(t) {
           return this.textContent = _this.changeFormat(i(t));
         };
@@ -3081,8 +3562,8 @@
 
     function LineRenderer() {
       this.render = __bind(this.render, this);
-      _ref7 = LineRenderer.__super__.constructor.apply(this, arguments);
-      return _ref7;
+      _ref8 = LineRenderer.__super__.constructor.apply(this, arguments);
+      return _ref8;
     }
 
     LineRenderer.prototype.name = "line";
@@ -3116,7 +3597,7 @@
     };
 
     LineRenderer.prototype.render = function(transition) {
-      var circ, newCircs, _ref8, _ref9,
+      var circ, newCircs, _ref10, _ref9,
         _this = this;
       if (this.checkData) {
         this._checkData();
@@ -3131,11 +3612,11 @@
       }
       circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
       newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
-      if ((_ref8 = this.dragger) != null) {
-        _ref8.makeHandlers(newCircs);
-      }
       if ((_ref9 = this.dragger) != null) {
-        _ref9.updateDraggedNode();
+        _ref9.makeHandlers(newCircs);
+      }
+      if ((_ref10 = this.dragger) != null) {
+        _ref10.updateDraggedNode();
       }
       this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
         return _this._filterNaNs(d, 'x', 'y');
@@ -3258,8 +3739,8 @@
 
     function ScatterRenderer() {
       this._checkData = __bind(this._checkData, this);
-      _ref8 = ScatterRenderer.__super__.constructor.apply(this, arguments);
-      return _ref8;
+      _ref9 = ScatterRenderer.__super__.constructor.apply(this, arguments);
+      return _ref9;
     }
 
     ScatterRenderer.prototype.name = "scatter";
@@ -3342,8 +3823,8 @@
       this._seriesBarWidth = __bind(this._seriesBarWidth, this);
       this.seriesWidth = __bind(this.seriesWidth, this);
       this.render = __bind(this.render, this);
-      _ref9 = WaterfallRenderer.__super__.constructor.apply(this, arguments);
-      return _ref9;
+      _ref10 = WaterfallRenderer.__super__.constructor.apply(this, arguments);
+      return _ref10;
     }
 
     WaterfallRenderer.prototype.name = "waterfall";
@@ -3362,7 +3843,7 @@
     };
 
     WaterfallRenderer.prototype.render = function(transition) {
-      var line, nodes, _ref10,
+      var line, nodes, _ref11,
         _this = this;
       if (this.checkData) {
         this._checkData();
@@ -3371,8 +3852,8 @@
         this.transition = transition;
       }
       if (this.series.disabled) {
-        if ((_ref10 = this.dragger) != null) {
-          _ref10.timesRendered = 0;
+        if ((_ref11 = this.dragger) != null) {
+          _ref11.timesRendered = 0;
         }
         this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
         this.seriesDraggableCanvas().selectAll("line").data(this.series.stack).remove();
@@ -3514,7 +3995,8 @@
       'donut': Tactile.DonutRenderer,
       'waterfall': Tactile.WaterfallRenderer,
       'leaderboard': Tactile.LeaderboardRenderer,
-      'bullet': Tactile.BulletRenderer
+      'bullet': Tactile.BulletRenderer,
+      'aggcolumn': Tactile.AggColumnRenderer
     };
 
     Chart.prototype.defaultPadding = {
@@ -3835,17 +4317,17 @@
     };
 
     Chart.prototype.render = function(transitionSpeed, options) {
-      var t, _ref10, _ref11,
+      var t, _ref11, _ref12,
         _this = this;
       if (options == null) {
         options = {};
       }
       if (this.renderers === void 0 || _.isEmpty(this.renderers) || this._allSeriesDisabled()) {
-        if ((_ref10 = this.vis) != null) {
-          _ref10.remove();
-        }
-        if ((_ref11 = this.draggableVis) != null) {
+        if ((_ref11 = this.vis) != null) {
           _ref11.remove();
+        }
+        if ((_ref12 = this.draggableVis) != null) {
+          _ref12.remove();
         }
         return;
       }
@@ -4055,7 +4537,7 @@
     };
 
     Chart.prototype.setSize = function(args) {
-      var elHeight, elWidth, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15;
+      var elHeight, elWidth, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16;
       if (args == null) {
         args = {};
       }
@@ -4065,23 +4547,23 @@
       this.outerHeight = args.height || elHeight || this.defaultHeight;
       this.innerWidth = this.outerWidth - this.padding.left - this.padding.right - this.axisPadding.left - this.axisPadding.right;
       this.innerHeight = this.outerHeight - this.padding.top - this.padding.bottom - this.axisPadding.top - this.axisPadding.bottom;
-      if ((_ref10 = this.x) != null) {
-        _ref10.range([0, this.width()]);
-      }
-      if ((_ref11 = this.y) != null) {
-        _ref11.range([this.height(), 0]);
+      if ((_ref11 = this.x) != null) {
+        _ref11.range([0, this.width()]);
       }
       if ((_ref12 = this.y) != null) {
-        _ref12.magnitude.range([0, this.height()]);
+        _ref12.range([this.height(), 0]);
       }
-      if ((_ref13 = this.y1) != null) {
-        _ref13.range([this.height(), 0]);
+      if ((_ref13 = this.y) != null) {
+        _ref13.magnitude.range([0, this.height()]);
       }
       if ((_ref14 = this.y1) != null) {
-        _ref14.range([0, this.height()]);
+        _ref14.range([this.height(), 0]);
       }
-      if ((_ref15 = this.vis) != null) {
-        _ref15.attr('width', this.innerWidth).attr('height', this.innerHeight);
+      if ((_ref15 = this.y1) != null) {
+        _ref15.range([0, this.height()]);
+      }
+      if ((_ref16 = this.vis) != null) {
+        _ref16.attr('width', this.innerWidth).attr('height', this.innerHeight);
       }
       this._updateRange();
       this._setupCanvas();
@@ -4197,6 +4679,9 @@
       _.each(this.renderersByType('column'), function(r) {
         return r.stackTransition(t, transitionSpeed);
       });
+      _.each(this.renderersByType('aggcolumn'), function(r) {
+        return r.stackTransition(t, transitionSpeed);
+      });
       _.each(this.renderersByType('area'), function(r) {
         return r.stackTransition(t, transitionSpeed);
       });
@@ -4216,6 +4701,9 @@
         transitionSpeed = this.transitionSpeed;
       }
       t = this.svg.transition().duration(transitionSpeed);
+      _.each(this.renderersByType('aggcolumn'), function(r) {
+        return r.unstackTransition(t, transitionSpeed);
+      });
       _.each(this.renderersByType('column'), function(r) {
         return r.unstackTransition(t, transitionSpeed);
       });
@@ -4338,11 +4826,11 @@
     };
 
     Chart.prototype._slice = function(d) {
-      var _ref10;
+      var _ref11;
       if (!this._allRenderersCartesian()) {
         return true;
       }
-      return (this.timeframe[0] <= (_ref10 = d.x) && _ref10 <= this.timeframe[1]);
+      return (this.timeframe[0] <= (_ref11 = d.x) && _ref11 <= this.timeframe[1]);
     };
 
     Chart.prototype._deg2rad = function(deg) {
@@ -4357,7 +4845,7 @@
 
     Chart.prototype._containsColumnChart = function() {
       return _.any(this.renderers, function(r) {
-        return r.name === 'column' || r.name === 'waterfall';
+        return r.name === 'column' || r.name === 'aggcolumn' || r.name === 'waterfall';
       });
     };
 
@@ -4381,49 +4869,49 @@
     };
 
     Chart.prototype._mouseup = function() {
-      var _ref10, _ref11, _ref12, _ref13, _ref14, _ref15;
+      var _ref11, _ref12, _ref13, _ref14, _ref15, _ref16;
       if (this.autoScale) {
         return;
       }
       d3.select("body").style("cursor", "auto");
-      if ((_ref10 = this.axes()) != null) {
-        if ((_ref11 = _ref10.x) != null) {
-          _ref11._mouseUp();
+      if ((_ref11 = this.axes()) != null) {
+        if ((_ref12 = _ref11.x) != null) {
+          _ref12._mouseUp();
         }
       }
-      if ((_ref12 = this.axes()) != null) {
-        if ((_ref13 = _ref12.y) != null) {
-          _ref13._mouseUp();
+      if ((_ref13 = this.axes()) != null) {
+        if ((_ref14 = _ref13.y) != null) {
+          _ref14._mouseUp();
         }
       }
-      if ((_ref14 = this.axes()) != null) {
-        if ((_ref15 = _ref14.y1) != null) {
-          _ref15._mouseUp();
+      if ((_ref15 = this.axes()) != null) {
+        if ((_ref16 = _ref15.y1) != null) {
+          _ref16._mouseUp();
         }
       }
       return this._lastYTranslate = 0;
     };
 
     Chart.prototype._mousemove = function() {
-      var _ref10, _ref11, _ref12, _ref13, _ref14, _ref15;
+      var _ref11, _ref12, _ref13, _ref14, _ref15, _ref16;
       if (this.autoScale) {
         return;
       }
-      if ((_ref10 = this.axes()) != null) {
-        if ((_ref11 = _ref10.x) != null) {
-          _ref11._mouseMove();
+      if ((_ref11 = this.axes()) != null) {
+        if ((_ref12 = _ref11.x) != null) {
+          _ref12._mouseMove();
         }
       }
-      if ((_ref12 = this.axes()) != null) {
-        if ((_ref13 = _ref12.y) != null) {
-          _ref13._mouseMove();
+      if ((_ref13 = this.axes()) != null) {
+        if ((_ref14 = _ref13.y) != null) {
+          _ref14._mouseMove();
         }
       }
-      return (_ref14 = this.axes()) != null ? (_ref15 = _ref14.y1) != null ? _ref15._mouseMove() : void 0 : void 0;
+      return (_ref15 = this.axes()) != null ? (_ref16 = _ref15.y1) != null ? _ref16._mouseMove() : void 0 : void 0;
     };
 
     Chart.prototype._checkXDomain = function() {
-      var max, maxXFrame, middle, min, minXFrame, _ref10;
+      var max, maxXFrame, middle, min, minXFrame, _ref11;
       min = this.x.domain()[0];
       max = this.x.domain()[1];
       if (min < this.availableXFrame[0]) {
@@ -4462,14 +4950,14 @@
         min = middle - maxXFrame / 2;
         max = middle + maxXFrame / 2;
       }
-      if ((_ref10 = this.axes().x) != null) {
-        _ref10.frame = [min, max];
+      if ((_ref11 = this.axes().x) != null) {
+        _ref11.frame = [min, max];
       }
       return this.x.domain([min, max]);
     };
 
     Chart.prototype._checkYDomain = function() {
-      var max, maxYFrame, middle, min, minYFrame, _ref10;
+      var max, maxYFrame, middle, min, minYFrame, _ref11;
       min = this.y.domain()[0];
       max = this.y.domain()[1];
       if (min < this.availableYFrame[0]) {
@@ -4508,14 +4996,14 @@
         min = middle - maxYFrame / 2;
         max = middle + maxYFrame / 2;
       }
-      if ((_ref10 = this.axes().y) != null) {
-        _ref10.frame = [min, max];
+      if ((_ref11 = this.axes().y) != null) {
+        _ref11.frame = [min, max];
       }
       return this.y.domain([min, max]);
     };
 
     Chart.prototype._checkY1Domain = function() {
-      var max, maxY1Frame, middle, min, minY1Frame, _ref10;
+      var max, maxY1Frame, middle, min, minY1Frame, _ref11;
       min = this.y1.domain()[0];
       max = this.y1.domain()[1];
       if (!this.availableY1Frame) {
@@ -4557,8 +5045,8 @@
         min = middle - maxY1Frame / 2;
         max = middle + maxY1Frame / 2;
       }
-      if ((_ref10 = this.axes().y1) != null) {
-        _ref10.frame = [min, max];
+      if ((_ref11 = this.axes().y1) != null) {
+        _ref11.frame = [min, max];
       }
       return this.y1.domain([min, max]);
     };
@@ -4567,7 +5055,7 @@
       var barWidth, dR, lastRange, rangeEnd, rangeStart, renders;
       if (this._containsColumnChart()) {
         renders = _.filter(this.renderers, function(r) {
-          return r.name === 'column' || r.name === 'waterfall';
+          return r.name === 'column' || r.name === 'aggcolumn' || r.name === 'waterfall';
         });
         lastRange = this.width();
         dR = lastRange / 2;

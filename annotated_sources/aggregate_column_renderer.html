@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>column_renderer.coffee</title>
+  <title>aggregate_column_renderer.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -151,7 +151,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>column_renderer.coffee</h1>
+                  <h1>aggregate_column_renderer.coffee</h1>
               </div>
           </li>
         
@@ -166,15 +166,15 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">ColumnRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">DraggableRenderer</span></span>
-  name: <span class="string">"column"</span>
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AggColumnRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">DraggableRenderer</span></span>
+  name: <span class="string">"aggcolumn"</span>
 
   specificDefaults:
     gapSize: <span class="number">0.15</span>
     tension: <span class="literal">null</span>
     round: <span class="literal">true</span>
     unstack: <span class="literal">true</span>
-
+    dinGapSize: <span class="number">0.15</span>
 
   initialize: (options = {}) -&gt;
     <span class="keyword">super</span>
@@ -186,14 +186,16 @@
   render: (transition)=&gt;
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
 
+    data = <span class="property">@_aggregateData</span>(<span class="property">@series</span>.stack)
+
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
-      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack).remove()
-      <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"circle"</span>).data(<span class="property">@series</span>.stack).remove()
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(data).remove()
+      <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"circle"</span>).data(data).remove()
       <span class="keyword">return</span>
 
-    nodes = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack)
+    nodes = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(data)
     nodes.enter()
       .append(<span class="string">"svg:rect"</span>)
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
@@ -204,6 +206,7 @@
 
     <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
       .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
+      .filter((d) =&gt; <span class="property">@yFunction</span>().magnitude(Math.abs(d.y)))
       .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@yFunction</span>().magnitude Math.abs(d.y))
       .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
       .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
@@ -215,9 +218,9 @@
       .attr(<span class="string">"class"</span>,
       (d, i) =&gt;
         [<span class="string">"bar"</span>,
-         (<span class="string">"colorless"</span> <span class="keyword">unless</span> <span class="property">@series</span>.color),
-         (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
-         (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))].join(<span class="string">" "</span>)) <span class="comment"># apply editable class for editable element</span>
+          (<span class="string">"colorless"</span> <span class="keyword">unless</span> <span class="property">@series</span>.color),
+          (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
+          (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))].join(<span class="string">" "</span>)) <span class="comment"># apply editable class for editable element</span>
 
     nodes.exit().remove()
 
@@ -233,7 +236,7 @@
       circ.style(<span class="string">"display"</span>, <span class="string">"none"</span>)
 
     circ = <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"circle"</span>)
-      .data(<span class="property">@series</span>.stack)
+      .data(data)
 
     newCircs = circ.enter().append(<span class="string">"svg:circle"</span>)
       .style(<span class="string">"display"</span>, <span class="string">"none"</span>)
@@ -258,11 +261,11 @@
       .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / <span class="number">2</span>)
       .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@_barY</span>(d) + (<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@yFunction</span>().magnitude(Math.abs(d.y)) <span class="keyword">else</span> <span class="number">0</span>))
       .attr(<span class="string">"r"</span>,
-        (d) =&gt;
-          (<span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d)
-            d.r
-          <span class="keyword">else</span>
-            (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
+      (d) =&gt;
+        (<span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d)
+          d.r
+        <span class="keyword">else</span>
+          (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
       )
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
       .attr(<span class="string">"class"</span>, (d, i) =&gt; [
@@ -339,7 +342,7 @@
     data = <span class="property">@series</span>.stack
 
     count = data.length
-    barWidth = <span class="property">@graph</span>.width() / count * (<span class="number">1</span> - <span class="property">@gapSize</span>)
+    barWidth = <span class="property">@graph</span>.width() / count * (<span class="number">1</span> - <span class="property">@dinGapSize</span>)<span class="comment">#@gapSize)</span>
 
   stackTransition: (transition, transitionSpeed)=&gt;
     <span class="property">@unstack</span> = <span class="literal">false</span>
@@ -429,23 +432,11 @@
   seriesWidth: =&gt;
     <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
       stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
-      width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+      width = stackWidth / (<span class="number">1</span> + <span class="property">@dinGapSize</span>)<span class="comment">#@gapSize)</span>
     <span class="keyword">else</span>
-      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@dinGapSize</span>)<span class="comment">#@gapSize)</span>
 
-  _seriesBarWidth: =&gt;
-    <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
-      stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
-      width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
-    <span class="keyword">else</span>
-      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
-
-    <span class="keyword">if</span> <span class="property">@unstack</span>
-      width = width / <span class="property">@graph</span>.series.filter(
-        (d) =&gt;
-          d.renderer == <span class="string">"column"</span>
-      ).array.length
-    width</pre></div></div>
+  _seriesBarWidth: =&gt;</pre></div></div>
             
         </li>
         
@@ -456,6 +447,38 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
+              <p>   if @series.stack.length &gt;= 2
+     stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
+     width = stackWidth / (1 + @gapSize)
+   else
+     width = @graph.width() / (1 + @gapSize)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    stack = <span class="property">@_aggregateData</span>(<span class="property">@series</span>.stack)
+    console.log <span class="string">"dinGapSize"</span>, <span class="property">@dinGapSize</span>, <span class="string">"lengthStack"</span>, stack.length
+    <span class="keyword">if</span> stack.length &gt;= <span class="number">2</span>
+      stackWidth = <span class="property">@graph</span>.x(stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(stack[<span class="number">0</span>].x)
+      width = stackWidth / (<span class="number">1</span> + <span class="property">@dinGapSize</span>)
+    <span class="keyword">else</span>
+      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@dinGapSize</span>)
+
+    <span class="keyword">if</span> <span class="property">@unstack</span>
+      width = width / <span class="property">@graph</span>.series.filter(
+        (d) =&gt;
+          d.renderer == <span class="string">"aggcolumn"</span>
+      ).array.length
+    width</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
               <p>when we have couple of series we want
 them all to be center-aligned around the x-value</p>
 
@@ -465,6 +488,7 @@ them all to be center-aligned around the x-value</p>
     count = <span class="property">@graph</span>.renderersByType(<span class="property">@name</span>).length
 
     <span class="keyword">if</span> count == <span class="number">1</span> || !<span class="property">@unstack</span>
+
       barXOffset = -seriesBarWidth / <span class="number">2</span>
     <span class="keyword">else</span>
       barXOffset = -seriesBarWidth * count / <span class="number">2</span>
@@ -475,11 +499,11 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>center the bar around the value it represents</p>
 
@@ -498,11 +522,11 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>if we want to display stacked bars y should be added y0 value</p>
 
@@ -522,11 +546,11 @@ them all to be center-aligned around the x-value</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Returns the index of this column renderer
 For example: if this is the third renderer of
@@ -539,7 +563,86 @@ on what is the number of the currently rendered bars</p>
             <div class="content"><div class='highlight'><pre>  _columnRendererIndex: -&gt;
     <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> <span class="property">@rendererIndex</span> == <span class="number">0</span> || <span class="property">@rendererIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>
     renderers = <span class="property">@graph</span>.renderers.slice(<span class="number">0</span>, <span class="property">@rendererIndex</span>)
-    _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length</pre></div></div>
+    _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length
+
+  _aggregateData: (data) -&gt;
+    xDomain = <span class="property">@graph</span>.x.domain()
+    data = _.filter data, (d)-&gt;
+      d.x &gt;= xDomain[<span class="number">0</span>] <span class="keyword">and</span> d.x &lt;= xDomain[<span class="number">1</span>]
+
+    aggdata = []
+    range = data.length
+    <span class="property">@dinGapSize</span> = <span class="property">@gapSize</span> / range
+    <span class="keyword">if</span> range &lt;= <span class="number">12</span>
+      <span class="keyword">return</span> data
+
+    <span class="keyword">else</span> <span class="keyword">if</span> <span class="number">12</span> &lt; range &lt;= <span class="number">36</span>
+      grouper = <span class="number">3</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <pre><code> @dinGapSize = @gapSize / grouper</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0</span> .. range - <span class="number">1</span>] <span class="keyword">by</span> grouper
+        tmp = []
+        start = i
+        end   = i + grouper - <span class="number">1</span>
+        end = range - <span class="number">1</span> <span class="keyword">if</span> end &gt; range - <span class="number">1</span>
+
+        tmp.x = data[start].x
+        tmp.y   = <span class="number">0</span>
+        tmp.y0  = <span class="number">0</span>
+        tmp.y00 = <span class="number">0</span>
+
+        _.each data.slice(start, end + <span class="number">1</span>), (item)-&gt;
+          tmp.y   = tmp.y   + item.y
+          tmp.y0  = tmp.y0  + item.y0
+          tmp.y00 = tmp.y00 + item.y00
+
+        aggdata.push tmp
+      <span class="keyword">return</span> aggdata
+    <span class="keyword">else</span>
+      grouper = <span class="number">12</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <pre><code> @dinGapSize = @gapSize / grouper</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0</span> .. range - <span class="number">1</span>] <span class="keyword">by</span> grouper
+        tmp = []
+        start = i
+        end   = i + grouper - <span class="number">1</span>
+        end = range - <span class="number">1</span> <span class="keyword">if</span> end &gt; range - <span class="number">1</span>
+
+        tmp.x   = data[start].x
+        tmp.y   = <span class="number">0</span>
+        tmp.y0  = <span class="number">0</span>
+        tmp.y00 = <span class="number">0</span>
+        _.each data.slice(start, end + <span class="number">1</span>), (item)-&gt;
+          tmp.y   = tmp.y   + item.y
+          tmp.y0  = tmp.y0  + item.y0
+          tmp.y00 = tmp.y00 + item.y00
+
+        aggdata.push tmp
+      <span class="keyword">return</span> aggdata</pre></div></div>
             
         </li>
         
