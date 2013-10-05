@@ -35,10 +35,10 @@ class Tactile.AxisLinear extends Tactile.AxisBase
 
     transition.select('.' + className).call(axis)
 
-    @g.selectAll("text")
-      .style("cursor", if @horizontal then "ew-resize" else "ns-resize")
-      .on("mousedown.drag",  @_axisDrag)
-      .on("touchstart.drag", @_axisDrag);
+#    @g.selectAll("text")
+#      .style("cursor", if @horizontal then "ew-resize" else "ns-resize")
+#      .on("mousedown.drag",  @_axisDrag)
+#      .on("touchstart.drag", @_axisDrag);
 
     # if needed add the zero line
     className = "#{@options.axis}-zero-line"

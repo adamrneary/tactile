@@ -260,7 +260,7 @@ class Tactile.Chart
     _.each @gridList, (grid) =>
       grid.render(t)
 
-    @_setupZoom()
+    #@_setupZoom()
     @timesRendered++
 
     @updateCallbacks.forEach (callback) ->
@@ -424,34 +424,34 @@ class Tactile.Chart
     @
 
   _setupZoom: ->
-    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
-    @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
-    zoom = d3.behavior.zoom()
-    d3.select(@_element)
-      .on("mousedown.plot-drag", @_plotDrag)
-      .on("touchstart.plot-drag", @_plotDrag)
-      .on("mousemove.drag", @_mousemove)
-      .on("touchmove.drag", @_mousemove)
-      .on("mouseup.plot-drag",   @_mouseup)
-      .on("touchend.plot-drag",  @_mouseup)
-
-    unless @autoScale
-      d3.select(@svg[0][0])
-        .call(zoom.x(@x).y(@y).on("zoom", =>
-          return if @autoScale
-          dy = d3.event.translate[1] - @_lastYTranslate
-          dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
-          @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
-          @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
-          @_lastYTranslate = d3.event.translate[1];
-          @_checkXDomain()
-          @_checkYDomain()
-          @_checkY1Domain()
-
-          @manipulateCallbacks.forEach (callback) ->
-            callback()
-          @render(0, zooming: true)
-        ))
+#    @y.magnitude.domain([0, @y.domain()[1] - @y.domain()[0]])
+#    @y1.magnitude.domain([0, @y1.domain()[1] - @y1.domain()[0]])
+#    zoom = d3.behavior.zoom()
+#    d3.select(@_element)
+#      .on("mousedown.plot-drag", @_plotDrag)
+#      .on("touchstart.plot-drag", @_plotDrag)
+#      .on("mousemove.drag", @_mousemove)
+#      .on("touchmove.drag", @_mousemove)
+#      .on("mouseup.plot-drag",   @_mouseup)
+#      .on("touchend.plot-drag",  @_mouseup)
+#
+#    unless @autoScale
+#      d3.select(@svg[0][0])
+#        .call(zoom.x(@x).y(@y).on("zoom", =>
+#          return if @autoScale
+#          dy = d3.event.translate[1] - @_lastYTranslate
+#          dy1 = (dy / (@y.domain()[1] - @y.domain()[0])) * (@y1.domain()[1] - @y1.domain()[0])
+#          @y1.domain([@y1.domain()[0] + dy1, @y1.domain()[1] + dy1])
+#          @y1.domain([@y1.domain()[0] * d3.event.scale, @y1.domain()[1] / d3.event.scale])
+#          @_lastYTranslate = d3.event.translate[1];
+#          @_checkXDomain()
+#          @_checkYDomain()
+#          @_checkY1Domain()
+#
+#          @manipulateCallbacks.forEach (callback) ->
+#            callback()
+#          @render(0, zooming: true)
+#        ))
 
   _setupDomainAndRange: ->
     @x = d3.scale.linear()
@@ -512,7 +512,7 @@ class Tactile.Chart
     _.each(@renderersByType('aggcolumn'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
-    @_setupZoom()
+    #@_setupZoom()
     _.each  @axesList, (axis) =>
       axis.render(t)
 
@@ -524,7 +524,7 @@ class Tactile.Chart
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
-    @_setupZoom()
+    #@_setupZoom()
     _.each  @axesList, (axis) =>
       axis.render(t)
 
@@ -650,22 +650,22 @@ class Tactile.Chart
     _.every(@series.array, (s) -> s.disabled is true)
 
   _plotDrag: =>
-    return if @autoScale
-    d3.select("body").style("cursor", "move")
+#    return if @autoScale
+#    d3.select("body").style("cursor", "move")
 
   _mouseup: =>
-    return if @autoScale
-    d3.select("body").style("cursor", "auto")
-    @axes()?.x?._mouseUp()
-    @axes()?.y?._mouseUp()
-    @axes()?.y1?._mouseUp()
-    @_lastYTranslate = 0
+#    return if @autoScale
+#    d3.select("body").style("cursor", "auto")
+#    @axes()?.x?._mouseUp()
+#    @axes()?.y?._mouseUp()
+#    @axes()?.y1?._mouseUp()
+#    @_lastYTranslate = 0
 
   _mousemove: =>
-    return if @autoScale
-    @axes()?.x?._mouseMove()
-    @axes()?.y?._mouseMove()
-    @axes()?.y1?._mouseMove()
+#    return if @autoScale
+#    @axes()?.x?._mouseMove()
+#    @axes()?.y?._mouseMove()
+#    @axes()?.y1?._mouseMove()
 
 
   # TODO: move away to a separate class. Zoomable or sth.
