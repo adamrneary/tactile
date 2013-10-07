@@ -8,8 +8,8 @@ generateData = (count) =>
     data[i] =
       period: new Date(2012,  0 + i, 1).getTime()
       y0: Math.floor Math.random()*100
-#      y1: Math.floor Math.random()*100
-#      y2: Math.floor Math.random()*100
+      y1: Math.floor Math.random()*100
+      y2: Math.floor Math.random()*100
 #      y3: Math.floor Math.random()*100
 #      y4: Math.floor Math.random()*100
     i++
@@ -17,8 +17,14 @@ generateData = (count) =>
 
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0])
-  .data(generateData(30))
+  .data(generateData(12))
   .setXFrame(frameVal)
+  .axes
+    y: "linear"
+    x:
+      dimension: "time"
+      options:
+        ticksTreatment: "align-middle"
 
 chart.addSeries [
   name: "y0"
@@ -30,26 +36,26 @@ chart.addSeries [
   dataTransform: (d) ->
     x: d.period
     y: d.y0
-#,
-#  name: "y1"
-#  renderer: "aggcolumn"
-#  round: false
-#  color: "#6060c0"
-#  tooltip: (d) ->
-#    d.y + " y1"
-#  dataTransform: (d) ->
-#    x: d.period
-#    y: d.y1
-#,
-#  name: "y2"
-#  renderer: "aggcolumn"
-#  round: false
-#  color: "#6020c0"
-#  tooltip: (d) ->
-#    d.y + " y2"
-#  dataTransform: (d) ->
-#    x: d.period
-#    y: d.y2
+,
+  name: "y1"
+  renderer: "aggcolumn"
+  round: false
+  color: "#6060c0"
+  tooltip: (d) ->
+    d.y + " y1"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y1
+,
+  name: "y2"
+  renderer: "aggcolumn"
+  round: false
+  color: "#6020c0"
+  tooltip: (d) ->
+    d.y + " y2"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y2
 #,
 #  name: "y3"
 #  renderer: "aggcolumn"
@@ -80,7 +86,7 @@ buttonGroup = $("<div class='btn-group'></div>")
 groupButton = $("<button class='btn btn-mini'>Grouped</button>")
 stackButton = $("<button class='btn btn-mini'>Stacked</button>")
 setDataButton = $("<button class='btn btn-mini btn-success'>Set data</button>")
-dataCountSpinBox = $("<input type='number' min='10' max='100' step='10' value='30' class='span1'>")
+dataCountSpinBox = $("<input type='number' min='10' max='100' step='10' value='12' class='span1'>")
 
 buttonGroup.prepend groupButton
 buttonGroup.prepend stackButton

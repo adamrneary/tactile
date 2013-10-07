@@ -6,7 +6,7 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     tension: null
     round: true
     unstack: true
-    dinGapSize: 0.15
+    dinGapSize: 1
 
   initialize: (options = {}) ->
     super
@@ -17,17 +17,17 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
 
   render: (transition)=>
     @_checkData() if @checkData
+    @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
 
-    data = @_aggregateData(@series.stack)
-
+    console.log "@aggdata", @aggdata
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
-      @seriesCanvas().selectAll("rect").data(data).remove()
-      @seriesDraggableCanvas().selectAll("circle").data(data).remove()
+      @seriesCanvas().selectAll("rect").data(@aggdata).remove()
+      @seriesDraggableCanvas().selectAll("circle").data(@aggdata).remove()
       return
 
-    nodes = @seriesCanvas().selectAll("rect").data(data)
+    nodes = @seriesCanvas().selectAll("rect").data(@aggdata)
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
@@ -37,8 +37,6 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
       )
 
     @transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .filter((d) => @yFunction().magnitude(Math.abs(d.y)))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
@@ -68,7 +66,7 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
       circ.style("display", "none")
 
     circ = @seriesDraggableCanvas().selectAll("circle")
-      .data(data)
+      .data(@aggdata)
 
     newCircs = circ.enter().append("svg:circle")
       .style("display", "none")
@@ -86,18 +84,16 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
 
-
-
     @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
       .attr("r",
-      (d) =>
-        (if ("r" of d)
-          d.r
-        else
-          (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+        (d) =>
+          (if ("r" of d)
+            d.r
+          else
+            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
@@ -153,7 +149,6 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     barWidth = @graph.width() / count * (1 - @dinGapSize)#@gapSize)
 
   stackTransition: (transition, transitionSpeed)=>
-    @unstack = false
     @graph.setYFrame([NaN, NaN])
     @graph.setY1Frame([NaN, NaN])
     @graph.discoverRange()
@@ -161,28 +156,18 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkY1Domain()
 
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/12))
       .attr("y", @_barY)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
-
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
-      .attr("width", @_seriesBarWidth())
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
+      .transition()
       .attr("x", @_barX)
+      .attr("width", @_seriesBarWidth())
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/12))
+      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
+      .transition()
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
@@ -193,33 +178,18 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkY1Domain()
 
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/12))
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .transition()
       .attr("y", @_barY)
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/12))
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+      .transition()
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
-
-  _transformMatrix: (d) =>
-    # A matrix transform for handling negative values
-    matrix = [1, 0, 0, ((if d.y < 0 then -1 else 1)),
-      0, ((if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) * 2 else 0))
-    ]
-    "matrix(" + matrix.join(",") + ")"
 
   _edgeRatio: =>
     if @series.round then Math.round(0.05783 * @_seriesBarWidth() + 1) else 0
@@ -227,57 +197,38 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
   seriesWidth: =>
     if @series.stack.length >= 2
       stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @dinGapSize)#@gapSize)
-    else
-      width = @graph.width() / (1 + @dinGapSize)#@gapSize)
-
-  _seriesBarWidth: =>
-#    if @series.stack.length >= 2
-#      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-#      width = stackWidth / (1 + @gapSize)
-#    else
-#      width = @graph.width() / (1 + @gapSize)
-
-    stack = @_aggregateData(@series.stack)
-    console.log "dinGapSize", @dinGapSize, "lengthStack", stack.length
-    if stack.length >= 2
-      stackWidth = @graph.x(stack[1].x) - @graph.x(stack[0].x)
       width = stackWidth / (1 + @dinGapSize)
     else
       width = @graph.width() / (1 + @dinGapSize)
 
+  _seriesBarWidth: =>
+    stack = @aggdata
+    width = @graph.width() / stack.length
+#    console.log "width", width
     if @unstack
-      width = width / @graph.series.filter(
-        (d) =>
-          d.renderer == "aggcolumn"
+      width = width / @graph.series.filter((d) =>
+        d.renderer == "aggcolumn"
       ).array.length
+    width = width - (2 * @dinGapSize)
     width
 
-  # when we have couple of series we want
-  # them all to be center-aligned around the x-value
-  _barXOffset: (seriesBarWidth) ->
-    count = @graph.renderersByType(@name).length
-
-    if count == 1 || !@unstack
-
-      barXOffset = -seriesBarWidth / 2
-    else
-      barXOffset = -seriesBarWidth * count / 2
-
   _barX: (d) =>
-    x = @graph.x(d.x)
+    x = d.x
 
-    # center the bar around the value it represents
     seriesBarWidth = @_seriesBarWidth()
-    initialX = x + @_barXOffset(seriesBarWidth)
 
+    cnt_series = @graph.series.filter((d) =>
+      d.renderer == "aggcolumn"
+      ).array.length
+
+    initialX = x * (seriesBarWidth + 2 * @dinGapSize) + @dinGapSize
     if @unstack
+      initialX = x * (seriesBarWidth + 2 * @dinGapSize) * cnt_series + @dinGapSize
       initialX + (@_columnRendererIndex() * seriesBarWidth)
     else
       return initialX
 
   _barY: (d) =>
-    # if we want to display stacked bars y should be added y0 value
     if @unstack
       if d.y > 0
         @yFunction()(d.y)
@@ -289,66 +240,28 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
       else
         @yFunction()(d.y0)
 
-  # Returns the index of this column renderer
-  # For example: if this is the third renderer of
-  #the column type it will have index equal to 2
-  #
-  # this is handy when you need to modify the x,y values depending
-  # on what is the number of the currently rendered bars
   _columnRendererIndex: ->
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
-  _aggregateData: (data) ->
-    xDomain = @graph.x.domain()
-    data = _.filter data, (d)->
-      d.x >= xDomain[0] and d.x <= xDomain[1]
+  domain: ->
+    domain = super
+    values = []
+    data = @utils.aggregateData @series.stack, @graph.x.domain()
+    console.log "data", data
+    _.each data, (d) =>
+      if @unstack
+        values.push d.y
+      else
+        values.push d.y + d.y0
 
-    aggdata = []
-    range = data.length
-    @dinGapSize = @gapSize / range
-    if range <= 12
-      return data
+    if data.length == 0
+      return domain
 
-    else if 12 < range <= 36
-      grouper = 3
-#      @dinGapSize = @gapSize / grouper
-      for i in [0 .. range - 1] by grouper
-        tmp = []
-        start = i
-        end   = i + grouper - 1
-        end = range - 1 if end > range - 1
+    yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
+    yMax = @graph.max or d3.max(values)
 
-        tmp.x = data[start].x
-        tmp.y   = 0
-        tmp.y0  = 0
-        tmp.y00 = 0
-
-        _.each data.slice(start, end + 1), (item)->
-          tmp.y   = tmp.y   + item.y
-          tmp.y0  = tmp.y0  + item.y0
-          tmp.y00 = tmp.y00 + item.y00
-
-        aggdata.push tmp
-      return aggdata
-    else
-      grouper = 12
-#      @dinGapSize = @gapSize / grouper
-      for i in [0 .. range - 1] by grouper
-        tmp = []
-        start = i
-        end   = i + grouper - 1
-        end = range - 1 if end > range - 1
-
-        tmp.x   = data[start].x
-        tmp.y   = 0
-        tmp.y0  = 0
-        tmp.y00 = 0
-        _.each data.slice(start, end + 1), (item)->
-          tmp.y   = tmp.y   + item.y
-          tmp.y0  = tmp.y0  + item.y0
-          tmp.y00 = tmp.y00 + item.y00
-
-        aggdata.push tmp
-      return aggdata
+    domain.y = [yMin, yMax]
+    console.log "domain after", domain
+    domain

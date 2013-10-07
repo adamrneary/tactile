@@ -93,3 +93,69 @@ class Tactile.Utils
       check = false
 
     check
+
+  aggregateData: (data, domain) ->
+    xDomain = domain
+    data = _.filter data, (d)->
+      d.x >= xDomain[0] and d.x <= xDomain[1]
+
+    aggdata = []
+    range = data.length
+    console.log "data", data,"range ", range
+
+    if range <= 12
+      for i in [0 .. range - 1]
+        tmp = {}
+        tmp.x   = i
+        tmp.y   = data[i].y
+        tmp.y0  = data[i].y0
+        tmp.y00 = data[i].y00
+        aggdata.push tmp
+      return aggdata
+
+    else if 12 < range <= 36
+      grouper = 3
+      #      @dinGapSize = @gapSize / grouper
+      index = 0
+      for i in [0 .. range - 1] by grouper
+        tmp = {}
+        start = i
+        end   = i + grouper - 1
+        end = range - 1 if end > range - 1
+
+        #        tmp.x = data[start].x + (data[end].x - data[start].x)/2
+        tmp.x = index
+        tmp.y   = 0
+        tmp.y0  = 0
+        tmp.y00 = 0
+
+        _.each data.slice(start, end + 1), (item)->
+          tmp.y   = tmp.y   + item.y
+          tmp.y0  = tmp.y0  + item.y0
+          tmp.y00 = tmp.y00 + item.y00
+        index = index + 1
+
+        aggdata.push tmp
+      return aggdata
+    else
+      grouper = 12
+      #      @dinGapSize = @gapSize / grouper
+      index = 0
+      for i in [0 .. range - 1] by grouper
+        tmp = {}
+        start = i
+        end   = i + grouper - 1
+        end = range - 1 if end > range - 1
+
+        #        tmp.x = data[start].x + (data[end].x - data[start].x)/2
+        tmp.x = index
+        tmp.y   = 0
+        tmp.y0  = 0
+        tmp.y00 = 0
+        _.each data.slice(start, end + 1), (item)->
+          tmp.y   = tmp.y   + item.y
+          tmp.y0  = tmp.y0  + item.y0
+          tmp.y00 = tmp.y00 + item.y00
+        index = index + 1
+        aggdata.push tmp
+      return aggdata

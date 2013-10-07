@@ -21,9 +21,9 @@ module.exports = (grunt) ->
         src: "src/coffee/**/*.coffee"
 
     coffee:
-      compileJoined:
-        options:
-          join: true
+      options:
+        join: true
+      tactile:
         files:
           "ghpages/assets/tactile.js": [
             "src/coffee/index.coffee"
@@ -55,9 +55,11 @@ module.exports = (grunt) ->
 
             "src/coffee/models/chart.coffee"
           ]
-
+      examples:
+        files:
           "ghpages/assets/examples.js":   "src/examples/index.coffee"
-
+      tests:
+        files:
           "ghpages/assets/unit_tests.js": [
             "test/client/area.coffee"
             "test/client/column.coffee"
