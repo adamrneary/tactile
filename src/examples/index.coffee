@@ -27,12 +27,6 @@ cartesian = [
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
 ,
-  shortLink: "mini"
-  title: "Minichart"
-,
-  shortLink: "activecell-examples"
-  title: "Activecell Examples"
-,
   shortLink: "aggregated_data"
   title: "Column Aggregated Data Chart"
 ]
@@ -78,18 +72,6 @@ components = [
 ,
   shortLink:"filter"
   title: "Filters (future)"
-,
-  shortLink:"stacked-column-big-data"
-  title: "Stacked column big data"
-,
-  shortLink:"zoom"
-  title: "Zoom"
-,
-  shortLink:"column-zoom"
-  title: "Column zoom"
-,
-  shortLink:"dual-scaled-zoom"
-  title: "Secondary y-axis zoom"
 ]
 
 # core = [
