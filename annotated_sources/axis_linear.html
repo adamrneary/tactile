@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -201,12 +196,7 @@
       .tickSize(<span class="property">@tickSize</span>)
       .tickValues(<span class="property">@tickValues</span>);
 
-    transition.select(<span class="string">'.'</span> + className).call(axis)
-
-    <span class="property">@g</span>.selectAll(<span class="string">"text"</span>)
-      .style(<span class="string">"cursor"</span>, <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="string">"ew-resize"</span> <span class="keyword">else</span> <span class="string">"ns-resize"</span>)
-      .<span class="literal">on</span>(<span class="string">"mousedown.drag"</span>,  <span class="property">@_axisDrag</span>)
-      .<span class="literal">on</span>(<span class="string">"touchstart.drag"</span>, <span class="property">@_axisDrag</span>);</pre></div></div>
+    transition.select(<span class="string">'.'</span> + className).call(axis)</pre></div></div>
             
         </li>
         
@@ -217,7 +207,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>if needed add the zero line</p>
+              <p>   @g.selectAll(&quot;text&quot;)
+     .style(&quot;cursor&quot;, if @horizontal then &quot;ew-resize&quot; else &quot;ns-resize&quot;)
+     .on(&quot;mousedown.drag&quot;,  @_axisDrag)
+     .on(&quot;touchstart.drag&quot;, @_axisDrag);</p>
+<p>if needed add the zero line</p>
 
             </div>
             

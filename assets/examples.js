@@ -30,12 +30,6 @@
     }, {
       shortLink: "mini",
       title: "Minichart"
-    }, {
-      shortLink: "activecell-examples",
-      title: "Activecell Examples"
-    }, {
-      shortLink: "aggregated_data",
-      title: "Column Aggregated Data Chart"
     }
   ];
 
@@ -106,6 +100,7 @@
     showcaseObject.routes[route.shortLink] = route.shortLink;
     return showcaseObject[route.shortLink] = function() {
       var url, urlCoffee;
+      console.log("urururururu4");
       $("#example_header").text(route.title);
       urlCoffee = "examples/" + route.shortLink + ".coffee";
       url = "examples/" + route.shortLink + ".js";
@@ -113,6 +108,7 @@
       if (route.groupingButtons) {
         $(".stack-unstack-buttons").show();
       }
+      console.log("urlCoffee", urlCoffee, "data", data);
       return $.get(urlCoffee, function(data) {
         var source;
         $("#example_view").empty();
@@ -139,7 +135,9 @@
     });
     Showcase = Backbone.Router.extend(showcaseObject);
     showcase = new Showcase();
-    return window.location.hash = "#aggregated_data";
+    if (!window.location.hash) {
+      return showcase.navigate("#line");
+    }
   });
 
 }).call(this);
