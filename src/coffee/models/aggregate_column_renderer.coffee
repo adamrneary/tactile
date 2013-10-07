@@ -17,17 +17,42 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
 
   render: (transition)=>
     @_checkData() if @checkData
-    @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
 
-    console.log "@aggdata", @aggdata
+#    oldAggData = @aggData
+    @aggData = @utils.aggregateData @series.stack, @graph.x.domain()
+
+#    transitionData = []
+#    if oldAggData[0].range[0] < @aggData[0].range[0]
+#      data = {}
+#      data.startX = -Infinity
+#      data.endX = @aggData[0].x
+#      data.startY = @aggData[0].y
+#      data.endY = @aggData[0].y
+#      data.startY0 = @aggData[0].y0
+#      data.endY0 = @aggData[0].y0
+#      transitionData.push data
+#
+#
+#
+#    console.log "oldAggData", oldAggData
+#    console.log "@aggData", @aggData
+#
+#
+#   template for new animation for aggregated data
+#   https://github.com/activecell/tactile/issues/144
+#
+#
+#
+#
+
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
-      @seriesCanvas().selectAll("rect").data(@aggdata).remove()
-      @seriesDraggableCanvas().selectAll("circle").data(@aggdata).remove()
+      @seriesCanvas().selectAll("rect").data(@aggData).remove()
+      @seriesDraggableCanvas().selectAll("circle").data(@aggData).remove()
       return
 
-    nodes = @seriesCanvas().selectAll("rect").data(@aggdata)
+    nodes = @seriesCanvas().selectAll("rect").data(@aggData)
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
@@ -66,7 +91,7 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
       circ.style("display", "none")
 
     circ = @seriesDraggableCanvas().selectAll("circle")
-      .data(@aggdata)
+      .data(@aggData)
 
     newCircs = circ.enter().append("svg:circle")
       .style("display", "none")
@@ -202,7 +227,7 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
       width = @graph.width() / (1 + @dinGapSize)
 
   _seriesBarWidth: =>
-    stack = @aggdata
+    stack = @aggData
     width = @graph.width() / stack.length
 #    console.log "width", width
     if @unstack

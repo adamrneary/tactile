@@ -101,7 +101,6 @@ class Tactile.Utils
 
     aggdata = []
     range = data.length
-    console.log "data", data,"range ", range
 
     if range <= 12
       for i in [0 .. range - 1]
@@ -110,6 +109,7 @@ class Tactile.Utils
         tmp.y   = data[i].y
         tmp.y0  = data[i].y0
         tmp.y00 = data[i].y00
+        tmp.range = [data[i].x, data[i].x]
         aggdata.push tmp
       return aggdata
 
@@ -133,8 +133,8 @@ class Tactile.Utils
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
+        tmp.range = [data[start].x, data[end].x]
         index = index + 1
-
         aggdata.push tmp
       return aggdata
     else
@@ -156,6 +156,7 @@ class Tactile.Utils
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
+        tmp.range = [data[start].x, data[end].x]
         index = index + 1
         aggdata.push tmp
       return aggdata
