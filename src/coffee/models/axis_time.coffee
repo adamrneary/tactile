@@ -88,13 +88,13 @@ class Tactile.AxisTime extends Tactile.AxisBase
       text.enter()
         .append("text")
         .attr("class", "title")
-        .style("cursor", "ew-resize")
+#        .style("cursor", "ew-resize")
       text.exit().remove()
     )
 
-    @g.selectAll("text")
-      .on("mousedown.drag",  @_axisDrag)
-      .on("touchstart.drag", @_axisDrag)
+#    @g.selectAll("text")
+#      .on("mousedown.drag",  @_axisDrag)
+#      .on("touchstart.drag", @_axisDrag)
 
     @g.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)

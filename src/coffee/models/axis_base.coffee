@@ -70,18 +70,18 @@ class Tactile.AxisBase
 
 
   _axisDrag: =>
-    p = d3.svg.mouse(@graph.svg.node())
-    @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
+#    p = d3.svg.mouse(@graph.svg.node())
+#    @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
+#    d3.event.preventDefault()
+#    d3.event.stopPropagation()
 
   _mouseUp: =>
-    return if isNaN(@down)
-    @down = Math.NaN;
-    @graph.manipulateCallbacks.forEach (callback) ->
-      callback()
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
+#    return if isNaN(@down)
+#    @down = Math.NaN;
+#    @graph.manipulateCallbacks.forEach (callback) ->
+#      callback()
+#    d3.event.preventDefault()
+#    d3.event.stopPropagation()
 
   destroy: ->
     @handleBottomPadding(true)
