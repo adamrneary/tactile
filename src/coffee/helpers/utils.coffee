@@ -101,7 +101,6 @@ class Tactile.Utils
 
     aggdata = []
     range = data.length
-    console.log "data", data,"range ", range
 
     if range <= 12
       for i in [0 .. range - 1]

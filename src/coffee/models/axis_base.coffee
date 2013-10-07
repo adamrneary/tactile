@@ -3,7 +3,7 @@ class Tactile.AxisBase
     @utils = new Tactile.Utils()
     @graph = options.graph
     @ticksTreatment = options.ticksTreatment or "plain"
-    @fontSize  = if @ticksTreatement then 10 else 12
+    @fontSize  = if @ticksTreatement is "small" then 10 else 12
     @frame = options.frame
 
     @marginForBottomTicks = 10

@@ -19,7 +19,6 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     @_checkData() if @checkData
     @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
 
-    console.log "@aggdata", @aggdata
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
@@ -204,7 +203,6 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
   _seriesBarWidth: =>
     stack = @aggdata
     width = @graph.width() / stack.length
-#    console.log "width", width
     if @unstack
       width = width / @graph.series.filter((d) =>
         d.renderer == "aggcolumn"
@@ -249,7 +247,6 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     domain = super
     values = []
     data = @utils.aggregateData @series.stack, @graph.x.domain()
-    console.log "data", data
     _.each data, (d) =>
       if @unstack
         values.push d.y
@@ -263,5 +260,4 @@ class Tactile.AggColumnRenderer extends Tactile.DraggableRenderer
     yMax = @graph.max or d3.max(values)
 
     domain.y = [yMin, yMax]
-    console.log "domain after", domain
     domain

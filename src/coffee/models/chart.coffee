@@ -276,7 +276,6 @@ class Tactile.Chart
     _.each @renderers, (renderer) =>
       if renderer.cartesian
         domain = renderer.domain()
-        console.log "yDomain", domain.y
         xDomain = domain.x if xDomain.length is 0
         yDomain = domain.y if yDomain.length is 0
         xDomain[0] = domain.x[0] if xDomain[0] > domain.x[0]

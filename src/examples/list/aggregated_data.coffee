@@ -1,12 +1,13 @@
-maxCount = 100
-frameVal = [new Date(2012,  2, 1).getTime(), new Date(2012,  2+maxCount, 1).getTime()]
+maxCount = 73
+frameVal = [new Date(2011,  2, 1).getTime(),
+            new Date(2011, 71, 1).getTime()]
 
 generateData = (count) =>
   data = []
   i = 0
   while i < count
     data[i] =
-      period: new Date(2012,  0 + i, 1).getTime()
+      period: new Date(2011,  0 + i, 1).getTime()
       y0: Math.floor Math.random()*100
       y1: Math.floor Math.random()*100
       y2: Math.floor Math.random()*100
@@ -17,7 +18,7 @@ generateData = (count) =>
 
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0])
-  .data(generateData(12))
+  .data(generateData(maxCount))
   .setXFrame(frameVal)
   .axes
     y: "linear"
@@ -111,10 +112,11 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: new Date(2012,  0, 1).getTime()
-  max: new Date(2012,  2 + maxCount, 1).getTime()
-  values: frameVal
+  min: 0
+  max: maxCount
+  values: [2, 71]
   range: true
   slide: (event, ui) ->
-    chart.setXFrame(ui.values)
+    chart.setXFrame([new Date(2011,  0+ui.values[0], 1).getTime(),
+                     new Date(2011,  0+ui.values[1], 1).getTime()])
     chart.render()
