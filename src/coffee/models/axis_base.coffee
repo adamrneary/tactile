@@ -3,7 +3,7 @@ class Tactile.AxisBase
     @utils = new Tactile.Utils()
     @graph = options.graph
     @ticksTreatment = options.ticksTreatment or "plain"
-    @fontSize  = if @ticksTreatement is "small" then 10 else 12
+    @fontSize  = if _.indexOf(@ticksTreatement, "small") != -1 then 10 else 12
     @frame = options.frame
 
     @marginForBottomTicks = 10
@@ -54,7 +54,7 @@ class Tactile.AxisBase
     return if @horizontal
     side = if @options.axis is 'y' then 'left' else 'right'
 
-      # TODO: would be great if this could change according to the legth of the labels
+      # TODO: would be great if this could change according to the length of the labels
     if destroy
       @graph.axisPadding.left = 0
       @graph.axisPadding.right = 0

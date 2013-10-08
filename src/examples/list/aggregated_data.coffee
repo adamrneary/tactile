@@ -1,6 +1,6 @@
 maxCount = 73
-frameVal = [new Date(2011,  2, 1).getTime(),
-            new Date(2011, 71, 1).getTime()]
+frameVal = [new Date(2011, 13, 1).getTime(),
+            new Date(2011, 49, 1).getTime()]
 
 generateData = (count) =>
   data = []
@@ -24,8 +24,7 @@ chart = new Tactile.Chart(unstack: false)
     y: "linear"
     x:
       dimension: "time"
-      options:
-        ticksTreatment: "align-middle"
+      ticksTreatment: "align-middle small"
 
 chart.addSeries [
   name: "y0"
@@ -114,7 +113,7 @@ $("#below-chart").html sl
 sl.slider
   min: 0
   max: maxCount
-  values: [2, 71]
+  values: [13, 49]
   range: true
   slide: (event, ui) ->
     chart.setXFrame([new Date(2011,  0+ui.values[0], 1).getTime(),

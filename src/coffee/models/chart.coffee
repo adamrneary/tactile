@@ -332,7 +332,13 @@ class Tactile.Chart
 
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k, showZeroLine: @defaultAxesOptions[k].showZeroLine}
+        defaults =
+          graph: @
+          dimension: @defaultAxesOptions[k].dimension
+          frame: @defaultAxesOptions[k].frame
+          axis: k
+          showZeroLine: @defaultAxesOptions[k].showZeroLine
+
         @initAxis _.extend defaults, args[k]
 
     @

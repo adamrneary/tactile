@@ -66,7 +66,12 @@ class Tactile.AxisTime extends Tactile.AxisBase
     return unless @graph.x?
 
     @g = @graph.vis.selectAll('g.x-ticks').data([0])
-    @g.enter().append('g').attr('class', 'x-ticks')
+    @g.enter()
+      .append('g')
+      .attr('class', 'x-ticks')
+      .attr("transform", (d) =>
+        @_tickX()
+        "translate(#{0}, 0)")
 
 
     ticks = @g.selectAll('g.x-tick')
@@ -78,10 +83,11 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
     ticks
       .attr("transform",
-        (d) =>
-          "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
+        (d, i) =>
+          "translate(#{@_tickX(d.value, i)}, #{@graph.height() + @marginForBottomTicks})")
 
     ticks.exit().remove()
+    @g.exit().remove()
 
     @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
@@ -157,12 +163,12 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
         item.value = startDate.getTime()
 
-        item.label = "#{startDate.toUTCString().split(' ')[2]} - #{endDate.toUTCString().split(' ')[2]}"
+        item.label = "#{startDate.toUTCString().split(' ')[2]}-#{endDate.toUTCString().split(' ')[2]}"
         if startDate.getTime() is date[1].getTime()
           item.label = startDate.toUTCString().split(' ')[2]
         else if endDate.getTime() > date[1].getTime()
           endDate = date[1]
-          item.label = "#{startDate.toUTCString().split(' ')[2]} - #{endDate.toUTCString().split(' ')[2]}"
+          item.label = "#{startDate.toUTCString().split(' ')[2]}-#{endDate.toUTCString().split(' ')[2]}"
         item.secondary = "#{endDate.getFullYear()}"
 
         labels.push item
@@ -190,7 +196,17 @@ class Tactile.AxisTime extends Tactile.AxisBase
         if startDate.getMonth() is 0 # Jan
           item.label = "#{startDate.getFullYear()}"
         else
-          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()} - #{startDate.getMonth()}/#{endDate.getFullYear()}"
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}-#{startDate.getMonth()}/#{endDate.getFullYear()}"
 
         labels.push item
     labels
+
+  _ticksX: () ->
+    @graph.renderers[0]._seriesBarWidth()
+
+  _tickX: (value, index) ->
+    console.log "_tickX", value
+    console.log "\t", @
+    console.log "\t", @graph
+
+    @graph.renderers[0]._barX({x: index}) + @graph.renderers[0]._seriesBarWidth() / 2
