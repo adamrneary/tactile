@@ -145,7 +145,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   barWidth: ->
     data = @series.stack
-
     count = data.length
     barWidth = @graph.width() / count * (1 - @gapSize)
 
@@ -158,27 +157,18 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkY1Domain()
 
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("y", @_barY)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+    .delay((d,i) => i*(transitionSpeed/@series.stack.length))
+    .attr("y", @_barY)
+    .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
+    .transition()
+    .attr("x", @_barX)
+    .attr("width", @_seriesBarWidth())
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/@series.stack.length))
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
-
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
-      .attr("width", @_seriesBarWidth())
-      .attr("x", @_barX)
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .transition()
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
 
 
   unstackTransition: (transition, transitionSpeed)=>
@@ -190,26 +180,19 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkY1Domain()
 
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/@series.stack.length))
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth())
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .transition()
       .attr("y", @_barY)
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .delay((d,i) => i*(transitionSpeed/@series.stack.length))
+      .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
+      .transition()
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
+
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values
