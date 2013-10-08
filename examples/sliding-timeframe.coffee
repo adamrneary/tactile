@@ -66,21 +66,21 @@ data = [
 ]
 
 chart = new Tactile.Chart(grid: true)
-  .element($("#example_view")[0])
+  .element($('#example_view')[0])
   .data(data)
-  .axes({x: {dimension: "time"}})
+  .axes({x: {dimension: 'time'}})
   .setXFrame(frameVal)
   .addSeries [
-    name: "xy"
-    renderer: "line"
-    color: "#c05020"
+    name: 'xy'
+    renderer: 'line'
+    color: '#c05020'
     dataTransform: (d) ->
       x: d.x
       y: d.y
   ,
-    name: "xz"
-    renderer: "line"
-    color: "#6060c0"
+    name: 'xz'
+    renderer: 'line'
+    color: '#6060c0'
     dataTransform: (d) ->
       x: d.x
       y: d.z
@@ -88,12 +88,12 @@ chart = new Tactile.Chart(grid: true)
 
 chart.render()
 
-$("#above-chart").html ''
+$('#above-chart').html ''
 
-sl = $("<div>")
-  .attr("id", "slider")
-  .attr("class", "ui-horizontal-slider")
-$("#below-chart").html sl
+sl = $('<div>')
+  .attr('id', 'slider')
+  .attr('class', 'ui-horizontal-slider')
+$('#below-chart').html sl
 sl.slider
   min: 0
   max: 15

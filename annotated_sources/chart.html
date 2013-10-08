@@ -54,6 +54,11 @@
               </a>
             
               
+              <a class="source" href="aggregate_column_renderer.html">
+                aggregate_column_renderer.coffee
+              </a>
+            
+              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -185,7 +190,8 @@
     <span class="string">'donut'</span>: Tactile.DonutRenderer
     <span class="string">'waterfall'</span>: Tactile.WaterfallRenderer
     <span class="string">'leaderboard'</span>: Tactile.LeaderboardRenderer
-    <span class="string">'bullet'</span>: Tactile.BulletRenderer</pre></div></div>
+    <span class="string">'bullet'</span>: Tactile.BulletRenderer
+    <span class="string">'aggcolumn'</span>: Tactile.AggColumnRenderer</pre></div></div>
             
         </li>
         
@@ -220,8 +226,8 @@
       dimension: <span class="string">"linear"</span>
       showZeroLine: <span class="literal">true</span>
 
-  defaultMinXFrame: <span class="number">1</span>
-  defaultMinYFrame: <span class="number">1</span>
+  defaultMinXFrame:  <span class="number">1</span>
+  defaultMinYFrame:  <span class="number">1</span>
   defaultMinY1Frame: <span class="number">1</span>
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
@@ -657,10 +663,14 @@ must be called after @discoverRange, but it&#39;s not needed to run it for each 
     _.each <span class="property">@renderers</span>, (renderer) =&gt;
       <span class="keyword">if</span> renderer.cartesian
         domain = renderer.domain()
-        xDomain = domain.x
-        yDomain = domain.y
+        xDomain = domain.x <span class="keyword">if</span> xDomain.length <span class="keyword">is</span> <span class="number">0</span>
+        yDomain = domain.y <span class="keyword">if</span> yDomain.length <span class="keyword">is</span> <span class="number">0</span>
+        xDomain[<span class="number">0</span>] = domain.x[<span class="number">0</span>] <span class="keyword">if</span> xDomain[<span class="number">0</span>] &gt; domain.x[<span class="number">0</span>]
+        xDomain[<span class="number">1</span>] = domain.x[<span class="number">1</span>] <span class="keyword">if</span> xDomain[<span class="number">1</span>] &lt; domain.x[<span class="number">1</span>]
+        yDomain[<span class="number">0</span>] = domain.y[<span class="number">0</span>] <span class="keyword">if</span> yDomain[<span class="number">0</span>] &gt; domain.y[<span class="number">0</span>]
+        yDomain[<span class="number">1</span>] = domain.y[<span class="number">1</span>] <span class="keyword">if</span> yDomain[<span class="number">1</span>] &lt; domain.y[<span class="number">1</span>]
         <span class="keyword">unless</span> renderer.series.ofDefaultAxis()
-          y1Domain = [<span class="number">0</span>, d3.max(<span class="property">@series</span>.ofAlternateScale().flat(<span class="string">'y'</span>))]
+          y1Domain = [<span class="number">0</span>, d3.max(<span class="property">@series</span>.ofAlternateScale().flat(<span class="string">'y'</span>))] <span class="keyword">if</span> y1Domain.length <span class="keyword">is</span> <span class="number">0</span>
 
 
     <span class="keyword">unless</span> <span class="property">@availableXFrame</span> <span class="keyword">then</span> <span class="property">@_autoSetAvailableXFrame</span> = <span class="literal">true</span>
@@ -921,8 +931,7 @@ width(), height() returns innerWidth as it&#39;s the most common used</p>
     <span class="property">@y</span> = d3.scale.linear()
       .domain([NaN, NaN])
     <span class="property">@y</span>.magnitude = d3.scale.linear()
-    <span class="property">@y1</span> = d3.scale.linear()
-      .domain([NaN, NaN])
+    <span class="property">@y1</span> = d3.scale.linear().domain([NaN, NaN])
     <span class="property">@y1</span>.magnitude = d3.scale.linear()
     <span class="property">@_updateRange</span>()
 
@@ -970,8 +979,13 @@ width(), height() returns innerWidth as it&#39;s the most common used</p>
   stackTransition: (transitionSpeed) =&gt;
     transitionSpeed = <span class="property">@transitionSpeed</span> <span class="keyword">if</span> transitionSpeed <span class="keyword">is</span> <span class="literal">undefined</span>
     t = <span class="property">@svg</span>.transition().duration(transitionSpeed)
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.unstack = <span class="literal">false</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.unstack = <span class="literal">false</span>)
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.unstack = <span class="literal">false</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.unstack = <span class="literal">false</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.stackTransition(t, transitionSpeed))</pre></div></div>
             
         </li>
@@ -994,8 +1008,13 @@ width(), height() returns innerWidth as it&#39;s the most common used</p>
   unstackTransition: (transitionSpeed) =&gt;
     transitionSpeed = <span class="property">@transitionSpeed</span> <span class="keyword">if</span> transitionSpeed <span class="keyword">is</span> <span class="literal">undefined</span>
     t = <span class="property">@svg</span>.transition().duration(transitionSpeed)
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.unstack = <span class="literal">true</span>)
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'aggcolumn'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.unstack = <span class="literal">true</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'column'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.unstack = <span class="literal">true</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'area'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))
+    _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.unstack = <span class="literal">true</span>)
     _.each(<span class="property">@renderersByType</span>(<span class="string">'donut'</span>), (r) -&gt; r.unstackTransition(t, transitionSpeed))</pre></div></div>
             
         </li>
@@ -1310,7 +1329,10 @@ See range_slider for a clue how it&#39;s used</p>
     _.uniq(_.map(<span class="property">@series</span>.array, (s) -&gt; s.renderer)).length &gt; <span class="number">1</span>
 
   _containsColumnChart: -&gt;
-    _.any(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
+    _.any(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'aggcolumn'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
+
+  _containsAggChart: -&gt;
+    _.any(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'aggcolumn'</span>)
 
   _allRenderersCartesian: -&gt;
     _.every(<span class="property">@renderers</span>, (r) -&gt; r.cartesian <span class="keyword">is</span> <span class="literal">true</span>)
@@ -1463,7 +1485,7 @@ See range_slider for a clue how it&#39;s used</p>
 
   _calculateXRange: =&gt;
     <span class="keyword">if</span> <span class="property">@_containsColumnChart</span>()
-      renders = _.filter(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
+      renders = _.filter(<span class="property">@renderers</span>, (r) -&gt; r.name == <span class="string">'column'</span> <span class="keyword">or</span> r.name == <span class="string">'aggcolumn'</span> <span class="keyword">or</span> r.name == <span class="string">'waterfall'</span>)
 
       lastRange = <span class="property">@width</span>()
       dR = lastRange / <span class="number">2</span>

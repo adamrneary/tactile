@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Tactile: Bad-ass interactive charts</title>
+    <link href="vendor/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="vendor/css/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="vendor/css/styleguide.css" rel="stylesheet" type="text/css">
+    <link href="assets/tactile.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="images/styleguide/favicon.ico">
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown" class="span2 dropdown-toggle brand">
+                    <img src="vendor/images/styleguide/activecell_logo.png" />
+                    Tactile.js <i class="icon-arrow-down"></i></a>
+
+                <ul role="menu" aria-labelledby="drop2" style="top: 40px;" class="dropdown-menu">
+                    <li><a href="http://launchpad.activecell.com/admin">Activecell admin (rails)</a></li>
+                    <li><a href="#">Porchetta admin (node/socket)</a></li><li class="divider"></li>
+                    <li><a href="http://shotgun-showcase.herokuapp.com">Shotgun.js</a></li>
+                    <li><a href="http://striker-showcase.herokuapp.com">Striker.js</a></li>
+                    <li><a href="http://tablestakes-showcase.herokuapp.com">Tablestakes.js</a></li>
+                    <li class="disabled"><a href="http://tactile-showcase.herokuapp.com">Tactile.js</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li><a id="home" href="./index.html"><i class="icon-home"></i> Home</a></li>
+                    <li><a id="demo" href="./line.html"><i class="icon-home"></i> Demo</a></li>
+                    <li><a id="doc" href="./docs.html"><i class="icon-list-alt"></i>Annotated source</a></li>
+                    <li><a id="test" href="./test.html"><i class="icon-ok"></i> Tests</a></li>
+                    <li><a id="/style_guide" href="./styleguide.html"><i class="icon-magic"></i> Style Guide</a></li>
+                    <li><a href="https://github.com/activecell/tactile"><i class="icon-book"></i> Source</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-wrapper textured-with-border">
+    <div id="main-content"><div class="container">
+  <div class="row">
+      <div class="span3">
+          <ul id="cartLinkList" class="nav nav-list">
+              <li class="nav-header">Cartesian series</li>
+              <li><a href="./scatter.html">Scatter</a></li><li><a href="./line.html">Line</a></li><li><a href="./column.html">Column</a></li><li><a href="./stacked-column.html">Stacked column</a></li><li><a href="./area.html">Area</a></li><li><a href="./stacked-area.html">Stacked area</a></li><li><a href="./multiple-series.html">Multiple series types</a></li><li><a href="./waterfall-timeseries.html">Waterfall (time series)</a></li></ul>
+          <ul id="noncartLinkList" class="nav nav-list">
+              <li class="nav-header">Non-cartesian series</li>
+              <li><a href="./gauge.html">Gauge</a></li><li><a href="./leaderboard.html">Leaderboard</a></li><li><a href="./bullet.html">Bullet</a></li><li><a href="./donut.html">Donut</a></li><li><a href="./multi-donut.html">Multiple donuts</a></li></ul>
+          <ul id="compLinkList" class="nav nav-list">
+              <li class="nav-header">Components</li>
+              <li><a href="./grid.html">Grid</a></li><li><a href="./sliding-timeframe.html">Sliding timeframe</a></li><li><a href="./chart-update.html">Real time updates</a></li><li><a href="./legend.html">Interactive legend</a></li><li><a href="./dual-scaled.html">Secondary y-axis</a></li><li><a href="./axes-toggle.html">Toggling axes</a></li><li><a href="./filter.html">Filters (future)</a></li></ul>
+      </div>
+
+    <div class="span9">
+      <h3 id="example_header">dual-scaled</h3>
+
+      <div id="above-chart"></div>
+      <div id="example" class="widget-block">
+        <div id="example_view" data-language="coffeescript"></div>
+      </div>
+      <div id="below-chart"></div>
+
+      <h3>Code for example</h3>
+      <pre>
+        <code id="example_js" data-language="coffeescript">frameVal = [0, 4]
+data = [
+  x: 0
+  y: 10
+  z: 0
+,
+  x: 1
+  y: 170
+  z: 20
+,
+  x: 2
+  y: 280
+  z: 50
+,
+  x: 3
+  y: 205
+  z: 35
+,
+  x: 4
+  y: 280
+  z: 55
+,
+  x: 5
+  y: 205
+  z: 70
+,
+  x: 6
+  y: 280
+  z: 75
+,
+  x: 7
+  y: 205
+  z: 95
+,
+  x: 8
+  y: 332
+  z: 100
+]
+
+chart = new Tactile.Chart(padding: {top: 0, right: 0, bottom: 5, left: 0})
+  .axes({x: {dimension: 'linear'}, y: {dimension: "linear"}, y1: {dimension: 'linear', tickFormat: (d) -> d + '%'}})
+  .element($("#example_view")[0])
+  .data(data)
+  .addSeries [
+    name: "enemies"
+    renderer: "column"
+    color: "#c05020"
+    tooltip: (d) ->
+      d.y + " enemies"
+  ,
+    yAxis: 'y1'
+    name: "friends"
+    renderer: "line"
+    color: "#6060c0"
+    tooltip: (d) ->
+      d.y + "%"
+
+    dataTransform: (d) ->
+      x: d.x
+      y: d.z
+  ]
+
+chart.render()
+
+# interactions
+
+$("#above-chart").html ''
+
+sl = $("<div>")
+  .attr("id", "slider")
+  .attr("class", "ui-horizontal-slider")
+$("#below-chart").html sl
+sl.slider
+  min: 0
+  max: 8
+  values: [0, 8]
+  range: true
+  slide: (event, ui) ->
+    chart.setXFrame(ui.values)
+    chart.render()</code>
+      </pre>
+    </div>
+    <hr>
+  </div>
+</div>
+
+
+</div>
+</div>
+
+<script src="vendor/js/jquery.js"></script>
+<script src="vendor/js/underscore.js"></script>
+<script src="vendor/js/backbone.js"></script>
+<script src="assets/d3.js"></script>
+<script src="vendor/js/bootstrap.js"></script>
+<script src="vendor/js/coffee-script.js"></script>
+<script src="vendor/js/jquery-ui.js"></script>
+<script src="vendor/rainbow/rainbow.js"></script>
+<script src="vendor/rainbow/language/generic.js"></script>
+<script src="vendor/rainbow/language/coffeescript.js"></script>
+
+<script src="assets/tactile.js" defer></script>
+<!--<script src='assets/examples.js' defer></script>--><script>Rainbow.color();</script>
+<script src='./assets/js/dual-scaled.js' defer=''></script>

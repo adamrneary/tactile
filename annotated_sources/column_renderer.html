@@ -54,6 +54,11 @@
               </a>
             
               
+              <a class="source" href="aggregate_column_renderer.html">
+                aggregate_column_renderer.coffee
+              </a>
+            
+              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -345,27 +350,18 @@
     <span class="property">@graph</span>._checkY1Domain()
 
     transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .duration(transitionSpeed/<span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
-      .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))
+    .delay((d,i) =&gt; i*(transitionSpeed/<span class="number">12</span>))
+    .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
+    .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@yFunction</span>().magnitude Math.abs(d.y))
+    .transition()
+    .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
+    .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>())
 
     transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .duration(transitionSpeed/<span class="number">2</span>)
+      .delay((d,i) =&gt; i*(transitionSpeed/<span class="number">12</span>))
       .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@_barY</span>(d) + (<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@yFunction</span>().magnitude(Math.abs(d.y)) <span class="keyword">else</span> <span class="number">0</span>))
-
-    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .delay(transitionSpeed/<span class="number">2</span>)
-      .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>())
-      .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
-
-    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .delay(transitionSpeed/<span class="number">2</span>)
+      .transition()
       .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / <span class="number">2</span>)
-
 
 
   unstackTransition: (transition, transitionSpeed)=&gt;
@@ -377,26 +373,19 @@
     <span class="property">@graph</span>._checkY1Domain()
 
     transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .duration(transitionSpeed/<span class="number">2</span>)
+      .delay((d,i) =&gt; i*(transitionSpeed/<span class="number">12</span>))
       .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
       .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>())
-
-    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .duration(transitionSpeed/<span class="number">2</span>)
-      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / <span class="number">2</span>)
-
-    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .delay(transitionSpeed/<span class="number">2</span>)
-      .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))
+      .transition()
       .attr(<span class="string">"y"</span>, <span class="property">@_barY</span>)
+      .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@yFunction</span>().magnitude Math.abs(d.y))
 
     transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">"x"</span>, <span class="string">"y"</span>))
-      .delay(transitionSpeed/<span class="number">2</span>)
+      .delay((d,i) =&gt; i*(transitionSpeed/<span class="number">12</span>))
+      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / <span class="number">2</span>)
+      .transition()
       .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@_barY</span>(d) + (<span class="keyword">if</span> d.y &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@yFunction</span>().magnitude(Math.abs(d.y)) <span class="keyword">else</span> <span class="number">0</span>))
+
 
   _transformMatrix: (d) =&gt;</pre></div></div>
             
