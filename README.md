@@ -16,6 +16,7 @@ This library achieves these goals and more, providing a platform for a truly ric
 
 ## Installation
 
+    $ bower install git@github.com:activecell/tactile.git#0.x.x --save
 
 ## The five-minute setup.
 Check your system for local requirements (run until it passes!):
@@ -28,10 +29,7 @@ Run tests to ensure that all pass:
 
 Run the project locally (with tests and watcher):
 
-  1. run npm install
-  2. if grunt-cli not installed, install it globally: npm install grunt-cli -g
-  3. run in tactile folder: grunt (will run default grunt task, which create ghpages folder and compile static site)
-  4. Go to tactile/ghpages and open index.html
+    npm start
 
 Then navigate to the [localhost:5000](http://localhost:5000).
 

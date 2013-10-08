@@ -27,8 +27,8 @@ cartesian = [
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
 ,
-  shortLink: "aggregated_data"
-  title: "Column Aggregated Data Chart"
+  shortLink: "mini"
+  title: "Minichart"
 ]
 
 noncartesian = [
@@ -72,6 +72,18 @@ components = [
 ,
   shortLink:"filter"
   title: "Filters (future)"
+,
+  shortLink:"stacked-column-big-data"
+  title: "Stacked column big data"
+,
+  shortLink:"zoom"
+  title: "Zoom"
+,
+  shortLink:"column-zoom"
+  title: "Column zoom"
+,
+  shortLink:"dual-scaled-zoom"
+  title: "Secondary y-axis zoom"
 ]
 
 # core = [
@@ -117,4 +129,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#aggregated_data"
+  window.location.hash = "#line"
