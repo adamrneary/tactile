@@ -20,7 +20,6 @@ generateData = (count) =>
 
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0])
-  .setAutoScale(false)
   .data(generateData(count))
   .setXFrame(frameVal)
   .axes
