@@ -60,7 +60,9 @@ class Tactile.RendererBase
       values = []
       data = @utils.aggregateData @series.stack, @graph.x.domain()
       _.each data, (d) =>
-        if @unstack
+        if @series.renderer is 'waterfall'
+          values.push d.y + d.y00
+        else if @unstack
           values.push d.y
         else
           values.push d.y + d.y0

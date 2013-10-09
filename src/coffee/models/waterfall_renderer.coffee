@@ -13,14 +13,19 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
   render: (transition)=>
     @_checkData() if @checkData
 
+    if @aggregated
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
+
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
-      @seriesCanvas().selectAll("rect").data(@series.stack).remove()
-      @seriesDraggableCanvas().selectAll("line").data(@series.stack).remove()
+      @seriesCanvas().selectAll("rect").data(@aggdata).remove()
+      @seriesDraggableCanvas().selectAll("line").data(@aggdata).remove()
       return
 
-    nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
+    nodes = @seriesCanvas().selectAll("rect").data(@aggdata)
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
@@ -87,26 +92,34 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
+    if @aggregated
+      stack = @aggdata
     else
-      width = @graph.width() / (1 + @gapSize)
+      stack = @series.stack
 
-    width = width / @graph.series.filter(
-      (d) =>
-        d.renderer == 'waterfall'
-    ).length()
+    width = @graph.width() / stack.length
+    width = width / @graph.series.filter((d) =>
+      d.renderer == @name).array.length
+
+    width = width - (2 * @gapSize)
+    width
 
   _barXOffset: (seriesBarWidth) ->
     count = @graph.renderersByType(@name).length
     barXOffset = -seriesBarWidth * count / 2
 
   _barX: (d) =>
-    x = @graph.x(d.x)
     seriesBarWidth = @_seriesBarWidth()
-    initialX = x + @_barXOffset(seriesBarWidth)
-    initialX + (@_waterfalRendererIndex() * seriesBarWidth)
+    if @aggregated
+      x = d.x
+      cnt_series = @graph.series.filter((d) =>
+        d.renderer == @name).array.length
+      initialX = x * (seriesBarWidth + 2 * @gapSize) * cnt_series + @gapSize
+      initialX + (@_waterfalRendererIndex() * seriesBarWidth)
+    else
+      x = @graph.x(d.x)
+      initialX = x + @_barXOffset(seriesBarWidth)
+      initialX + (@_waterfalRendererIndex() * seriesBarWidth)
 
   _barY: (d, i) =>
     if d.y > 0
