@@ -70,10 +70,6 @@ class Tactile.AxisTime extends Tactile.AxisBase
     @g.enter()
       .append('g')
       .attr('class', 'x-ticks')
-      .attr("transform", (d) =>
-        @_tickX()
-        "translate(#{0}, 0)")
-
 
     ticks = @g.selectAll('g.x-tick')
       .data(@aggLabels)
@@ -201,9 +197,6 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
         labels.push item
     labels
-
-  _ticksX: () ->
-    @graph.renderers[0]._seriesBarWidth()
 
   _tickX: (value, index) ->
     width = @graph.width()
