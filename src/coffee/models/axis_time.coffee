@@ -64,6 +64,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   render: (transition)->
     return unless @graph.x?
+    @aggLabels = @_getLabels(@graph.x.domain())
 
     @g = @graph.vis.selectAll('g.x-ticks').data([0])
     @g.enter()
@@ -75,7 +76,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
 
     ticks = @g.selectAll('g.x-tick')
-      .data(@_getLabels(@graph.x.domain()))
+      .data(@aggLabels)
 
     ticks.enter()
       .append('g')
@@ -205,8 +206,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
     @graph.renderers[0]._seriesBarWidth()
 
   _tickX: (value, index) ->
-    console.log "_tickX", value
-    console.log "\t", @
-    console.log "\t", @graph
+    width = @graph.width()
+    count = @aggLabels.length
 
-    @graph.renderers[0]._barX({x: index}) + @graph.renderers[0]._seriesBarWidth() / 2
+    index * (width / count) + (width / count) / 2
