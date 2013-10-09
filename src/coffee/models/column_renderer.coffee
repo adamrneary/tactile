@@ -298,22 +298,3 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-  domain: ->
-    domain = super
-    values = []
-    data = @utils.aggregateData @series.stack, @graph.x.domain()
-    _.each data, (d) =>
-      if @unstack
-        values.push d.y
-      else
-        values.push d.y + d.y0
-
-    if data.length == 0
-      return domain
-
-    yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
-    yMax = @graph.max or d3.max(values)
-
-    domain.y = [yMin, yMax]
-    domain
