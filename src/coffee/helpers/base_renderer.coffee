@@ -62,16 +62,21 @@ class Tactile.RendererBase
   render: (transition) =>
     @_checkData() if @checkData
 
+    if @graph.aggregated['line'] is true
+      data = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      data = @series.stack
+
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
-        .data([@series.stack])
+        .data([data])
         .remove()
       return
 
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
-      .data([@series.stack])
+      .data([data])
       .remove()
       return
     # drawing line by default
@@ -80,7 +85,7 @@ class Tactile.RendererBase
     # saves the line plot from having holes
     @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
-      .data([@series.stack])
+      .data([data])
 
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")

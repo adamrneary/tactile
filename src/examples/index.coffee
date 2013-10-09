@@ -135,4 +135,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#aggregate-column"
+  window.location.hash = "#aggregate-line"

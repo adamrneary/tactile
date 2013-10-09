@@ -10,7 +10,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
   seriesPathFactory: ->
     d3.svg.line()
       .defined((d)=> !isNaN(d.y) and !isNaN(d.x) and d.y? and d.x?)
-      .x((d) => @graph.x d.x)
+      .x((d, i) => @_circleX d, i)
       .y((d) => @yFunction() d.y)
       .interpolate(@graph.interpolation)
       .tension @tension
@@ -25,16 +25,20 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
   render: (transition)=>
     @_checkData() if @checkData
+    if @aggregated
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
 
     @transition = transition if transition
     super(@transition)
     if (@series.disabled)
       @seriesDraggableCanvas().selectAll('circle')
-        .data(@series.stack)
+        .data(@aggdata)
         .remove()
       return
     circ = @seriesDraggableCanvas().selectAll('circle')
-      .data(@series.stack)
+      .data(@aggdata)
 
     newCircs = circ.enter().append("svg:circle")
       .on("mousedown", @setActive)# set active element if click on it
@@ -45,10 +49,9 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
     @transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
-      .attr("cx", (d) => @graph.x d.x)
+      .attr("cx", (d, i) => @_circleX(d, i))
       .attr("cy", (d) => @yFunction() d.y)
-      .attr("r",
-      (d) =>
+      .attr("r", (d) =>
         (if ("r" of d)
           d.r
         else
@@ -75,3 +78,31 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
+
+  _circleX: (d, index) ->
+    if @aggregated
+      count = @aggdata.length
+      width = @graph.width()
+      x = d.x * (width / count) + (width / count) / 2
+      x
+    else
+      @graph.x(d.x)
+
+  domain: ->
+    domain = super
+    values = []
+    data = @utils.aggregateData @series.stack, @graph.x.domain()
+    _.each data, (d) =>
+      if @unstack
+        values.push d.y
+      else
+        values.push d.y + d.y0
+
+    if data.length == 0
+      return domain
+
+    yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
+    yMax = @graph.max or d3.max(values)
+
+    domain.y = [yMin, yMax]
+    domain
