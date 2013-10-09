@@ -46,6 +46,11 @@ class Tactile.Chart
 
   _lastYTranslate: 0
 
+  aggregated:
+    column: false
+    line: false
+    waterfall: false
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @utils = new Tactile.Utils()
@@ -500,6 +505,8 @@ class Tactile.Chart
         transitionSpeed: @transitionSpeed
         series: s
         rendererIndex: index + renderersSize
+      if s.aggregate is true
+        @aggregated[name] = true
       r = new rendererClass(rendererOptions)
       @renderers.push r
 

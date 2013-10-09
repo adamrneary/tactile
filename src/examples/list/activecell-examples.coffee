@@ -141,7 +141,5 @@ sl.slider
   values: frameVal
   range: true
   slide: (event, ui) ->
-    console.time "render"
     chart.setXFrame(ui.values)
     chart.render()
-    console.timeEnd "render"

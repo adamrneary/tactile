@@ -20,6 +20,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @dragger = new Tactile.Dragger(renderer: @)
     if @series.dotSize?
       @dotSize = @series.dotSize
+    @aggregated = @graph.aggregated[@name]
 
 
   render: (transition)=>

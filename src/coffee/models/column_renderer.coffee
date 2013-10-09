@@ -2,7 +2,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   name: "column"
 
   specificDefaults:
-    gapSize: 0.15
+    gapSize: 1
     tension: null
     round: true
     unstack: true
@@ -14,18 +14,23 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @gapSize = options.gapSize || @gapSize
     @round = @series.round unless @series.round is undefined
     @unstack = @series.unstack unless @series.unstack is undefined
+    @aggregated = @graph.aggregated[@name]
 
   render: (transition)=>
     @_checkData() if @checkData
+    if @aggregated
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
 
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
-      @seriesCanvas().selectAll("rect").data(@series.stack).remove()
-      @seriesDraggableCanvas().selectAll("circle").data(@series.stack).remove()
+      @seriesCanvas().selectAll("rect").data(@aggdata).remove()
+      @seriesDraggableCanvas().selectAll("circle").data(@aggdata).remove()
       return
 
-    nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
+    nodes = @seriesCanvas().selectAll("rect").data(@aggdata)
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
@@ -44,8 +49,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
-      .attr("class",
-      (d, i) =>
+      .attr("class", (d, i) =>
         ["bar",
          ("colorless" unless @series.color),
          ("active" if d is @active), # apply active class for active element
@@ -65,7 +69,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       circ.style("display", "none")
 
     circ = @seriesDraggableCanvas().selectAll("circle")
-      .data(@series.stack)
+      .data(@aggdata)
 
     newCircs = circ.enter().append("svg:circle")
       .style("display", "none")
@@ -89,8 +93,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
-      .attr("r",
-        (d) =>
+      .attr("r", (d) =>
           (if ("r" of d)
             d.r
           else
@@ -229,17 +232,17 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
+    if @aggregated
+      stack = @aggdata
     else
-      width = @graph.width() / (1 + @gapSize)
+      stack = @series.stack
 
+    width = @graph.width() / stack.length
     if @unstack
-      width = width / @graph.series.filter(
-        (d) =>
-          d.renderer == "column"
-      ).array.length
+      width = width / @graph.series.filter((d) =>
+        d.renderer == @name).array.length
+
+    width = width - (2 * @gapSize)
     width
 
   # when we have couple of series we want
@@ -253,13 +256,21 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       barXOffset = -seriesBarWidth * count / 2
 
   _barX: (d) =>
-    x = @graph.x(d.x)
-
-    # center the bar around the value it represents
     seriesBarWidth = @_seriesBarWidth()
-    initialX = x + @_barXOffset(seriesBarWidth)
+
+    if @aggregated
+      x = d.x
+      cnt_series = @graph.series.filter((d) =>
+        d.renderer == @name).array.length
+      initialX = x * (seriesBarWidth + 2 * @gapSize) + @gapSize
+    else
+      x = @graph.x(d.x)
+      # center the bar around the value it represents
+      initialX = x + @_barXOffset(seriesBarWidth)
 
     if @unstack
+      if @aggregated
+        initialX = x * (seriesBarWidth + 2 * @gapSize) * cnt_series + @gapSize
       initialX + (@_columnRendererIndex() * seriesBarWidth)
     else
       return initialX
@@ -288,3 +299,21 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
+  domain: ->
+    domain = super
+    values = []
+    data = @utils.aggregateData @series.stack, @graph.x.domain()
+    _.each data, (d) =>
+      if @unstack
+        values.push d.y
+      else
+        values.push d.y + d.y0
+
+    if data.length == 0
+      return domain
+
+    yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
+    yMax = @graph.max or d3.max(values)
+
+    domain.y = [yMin, yMax]
+    domain

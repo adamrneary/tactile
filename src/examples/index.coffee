@@ -21,20 +21,20 @@ cartesian = [
   shortLink: "multiple-series"
   title: "Multiple series types"
 ,
-#   shortLink: "waterfall-grouped"
-#   title: "Waterfall (grouped)"
-# ,
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
-,
-  shortLink: "mini"
-  title: "Minichart"
 ,
   shortLink: "activecell-examples"
   title: "Activecell Examples"
 ,
-  shortLink: "aggregated_data"
+  shortLink: "aggregate-column"
   title: "Column Aggregated Data Chart"
+,
+  shortLink: "aggregate-line"
+  title: "Line Aggregated Data Chart"
+,
+  shortLink: "aggregate-waterfall"
+  title: "Waterfall Aggregated Data Chart"
 ]
 
 noncartesian = [
@@ -135,4 +135,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#aggregated_data"
+  window.location.hash = "#aggregate-column"

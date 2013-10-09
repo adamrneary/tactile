@@ -8,6 +8,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
+    @aggregated = @graph.aggregated[@name]
 
   render: (transition)=>
     @_checkData() if @checkData

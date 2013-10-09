@@ -109,6 +109,7 @@ class Tactile.Utils
         tmp.y   = data[i].y
         tmp.y0  = data[i].y0
         tmp.y00 = data[i].y00
+        tmp.r   = data[i].r
         aggdata.push tmp
       return aggdata
 
@@ -127,11 +128,13 @@ class Tactile.Utils
         tmp.y   = 0
         tmp.y0  = 0
         tmp.y00 = 0
+        tmp.r   = 0
 
         _.each data.slice(start, end + 1), (item)->
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
+          tmp.r   =           item.r
         index = index + 1
 
         aggdata.push tmp
@@ -151,10 +154,12 @@ class Tactile.Utils
         tmp.y   = 0
         tmp.y0  = 0
         tmp.y00 = 0
+        tmp.r   = 0
         _.each data.slice(start, end + 1), (item)->
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
+          tmp.r   =           item.r
         index = index + 1
         aggdata.push tmp
       return aggdata
