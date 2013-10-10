@@ -25,8 +25,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("clip-path", "url(#clip)")
       .on("click", @setActive)# set active element if click on it
 
-    @transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
+    nodes.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", (d)=> @_barY(d))
       .attr("x", @_barX)
@@ -40,8 +39,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
 
-    @transition.selectAll(".#{@_nameToId()} line")
-      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
+    line.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d) => @_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i) =>
         gapCount = @graph.series.filter(

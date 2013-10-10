@@ -34,8 +34,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @hideCircles()
       )
 
-    @transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
+    nodes.filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
       .attr("x", @_barX)
@@ -44,8 +43,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
-      .attr("class",
-      (d, i) =>
+      .attr("class", (d, i) =>
         ["bar",
          ("colorless" unless @series.color),
          ("active" if d is @active), # apply active class for active element
