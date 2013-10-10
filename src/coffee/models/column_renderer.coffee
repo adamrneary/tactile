@@ -16,14 +16,14 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @unstack = @series.unstack unless @series.unstack is undefined
     @aggregated = @graph.aggregated[@name]
 
-  render: (transition)=>
+  render: (_transition)=>
     @_checkData() if @checkData
     if @aggregated
       @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
     else
       @aggdata = @series.stack
 
-    @transition = transition if transition
+    @transition = _transition if _transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -39,6 +39,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @hideCircles()
       )
 
+    console.log "render", @graph.timesRendered
+    console.log "\t", _transition
+    console.log "\t", @transition
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
