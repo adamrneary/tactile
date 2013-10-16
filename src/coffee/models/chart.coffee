@@ -238,7 +238,6 @@ class Tactile.Chart
     @dataInitialized = true
 
   render: (transitionSpeed, options = {}) ->
-    console.log "chart render"
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
       @vis?.remove()
       @draggableVis?.remove()
@@ -259,20 +258,34 @@ class Tactile.Chart
 
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+
+    if @animateShowHide
+      animateHide = t.selectAll("g.canvas, g.draggable-canvas")
+      animateHide.duration(transitionSpeed)
+        .attr("transform", "translate(#{@padding.left + @axisPadding.left},#{@outerHeight})")
+        .each "end", (d, i) =>
+          console.log "renderChart", i, d
+          @renderChart(t, transitionSpeed)
+    else
+      @renderChart(t, transitionSpeed)
+
+  renderChart: (transition, transitionSpeed) ->
     _.each @renderers, (renderer) =>
-      renderer.render(t, if @timesRendered then transitionSpeed else 0)
+      renderer.render(transition, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
-      axis.render(t)
+      axis.render(transition)
 
     _.each @gridList, (grid) =>
-      grid.render(t)
+      grid.render(transition)
 
     #@_setupZoom()
     @timesRendered++
 
     @updateCallbacks.forEach (callback) ->
       callback()
+
+    @animateShowHide = false
 
   update: ->
     @render()
