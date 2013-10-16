@@ -21,9 +21,6 @@ cartesian = [
   shortLink: "multiple-series"
   title: "Multiple series types"
 ,
-#   shortLink: "waterfall-grouped"
-#   title: "Waterfall (grouped)"
-# ,
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
 ,
@@ -49,6 +46,9 @@ noncartesian = [
 ,
   shortLink: "multi-donut"
   title: "Multiple donuts"
+,
+  shortLink: "chart-changing"
+  title: "Animation from one chart to another"
 ]
 
 components = [
@@ -129,4 +129,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#line"
+  window.location.hash = "#chart-changing"

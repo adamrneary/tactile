@@ -45,6 +45,8 @@ class Tactile.Chart
 
   _lastYTranslate: 0
 
+  animateShowHide: false
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @utils = new Tactile.Utils()
@@ -96,6 +98,12 @@ class Tactile.Chart
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
+
+    console.log "chart addSeries", @renderers
+    if options.overwrite
+      @animateShowHide = true
+    else
+      @animateShowHide = false
     @
 
 
@@ -230,6 +238,7 @@ class Tactile.Chart
     @dataInitialized = true
 
   render: (transitionSpeed, options = {}) ->
+    console.log "chart render"
     if @renderers is undefined or _.isEmpty(@renderers) or @_allSeriesDisabled()
       @vis?.remove()
       @draggableVis?.remove()
@@ -498,6 +507,7 @@ class Tactile.Chart
 
   clearRenderers: ->
     return if _.isEmpty(@renderers)
+    console.log "clearRenderers"
     _.each @renderers, (r) ->
       r.delete()
 
