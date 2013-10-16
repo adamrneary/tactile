@@ -191,3 +191,9 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
         labels.push item
     labels
+
+  _tickX: (value, index) ->
+    width = @graph.width()
+    count = @aggLabels.length
+
+    index * (width / count) + (width / count) / 2

@@ -41,7 +41,6 @@ class Tactile.Dragger
   _calculateSigFigs: ->
     test = @series.sigfigs
     test =  @renderer
-    console.log  @renderer.utils
     test =  @renderer.utils.ourFunctor
     test = @renderer.utils.ourFunctor(@series.sigfigs)
 
