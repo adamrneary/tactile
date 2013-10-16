@@ -19,6 +19,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @_checkData() if @checkData
 
     @transition = transition if transition
+
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@series.stack).remove()
@@ -34,7 +35,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @hideCircles()
       )
 
-    @transition.selectAll(".#{@_nameToId()} rect")
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} rect")
+    else selectObjects = @seriesCanvas().selectAll("rect")
+    selectObjects
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
@@ -84,8 +87,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode()
 
 
-
-    @transition.selectAll(".#{@_nameToId()} circle")
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} circle")
+    else selectObjects = @seriesDraggableCanvas().selectAll("circle")
+    selectObjects
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
