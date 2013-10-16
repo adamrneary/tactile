@@ -2,7 +2,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   name: "column"
 
   specificDefaults:
-    gapSize: 1
+    gapSize: 0.15
+    dinGapSize: 1
     tension: null
     round: true
     unstack: true
@@ -16,14 +17,14 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @unstack = @series.unstack unless @series.unstack is undefined
     @aggregated = @graph.aggregated[@name]
 
-  render: (_transition)=>
+  render: (transition)=>
     @_checkData() if @checkData
     if @aggregated
       @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
     else
       @aggdata = @series.stack
 
-    @transition = _transition if _transition
+    @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
       @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -39,9 +40,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         @hideCircles()
       )
 
-    console.log "render", @graph.timesRendered
-    console.log "\t", _transition
-    console.log "\t", @transition
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
@@ -97,10 +95,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
       .attr("r", (d) =>
-          (if ("r" of d)
-            d.r
-          else
-            (if d.dragged or d is @active then @dotSize + 1 else @dotSize))
+        (if ("r" of d)
+          d.r
+        else
+          (if d.dragged or _.isEqual(d, @active) then @dotSize + 1 else @dotSize))
       )
       .attr("clip-path", "url(#scatter-clip)")
       .attr("class", (d, i) => [
@@ -237,15 +235,17 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   _seriesBarWidth: =>
     if @aggregated
       stack = @aggdata
+      gapSize = @dinGapSize
     else
       stack = @series.stack
+      gapSize = @gapSize
 
     width = @graph.width() / stack.length
     if @unstack
       width = width / @graph.series.filter((d) =>
         d.renderer == @name).array.length
 
-    width = width - (2 * @gapSize)
+    width = width - (2 * gapSize)
     width
 
   # when we have couple of series we want
@@ -265,16 +265,15 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       x = d.x
       cnt_series = @graph.series.filter((d) =>
         d.renderer == @name).array.length
-      initialX = x * (seriesBarWidth + 2 * @gapSize) + @gapSize
+      initialX = x * (seriesBarWidth + 2 * @dinGapSize) + @dinGapSize
     else
       x = @graph.x(d.x)
       # center the bar around the value it represents
       initialX = x + @_barXOffset(seriesBarWidth)
 
     if @unstack
-      if @aggregated
-        initialX = x * (seriesBarWidth + 2 * @gapSize) * cnt_series + @gapSize
-      initialX + (@_columnRendererIndex() * seriesBarWidth)
+      initialX = x * (seriesBarWidth + 2 * @dinGapSize) * cnt_series + @gapSize if @aggregated
+      return initialX + (@_columnRendererIndex() * seriesBarWidth)
     else
       return initialX
 

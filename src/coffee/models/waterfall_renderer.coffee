@@ -12,7 +12,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
   render: (transition)=>
     @_checkData() if @checkData
-
     if @aggregated
       @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
     else
@@ -29,7 +28,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @setActive)# set active element if click on it
+      .on("mousedown", @setActive)# set active element if click on it
 
     @transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))

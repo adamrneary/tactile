@@ -41,6 +41,7 @@ class Tactile.Dragger
   _calculateSigFigs: ->
     # test = @series.sigfigs
     # test =  @renderer
+    # console.log  @renderer.utils
     # test =  @renderer.utils.ourFunctor
     # test = @renderer.utils.ourFunctor(@series.sigfigs)
 
@@ -59,10 +60,11 @@ class Tactile.Dragger
   updateDraggedNode: () ->
     if @dragged?.y?
       @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-        .filter((d, i) => d is @dragged.d)
-        .each (d) =>
+        .filter((d, i) => _.isEqual d, @dragged.d)
+        .each (d, i) =>
           d.y = @dragged.y
           d.dragged = true
+          @dragged.d = d
 
   _datapointDrag: (d, i) =>
     # fix for a weird behavior that d is sometimes
@@ -71,13 +73,13 @@ class Tactile.Dragger
     # lock the tooltip on the dragged element
     return unless @renderer.utils.ourFunctor(@series.isEditable, d, i)
     Tactile.Tooltip.spotlightOn(d) if @series.tooltip
-    @dragged = {d: d, i: i, y: d.y, x: d.x, y0: d.y0}
+    @dragged = {d: d, i: i, y: d.y, x: d.x, y0: d.y0, y00: d.y00}
     @update()
     d3.event.preventDefault()
     d3.event.stopPropagation()
 
   _mouseMove: =>
-    p = d3.mouse(@graph.draggableVis.node())
+    p = d3.svg.mouse(@graph.draggableVis.node())
     t = d3.event.changedTouches
 
     if @dragged
@@ -90,7 +92,7 @@ class Tactile.Dragger
             # fix for a weird behavior that d is sometimes
             # an array with all the nodes of the series
             d = if _.isArray(d) then d[i] else d
-            d is @dragged.d
+            _.isEqual _.omit(d, "dragged"), _.omit(@dragged.d, "dragged")
           )
           .node()
           .getBoundingClientRect()
@@ -104,7 +106,7 @@ class Tactile.Dragger
         @dragged.y = value
       else
         @dragged.y = value - @dragged.y0
-      @onDrag(@dragged, @series, @graph)
+      @_updateAggregatedOnDrag(@dragged, @series, @graph)
       @update()
       d3.event.preventDefault()
       d3.event.stopPropagation()
@@ -112,16 +114,10 @@ class Tactile.Dragger
 
   _mouseUp: =>
     return unless @dragged?.y?
-
-    if @graph.aggregated[@renderer.name]
-      aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-    else
-      aggdata = @series.stack
-
-    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
+    @_updateAggregatedAfterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-      .data(aggdata)
+      .data(@series.stack)
       .attr("class", (d) =>
           d.dragged = false
           "editable")
@@ -144,13 +140,8 @@ class Tactile.Dragger
   _appendCircles: (nodes) ->
     renderer = @renderer
 
-    if @graph.aggregated[renderer.name]
-      aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-    else
-      aggdata = @series.stack
-
     circs = @renderer.seriesDraggableCanvas().selectAll('circle')
-      .data(aggdata)
+      .data(@series.stack)
 
     # append the circles but make them invisible
     circs.enter().append("svg:circle").style('display', 'none')
@@ -171,9 +162,7 @@ class Tactile.Dragger
     circs
       .transition()
       .duration(if @timesRendered++ is 0 then 0 else @renderer.transitionSpeed)
-      .attr("cx", (d, i) =>
-        @_barX?(d, i) || @_circleX?(d, i) || @graph.x(d.x)
-      )
+      .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @graph.y d.y)
 
     # show and hide the circle for the currently hovered element
@@ -194,3 +183,43 @@ class Tactile.Dragger
 
     renderer.seriesDraggableCanvas().selectAll('circle.editable')
 
+  _updateAggregatedOnDrag: (dragged, series, graph) ->
+    if @renderer.aggregated
+      date = graph.x.domain()
+      date = [new Date(date[0]), new Date(date[1])]
+      range = (date[0].getMonth() - date[0].getFullYear()) * 12 + (date[1].getMonth() - date[0].getMonth()) + 1
+
+      if      12 <= range       then grouper =  1
+      else if 12 <  range <= 36 then grouper =  3
+      else                           grouper = 12
+
+      dragged.y /= grouper
+      _(grouper).times (index) =>
+        @onDrag(dragged, series, graph)
+    else
+      @onDrag(dragged, series, graph)
+
+  _updateAggregatedAfterDrag: (item, value, index, series, graph) ->
+    if @renderer.aggregated
+      date = graph.x.domain()
+      date = [new Date(date[0]), new Date(date[1])]
+      range = (date[0].getMonth() - date[0].getFullYear()) * 12 + (date[1].getMonth() - date[0].getMonth()) + 1
+
+      if      12 <= range       then grouper =  1
+      else if 12 <  range <= 36 then grouper =  3
+      else                           grouper = 12
+
+      offset = 0
+      for val, i in @series.stack
+        if val.x is new Date(date[0]).getTime()
+          offset = i % grouper
+          break
+
+      for val, i in @series.stack
+        begin = Math.floor((i+1)/grouper) + index*grouper - index
+        end = Math.floor((i+1)/grouper) + (index+1)*grouper - 1 - index
+        continue unless (new Date(date[0]).setMonth(begin + offset)) <= val.x < (new Date(date[0]).setMonth(end+offset))
+        @afterDrag(item, value/grouper, i, series, graph)
+        break if (new Date(date[0]).setMonth(end+offset)) > date[1].getTime()
+    else
+      @afterDrag(item, value, index, series, graph)

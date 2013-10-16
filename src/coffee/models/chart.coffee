@@ -10,7 +10,6 @@ class Tactile.Chart
     'waterfall': Tactile.WaterfallRenderer
     'leaderboard': Tactile.LeaderboardRenderer
     'bullet': Tactile.BulletRenderer
-    'aggcolumn': Tactile.AggColumnRenderer
 
   # default values
   defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
@@ -94,6 +93,8 @@ class Tactile.Chart
   # Note: pass option 'overwrite: true' to remove all previous series
   addSeries: (series, options = {overwrite: false}) ->
     return unless series
+    _.each @aggregated, (value, key) =>
+      @aggregated[key] = false
     series = [series] unless _.isArray(series)
 
     newSeries = _.map(series, (options) -> new Tactile.Series(options))
@@ -474,7 +475,8 @@ class Tactile.Chart
     @y = d3.scale.linear()
       .domain([NaN, NaN])
     @y.magnitude = d3.scale.linear()
-    @y1 = d3.scale.linear().domain([NaN, NaN])
+    @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
     @y1.magnitude = d3.scale.linear()
     @_updateRange()
 
@@ -526,8 +528,6 @@ class Tactile.Chart
     t = @svg.transition().duration(transitionSpeed)
     _.each(@renderersByType('column'), (r) -> r.unstack = false)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstack = false)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstack = false)
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
     _.each(@renderersByType('donut'), (r) -> r.unstack = false)
@@ -540,8 +540,6 @@ class Tactile.Chart
   unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstack = true)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('column'), (r) -> r.unstack = true)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
     _.each(@renderersByType('area'), (r) -> r.unstack = true)
@@ -665,10 +663,7 @@ class Tactile.Chart
     _.uniq(_.map(@series.array, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
-    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
-
-  _containsAggChart: ->
-    _.any(@renderers, (r) -> r.name == 'aggcolumn')
+    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
@@ -786,7 +781,7 @@ class Tactile.Chart
 
   _calculateXRange: =>
     if @_containsColumnChart()
-      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
+      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
       lastRange = @width()
       dR = lastRange / 2

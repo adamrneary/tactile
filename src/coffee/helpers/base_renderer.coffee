@@ -83,21 +83,21 @@ class Tactile.RendererBase
     @_checkData() if @checkData
 
     if @graph.aggregated['line'] is true
-      data = @utils.aggregateData @series.stack, @graph.x.domain()
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
     else
-      data = @series.stack
+      @aggdata = @series.stack
 
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
-        .data([data])
+        .data([@aggdata])
         .remove()
       return
 
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
-      .data([data])
-      .remove()
+        .data([@aggdata])
+        .remove()
       return
     # drawing line by default
 
@@ -105,7 +105,7 @@ class Tactile.RendererBase
     # saves the line plot from having holes
     @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
-      .data([data])
+    .data([@aggdata])
 
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")
@@ -113,8 +113,7 @@ class Tactile.RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
-      .attr("class", "baseline #{@series.className or ''}
-       #{if @series.color then '' else 'colorless'}")
+      .attr("class", "baseline #{@series.className or ''}#{if @series.color then '' else ' colorless'}")
 
     @transition.selectAll(".#{@_nameToId()} path.baseline")
       .attr("d", @seriesPathFactory())
@@ -127,8 +126,13 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
+    if @graph.aggregated[@name] is true
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
+
     @graph.vis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
@@ -137,8 +141,13 @@ class Tactile.RendererBase
     @graph.vis?.selectAll("g.#{@_nameToId()}")
 
   seriesDraggableCanvas: ->
+    if @graph.aggregated[@name] is true
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
+
     @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")

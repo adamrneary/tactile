@@ -21,23 +21,6 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   tickOffsets: ->
     domain = @graph.x.domain()
-    # if      domain.length <= 12 months
-    #   do this logic
-    #   or replace it all
-    # else if domain.length > 12 months
-    #   offsets = [] = _aggregatedByMonth()
-
-    # _aggregatedByMonth() shuld return array of
-    # [
-    #   value: unixTimeStamp
-    #   label: "Jan", "Feb", ... || "Jan - Mar", "Apr - Jun", ... || Year
-    #   secondaryLabel: Optional???
-    # ]
-
-
-
-
-
     unit = @fixedTimeUnit or @appropriateTimeUnit()
 
     if unit.name is "month"
@@ -64,12 +47,15 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   render: (transition)->
     return unless @graph.x?
-    @aggLabels = @_getLabels(@graph.x.domain())
+
+    aggregated = _.some(_.values(@graph.aggregated))
+    if aggregated
+      @aggLabels = @_getLabels(@graph.x.domain())
+    else
+      @aggLabels = @tickOffsets()
 
     @g = @graph.vis.selectAll('g.x-ticks').data([0])
-    @g.enter()
-      .append('g')
-      .attr('class', 'x-ticks')
+    @g.enter().append('g').attr('class', 'x-ticks')
 
     ticks = @g.selectAll('g.x-tick')
       .data(@aggLabels)
@@ -79,12 +65,13 @@ class Tactile.AxisTime extends Tactile.AxisBase
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
 
     ticks
-      .attr("transform",
-        (d, i) =>
-          "translate(#{@_tickX(d.value, i)}, #{@graph.height() + @marginForBottomTicks})")
+      .attr("transform", (d, i) =>
+        if aggregated
+          "translate(#{@_tickX(d.value, i)}, #{@graph.height() + @marginForBottomTicks})"
+        else
+          "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
 
     ticks.exit().remove()
-    @g.exit().remove()
 
     @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
@@ -99,10 +86,15 @@ class Tactile.AxisTime extends Tactile.AxisBase
 #      .on("mousedown.drag",  @_axisDrag)
 #      .on("touchstart.drag", @_axisDrag)
 
-    @g.selectAll("g.x-tick").selectAll("text")
-      .attr("y", @marginTop)
-      .text((d) -> d.label)
-      .append("tspan")
+    text = @g.selectAll("g.x-tick").selectAll("text")
+    text.attr("y", @marginTop)
+      .text((d) ->
+        if aggregated
+          d.label
+        else
+          d.unit.formatter(new Date(d.value)))
+    if aggregated
+      text.append("tspan")
         .attr("y", @marginTop + @fontSize)
         .attr("x", 0)
         .text (d) -> d.secondary
@@ -192,8 +184,10 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
         if startDate.getMonth() is 0 # Jan
           item.label = "#{startDate.getFullYear()}"
+        else if startDate.getTime() is endDate.getTime()
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}"
         else
-          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}-#{startDate.getMonth()}/#{endDate.getFullYear()}"
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}-#{endDate.getMonth()+1}/#{endDate.getFullYear()}"
 
         labels.push item
     labels

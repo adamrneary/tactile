@@ -141,7 +141,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
     max
 
   stackTransition: (transition, transitionSpeed) =>
-    return unless @unstack
+    return if @unstack
     @unstack = false
     xMargin = (@graph.width() - @getMaxStackedOuterRadius() * 2) / 2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius() * 2) / 2
@@ -182,7 +182,7 @@ class Tactile.DonutRenderer extends Tactile.RendererBase
 
 
   unstackTransition: (transition, transitionSpeed) =>
-    return if @unstack
+    return unless @unstack
     @unstack = true
     xMargin = (@graph.width() - @getMaxStackedOuterRadius() * 2) / 2
     yMargin = (@graph.height() - @getMaxStackedOuterRadius() * 2) / 2

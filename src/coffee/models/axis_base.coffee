@@ -30,7 +30,8 @@ class Tactile.AxisBase
       new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain)
 
-    @graph.render(0, zooming: true)
+#    @graph.render(0, zooming: true)
+    @graph.render(0)
 
     d3.event.preventDefault()
     d3.event.stopPropagation()
@@ -54,7 +55,7 @@ class Tactile.AxisBase
     return if @horizontal
     side = if @options.axis is 'y' then 'left' else 'right'
 
-      # TODO: would be great if this could change according to the length of the labels
+      # TODO: would be great if this could change according to the legth of the labels
     if destroy
       @graph.axisPadding.left = 0
       @graph.axisPadding.right = 0
