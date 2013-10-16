@@ -676,18 +676,18 @@ class Tactile.Chart
 #    d3.select("body").style("cursor", "move")
 
   _mouseup: =>
-    return if @autoScale
-    d3.select("body").style("cursor", "auto")
-    @axes()?.x?._mouseUp()
-    @axes()?.y?._mouseUp()
-    @axes()?.y1?._mouseUp()
-    @_lastYTranslate = 0
+#    return if @autoScale
+#    d3.select("body").style("cursor", "auto")
+#    @axes()?.x?._mouseUp()
+#    @axes()?.y?._mouseUp()
+#    @axes()?.y1?._mouseUp()
+#    @_lastYTranslate = 0
 
   _mousemove: =>
-    return if @autoScale
-    @axes()?.x?._mouseMove()
-    @axes()?.y?._mouseMove()
-    @axes()?.y1?._mouseMove()
+#    return if @autoScale
+#    @axes()?.x?._mouseMove()
+#    @axes()?.y?._mouseMove()
+#    @axes()?.y1?._mouseMove()
 
 
   # TODO: move away to a separate class. Zoomable or sth.

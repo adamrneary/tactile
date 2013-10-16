@@ -115,7 +115,9 @@ class Tactile.RendererBase
       .style('opacity', @opacity)
       .attr("class", "baseline #{@series.className or ''}#{if @series.color then '' else ' colorless'}")
 
-    @transition.selectAll(".#{@_nameToId()} path.baseline")
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} path.baseline")
+    else selectObjects = @seriesCanvas().selectAll("path.baseline")
+    selectObjects
       .attr("d", @seriesPathFactory())
 
   # Creates separate g element for each series.

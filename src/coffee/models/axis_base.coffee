@@ -77,12 +77,12 @@ class Tactile.AxisBase
 #    d3.event.stopPropagation()
 
   _mouseUp: =>
-    return if isNaN(@down)
-    @down = Math.NaN;
-    @graph.manipulateCallbacks.forEach (callback) ->
-      callback()
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
+#    return if isNaN(@down)
+#    @down = Math.NaN;
+#    @graph.manipulateCallbacks.forEach (callback) ->
+#      callback()
+#    d3.event.preventDefault()
+#    d3.event.stopPropagation()
 
   destroy: ->
     @handleBottomPadding(true)

@@ -38,7 +38,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @_checkData(@series.stack) if @checkData
 
     @transition = transition if transition
-    super(@transition)
+    super(transition)
     if (@series.disabled)
       @seriesCanvas().selectAll("path.stroke").remove()
       @seriesCanvas().selectAll('circle').remove()
@@ -54,7 +54,9 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .attr("stroke-width", '2')
       .attr("stroke", @series.color)
 
-    @transition.selectAll(".#{@_nameToId()} path.stroke")
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} path.stroke")
+    else selectObjects = @seriesCanvas().selectAll('path.stroke')
+    selectObjects
       .attr("d", @seriesStrokeFactory())
 
     circ = @seriesDraggableCanvas().selectAll('circle')
@@ -67,7 +69,9 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode(circ)
 
     #TODO: this block of code is the same in few places
-    @transition.selectAll(".#{@_nameToId()} circle")
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} circle")
+    else selectObjects = @seriesDraggableCanvas().selectAll('circle')
+    selectObjects
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("r",
         (d) =>
