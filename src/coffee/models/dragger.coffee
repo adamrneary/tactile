@@ -113,7 +113,12 @@ class Tactile.Dragger
 
   _mouseUp: =>
     return unless @dragged?.y?
-    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
+    if @dragged.d.source
+      y = @dragged.y / @dragged.d.source.length
+      _.each @dragged.d.source, (d) =>
+        @afterDrag(d, y) if @dragged
+    else
+      @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
       .data(@renderer.aggdata)

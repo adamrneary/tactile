@@ -33,6 +33,8 @@ chart.addSeries [
   round: false
   color: "#c05020"
   isEditable: true
+  afterDrag: (d, y) ->
+    console.log "d:#{d}, y:#{y}"
   tooltip: (d) ->
     d.y + " y0"
   dataTransform: (d) ->

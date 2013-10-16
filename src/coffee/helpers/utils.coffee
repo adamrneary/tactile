@@ -135,6 +135,8 @@ class Tactile.Utils
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
           tmp.r   =           item.r unless _.isUndefined(item.r)
+          tmp.source ||= []
+          tmp.source.push item
         index = index + 1
 
         aggdata.push tmp
@@ -160,6 +162,8 @@ class Tactile.Utils
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
           tmp.r   =           item.r unless _.isUndefined(item.r)
+          tmp.source ||= []
+          tmp.source.push item
         index = index + 1
         aggdata.push tmp
       return aggdata
