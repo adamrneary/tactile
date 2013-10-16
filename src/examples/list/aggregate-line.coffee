@@ -32,6 +32,7 @@ chart.addSeries [
   renderer: "line"
   round: false
   color: "#c05020"
+  isEditable: true
   tooltip: (d) ->
     d.y + " y0"
   dataTransform: (d) ->
@@ -42,6 +43,7 @@ chart.addSeries [
   renderer: "line"
   round: false
   color: "#6060c0"
+  isEditable: true
   tooltip: (d) ->
     d.y + " y1"
   dataTransform: (d) ->
@@ -52,6 +54,7 @@ chart.addSeries [
   renderer: "line"
   round: false
   color: "#6020c0"
+  isEditable: true
   tooltip: (d) ->
     d.y + " y2"
   dataTransform: (d) ->

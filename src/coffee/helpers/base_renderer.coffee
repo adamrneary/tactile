@@ -82,10 +82,10 @@ class Tactile.RendererBase
   render: (transition) =>
     @_checkData() if @checkData
 
-    if @graph.aggregated['line'] is true
-      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-    else
-      @aggdata = @series.stack
+#    if @graph.aggregated['line'] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
 
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
@@ -128,10 +128,10 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
-    if @graph.aggregated[@name] is true
-      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-    else
-      @aggdata = @series.stack
+#    if @graph.aggregated[@name] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
 
     @graph.vis?.selectAll("g.#{@_nameToId()}")
       .data([@aggdata])
@@ -143,10 +143,10 @@ class Tactile.RendererBase
     @graph.vis?.selectAll("g.#{@_nameToId()}")
 
   seriesDraggableCanvas: ->
-    if @graph.aggregated[@name] is true
-      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-    else
-      @aggdata = @series.stack
+#    if @graph.aggregated[@name] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
 
     @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
       .data([@aggdata])

@@ -258,7 +258,7 @@ class Tactile.Chart
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
-      renderer.render(t, if @timesRendered then transitionSpeed else 0)
+      renderer.render(t, true)
 
     _.each @axesList, (axis) =>
       axis.render(t)

@@ -116,7 +116,7 @@ class Tactile.Dragger
     @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-      .data(@series.stack)
+      .data(@renderer.aggdata)
       .attr("class",
         (d) =>
           d.dragged = false

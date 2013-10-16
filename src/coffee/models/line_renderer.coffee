@@ -23,10 +23,10 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @aggregated = @graph.aggregated[@name]
 
 
-  render: (transition)=>
+  render: (transition, recalculateData)=>
     @_checkData() if @checkData
     if @aggregated
-      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() if recalculateData
     else
       @aggdata = @series.stack
 
