@@ -294,16 +294,14 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
   animateShow: ->
     left = @graph.padding.left + @graph.axisPadding.left
     top = @graph.padding.top + @graph.axisPadding.top
-    if @graph.animateShowHide
-      transitionSpeed = @graph.transitionSpeed
-    else
-      transitionSpeed = 0
 
     @graph.vis?.transition()
-    .duration(transitionSpeed)
-    .delay(0)
-    .attr("transform", "translate(#{left},#{top})")
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
     @graph.draggableVis?.transition()
-    .duration(transitionSpeed)
-    .delay(0)
-    .attr("transform", "translate(#{left},#{top})")
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

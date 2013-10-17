@@ -54,6 +54,7 @@ class Tactile.Chart
     @axisPadding = _.defaults {}, args.axisPadding, @defaultAxisPadding
 
     @renderers = []
+    @renderers_to_delete = []
     @axesList = {}
     @gridList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -99,7 +100,6 @@ class Tactile.Chart
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
 
-    console.log "chart addSeries", @renderers
     if options.overwrite
       @animateShowHide = true
     else
@@ -256,28 +256,42 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
+    if @animateShowHide
+      ## get current 'transform' attr [left, top]
+      visTransform = /(\d)+/ig.exec @vis?.attr("transform")
+      draggableVisTransform = /(\d)+/ig.exec @draggableVis?.attr("transform")
+      console.log "animate"
+      console.log "\t", "translate(#{visTransform[0]},#{@outerHeight})"
+      console.log "\t", "translate(#{draggableVisTransform[0]},#{@outerHeight})"
+
+      @vis.transition()
+        .duration(@transitionSpeed)
+        .attr("transform", "translate(#{visTransform[0]},#{@outerHeight})")
+      @draggableVis.transition()
+        .duration(@transitionSpeed)
+        .attr("transform", "translate(#{draggableVisTransform[0]},#{@outerHeight})")
+        .each "end", (d, i) =>
+          # updateSeries
+          _.each @renderers_to_delete, (r) ->
+            r.delete()
+          @renderers_to_delete = []
+
+          @renderChart(transitionSpeed, options)
+    else
+      @renderChart(transitionSpeed, options)
+
+  renderChart: (transitionSpeed, options= {}) ->
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
 
-    if @animateShowHide
-      animateHide = t.selectAll("g.canvas, g.draggable-canvas")
-      animateHide.duration(transitionSpeed)
-        .attr("transform", "translate(#{@padding.left + @axisPadding.left},#{@outerHeight})")
-        .each "end", (d, i) =>
-          console.log "renderChart", i, d
-          @renderChart(t, transitionSpeed)
-    else
-      @renderChart(t, transitionSpeed)
-
-  renderChart: (transition, transitionSpeed) ->
     _.each @renderers, (renderer) =>
-      renderer.render(transition, if @timesRendered then transitionSpeed else 0)
+      renderer.render(t, if @timesRendered then transitionSpeed else 0)
 
     _.each @axesList, (axis) =>
-      axis.render(transition)
+      axis.render(t)
 
     _.each @gridList, (grid) =>
-      grid.render(transition)
+      grid.render(t)
 
     #@_setupZoom()
     @timesRendered++
@@ -285,7 +299,6 @@ class Tactile.Chart
     @updateCallbacks.forEach (callback) ->
       callback()
 
-    @animateShowHide = false
 
   update: ->
     @render()
@@ -520,9 +533,9 @@ class Tactile.Chart
 
   clearRenderers: ->
     return if _.isEmpty(@renderers)
-    console.log "clearRenderers"
-    _.each @renderers, (r) ->
-      r.delete()
+    @renderers_to_delete = _.clone @renderers
+#    _.each @renderers_to_delete, (r) ->
+#      r.delete()
 
     @renderers = []
     @timesRendered = 0

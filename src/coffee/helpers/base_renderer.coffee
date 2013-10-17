@@ -91,8 +91,9 @@ class Tactile.RendererBase
       .attr("class", "baseline #{@series.className or ''}
        #{if @series.color then '' else 'colorless'}")
 
-    @transition.selectAll(".#{@_nameToId()} path.baseline")
+    selectObject = @transition.selectAll(".#{@_nameToId()} path.baseline")
       .attr("d", @seriesPathFactory())
+    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
 
   # Creates separate g element for each series.
   # This gives us better control over each paths/rets/circles
@@ -154,3 +155,18 @@ class Tactile.RendererBase
       @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
       @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
     )
+
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

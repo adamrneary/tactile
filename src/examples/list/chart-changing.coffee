@@ -203,7 +203,7 @@ toLeaderboard.click (e) ->
     leaderboardData
 
   chart.data(generateData(4))
-    .addSeries [
+    .addSeries([
         name: "enemies"
         renderer: "leaderboard"
         changeFormat: d3.format("f")
@@ -214,7 +214,8 @@ toLeaderboard.click (e) ->
           change: d.change
           barPosition: d.barPosition
           index: d.index
-      ], overwrite: true
+      ], overwrite: true)
+    .axes({})
 
   chart.render()
   e.stopPropagation()

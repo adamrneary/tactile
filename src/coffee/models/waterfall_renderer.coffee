@@ -40,7 +40,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
 
-    @transition.selectAll(".#{@_nameToId()} line")
+    selectObject = @transition.selectAll(".#{@_nameToId()} line")
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d) => @_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i) =>
@@ -59,6 +59,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
+    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
 
     @setupTooltips()
 
@@ -118,3 +119,17 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false
