@@ -14,6 +14,7 @@ class Tactile.Chart
   # default values
   defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
   defaultAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
+  prevAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -257,19 +258,17 @@ class Tactile.Chart
     @_calculateXRange()
 
     if @animateShowHide
-      ## get current 'transform' attr [left, top]
-      visTransform = /(\d)+/ig.exec @vis?.attr("transform")
-      draggableVisTransform = /(\d)+/ig.exec @draggableVis?.attr("transform")
-      console.log "animate"
-      console.log "\t", "translate(#{visTransform[0]},#{@outerHeight})"
-      console.log "\t", "translate(#{draggableVisTransform[0]},#{@outerHeight})"
+      # prevent changing after axes update
+      left = @padding.left + @prevAxisPadding?.left || 0
+      @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
 
+      @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
       @vis.transition()
         .duration(@transitionSpeed)
-        .attr("transform", "translate(#{visTransform[0]},#{@outerHeight})")
+        .attr("transform", "translate(#{left},#{@outerHeight})")
       @draggableVis.transition()
         .duration(@transitionSpeed)
-        .attr("transform", "translate(#{draggableVisTransform[0]},#{@outerHeight})")
+        .attr("transform", "translate(#{left},#{@outerHeight})")
         .each "end", (d, i) =>
           # updateSeries
           _.each @renderers_to_delete, (r) ->
@@ -356,6 +355,8 @@ class Tactile.Chart
 
   axes: (args) ->
     return @axesList unless args
+    # save prev axisPadding
+    @prevAxisPadding = _.clone @axisPadding
 
     # kill any old axes
     _.each _.toArray(@axesList), (axis) -> axis.destroy()

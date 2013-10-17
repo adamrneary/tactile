@@ -123,6 +123,8 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     left = @graph.padding.left + @graph.axisPadding.left
     top = @graph.padding.top + @graph.axisPadding.top
 
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
     @graph.vis?.transition()
       .duration(@graph.transitionSpeed)
       .delay(0)
