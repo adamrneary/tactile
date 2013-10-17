@@ -31,7 +31,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
       @aggdata = @series.stack
 
     @transition = transition if transition
-    super(@transition)
+    super(transition)
     if (@series.disabled)
       @seriesDraggableCanvas().selectAll('circle')
         .data(@aggdata)

@@ -230,10 +230,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
     transition.selectAll(".#{@_nameToId()} rect")
       .delay((d,i) => i*(transitionSpeed/@series.stack.length))
-      .attr("y", @_barY)
+      .attr("y", (d) => @_barY(d))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .transition()
-      .attr("x", @_barX)
+      .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
 
     transition.selectAll(".#{@_nameToId()} circle")
@@ -253,10 +253,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
     transition.selectAll(".#{@_nameToId()} rect")
       .delay((d,i) => i*(transitionSpeed/@series.stack.length))
-      .attr("x", @_barX)
+      .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
       .transition()
-      .attr("y", @_barY)
+      .attr("y", (d) => @_barY(d))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")

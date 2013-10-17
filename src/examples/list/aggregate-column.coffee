@@ -47,6 +47,9 @@ chart.addSeries [
   dataTransform: (d) ->
     x: d.period
     y: d.y1
+  isEditable: true
+  afterDrag: (d, y) ->
+    console.log "d:#{d}, y:#{y}"
 ,
   name: "y2"
   renderer: "column"

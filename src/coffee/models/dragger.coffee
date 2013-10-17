@@ -90,7 +90,7 @@ class Tactile.Dragger
             # fix for a weird behavior that d is sometimes
             # an array with all the nodes of the series
             d = if _.isArray(d) then d[i] else d
-            d is @dragged.d
+            _.isEqual d, @dragged.d
           )
           .node()
           .getBoundingClientRect()
@@ -121,10 +121,9 @@ class Tactile.Dragger
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
       .data(@renderer.aggdata)
-      .attr("class",
-        (d) =>
-          d.dragged = false
-          "editable")
+      .attr("class", (d) =>
+        d.dragged = false
+        "editable")
     d3.select("body").style "cursor", "auto"
     @dragged = null
 
@@ -153,10 +152,9 @@ class Tactile.Dragger
     circs
       .attr("r", 4)
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class",
-        (d, i) =>
-          [("active" if d is renderer.active), # apply active class for active element
-          ("editable" if renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(' ')) # apply editable class for editable element
+      .attr("class", (d, i) =>
+        [("active" if d is renderer.active), # apply active class for active element
+         ("editable" if renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(' ')) # apply editable class for editable element
       .attr("fill", (d) => (if d.dragged or d is renderer.active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is renderer.active then @series.color else 'white'))
       .attr("stroke-width", '2')
