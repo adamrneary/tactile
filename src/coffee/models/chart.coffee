@@ -275,10 +275,14 @@ class Tactile.Chart
     _.each @renderers, (renderer) =>
       if renderer.cartesian
         domain = renderer.domain()
-        xDomain = domain.x
-        yDomain = domain.y
+        xDomain = domain.x if xDomain.length is 0
+        yDomain = domain.y if yDomain.length is 0
+        xDomain[0] = domain.x[0] if xDomain[0] > domain.x[0]
+        xDomain[1] = domain.x[1] if xDomain[1] < domain.x[1]
+        yDomain[0] = domain.y[0] if yDomain[0] > domain.y[0]
+        yDomain[1] = domain.y[1] if yDomain[1] < domain.y[1]
         unless renderer.series.ofDefaultAxis()
-          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))]
+          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))] if y1Domain.length is 0
 
 
     unless @availableXFrame then @_autoSetAvailableXFrame = true
@@ -458,8 +462,7 @@ class Tactile.Chart
     @y = d3.scale.linear()
       .domain([NaN, NaN])
     @y.magnitude = d3.scale.linear()
-    @y1 = d3.scale.linear()
-      .domain([NaN, NaN])
+    @y1 = d3.scale.linear().domain([NaN, NaN])
     @y1.magnitude = d3.scale.linear()
     @_updateRange()
 
@@ -507,8 +510,11 @@ class Tactile.Chart
   stackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.unstack = false)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.unstack = false)
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstack = false)
     _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>
@@ -518,8 +524,11 @@ class Tactile.Chart
   unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.unstack = true)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.unstack = true)
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstack = true)
     _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>
