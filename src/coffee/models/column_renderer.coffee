@@ -38,8 +38,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         )
       nodes.exit().remove()
 
-      #      if transition then selectObjects = @seriesCanvas().transition().duration(0).selectAll(".#{@_nameToId()} rect")
-      #      else selectObjects = @seriesCanvas().selectAll("rect")
       selectObjects = @seriesCanvas().selectAll("rect")
       selectObjects
         .filter((d) => @_filterNaNs(d, "x", "y"))
@@ -56,7 +54,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             ("colorless" unless @series.color),
             ("active" if d is @active), # apply active class for active element
             ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(" ")) # apply editable class for editable element
-
 
       nodes.on "mouseover.show-dragging-circle", (d, i, el) =>
         @hideCircles()
@@ -88,9 +85,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       @dragger?.makeHandlers(newCircs)
       @dragger?.updateDraggedNode()
 
-
-      if transition then selectObjects = @graph.svg.transition().duration(transitionSpeed).selectAll(".#{@_nameToId()} circle")
-      else selectObjects = @seriesDraggableCanvas().selectAll("circle")
+      selectObjects = @seriesDraggableCanvas().selectAll("circle")
       selectObjects
         .filter((d) => @_filterNaNs(d, "x", "y"))
         .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
@@ -127,7 +122,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       # set tooltip for column
       @setupTooltips()
 
-
     if @aggregated
       if recalculateData
         if @aggdata
@@ -141,9 +135,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
           minAggdataOld = (_.min aggdataOldSource, (d)-> d.x).x
           minAggdata = (_.min aggdataSource, (d)-> d.x).x
           aggdataOld.push {inf: true, r: 0, x: Math.max(maxAggdataOld, maxAggdata) + 1, y: 0, y0: 0, y00: 0, range:[_.last(aggdataOldSource).range[1] + 1, Infinity]}
-          aggdataOld.unshift {inf: true, r: 0, x: Math.min(minAggdataOld, minAggdata) - 1, y: 0, y0: 0, y00: 0, range:[-Infinity, _.first(aggdataOldSource).range[1] - 1]}
+          aggdataOld.unshift {inf: true, r: 0, x: Math.min(minAggdataOld, minAggdata) - 1, y: 0, y0: 0, y00: 0, range:[-Infinity, _.first(aggdataOldSource).range[0] - 1]}
           aggdata.push {inf: true, r: 0, x: Math.max(maxAggdataOld, maxAggdata) + 1, y: 0, y0: 0, y00: 0, range:[_.last(aggdataSource).range[1] + 1, Infinity]}
-          aggdata.unshift {inf: true, r: 0, x: Math.min(minAggdataOld, minAggdata) - 1, y: 0, y0: 0, y00: 0, range:[-Infinity, _.first(aggdataSource).range[1] - 1]}
+          aggdata.unshift {inf: true, r: 0, x: Math.min(minAggdataOld, minAggdata) - 1, y: 0, y0: 0, y00: 0, range:[-Infinity, _.first(aggdataSource).range[0] - 1]}
 
           transitionData = []
           _.each aggdata, (d) ->
@@ -256,8 +250,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .delay(transitionSpeed/2)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
