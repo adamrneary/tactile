@@ -8,10 +8,6 @@ data = [
   y: 170
   z: 200
 ,
-  x: undefined
-  y: undefined
-  z: undefined
-,
   x: 2
   y: 280
   z: 120

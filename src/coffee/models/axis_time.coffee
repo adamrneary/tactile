@@ -48,20 +48,27 @@ class Tactile.AxisTime extends Tactile.AxisBase
   render: (transition)->
     return unless @graph.x?
 
+    aggregated = _.some(_.values(@graph.aggregated))
+    if aggregated
+      @aggLabels = @_getLabels(@graph.x.domain())
+    else
+      @aggLabels = @tickOffsets()
+
     @g = @graph.vis.selectAll('g.x-ticks').data([0])
     @g.enter().append('g').attr('class', 'x-ticks')
 
-
     ticks = @g.selectAll('g.x-tick')
-      .data(@tickOffsets())
+      .data(@aggLabels)
 
     ticks.enter()
       .append('g')
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
 
     ticks
-      .attr("transform",
-        (d) =>
+      .attr("transform", (d, i) =>
+        if aggregated
+          "translate(#{@_tickX(d.value, i)}, #{@graph.height() + @marginForBottomTicks})"
+        else
           "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
 
     ticks.exit().remove()
@@ -79,10 +86,18 @@ class Tactile.AxisTime extends Tactile.AxisBase
 #      .on("mousedown.drag",  @_axisDrag)
 #      .on("touchstart.drag", @_axisDrag)
 
-    @g.selectAll("g.x-tick").selectAll("text")
-      .attr("y", @marginTop)
+    text = @g.selectAll("g.x-tick").selectAll("text")
+    text.attr("y", @marginTop)
       .text((d) ->
-        d.unit.formatter(new Date(d.value)))
+        if aggregated
+          d.label
+        else
+          d.unit.formatter(new Date(d.value)))
+    if aggregated
+      text.append("tspan")
+        .attr("y", @marginTop + @fontSize)
+        .attr("x", 0)
+        .text (d) -> d.secondary
 
   _checkOptions: ()=>
     if @options.ticksTreatment?
@@ -100,3 +115,85 @@ class Tactile.AxisTime extends Tactile.AxisBase
           @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
         )
 
+  _getLabels: (timeFrame) ->
+    labels = []
+
+    date = [new Date(timeFrame[0]), new Date(timeFrame[1])]
+
+    #calculate count of month in timeFrame
+    startYear = date[0].getFullYear()
+    startMonth = date[0].getMonth()
+
+    endYear = date[1].getFullYear()
+    endMonth = date[1].getMonth()
+
+    range = (endYear - startYear) * 12 + (endMonth - startMonth) + 1
+
+    if range <= 12
+      for i in [0..range - 1]
+        tmpDate = new Date(timeFrame[0])
+        tmpDate.setMonth(startMonth + i);
+        labels.push
+          value: tmpDate.getTime()
+          label: tmpDate.toUTCString().split(' ')[2]
+          secondary: tmpDate.getFullYear().toString()
+
+    # Else if there are 36 or fewer periods to display, we will display
+    # quarterly data and aggregate
+    else if 12 < range <= 36
+      grouper = 3
+      for i in [0 .. (range - 1)] by grouper
+        item = {}
+
+        startDate = new Date(timeFrame[0])
+        startDate.setMonth(startMonth + i)
+        endDate = new Date(timeFrame[0])
+        endDate.setMonth(startMonth + i + grouper - 1)
+
+        item.value = startDate.getTime()
+
+        item.label = "#{startDate.toUTCString().split(' ')[2]}-#{endDate.toUTCString().split(' ')[2]}"
+        if startDate.getTime() is date[1].getTime()
+          item.label = startDate.toUTCString().split(' ')[2]
+        else if endDate.getTime() > date[1].getTime()
+          endDate = date[1]
+          item.label = "#{startDate.toUTCString().split(' ')[2]}-#{endDate.toUTCString().split(' ')[2]}"
+        item.secondary = "#{endDate.getFullYear()}"
+
+        labels.push item
+
+    # If there are more than 36 columns to display, we will display annual
+    # data and aggregate.
+    #
+    # TODO: We should probably explode gracefully if there are more than
+    # 144 periods to display
+    else
+      grouper = 12
+      for i in [0 .. (range - 1)] by grouper
+        item = {}
+        item.secondary = ""
+
+        startDate = new Date(timeFrame[0])
+        startDate.setMonth(startMonth + i)
+        endDate = new Date(timeFrame[0])
+        endDate.setMonth(startMonth + i + grouper - 1)
+
+        item.value = startDate.getTime()
+        if endDate.getTime() > date[1].getTime()
+          endDate = date[1]
+
+        if startDate.getMonth() is 0 # Jan
+          item.label = "#{startDate.getFullYear()}"
+        else if startDate.getTime() is endDate.getTime()
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}"
+        else
+          item.label = "#{startDate.getMonth()+1}/#{startDate.getFullYear()}-#{endDate.getMonth()+1}/#{endDate.getFullYear()}"
+
+        labels.push item
+    labels
+
+  _tickX: (value, index) ->
+    width = @graph.width()
+    count = @aggLabels.length
+
+    index * (width / count) + (width / count) / 2

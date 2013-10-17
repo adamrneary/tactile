@@ -32,8 +32,8 @@ class Tactile.Chart
       dimension: "linear"
       showZeroLine: true
 
-  defaultMinXFrame: 1
-  defaultMinYFrame: 1
+  defaultMinXFrame:  1
+  defaultMinYFrame:  1
   defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
@@ -44,6 +44,11 @@ class Tactile.Chart
   _autoSetAvailableY1Frame: false
 
   _lastYTranslate: 0
+
+  aggregated:
+    column: false
+    line: false
+    waterfall: false
 
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
@@ -88,6 +93,8 @@ class Tactile.Chart
   # Note: pass option 'overwrite: true' to remove all previous series
   addSeries: (series, options = {overwrite: false}) ->
     return unless series
+    _.each @aggregated, (value, key) =>
+      @aggregated[key] = false
     series = [series] unless _.isArray(series)
 
     newSeries = _.map(series, (options) -> new Tactile.Series(options))
@@ -153,6 +160,24 @@ class Tactile.Chart
 
 
   setXFrame: (xFrame) =>
+    @xOld = d3.scale.linear()
+      .domain(@x.domain())
+      .range(@x.range())
+
+    @yOld = d3.scale.linear()
+      .domain(@y.domain())
+      .range(@y.range())
+    @yOld.magnitude = d3.scale.linear()
+      .domain(@y.magnitude.domain())
+      .range(@y.magnitude.range())
+
+    @y1Old = d3.scale.linear()
+      .domain(@y1.domain())
+      .range(@y1.range())
+    @y1Old.magnitude = d3.scale.linear()
+      .domain(@y1.magnitude.domain())
+      .range(@y1.magnitude.range())
+
     @x.domain(xFrame)
     @
 
@@ -251,7 +276,7 @@ class Tactile.Chart
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
-      renderer.render(t, if @timesRendered then transitionSpeed else 0)
+      renderer.render(t, true, transitionSpeed)
 
     _.each @axesList, (axis) =>
       axis.render(t)
@@ -331,7 +356,13 @@ class Tactile.Chart
 
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k, showZeroLine: @defaultAxesOptions[k].showZeroLine}
+        defaults =
+          graph: @
+          dimension: @defaultAxesOptions[k].dimension
+          frame: @defaultAxesOptions[k].frame
+          axis: k
+          showZeroLine: @defaultAxesOptions[k].showZeroLine
+
         @initAxis _.extend defaults, args[k]
 
     @
@@ -493,6 +524,8 @@ class Tactile.Chart
         transitionSpeed: @transitionSpeed
         series: s
         rendererIndex: index + renderersSize
+      if s.aggregate is true
+        @aggregated[name] = true
       r = new rendererClass(rendererOptions)
       @renderers.push r
 

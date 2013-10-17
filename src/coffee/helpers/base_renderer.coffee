@@ -54,25 +54,53 @@ class Tactile.RendererBase
     yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
     yMax = @graph.max or d3.max(values)
 
-    { x: [xMin, xMax], y: [yMin, yMax] }
+    domain = { x: [xMin, xMax], y: [yMin, yMax] }
+
+    if _.some(_.values(@graph.aggregated))
+      values = []
+      data = @utils.aggregateData @series.stack, @graph.x.domain()
+      _.each data, (d) =>
+        if @series.renderer is 'waterfall'
+          values.push d.y + d.y00
+        else if @unstack
+          values.push d.y
+        else
+          values.push d.y + d.y0
+
+      if data.length == 0
+        return domain
+
+      yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
+      yMax = @graph.max or d3.max(values)
+
+      domain.y = [yMin, yMax]
+    domain
 
   yFunction: ->
     @graph[@series.yAxis]
 
+  yFunctionOld: ->
+    @graph[@series.yAxis+"Old"]
+
   render: (transition) =>
     @_checkData() if @checkData
 
+#    if @graph.aggregated['line'] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
+
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
-        .data([@series.stack])
+        .data([@aggdata])
         .remove()
       return
 
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
-      .data([@series.stack])
-      .remove()
+        .data([@aggdata])
+        .remove()
       return
     # drawing line by default
 
@@ -80,7 +108,7 @@ class Tactile.RendererBase
     # saves the line plot from having holes
     @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
-      .data([@series.stack])
+    .data([@aggdata])
 
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")
@@ -88,8 +116,7 @@ class Tactile.RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
-      .attr("class", "baseline #{@series.className or ''}
-       #{if @series.color then '' else 'colorless'}")
+      .attr("class", "baseline #{@series.className or ''}#{if @series.color then '' else ' colorless'}")
 
     if transition then selectObjects = transition.selectAll(".#{@_nameToId()} path.baseline")
     else selectObjects = @seriesCanvas().selectAll("path.baseline")
@@ -104,8 +131,13 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
+#    if @graph.aggregated[@name] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
+
     @graph.vis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
@@ -114,8 +146,13 @@ class Tactile.RendererBase
     @graph.vis?.selectAll("g.#{@_nameToId()}")
 
   seriesDraggableCanvas: ->
+#    if @graph.aggregated[@name] is true
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+#    else
+#      @aggdata = @series.stack
+
     @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")

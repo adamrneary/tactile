@@ -41,7 +41,6 @@ class Tactile.Dragger
   _calculateSigFigs: ->
     test = @series.sigfigs
     test =  @renderer
-    console.log  @renderer.utils
     test =  @renderer.utils.ourFunctor
     test = @renderer.utils.ourFunctor(@series.sigfigs)
 
@@ -113,10 +112,15 @@ class Tactile.Dragger
 
   _mouseUp: =>
     return unless @dragged?.y?
-    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
+    if @dragged.d.source
+      y = @dragged.y / @dragged.d.source.length
+      _.each @dragged.d.source, (d) =>
+        @afterDrag(d, y) if @dragged
+    else
+      @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-      .data(@series.stack)
+      .data(@renderer.aggdata)
       .attr("class",
         (d) =>
           d.dragged = false

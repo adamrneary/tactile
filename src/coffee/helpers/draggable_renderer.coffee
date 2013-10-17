@@ -39,14 +39,14 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
     return unless @active
     setNext = false
     i = 0
-    while i < @series.stack.length
-      if @active is @series.stack[i]
-        setNext = true if @active is @series.stack[i]
+    while i < @aggdata.length
+      if @active is @aggdata[i]
+        setNext = true if @active is @aggdata[i]
         i++
         continue
 
-      if @utils.ourFunctor(@series.isEditable, @series.stack[i], i) and setNext
-        @active = @series.stack[i]
+      if @utils.ourFunctor(@series.isEditable, @aggdata[i], i) and setNext
+        @active = @aggdata[i]
         break
       i++
     @hideCircles?()
@@ -55,15 +55,15 @@ class Tactile.DraggableRenderer extends Tactile.RendererBase
   selectPerviousEditableValue: =>
     return unless @active
     setNext = false
-    i = @series.stack.length-1
+    i = @aggdata.length-1
     while i >= 0
-      if @active is @series.stack[i]
-        setNext = true if @active is @series.stack[i]
+      if @active is @aggdata[i]
+        setNext = true if @active is @aggdata[i]
         i--
         continue
 
-      if @utils.ourFunctor(@series.isEditable, @series.stack[i], i) and setNext
-        @active = @series.stack[i]
+      if @utils.ourFunctor(@series.isEditable, @aggdata[i], i) and setNext
+        @active = @aggdata[i]
         break
       i--
     @hideCircles?()
