@@ -32,8 +32,8 @@ class Tactile.Chart
       dimension: "linear"
       showZeroLine: true
 
-  defaultMinXFrame:  1
-  defaultMinYFrame:  1
+  defaultMinXFrame: 1
+  defaultMinYFrame: 1
   defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
@@ -275,14 +275,10 @@ class Tactile.Chart
     _.each @renderers, (renderer) =>
       if renderer.cartesian
         domain = renderer.domain()
-        xDomain = domain.x if xDomain.length is 0
-        yDomain = domain.y if yDomain.length is 0
-        xDomain[0] = domain.x[0] if xDomain[0] > domain.x[0]
-        xDomain[1] = domain.x[1] if xDomain[1] < domain.x[1]
-        yDomain[0] = domain.y[0] if yDomain[0] > domain.y[0]
-        yDomain[1] = domain.y[1] if yDomain[1] < domain.y[1]
+        xDomain = domain.x
+        yDomain = domain.y
         unless renderer.series.ofDefaultAxis()
-          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))] if y1Domain.length is 0
+          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))]
 
 
     unless @availableXFrame then @_autoSetAvailableXFrame = true
@@ -462,7 +458,8 @@ class Tactile.Chart
     @y = d3.scale.linear()
       .domain([NaN, NaN])
     @y.magnitude = d3.scale.linear()
-    @y1 = d3.scale.linear().domain([NaN, NaN])
+    @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
     @y1.magnitude = d3.scale.linear()
     @_updateRange()
 
@@ -510,13 +507,8 @@ class Tactile.Chart
   stackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
-    _.each(@renderersByType('column'), (r) -> r.unstack = false)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstack = false)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.stackTransition(t, transitionSpeed))
-    _.each(@renderersByType('area'), (r) -> r.unstack = false)
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
-    _.each(@renderersByType('donut'), (r) -> r.unstack = false)
     _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>
@@ -526,13 +518,8 @@ class Tactile.Chart
   unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstack = true)
-    _.each(@renderersByType('aggcolumn'), (r) -> r.unstackTransition(t, transitionSpeed))
-    _.each(@renderersByType('column'), (r) -> r.unstack = true)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
-    _.each(@renderersByType('area'), (r) -> r.unstack = true)
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
-    _.each(@renderersByType('donut'), (r) -> r.unstack = true)
     _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>
@@ -651,10 +638,7 @@ class Tactile.Chart
     _.uniq(_.map(@series.array, (s) -> s.renderer)).length > 1
 
   _containsColumnChart: ->
-    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
-
-  _containsAggChart: ->
-    _.any(@renderers, (r) -> r.name == 'aggcolumn')
+    _.any(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
   _allRenderersCartesian: ->
     _.every(@renderers, (r) -> r.cartesian is true)
@@ -772,7 +756,7 @@ class Tactile.Chart
 
   _calculateXRange: =>
     if @_containsColumnChart()
-      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'aggcolumn' or r.name == 'waterfall')
+      renders = _.filter(@renderers, (r) -> r.name == 'column' or r.name == 'waterfall')
 
       lastRange = @width()
       dR = lastRange / 2

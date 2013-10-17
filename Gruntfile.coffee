@@ -88,6 +88,14 @@ module.exports = (grunt) ->
             "test/unit/tooltip_test.coffee"
           ]
 
+      examplesjs:
+        expand: true
+        flatten: true,
+        cwd: "src/examples/list"
+        src: ["*.coffee"]
+        dest: "ghpages/assets/js"
+        ext: ".js"
+
     sass:
       tactile:
         options:
@@ -96,9 +104,16 @@ module.exports = (grunt) ->
           'ghpages/assets/tactile.css': 'src/scss/tactile/tactile.scss'
 
     clean:
-      afterpush:[
+      styleguide:[
+        "ghpages/styleguide*.html"
+      ]
+      styleguidetmp: [
+        "ghpages/styleguide_tmp.html"
+      ]
+      ghpages:[
         "ghpages"
       ]
+      tmp: "ghpages/*tmp.html"
 
     copy:
       examples:
@@ -113,7 +128,6 @@ module.exports = (grunt) ->
         files: [
           expand: true, cwd: "node_modules/showcase/vendor/js/", src: ["d3.js"], dest: "ghpages/assets/"
         ]
-
 
     watch:
       coffee:
@@ -155,14 +169,88 @@ module.exports = (grunt) ->
         template: "views/layout.hbs"
         templateData: {body: "EmptyPage"}
         output: "ghpages/index.html"
-      home:
-        template: "{{{datablock}}}"
-        templateData: {datablock: "EmptyPage"}
-        output: "ghpages/home.html"
       demo:
+        preHTML: "views/layout_pre.html"
+        postHTML: "views/layout_post.html"
         template: "views/examples/index.hbs"
-        templateData: {demoblock: "<script src='assets/examples.js' defer></script>"}
+        templateData: {demoblock: ""}
         output: "ghpages/demo.html"
+      docs:
+        template: "views/layout.hbs"
+        templateData: {body: "<div style='height: 100%;'>\n<iframe src='./annotated_sources/index.html' style='width: 100%; height: 100%; border: none;'></iframe>\n</div>"}
+        output: "ghpages/docs.html"
+      test:
+        template: "views/layout.hbs"
+        templateData: {body: "<div style='height: 100%;'>\n<iframe src='./test_runner.html' style='width: 100%; height: 100%; border: none;'></iframe>\n</div>"}
+        output: "ghpages/test.html"
+      styleguidetmp:
+        preHTML: "views/layout_pre.html"
+        postHTML: "ghpages/styleguide.html"
+        template: "{{{null}}}"
+        templateData: {null: ""}
+        output: "ghpages/styleguide_tmp.html"
+      styleguide:
+        preHTML: "ghpages/styleguide_tmp.html"
+        postHTML: "views/layout_pre.html"
+        template: "{{{null}}}"
+        templateData: {null: ""}
+        output: "ghpages/styleguide.html"
+
+    "create-example":
+      files:
+        "src/examples/list/*.coffee"
+
+    grunt.registerMultiTask "create-example", "create example pages", ->
+      gruntOptions = {}
+      gruntOptions["compile-handlebars"] = grunt.config.get("compile-handlebars")
+      gruntOptions["clean"] = grunt.config.get("clean")
+      compiletask = []
+      cleantask = []
+
+      removeInvalidFiles = (files) ->
+        files.src.filter (filepath) ->
+          unless grunt.file.exists(filepath)
+            grunt.log.warn "Source file \"" + filepath + "\" not found."
+            false
+          else
+            true
+
+      @files.forEach (f)->
+        validFiles = removeInvalidFiles f
+        validFiles.forEach (d) ->
+          name = d.split("/")[d.split("/").length - 1]
+          name = name.split(".")[0]
+          file = grunt.file.read d
+          tmp = {}
+          tmp["#{name+"_tmp"}"] = {
+            preHTML:  "views/layout_pre.html"
+            postHTML: "views/layout_post.html"
+            template: "views/examples/index.hbs"
+            templateData: {
+            header: "#{name}"
+            coffeetext: file
+            demoblock: ""
+            jsblock: ""
+            }
+            output: "ghpages/" + "#{name}" + "_tmp.html"
+          }
+          tmp["#{name}"] = {
+            preHTML: "ghpages/" + "#{name}" + "_tmp.html"
+            template: "{{{null}}}"
+            templateData: {null: "<script>Rainbow.color();</script>\n<script src='./assets/js/"+"#{name}"+".js' defer=''></script>"}
+            output: "ghpages/" + "#{name}" + ".html"
+          }
+          gruntOptions["compile-handlebars"]["#{name+"_tmp"}"] = tmp["#{name+"_tmp"}"]
+          gruntOptions["compile-handlebars"]["#{name}"]        = tmp["#{name}"]
+          gruntOptions["clean"]["#{name+"_tmp"}"]              = "ghpages/" + "#{name}" + "_tmp.html"
+          compiletask.push "#{"compile-handlebars:"+name+"_tmp"}"
+          compiletask.push "#{"compile-handlebars:"+name}"
+          cleantask.push "#{"clean:"+name+"_tmp"}"
+
+      grunt.config.set("compile-handlebars", gruntOptions["compile-handlebars"])
+      grunt.config.set("clean", gruntOptions["clean"])
+      grunt.task.run compiletask
+      grunt.task.run cleantask
 
     grunt.registerTask "compile-assets", [
       "coffee"
@@ -174,19 +262,30 @@ module.exports = (grunt) ->
     ]
 
     grunt.registerTask "compile-styleguide", [
-      "styleguide"
+      "clean:styleguide",
+      "styleguide",
+      "compile-handlebars:styleguidetmp",
+      "compile-handlebars:styleguide",
+      "clean:styleguidetmp"
+    ]
+    grunt.registerTask "handlebars", [
+      "compile-handlebars:index"
+      "compile-handlebars:demo"
+      "compile-handlebars:docs"
+      "compile-handlebars:test"
     ]
 
-    grunt.registerTask "default", [
+  grunt.registerTask "default", [
+      "create-example"
       "compile-assets"
       "compile-docs"
       "copy"
       "symlink"
-      "compile-handlebars"
+      "handlebars"
       "compile-styleguide"
+      "clean:tmp"
 #      "gh-pages"
-#      "clean:afterpush"
-      #      "watch"
+#      "clean:ghpages"
     ]
 
-    grunt.loadNpmTasks "showcase"
+  grunt.loadNpmTasks "showcase"

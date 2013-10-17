@@ -42,7 +42,10 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
 
-    circ.filter((d) => @_filterNaNs(d, 'x', 'y'))
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} circle")
+    else selectObjects = @seriesDraggableCanvas().selectAll('circle')
+    selectObjects
+      .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("cx", (d) => @graph.x d.x)
       .attr("cy", (d) => @yFunction() d.y)
       .attr("r", (d) =>

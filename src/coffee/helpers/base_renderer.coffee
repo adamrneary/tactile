@@ -91,7 +91,10 @@ class Tactile.RendererBase
       .attr("class", "baseline #{@series.className or ''}
        #{if @series.color then '' else 'colorless'}")
 
-    line.attr("d", @seriesPathFactory())
+    if transition then selectObjects = transition.selectAll(".#{@_nameToId()} path.baseline")
+    else selectObjects = @seriesCanvas().selectAll("path.baseline")
+    selectObjects
+      .attr("d", @seriesPathFactory())
 
   # Creates separate g element for each series.
   # This gives us better control over each paths/rets/circles
