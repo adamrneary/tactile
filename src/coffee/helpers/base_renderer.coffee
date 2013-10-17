@@ -79,6 +79,9 @@ class Tactile.RendererBase
   yFunction: ->
     @graph[@series.yAxis]
 
+  yFunctionOld: ->
+    @graph[@series.yAxis+"Old"]
+
   render: (transition) =>
     @_checkData() if @checkData
 

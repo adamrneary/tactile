@@ -160,6 +160,24 @@ class Tactile.Chart
 
 
   setXFrame: (xFrame) =>
+    @xOld = d3.scale.linear()
+      .domain(@x.domain())
+      .range(@x.range())
+
+    @yOld = d3.scale.linear()
+      .domain(@y.domain())
+      .range(@y.range())
+    @yOld.magnitude = d3.scale.linear()
+      .domain(@y.magnitude.domain())
+      .range(@y.magnitude.range())
+
+    @y1Old = d3.scale.linear()
+      .domain(@y1.domain())
+      .range(@y1.range())
+    @y1Old.magnitude = d3.scale.linear()
+      .domain(@y1.magnitude.domain())
+      .range(@y1.magnitude.range())
+
     @x.domain(xFrame)
     @
 
@@ -258,7 +276,7 @@ class Tactile.Chart
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
     _.each @renderers, (renderer) =>
-      renderer.render(t, true)
+      renderer.render(t, true, transitionSpeed)
 
     _.each @axesList, (axis) =>
       axis.render(t)
