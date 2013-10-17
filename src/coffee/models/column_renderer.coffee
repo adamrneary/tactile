@@ -238,8 +238,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)
-      .attr("y", @_barY)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
+      .attr("y", (d) => @_barY(d))
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
@@ -250,7 +250,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .delay(transitionSpeed/2)
       .attr("width", @_seriesBarWidth())
-      .attr("x", @_barX)
+      .attr("x", (d) => @_barX(d))
 
     transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
@@ -270,7 +270,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .duration(transitionSpeed/2)
-      .attr("x", @_barX)
+      .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
 
     transition.selectAll(".#{@_nameToId()} circle")
@@ -281,8 +281,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     transition.selectAll(".#{@_nameToId()} rect")
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .delay(transitionSpeed/2)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-      .attr("y", @_barY)
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
+      .attr("y", (d) => @_barY(d))
 
     transition.selectAll(".#{@_nameToId()} circle")
       .filter((d) => @_filterNaNs(d, "x", "y"))
