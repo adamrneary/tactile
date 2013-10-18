@@ -322,5 +322,5 @@ toPareto.click (e) ->
 
 
 
-toColumn.click()
+toLeaderboard.click()
 $("#below-chart").html ''

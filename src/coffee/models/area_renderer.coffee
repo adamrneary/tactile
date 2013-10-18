@@ -19,20 +19,20 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
   seriesPathFactory: =>
     d3.svg.area()
-    .defined((d) => @_filterNaNs(d, 'x', 'y', 'y0'))
-    .x((d) => @graph.x d.x)
-    .y0((d) => @yFunction() @_y0(d))
-    .y1((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y', 'y0'))
+      .x((d) => @graph.x d.x)
+      .y0((d) => @yFunction() @_y0(d))
+      .y1((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
   seriesStrokeFactory: =>
     d3.svg.line()
-    .defined((d) => @_filterNaNs(d, 'x', 'y'))
-    .x((d) => @graph.x d.x)
-    .y((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y'))
+      .x((d) => @graph.x d.x)
+      .y((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
   render: (transition, recalculateData, transitionSpeed)->
     @aggdata = @series.stack

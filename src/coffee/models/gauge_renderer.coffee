@@ -155,8 +155,6 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
           @textContent = Math.floor i(t)
       )
 
-
-
   domain: ->
     @value = @series.stack[0].value
     @min = @series.stack[0].min

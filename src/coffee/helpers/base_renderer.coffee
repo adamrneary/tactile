@@ -118,7 +118,6 @@ class Tactile.RendererBase
     else selectObjects = @seriesCanvas().selectAll("path.baseline")
     selectObjects
       .attr("d", @seriesPathFactory())
-    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
 
   # Creates separate g element for each series.
   # This gives us better control over each paths/rets/circles
@@ -169,7 +168,6 @@ class Tactile.RendererBase
     name
 
   _filterNaNs: (d, args...) =>
-    console.log "_fiterNaNs", d
     _.all args, (attr) ->
       switch typeof d[attr]
         when "number" then !isNaN(d[attr]) and d[attr]?

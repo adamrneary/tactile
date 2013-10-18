@@ -30,7 +30,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("clip-path", "url(#clip)")
       .on("mousedown", @setActive)# set active element if click on it
 
-    if transition then selectObject = @transition.selectAll("rect")
+    if transition then selectObject = @transition.selectAll(".#{@_nameToId()} rect")
     else selectObject = @seriesCanvas().selectAll("rect")
     selectObject.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
@@ -39,7 +39,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("width", @_seriesBarWidth() / (1 + @gapSize))
       .attr("fill", @series.color)
 
-    selectObject.exit().remove()
+    nodes.exit().remove()
 
     line = @seriesDraggableCanvas().selectAll("line").data(@aggdata)
     line.enter()
@@ -65,7 +65,10 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
-    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
+
+    line.exit().remove()
+
+    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @setupTooltips()
 

@@ -165,7 +165,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("transform", (d, i) => "translate(#{@graph.width()-10}, #{(@_yOffset(d, i) - if @type is "normal" then 22 else 16)})")
-    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
+    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @lastData = @series.stack
 

@@ -183,16 +183,26 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .each("end", ()->
               count++
               draw() if count = transitionData.length
+              @animateShow() if @graph.animateShowHide
             )
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
           draw()
+          @graph.svg.transition().duration(transitionSpeed)
+            .selectAll(".#{@_nameToId()} rect")
+            .each("end", () => @animateShow() if @graph.animateShowHide)
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
         draw()
+        @graph.svg.transition().duration(transitionSpeed)
+          .selectAll(".#{@_nameToId()} rect")
+          .each("end", () => @animateShow() if @graph.animateShowHide)
     else
       @aggdata = @series.stack
       draw()
+      @graph.svg.transition().duration(transitionSpeed)
+        .selectAll(".#{@_nameToId()} rect")
+        .each("end", () => @animateShow() if @graph.animateShowHide)
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
@@ -366,12 +376,12 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
     @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
     @graph.vis?.transition()
-    .duration(@graph.transitionSpeed)
-    .delay(0)
-    .attr("transform", "translate(#{left},#{top})")
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
     @graph.draggableVis?.transition()
-    .duration(@graph.transitionSpeed)
-    .delay(0)
-    .attr("transform", "translate(#{left},#{top})")
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
 
     @graph.animateShowHide = false
