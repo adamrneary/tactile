@@ -82,7 +82,7 @@ class Tactile.RendererBase
   yFunctionOld: ->
     @graph[@series.yAxis+"Old"]
 
-  render: (transition) =>
+  render: (transition, recalculateData, transitionSpeed) =>
     @_checkData() if @checkData
 
     if (@series.disabled)
@@ -169,6 +169,7 @@ class Tactile.RendererBase
     name
 
   _filterNaNs: (d, args...) =>
+    console.log "_fiterNaNs", d
     _.all args, (attr) ->
       switch typeof d[attr]
         when "number" then !isNaN(d[attr]) and d[attr]?

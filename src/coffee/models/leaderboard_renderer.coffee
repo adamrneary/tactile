@@ -14,7 +14,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     @type = @series.type unless @series.type is undefined
     @labelLimit = @series.labelLimit unless @series.labelLimit is undefined
 
-  render: (transition, transitionSpeed)->
+  render: (transition, recalculateData, transitionSpeed)->
     @_checkData() if @checkData
 
     className = "leaderboard-" + @type

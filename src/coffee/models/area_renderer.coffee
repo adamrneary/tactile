@@ -34,7 +34,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     .interpolate(@graph.interpolation)
     .tension @tension
 
-  render: (transition)->
+  render: (transition, recalculateData, transitionSpeed)->
     @aggdata = @series.stack
     @_checkData(@aggdata) if @checkData
 

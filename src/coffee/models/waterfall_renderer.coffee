@@ -10,7 +10,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     @gapSize = options.gapSize || @gapSize
     @aggregated = @graph.aggregated[@name]
 
-  render: (transition)=>
+  render: (transition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
     if @aggregated
       @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
@@ -30,16 +30,18 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("clip-path", "url(#clip)")
       .on("mousedown", @setActive)# set active element if click on it
 
-    nodes.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
+    if transition then selectObject = @transition.selectAll("rect")
+    else selectObject = @seriesCanvas().selectAll("rect")
+    selectObject.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", (d)=> @_barY(d))
       .attr("x", @_barX)
       .attr("width", @_seriesBarWidth() / (1 + @gapSize))
       .attr("fill", @series.color)
 
-    nodes.exit().remove()
+    selectObject.exit().remove()
 
-    line = @seriesDraggableCanvas().selectAll("line").data(@series.stack)
+    line = @seriesDraggableCanvas().selectAll("line").data(@aggdata)
     line.enter()
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
@@ -91,9 +93,8 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
+    if @aggregated
+      stack = @aggdata
     else
       stack = @series.stack
 
