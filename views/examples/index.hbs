@@ -3,13 +3,22 @@
       <div class="span3">
           <ul id="cartLinkList" class="nav nav-list">
               <li class="nav-header">Cartesian series</li>
-              <li><a href="./scatter.html">Scatter</a></li><li><a href="./line.html">Line</a></li><li><a href="./column.html">Column</a></li><li><a href="./stacked-column.html">Stacked column</a></li><li><a href="./area.html">Area</a></li><li><a href="./stacked-area.html">Stacked area</a></li><li><a href="./multiple-series.html">Multiple series types</a></li><li><a href="./waterfall-timeseries.html">Waterfall (time series)</a></li></ul>
+              {{#each cartesianLinks}}
+                <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
           <ul id="noncartLinkList" class="nav nav-list">
               <li class="nav-header">Non-cartesian series</li>
-              <li><a href="./gauge.html">Gauge</a></li><li><a href="./leaderboard.html">Leaderboard</a></li><li><a href="./bullet.html">Bullet</a></li><li><a href="./donut.html">Donut</a></li><li><a href="./multi-donut.html">Multiple donuts</a></li></ul>
+              {{#each nonCartesianLinks}}
+                <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
           <ul id="compLinkList" class="nav nav-list">
               <li class="nav-header">Components</li>
-              <li><a href="./grid.html">Grid</a></li><li><a href="./sliding-timeframe.html">Sliding timeframe</a></li><li><a href="./chart-update.html">Real time updates</a></li><li><a href="./legend.html">Interactive legend</a></li><li><a href="./dual-scaled.html">Secondary y-axis</a></li><li><a href="./axes-toggle.html">Toggling axes</a></li><li><a href="./filter.html">Filters (future)</a></li></ul>
+              {{#each componentLinks}}
+                  <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
       </div>
 
     <div class="span9">
