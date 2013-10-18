@@ -44,7 +44,8 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
 
-    line.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
+    selectObject = @transition.selectAll(".#{@_nameToId()} line")
+      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d) => @_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i) =>
         gapCount = @graph.series.filter(
@@ -62,6 +63,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
+    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
 
     @setupTooltips()
 
@@ -89,8 +91,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @aggregated
-      stack = @aggdata
+    if @series.stack.length >= 2
+      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
+      width = stackWidth / (1 + @gapSize)
     else
       stack = @series.stack
 
@@ -129,3 +132,19 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

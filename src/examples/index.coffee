@@ -24,9 +24,6 @@ cartesian = [
   shortLink: "waterfall-timeseries"
   title: "Waterfall (time series)"
 ,
-  shortLink: "activecell-examples"
-  title: "Activecell Examples"
-,
   shortLink: "aggregate-column"
   title: "Column Aggregated Data Chart"
 ,
@@ -47,14 +44,14 @@ noncartesian = [
   shortLink: "bullet"
   title: "Bullet"
 ,
-#   shortLink: "sankey"
-#   title: "Sankey (future)"
-# ,
   shortLink: "donut"
   title: "Donut"
 ,
   shortLink: "multi-donut"
   title: "Multiple donuts"
+,
+  shortLink: "chart-changing"
+  title: "Animation from one chart to another"
 ]
 
 components = [
@@ -135,4 +132,4 @@ $(document).ready ->
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
 #  showcase.navigate "#line"  unless window.location.hash
-  window.location.hash = "#aggregate-waterfall"
+  window.location.hash = "#line"

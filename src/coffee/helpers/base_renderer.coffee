@@ -85,11 +85,6 @@ class Tactile.RendererBase
   render: (transition) =>
     @_checkData() if @checkData
 
-#    if @graph.aggregated['line'] is true
-#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-#    else
-#      @aggdata = @series.stack
-
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
         .data([@aggdata])
@@ -108,7 +103,7 @@ class Tactile.RendererBase
     # saves the line plot from having holes
     @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
-    .data([@aggdata])
+      .data([@aggdata])
 
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")
@@ -116,12 +111,14 @@ class Tactile.RendererBase
       .attr("stroke", (if @stroke then @series.color else "none"))
       .attr("stroke-width", @strokeWidth)
       .style('opacity', @opacity)
-      .attr("class", "baseline #{@series.className or ''}#{if @series.color then '' else ' colorless'}")
+      .attr("class", "baseline #{@series.className or ''}
+       #{if @series.color then '' else 'colorless'}")
 
     if transition then selectObjects = transition.selectAll(".#{@_nameToId()} path.baseline")
     else selectObjects = @seriesCanvas().selectAll("path.baseline")
     selectObjects
       .attr("d", @seriesPathFactory())
+    selectObject.each("end", () => @animateShow()) if @graph.animateShowHide
 
   # Creates separate g element for each series.
   # This gives us better control over each paths/rets/circles
@@ -131,11 +128,6 @@ class Tactile.RendererBase
   # all the paths, not the only ones attached to the current series,
   # which is very not desired.
   seriesCanvas: ->
-#    if @graph.aggregated[@name] is true
-#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-#    else
-#      @aggdata = @series.stack
-
     @graph.vis?.selectAll("g.#{@_nameToId()}")
       .data([@aggdata])
       .enter()
@@ -146,11 +138,6 @@ class Tactile.RendererBase
     @graph.vis?.selectAll("g.#{@_nameToId()}")
 
   seriesDraggableCanvas: ->
-#    if @graph.aggregated[@name] is true
-#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-#    else
-#      @aggdata = @series.stack
-
     @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
       .data([@aggdata])
       .enter()
@@ -193,3 +180,20 @@ class Tactile.RendererBase
       @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
       @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
     )
+
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

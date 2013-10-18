@@ -14,6 +14,7 @@ class Tactile.Chart
   # default values
   defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
   defaultAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
+  prevAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
@@ -50,6 +51,8 @@ class Tactile.Chart
     line: false
     waterfall: false
 
+  animateShowHide: false
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @utils = new Tactile.Utils()
@@ -57,6 +60,7 @@ class Tactile.Chart
     @axisPadding = _.defaults {}, args.axisPadding, @defaultAxisPadding
 
     @renderers = []
+    @renderers_to_delete = []
     @axesList = {}
     @gridList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -103,6 +107,11 @@ class Tactile.Chart
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
+
+    if options.overwrite
+      @animateShowHide = true
+    else
+      @animateShowHide = false
     @
 
 
@@ -273,8 +282,32 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
+    if @animateShowHide
+      # prevent changing after axes update
+      left = @padding.left + @prevAxisPadding?.left || 0
+      @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+
+      @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+      @vis.transition()
+        .duration(@transitionSpeed)
+        .attr("transform", "translate(#{left},#{@outerHeight})")
+      @draggableVis.transition()
+        .duration(@transitionSpeed)
+        .attr("transform", "translate(#{left},#{@outerHeight})")
+        .each "end", (d, i) =>
+          # updateSeries
+          _.each @renderers_to_delete, (r) ->
+            r.delete()
+          @renderers_to_delete = []
+
+          @renderChart(transitionSpeed, options)
+    else
+      @renderChart(transitionSpeed, options)
+
+  renderChart: (transitionSpeed, options= {}) ->
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+
     _.each @renderers, (renderer) =>
       renderer.render(t, true, transitionSpeed)
 
@@ -289,6 +322,7 @@ class Tactile.Chart
 
     @updateCallbacks.forEach (callback) ->
       callback()
+
 
   update: ->
     @render()
@@ -350,6 +384,8 @@ class Tactile.Chart
 
   axes: (args) ->
     return @axesList unless args
+    # save prev axisPadding
+    @prevAxisPadding = _.clone @axisPadding
 
     # kill any old axes
     _.each _.toArray(@axesList), (axis) -> axis.destroy()
@@ -493,7 +529,8 @@ class Tactile.Chart
     @y = d3.scale.linear()
       .domain([NaN, NaN])
     @y.magnitude = d3.scale.linear()
-    @y1 = d3.scale.linear().domain([NaN, NaN])
+    @y1 = d3.scale.linear()
+      .domain([NaN, NaN])
     @y1.magnitude = d3.scale.linear()
     @_updateRange()
 
@@ -534,8 +571,9 @@ class Tactile.Chart
 
   clearRenderers: ->
     return if _.isEmpty(@renderers)
-    _.each @renderers, (r) ->
-      r.delete()
+    @renderers_to_delete = _.clone @renderers
+#    _.each @renderers_to_delete, (r) ->
+#      r.delete()
 
     @renderers = []
     @timesRendered = 0
