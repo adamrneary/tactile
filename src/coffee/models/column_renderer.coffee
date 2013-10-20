@@ -192,7 +192,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .selectAll(".#{@_nameToId()} rect")
             .each("end", () => @animateShow() if @graph.animateShowHide)
       else
-        @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+        @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
         draw()
         @graph.svg.transition().duration(transitionSpeed)
           .selectAll(".#{@_nameToId()} rect")
