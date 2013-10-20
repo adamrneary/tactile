@@ -180,7 +180,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .attr("class", (d, i) =>
               ["bar",
                 ("colorless" unless @series.color)].join(" "))
-            .each("end", ()->
+            .each("end", ()=>
               count++
               draw() if count = transitionData.length
               @animateShow() if @graph.animateShowHide
