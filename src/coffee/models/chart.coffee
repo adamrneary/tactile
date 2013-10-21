@@ -283,24 +283,41 @@ class Tactile.Chart
     @_calculateXRange()
 
     if @animateShowHide
-      # prevent changing after axes update
       left = @padding.left + @prevAxisPadding?.left || 0
-      @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+      top = @padding.top + @prevAxisPadding?.top || 0
+      if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
+        # @outerWidth*1.1 - just to be shure to hide
+        # move dots to the right
+        @draggableVis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{@outerWidth*1.1},#{top})")
+        # @outerWidth*1.1 - just to be shure to hide
+        # move lines to the left
+        @vis?.selectAll(".line").transition().duration(@transitionSpeed).attr("transform", "translate(#{-@outerWidth},#{top})").each "end", () =>
+          # move all other down
+          @vis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{left},#{@outerHeight})").each "end", () =>
+            _.each @renderers_to_delete, (r) ->
+              r.delete()
+            @renderers_to_delete = []
 
-      @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
-      @vis.transition()
-        .duration(@transitionSpeed)
-        .attr("transform", "translate(#{left},#{@outerHeight})")
-      @draggableVis.transition()
-        .duration(@transitionSpeed)
-        .attr("transform", "translate(#{left},#{@outerHeight})")
-        .each "end", (d, i) =>
-          # updateSeries
-          _.each @renderers_to_delete, (r) ->
-            r.delete()
-          @renderers_to_delete = []
+            @renderChart(transitionSpeed, options)
+      else
+        # prevent changing after axes update
+        left = @padding.left + @prevAxisPadding?.left || 0
+        @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
 
-          @renderChart(transitionSpeed, options)
+        @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+        @vis.transition()
+          .duration(@transitionSpeed)
+          .attr("transform", "translate(#{left},#{@outerHeight})")
+        @draggableVis.transition()
+          .duration(@transitionSpeed)
+          .attr("transform", "translate(#{left},#{@outerHeight})")
+          .each "end", (d, i) =>
+            # updateSeries
+            _.each @renderers_to_delete, (r) ->
+              r.delete()
+            @renderers_to_delete = []
+
+            @renderChart(transitionSpeed, options)
     else
       @renderChart(transitionSpeed, options)
 
