@@ -9,17 +9,17 @@ class Tactile.Dragger
     @afterDrag = @series.afterDrag || ->
     @onDrag = @series.onDrag || ->
     @dragged = null
-    #@_bindMouseEvents()
+    @_bindMouseEvents()
     @power = @_calculateSigFigs()
     @setSpeed = @renderer.transitionSpeed
     @timesRendered = 0
 
   _bindMouseEvents: ->
-#    d3.select(@graph._element)
-#      .on("mousemove.drag.#{@series.name}", @_mouseMove)
-#      .on("touchmove.drag.#{@series.name}", @_mouseMove)
-#      .on("mouseup.drag.#{@series.name}", @_mouseUp)
-#      .on("touchend.drag.#{@series.name}", @_mouseUp)
+    d3.select(@graph._element)
+      .on("mousemove.drag.#{@series.name}", @_mouseMove)
+      .on("touchmove.drag.#{@series.name}", @_mouseMove)
+      .on("mouseup.drag.#{@series.name}", @_mouseUp)
+      .on("touchend.drag.#{@series.name}", @_mouseUp)
 
   # We need more documentation EVERYWHERE, but at least for this concept...
   #
@@ -39,11 +39,11 @@ class Tactile.Dragger
   # or a function that returns an integer when applied to a data point passed
   # as an argument.
   _calculateSigFigs: ->
-    # test = @series.sigfigs
-    # test =  @renderer
-    # console.log  @renderer.utils
-    # test =  @renderer.utils.ourFunctor
-    # test = @renderer.utils.ourFunctor(@series.sigfigs)
+    test = @series.sigfigs
+    test =  @renderer
+    console.log  @renderer.utils
+    test =  @renderer.utils.ourFunctor
+    test = @renderer.utils.ourFunctor(@series.sigfigs)
 
     sigfigs = @renderer.utils.ourFunctor(@series.sigfigs) ? 0
     Math.pow(10, sigfigs)
@@ -78,60 +78,60 @@ class Tactile.Dragger
     d3.event.stopPropagation()
 
   _mouseMove: =>
-#    p = d3.svg.mouse(@graph.draggableVis.node())
-#    t = d3.event.changedTouches
-#
-#    if @dragged
-#      # TODO: !! move this to tooltip
-#      # TODO: !! update tooltip text continuously on dragging
-#      if @series.tooltip
-#        tip = d3.select(@graph._element).select('.tooltip')
-#        hoveredNode = @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-#          .filter((d, i) =>
-#            # fix for a weird behavior that d is sometimes
-#            # an array with all the nodes of the series
-#            d = if _.isArray(d) then d[i] else d
-#            d is @dragged.d
-#          )
-#          .node()
-#          .getBoundingClientRect()
-#
-#        tip.style("top", "#{hoveredNode.top}px")
-#
-#      @renderer.transitionSpeed = 0
-#      inverted = @renderer.yFunction().invert(Math.max(0, Math.min(@graph.height(), p[1])))
-#      value = Math.round(inverted * @power) / @power
-#      if @renderer.unstack
-#        @dragged.y = value
-#      else
-#        @dragged.y = value - @dragged.y0
-#      @onDrag(@dragged, @series, @graph)
-#      @update()
-#      d3.event.preventDefault()
-#      d3.event.stopPropagation()
+    p = d3.mouse(@graph.draggableVis.node())
+    t = d3.event.changedTouches
+
+    if @dragged
+      # TODO: !! move this to tooltip
+      # TODO: !! update tooltip text continuously on dragging
+      if @series.tooltip
+        tip = d3.select(@graph._element).select('.tooltip')
+        hoveredNode = @renderer.seriesDraggableCanvas().selectAll('circle.editable')
+          .filter((d, i) =>
+            # fix for a weird behavior that d is sometimes
+            # an array with all the nodes of the series
+            d = if _.isArray(d) then d[i] else d
+            d is @dragged.d
+          )
+          .node()
+          .getBoundingClientRect()
+
+        tip.style("top", "#{hoveredNode.top}px")
+
+      @renderer.transitionSpeed = 0
+      inverted = @renderer.yFunction().invert(Math.max(0, Math.min(@graph.height(), p[1])))
+      value = Math.round(inverted * @power) / @power
+      if @renderer.unstack
+        @dragged.y = value
+      else
+        @dragged.y = value - @dragged.y0
+      @onDrag(@dragged, @series, @graph)
+      @update()
+      d3.event.preventDefault()
+      d3.event.stopPropagation()
 
 
   _mouseUp: =>
-#    return unless @dragged?.y?
-#    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
-#
-#    @renderer.seriesDraggableCanvas().selectAll('circle.editable')
-#      .data(@series.stack)
-#      .attr("class",
-#        (d) =>
-#          d.dragged = false
-#          "editable")
-#    d3.select("body").style "cursor", "auto"
-#    @dragged = null
-#
-#
-#    # unlock the tooltip from the dragged element
-#    Tactile.Tooltip.turnOffspotlight() if @series.tooltip
-#
-#    @renderer.transitionSpeed = @setSpeed
-#    @update()
-#    d3.event.preventDefault()
-#    d3.event.stopPropagation()
+    return unless @dragged?.y?
+    @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
+
+    @renderer.seriesDraggableCanvas().selectAll('circle.editable')
+      .data(@series.stack)
+      .attr("class",
+        (d) =>
+          d.dragged = false
+          "editable")
+    d3.select("body").style "cursor", "auto"
+    @dragged = null
+
+
+    # unlock the tooltip from the dragged element
+    Tactile.Tooltip.turnOffspotlight() if @series.tooltip
+
+    @renderer.transitionSpeed = @setSpeed
+    @update()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
 
   update: =>
     @renderer.render()

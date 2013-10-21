@@ -38,11 +38,11 @@
 
           <div class="nav-collapse">
             <ul class="nav">
-              <li><a id="home" href="#home"><i class="icon-home"></i> Home</a></li>
-              <li><a id="demo" href="#demo"><i class="icon-home"></i> Demo</a></li>
-              <li><a id="doc" href="#doc"><i class="icon-list-alt"></i>Annotated source</a></li>
-              <li><a id="test" href="#test"><i class="icon-ok"></i> Tests</a></li>
-              <li><a id="style_guide" href="#style_guide"><i class="icon-magic"></i> Style Guide</a></li>
+              <li><a id="home" href="./index.html"><i class="icon-home"></i> Home</a></li>
+              <li><a id="demo" href="./line.html"><i class="icon-home"></i> Demo</a></li>
+              <li><a id="doc" href="./docs.html"><i class="icon-list-alt"></i>Annotated source</a></li>
+              <li><a id="test" href="./test.html"><i class="icon-ok"></i> Tests</a></li>
+              <li><a id="/style_guide" href="./styleguide.html"><i class="icon-magic"></i> Style Guide</a></li>
               <li><a href="https://github.com/activecell/tactile"><i class="icon-book"></i> Source</a></li>
             </ul>
           </div>
@@ -59,7 +59,7 @@
     <script src="vendor/js/jquery.js"></script>
     <script src="vendor/js/underscore.js"></script>
     <script src="vendor/js/backbone.js"></script>
-    <script src="assets/d3.js"></script> {{! old specific version of d3 }}
+    <script src="assets/d3.js"></script>
     <script src="vendor/js/bootstrap.js"></script>
     <script src="vendor/js/coffee-script.js"></script>
     <script src="vendor/js/jquery-ui.js"></script>
@@ -68,68 +68,68 @@
     <script src="vendor/rainbow/language/coffeescript.js"></script>
 
     <script src="assets/tactile.js" defer></script>
-    <!--<script src="assets/examples.js" defer></script>-->
-    <script>
-        $(function() {
-            app = {}
+    <!--<script src='assets/examples.js' defer></script>-->
+    <!--<script>-->
+        <!--$(function() {-->
+            <!--app = {}-->
 
-            var WorkspaceRouter = Backbone.Router.extend({
-                routes: {
-                    "home": "home",
-                    "demo": "demo",
-                    "doc":  "doc",
-                    "test": "test",
-                    "style_guide": "styleGuide"
-                },
+            <!--var WorkspaceRouter = Backbone.Router.extend({-->
+                <!--routes: {-->
+                    <!--"home": "home",-->
+                    <!--"demo": "demo",-->
+                    <!--"doc":  "doc",-->
+                    <!--"test": "test",-->
+                    <!--"style_guide": "styleGuide"-->
+                <!--},-->
 
-                home: function() {
-                    $.get("home.html", function(data) {
-                        $("#main-content").html(data);
-                    });
-                },
+                <!--home: function() {-->
+                    <!--$.get("home.html", function(data) {-->
+                        <!--$("#main-content").html(data);-->
+                    <!--});-->
+                <!--},-->
 
-                demo: function() {
-                    $.get("demo.html", function(data) {
-                        $("#main-content").html(data);
-                    });
-                },
+                <!--demo: function() {-->
+                    <!--$.get("demo.html", function(data) {-->
+                        <!--$("#main-content").html(data);-->
+                    <!--});-->
+                <!--},-->
 
-                doc: function(query, page) {
-                    var $block = $('<div/>').attr('id', 'frame');
-                    $block.attr('style', 'height: 100%;');
-                    $("#main-content").html($block);
-                    var $iframe = $('<iframe/>').attr('id', 'tests-iframe');
-                    $iframe.attr('style', 'width: 100%; height: 100%; border: none;');
-                    $("#frame").html($iframe);
-                    $iframe.attr('src', 'annotated_sources/index.html')
-                },
+                <!--doc: function(query, page) {-->
+                    <!--var $block = $('<div/>').attr('id', 'frame');-->
+                    <!--$block.attr('style', 'height: 100%;');-->
+                    <!--$("#main-content").html($block);-->
+                    <!--var $iframe = $('<iframe/>').attr('id', 'tests-iframe');-->
+                    <!--$iframe.attr('style', 'width: 100%; height: 100%; border: none;');-->
+                    <!--$("#frame").html($iframe);-->
+                    <!--$iframe.attr('src', 'annotated_sources/index.html')-->
+                <!--},-->
 
-                test: function(query, page) {
-                    var $block = $('<div/>').attr('id', 'frame');
-                    $block.attr('style', 'height: 100%;');
-                    $("#main-content").html($block);
-                    var $iframe = $('<iframe/>').attr('id', 'tests-iframe');
-                    $iframe.attr('style', 'width: 100%; height: 100%; border: none;');
-                    $("#frame").html($iframe);
-                    $iframe.attr('src', 'test_runner.html')
-                },
+                <!--test: function(query, page) {-->
+                    <!--var $block = $('<div/>').attr('id', 'frame');-->
+                    <!--$block.attr('style', 'height: 100%;');-->
+                    <!--$("#main-content").html($block);-->
+                    <!--var $iframe = $('<iframe/>').attr('id', 'tests-iframe');-->
+                    <!--$iframe.attr('style', 'width: 100%; height: 100%; border: none;');-->
+                    <!--$("#frame").html($iframe);-->
+                    <!--$iframe.attr('src', 'test_runner.html')-->
+                <!--},-->
 
-                styleGuide: function(query, page) {
-                    $.get("styleguide.html", function(data) {
-                        $("#main-content").html(data);
-                    });
-                }
-            });
+                <!--styleGuide: function(query, page) {-->
+                    <!--$.get("styleguide.html", function(data) {-->
+                        <!--$("#main-content").html(data);-->
+                    <!--});-->
+                <!--}-->
+            <!--});-->
 
-            app.router = new WorkspaceRouter();
-            Backbone.history.start();
+            <!--app.router = new WorkspaceRouter();-->
+            <!--Backbone.history.start();-->
 
-            $("#home").on(function(){app.router.navigate("home")});
-            $("#demo").on(function(){app.router.navigate("demo")});
-            $("#doc").on(function(){app.router.navigate("doc")});
-            $("#test").on(function(){app.router.navigate("test")});
-            $("#style_guide").on(function(){app.router.navigate("style_guide")});
-        });
-    </script>
+            <!--$("#home").on(function(){app.router.navigate("home")});-->
+            <!--$("#demo").on(function(){app.router.navigate("demo")});-->
+            <!--$("#doc").on(function(){app.router.navigate("doc")});-->
+            <!--$("#test").on(function(){app.router.navigate("test")});-->
+            <!--$("#style_guide").on(function(){app.router.navigate("style_guide")});-->
+        <!--});-->
+    <!--</script>-->
   </body>
 </html>
