@@ -19,7 +19,7 @@ class Tactile.Chart
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 750
+  transitionSpeed: 333
   defaultHeight: 400
   defaultWidth: 680
   defaultAxesOptions:
