@@ -8,6 +8,9 @@ class Tactile.AxisTime extends Tactile.AxisBase
     @marginTop = options.paddingBottom or 5
     @time = new Tactile.FixturesTime()
     @grid = options.grid
+    @tickSize = options.tickSize or 2
+    @tickValues = options.tickValues or null
+    @tickFormat = options.tickFormat or (d) -> @appropriateTimeUnit().formatter(new Date(d))
 
   appropriateTimeUnit: ->
     unit = undefined
@@ -47,7 +50,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   render: (transition)->
     return unless @graph.x?
-
+    @transition = transition if transition
     aggregated = _.some(_.values(@graph.aggregated))
     if aggregated
       @aggLabels = @_getLabels(@graph.x.domain())
@@ -63,15 +66,17 @@ class Tactile.AxisTime extends Tactile.AxisBase
     ticks.enter()
       .append('g')
       .attr("class", ["x-tick", @ticksTreatment].join(' '))
+      .attr "transform", (d, i) =>
+        "translate(#{@graph.outerWidth*1.1}, #{@graph.height() + @marginForBottomTicks})"
 
-    ticks
+    @transition.selectAll(".x-tick")
       .attr("transform", (d, i) =>
         if aggregated
           "translate(#{@_tickX(d.value, i)}, #{@graph.height() + @marginForBottomTicks})"
         else
           "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
-
-    ticks.exit().remove()
+      .each "end", (d) ->
+        ticks.exit().remove()
 
     @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
