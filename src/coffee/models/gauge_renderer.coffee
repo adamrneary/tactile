@@ -5,7 +5,7 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
     cartesian: false
     oldValueAngle: 0
 
-  render: (transition, transitionSpeed)->
+  render: (transition, recalculateData, transitionSpeed)->
     @_checkData() if @checkData
     @transition = transition if transition
     scale = d3.scale.linear().range([0, 1]).domain(@domain())
@@ -154,8 +154,6 @@ class Tactile.GaugeRenderer extends Tactile.RendererBase
         (t) ->
           @textContent = Math.floor i(t)
       )
-
-
 
   domain: ->
     @value = @series.stack[0].value

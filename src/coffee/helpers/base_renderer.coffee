@@ -54,25 +54,48 @@ class Tactile.RendererBase
     yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
     yMax = @graph.max or d3.max(values)
 
-    { x: [xMin, xMax], y: [yMin, yMax] }
+    domain = { x: [xMin, xMax], y: [yMin, yMax] }
+
+    if _.some(_.values(@graph.aggregated))
+      values = []
+      data = @utils.aggregateData @series.stack, @graph.x.domain()
+      _.each data, (d) =>
+        if @series.renderer is 'waterfall'
+          values.push d.y + d.y00
+        else if @unstack
+          values.push d.y
+        else
+          values.push d.y + d.y0
+
+      if data.length == 0
+        return domain
+
+      yMin = (if @graph.min is "auto" then d3.min(values) else @graph.min or 0)
+      yMax = @graph.max or d3.max(values)
+
+      domain.y = [yMin, yMax]
+    domain
 
   yFunction: ->
     @graph[@series.yAxis]
 
-  render: (transition) =>
+  yFunctionOld: ->
+    @graph[@series.yAxis+"Old"]
+
+  render: (transition, recalculateData, transitionSpeed) =>
     @_checkData() if @checkData
 
     if (@series.disabled)
       @seriesCanvas().selectAll("path.baseline")
-        .data([@series.stack])
+        .data([@aggdata])
         .remove()
       return
 
     @transition = transition if transition
     if (@series.disabled)
       line = @seriesCanvas().selectAll("path.line")
-      .data([@series.stack])
-      .remove()
+        .data([@aggdata])
+        .remove()
       return
     # drawing line by default
 
@@ -80,7 +103,7 @@ class Tactile.RendererBase
     # saves the line plot from having holes
     @series.stack = @series.stack.filter (el) => @_filterNaNs(el, 'x', 'y')
     line = @seriesCanvas().selectAll("path.baseline")
-      .data([@series.stack])
+      .data([@aggdata])
 
     line.enter().append("svg:path")
       .attr("clip-path","url(#clip)")
@@ -105,7 +128,7 @@ class Tactile.RendererBase
   # which is very not desired.
   seriesCanvas: ->
     @graph.vis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
@@ -115,7 +138,7 @@ class Tactile.RendererBase
 
   seriesDraggableCanvas: ->
     @graph.draggableVis?.selectAll("g.#{@_nameToId()}")
-      .data([@series.stack])
+      .data([@aggdata])
       .enter()
       .append("g")
       .attr("clip-path", "url(#scatter-clip)")
@@ -156,3 +179,20 @@ class Tactile.RendererBase
       @utils.checkNumber(d.x, "#{@name} renderer data[#{i}].x")
       @utils.checkNumber(d.y, "#{@name} renderer data[#{i}].y")
     )
+
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

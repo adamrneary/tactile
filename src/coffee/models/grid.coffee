@@ -11,7 +11,7 @@ class Tactile.Grid
     @data = options.values or []
     @horizontal = options.grid != 'x'
 
-  render: (transition) ->
+  render: (transition, recalculateData, transitionSpeed) ->
     className = "#{@options.grid}-grid"
     @g = @graph.vis.selectAll('.' + className).data([0])
     @g.enter().append("g").attr("class", className)

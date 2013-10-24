@@ -14,11 +14,12 @@ class Tactile.Chart
   # default values
   defaultPadding: {top: 0, right: 0, bottom: 0, left: 0}
   defaultAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
+  prevAxisPadding: {top: 0, right: 0, bottom: 0, left: 0}
   interpolation: 'monotone'
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 750
+  transitionSpeed: 500
   defaultHeight: 400
   defaultWidth: 680
   defaultAxesOptions:
@@ -32,8 +33,8 @@ class Tactile.Chart
       dimension: "linear"
       showZeroLine: true
 
-  defaultMinXFrame: 1
-  defaultMinYFrame: 1
+  defaultMinXFrame:  1
+  defaultMinYFrame:  1
   defaultMinY1Frame: 1
   defaultMaxXFrame: Infinity
   defaultMaxYFrame: Infinity
@@ -45,6 +46,13 @@ class Tactile.Chart
 
   _lastYTranslate: 0
 
+  aggregated:
+    column: false
+    line: false
+    waterfall: false
+
+  animateShowHide: false
+
   # builds the chart object using any passed arguments
   constructor: (args = {}) ->
     @utils = new Tactile.Utils()
@@ -52,6 +60,7 @@ class Tactile.Chart
     @axisPadding = _.defaults {}, args.axisPadding, @defaultAxisPadding
 
     @renderers = []
+    @renderers_to_delete = []
     @axesList = {}
     @gridList = {}
     @series = new Tactile.SeriesSet([], @)
@@ -88,6 +97,8 @@ class Tactile.Chart
   # Note: pass option 'overwrite: true' to remove all previous series
   addSeries: (series, options = {overwrite: false}) ->
     return unless series
+    _.each @aggregated, (value, key) =>
+      @aggregated[key] = false
     series = [series] unless _.isArray(series)
 
     newSeries = _.map(series, (options) -> new Tactile.Series(options))
@@ -96,6 +107,11 @@ class Tactile.Chart
     # only init the renderers for just added series
     # TODO: Refactor this into series/renderer constructor
     @initRenderers(newSeries)
+
+    if options.overwrite
+      @animateShowHide = true
+    else
+      @animateShowHide = false
     @
 
 
@@ -153,6 +169,24 @@ class Tactile.Chart
 
 
   setXFrame: (xFrame) =>
+    @xOld = d3.scale.linear()
+      .domain(@x.domain())
+      .range(@x.range())
+
+    @yOld = d3.scale.linear()
+      .domain(@y.domain())
+      .range(@y.range())
+    @yOld.magnitude = d3.scale.linear()
+      .domain(@y.magnitude.domain())
+      .range(@y.magnitude.range())
+
+    @y1Old = d3.scale.linear()
+      .domain(@y1.domain())
+      .range(@y1.range())
+    @y1Old.magnitude = d3.scale.linear()
+      .domain(@y1.magnitude.domain())
+      .range(@y1.magnitude.range())
+
     @x.domain(xFrame)
     @
 
@@ -248,10 +282,51 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
+    if @animateShowHide
+      left = @padding.left + @prevAxisPadding?.left || 0
+      top = @padding.top + @prevAxisPadding?.top || 0
+      if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
+        # @outerWidth*1.1 - just to be shure to hide
+        # move dots to the right
+        @draggableVis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{@outerWidth*1.1},#{top})")
+        # @outerWidth*1.1 - just to be shure to hide
+        # move lines to the left
+        @vis?.selectAll(".line").transition().duration(@transitionSpeed).attr("transform", "translate(#{-@outerWidth},#{top})").each "end", () =>
+          # move all other down
+          @vis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{left},#{@outerHeight})").each "end", () =>
+            _.each @renderers_to_delete, (r) ->
+              r.delete()
+            @renderers_to_delete = []
+
+            @renderChart(transitionSpeed, options)
+      else
+        # prevent changing after axes update
+        left = @padding.left + @prevAxisPadding?.left || 0
+        @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+
+        @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
+        @vis.transition()
+          .duration(@transitionSpeed)
+          .attr("transform", "translate(#{left},#{@outerHeight})")
+        @draggableVis.transition()
+          .duration(@transitionSpeed)
+          .attr("transform", "translate(#{left},#{@outerHeight})")
+          .each "end", (d, i) =>
+            # updateSeries
+            _.each @renderers_to_delete, (r) ->
+              r.delete()
+            @renderers_to_delete = []
+
+            @renderChart(transitionSpeed, options)
+    else
+      @renderChart(transitionSpeed, options)
+
+  renderChart: (transitionSpeed, options= {}) ->
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+
     _.each @renderers, (renderer) =>
-      renderer.render(t, if @timesRendered then transitionSpeed else 0)
+      renderer.render(t, true, transitionSpeed)
 
     _.each @axesList, (axis) =>
       axis.render(t)
@@ -265,6 +340,7 @@ class Tactile.Chart
     @updateCallbacks.forEach (callback) ->
       callback()
 
+
   update: ->
     @render()
 
@@ -275,10 +351,14 @@ class Tactile.Chart
     _.each @renderers, (renderer) =>
       if renderer.cartesian
         domain = renderer.domain()
-        xDomain = domain.x
-        yDomain = domain.y
+        xDomain = domain.x if xDomain.length is 0
+        yDomain = domain.y if yDomain.length is 0
+        xDomain[0] = domain.x[0] if xDomain[0] > domain.x[0]
+        xDomain[1] = domain.x[1] if xDomain[1] < domain.x[1]
+        yDomain[0] = domain.y[0] if yDomain[0] > domain.y[0]
+        yDomain[1] = domain.y[1] if yDomain[1] < domain.y[1]
         unless renderer.series.ofDefaultAxis()
-          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))]
+          y1Domain = [0, d3.max(@series.ofAlternateScale().flat('y'))] if y1Domain.length is 0
 
 
     unless @availableXFrame then @_autoSetAvailableXFrame = true
@@ -321,13 +401,21 @@ class Tactile.Chart
 
   axes: (args) ->
     return @axesList unless args
+    # save prev axisPadding
+    @prevAxisPadding = _.clone @axisPadding
 
     # kill any old axes
     _.each _.toArray(@axesList), (axis) -> axis.destroy()
 
     _.each ['x', 'y', 'y1'], (k) =>
       if args[k]?
-        defaults = {graph: @, dimension: @defaultAxesOptions[k].dimension, frame: @defaultAxesOptions[k].frame, axis: k, showZeroLine: @defaultAxesOptions[k].showZeroLine}
+        defaults =
+          graph: @
+          dimension: @defaultAxesOptions[k].dimension
+          frame: @defaultAxesOptions[k].frame
+          axis: k
+          showZeroLine: @defaultAxesOptions[k].showZeroLine
+
         @initAxis _.extend defaults, args[k]
 
     @
@@ -490,6 +578,8 @@ class Tactile.Chart
         transitionSpeed: @transitionSpeed
         series: s
         rendererIndex: index + renderersSize
+      if s.aggregate is true
+        @aggregated[name] = true
       r = new rendererClass(rendererOptions)
       @renderers.push r
 
@@ -498,8 +588,9 @@ class Tactile.Chart
 
   clearRenderers: ->
     return if _.isEmpty(@renderers)
-    _.each @renderers, (r) ->
-      r.delete()
+    @renderers_to_delete = _.clone @renderers
+#    _.each @renderers_to_delete, (r) ->
+#      r.delete()
 
     @renderers = []
     @timesRendered = 0
@@ -507,8 +598,11 @@ class Tactile.Chart
   stackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.unstack = false)
     _.each(@renderersByType('column'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.unstack = false)
     _.each(@renderersByType('area'), (r) -> r.stackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstack = false)
     _.each(@renderersByType('donut'), (r) -> r.stackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>
@@ -518,8 +612,11 @@ class Tactile.Chart
   unstackTransition: (transitionSpeed) =>
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(transitionSpeed)
+    _.each(@renderersByType('column'), (r) -> r.unstack = true)
     _.each(@renderersByType('column'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('area'), (r) -> r.unstack = true)
     _.each(@renderersByType('area'), (r) -> r.unstackTransition(t, transitionSpeed))
+    _.each(@renderersByType('donut'), (r) -> r.unstack = true)
     _.each(@renderersByType('donut'), (r) -> r.unstackTransition(t, transitionSpeed))
     #@_setupZoom()
     _.each  @axesList, (axis) =>

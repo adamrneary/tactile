@@ -19,23 +19,24 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
   seriesPathFactory: =>
     d3.svg.area()
-    .defined((d) => @_filterNaNs(d, 'x', 'y'))
-    .x((d) => @graph.x d.x)
-    .y0((d) => @yFunction() @_y0(d))
-    .y1((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y', 'y0'))
+      .x((d) => @graph.x d.x)
+      .y0((d) => @yFunction() @_y0(d))
+      .y1((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
   seriesStrokeFactory: =>
     d3.svg.line()
-    .defined((d) => @_filterNaNs(d, 'x', 'y'))
-    .x((d) => @graph.x d.x)
-    .y((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y'))
+      .x((d) => @graph.x d.x)
+      .y((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
-  render: (transition)->
-    @_checkData(@series.stack) if @checkData
+  render: (transition, recalculateData, transitionSpeed)->
+    @aggdata = @series.stack
+    @_checkData(@aggdata) if @checkData
 
     @transition = transition if transition
     super(transition)
@@ -44,7 +45,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       @seriesCanvas().selectAll('circle').remove()
       return
 
-    stroke = @seriesCanvas().selectAll('path.stroke').data([@series.stack])
+    stroke = @seriesCanvas().selectAll('path.stroke').data([@aggdata])
 
     stroke.enter()
       .append("svg:path")
@@ -60,7 +61,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .attr("d", @seriesStrokeFactory())
 
     circ = @seriesDraggableCanvas().selectAll('circle')
-      .data(@series.stack)
+      .data(@aggdata)
 
     newCircs = circ.enter().append("svg:circle")
       .on("mousedown", @setActive)# set active element if click on it

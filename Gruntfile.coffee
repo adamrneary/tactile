@@ -1,3 +1,7 @@
+cartesian = JSON.parse require("fs").readFileSync("src/examples/cartesian.json")
+noncartesian = JSON.parse require("fs").readFileSync("src/examples/noncartesian.json")
+components = JSON.parse require("fs").readFileSync("src/examples/components.json")
+
 module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
@@ -21,9 +25,9 @@ module.exports = (grunt) ->
         src: "src/coffee/**/*.coffee"
 
     coffee:
-      options:
-        join: true
-      tactile:
+      compileJoined:
+        options:
+          join: true
         files:
           "ghpages/assets/tactile.js": [
             "src/coffee/index.coffee"
@@ -54,11 +58,9 @@ module.exports = (grunt) ->
 
             "src/coffee/models/chart.coffee"
           ]
-      examples:
-        files:
+
           "ghpages/assets/examples.js":   "src/examples/index.coffee"
-      tests:
-        files:
+
           "ghpages/assets/unit_tests.js": [
             "test/client/area.coffee"
             "test/client/column.coffee"
@@ -175,7 +177,11 @@ module.exports = (grunt) ->
         preHTML: "views/layout_pre.html"
         postHTML: "views/layout_post.html"
         template: "views/examples/index.hbs"
-        templateData: {demoblock: ""}
+        templateData:
+          demoblock: ""
+          cartesianLinks: cartesian
+          nonCartesianLinks: noncartesian
+          componentLinks: components
         output: "ghpages/demo.html"
       docs:
         template: "views/layout.hbs"
@@ -229,10 +235,13 @@ module.exports = (grunt) ->
             postHTML: "views/layout_post.html"
             template: "views/examples/index.hbs"
             templateData: {
-            header: "#{name}"
-            coffeetext: file
-            demoblock: ""
-            jsblock: ""
+              header: "#{name}"
+              coffeetext: file
+              demoblock: ""
+              jsblock: ""
+              cartesianLinks: cartesian
+              nonCartesianLinks: noncartesian
+              componentLinks: components
             }
             output: "ghpages/" + "#{name}" + "_tmp.html"
           }

@@ -14,7 +14,7 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
     @type = @series.type unless @series.type is undefined
     @labelLimit = @series.labelLimit unless @series.labelLimit is undefined
 
-  render: (transition, transitionSpeed)->
+  render: (transition, recalculateData, transitionSpeed)->
     @_checkData() if @checkData
 
     className = "leaderboard-" + @type
@@ -160,11 +160,12 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .duration(transitionSpeed / 2)
       .attr("y", @_yOffset)
 
-    @transition.selectAll(".#{@_nameToId()} path")
+    selectObject = @transition.selectAll(".#{@_nameToId()} path")
       .filter((d) => !isNaN(d.value) and !isNaN(d.change) and !isNaN(d.barPosition) and d.label? and d.value? and d.change? and d.barPosition?)
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("transform", (d, i) => "translate(#{@graph.width()-10}, #{(@_yOffset(d, i) - if @type is "normal" then 22 else 16)})")
+    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @lastData = @series.stack
 
@@ -189,3 +190,19 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       @utils.checkNumber(d.barPosition, "#{@name} renderer data[#{i}].barPosition", d)
     )
 
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

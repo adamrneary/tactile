@@ -3,6 +3,7 @@ class Tactile.AxisBase
     @utils = new Tactile.Utils()
     @graph = options.graph
     @ticksTreatment = options.ticksTreatment or "plain"
+    @fontSize  = if _.indexOf(@ticksTreatement, "small") != -1 then 10 else 12
     @frame = options.frame
 
     @marginForBottomTicks = 10
@@ -29,7 +30,8 @@ class Tactile.AxisBase
       new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain)
 
-    @graph.render(0, zooming: true)
+#    @graph.render(0, zooming: true)
+    @graph.render(0)
 
     d3.event.preventDefault()
     d3.event.stopPropagation()
@@ -44,7 +46,7 @@ class Tactile.AxisBase
       @graph.axisPadding.bottom = 0
       @graph.axisPadding.top = 0
     else
-      @graph.axisPadding.bottom = 20 if @graph.axisPadding.bottom < 20
+      @graph.axisPadding.bottom = 30 if @graph.axisPadding.bottom < 30
       @graph.axisPadding.right = 15 if @graph.axisPadding.right < 15
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)

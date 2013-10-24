@@ -8,25 +8,31 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
+    @aggregated = @graph.aggregated[@name]
 
-  render: (transition)=>
+  render: (transition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
+    if @aggregated
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
+    else
+      @aggdata = @series.stack
 
     @transition = transition if transition
     if (@series.disabled)
       @dragger?.timesRendered = 0
-      @seriesCanvas().selectAll("rect").data(@series.stack).remove()
-      @seriesDraggableCanvas().selectAll("line").data(@series.stack).remove()
+      @seriesCanvas().selectAll("rect").data(@aggdata).remove()
+      @seriesDraggableCanvas().selectAll("line").data(@aggdata).remove()
       return
 
-    nodes = @seriesCanvas().selectAll("rect").data(@series.stack)
+    nodes = @seriesCanvas().selectAll("rect").data(@aggdata)
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @setActive)# set active element if click on it
+      .on("mousedown", @setActive)# set active element if click on it
 
-    @transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
+    if transition then selectObject = @transition.selectAll(".#{@_nameToId()} rect")
+    else selectObject = @seriesCanvas().selectAll("rect")
+    selectObject.filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", (d)=> @_barY(d))
       .attr("x", @_barX)
@@ -35,12 +41,12 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     nodes.exit().remove()
 
-    line = @seriesDraggableCanvas().selectAll("line").data(@series.stack)
+    line = @seriesDraggableCanvas().selectAll("line").data(@aggdata)
     line.enter()
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
 
-    @transition.selectAll(".#{@_nameToId()} line")
+    selectObject = @transition.selectAll(".#{@_nameToId()} line")
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d) => @_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i) =>
@@ -59,6 +65,10 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .attr("stroke", "#BEBEBE")
       .attr("stroke-width", (d, i)=>
         if (@_waterfalRendererIndex() is 0 and i is 0) or (@utils.ourFunctor(@series.fromBaseline, d, i)) then 0 else 1)
+
+    line.exit().remove()
+
+    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @setupTooltips()
 
@@ -86,26 +96,34 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
+    if @aggregated
+      stack = @aggdata
     else
-      width = @graph.width() / (1 + @gapSize)
+      stack = @series.stack
 
-    width = width / @graph.series.filter(
-      (d) =>
-        d.renderer == 'waterfall'
-    ).length()
+    width = @graph.width() / stack.length
+    width = width / @graph.series.filter((d) =>
+      d.renderer == @name).array.length
+
+    width = width - (2 * @gapSize)
+    width
 
   _barXOffset: (seriesBarWidth) ->
     count = @graph.renderersByType(@name).length
     barXOffset = -seriesBarWidth * count / 2
 
   _barX: (d) =>
-    x = @graph.x(d.x)
     seriesBarWidth = @_seriesBarWidth()
-    initialX = x + @_barXOffset(seriesBarWidth)
-    initialX + (@_waterfalRendererIndex() * seriesBarWidth)
+    if @aggregated
+      x = d.x
+      cnt_series = @graph.series.filter((d) =>
+        d.renderer == @name).array.length
+      initialX = x * (seriesBarWidth + 2 * @gapSize) * cnt_series + @gapSize
+      initialX + (@_waterfalRendererIndex() * seriesBarWidth)
+    else
+      x = @graph.x(d.x)
+      initialX = x + @_barXOffset(seriesBarWidth)
+      initialX + (@_waterfalRendererIndex() * seriesBarWidth)
 
   _barY: (d, i) =>
     if d.y > 0
@@ -118,3 +136,19 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
+  animateShow: ->
+    left = @graph.padding.left + @graph.axisPadding.left
+    top = @graph.padding.top + @graph.axisPadding.top
+
+    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+    @graph.vis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+    @graph.draggableVis?.transition()
+      .duration(@graph.transitionSpeed)
+      .delay(0)
+      .attr("transform", "translate(#{left},#{top})")
+
+    @graph.animateShowHide = false

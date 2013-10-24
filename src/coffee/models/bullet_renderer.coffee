@@ -16,7 +16,7 @@ class Tactile.BulletRenderer extends Tactile.RendererBase
     @margin = @series.margin unless @series.margin is undefined
     @tickCount = @series.tickCount unless @series.tickCount is undefined
 
-  render: (transition, transitionSpeed) ->
+  render: (transition, recalculateData, transitionSpeed) ->
     @_checkData() if @checkData
 
     width: @margin.width - @margin.left - @margin.right
