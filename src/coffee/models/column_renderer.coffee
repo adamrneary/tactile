@@ -238,25 +238,25 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkYDomain()
     @graph._checkY1Domain()
 
+    # whole time of transition saved.
+    # 2 actions: change height, change width
+    transitionCount = 2
+
     transition.selectAll(".#{@_nameToId()} rect")
-      .duration(transitionSpeed/2)
-      .delay(0)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
       .attr("y", (d) => @_barY(d))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .transition()
-      .duration(transitionSpeed/2)
-      .delay(transitionSpeed/2)
       .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .delay((d,i) => i*(transitionSpeed/@series.stack.length))
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
       .transition()
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-    # whole time of transition saved.
-    # 2 actions: change height, change width
-
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
@@ -266,26 +266,25 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkYDomain()
     @graph._checkY1Domain()
 
+    # whole time of transition saved.
+    # 2 actions: change height, change width
+    transitionCount = 2
+
     transition.selectAll(".#{@_nameToId()} rect")
-      .duration(transitionSpeed/2)
-      .delay(0)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
       .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
       .transition()
-      .duration(transitionSpeed/2)
-      .delay(transitionSpeed/2)
       .attr("y", (d) => @_barY(d))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .duration(transitionSpeed/2)
-      .delay(transitionSpeed/2)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .transition()
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
-    # whole time of transition saved.
-    # 2 actions: change width, change height
-
 
   _transformMatrix: (d) =>
     # A matrix transform for handling negative values
