@@ -122,6 +122,17 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       # set tooltip for column
       @setupTooltips()
 
+    calculateMonthRange = (dataArray) ->
+      [begin, end] = [_.first(dataArray), _.last(dataArray)]
+      return 0 unless _.has(begin, "range") and _.has(end, "range")
+      return 0 unless _.isArray(begin.range) and _.isArray(end.range)
+      [begin, end] = [begin.range[0], end.range[1]]
+      [begin, end] = [new Date(begin), new Date(end)]
+      return (end.getFullYear() - begin.getFullYear()) * 12 + (end.getMonth() - begin.getMonth()) + 1
+
+    @_checkData() if @checkData
+    @transition = transition if transition
+
     if @aggregated
       if recalculateData
         if @aggdata
@@ -168,15 +179,48 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
           @aggdata = aggdataSource
 
           count = 0
-          @graph.svg.transition().duration(transitionSpeed).selectAll(".#{@_nameToId()} rect")
+          console.log "\taggregate", calculateMonthRange(@aggdata) > calculateMonthRange(aggdataOldSource)
+          console.log "\tsplit", calculateMonthRange(@aggdata) < calculateMonthRange(aggdataOldSource)
+
+          # if we aggregate from months to quarter, from quarter to year:
+          #   attrs order change: x -> width -> height
+          if calculateMonthRange(@aggdata) > calculateMonthRange(aggdataOldSource)
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(0)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("x", (d) => @_barX(d.end))
+              .attr("y", (d) => @_barY(d.start))
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(transitionSpeed/3)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("width", @_seriesBarWidth())
+              .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
+              .attr("stroke", "white")
+              .attr("rx", @_edgeRatio)
+              .attr("ry", @_edgeRatio)
+
+            # if we aggregate from quarter to months, from year to quarter:
+            #   attrs order change: width -> x -> height
+          else
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(0)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("width", @_seriesBarWidth())
+              .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
+              .attr("stroke", "white")
+              .attr("rx", @_edgeRatio)
+              .attr("ry", @_edgeRatio)
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(transitionSpeed/3)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("x", (d) => @_barX(d.end))
+              .attr("y", (d) => @_barY(d.end, true))
+
+          @graph.svg.transition()
+            .duration(transitionSpeed/3).delay(2*transitionSpeed/3)
+            .selectAll(".#{@_nameToId()} rect")
             .attr("height", (d) => @yFunction().magnitude Math.abs(d.end.y))
             .attr("y", (d) => @_barY(d.end))
-            .attr("x", (d) => @_barX(d.end))
-            .attr("width", @_seriesBarWidth())
-            .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
-            .attr("stroke", "white")
-            .attr("rx", @_edgeRatio)
-            .attr("ry", @_edgeRatio)
             .attr("class", (d, i) =>
               ["bar",
                 ("colorless" unless @series.color)].join(" "))
