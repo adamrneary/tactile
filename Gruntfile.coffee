@@ -61,6 +61,8 @@ module.exports = (grunt) ->
 
           "ghpages/assets/examples.js":   "src/examples/index.coffee"
 
+          "ghpages/assets/js/index.js":   "src/examples/list/index-page.coffee"
+
           "ghpages/assets/unit_tests.js": [
             "test/client/area.coffee"
             "test/client/column.coffee"
@@ -169,9 +171,16 @@ module.exports = (grunt) ->
         dest: "ghpages/vendor"
 
     "compile-handlebars":
+      index_tmp:
+        preHTML:  "views/layout_pre.html"
+        postHTML: "views/layout_post.html"
+        template: "views/examples/index_page.hbs"
+        templateData: { header: "CHART-CHANGING", demoblock: "", jsblock: ""}
+        output: "ghpages/" + "index" + "_tmp.html"
       index:
-        template: "views/layout.hbs"
-        templateData: {body: "EmptyPage"}
+        preHTML: "ghpages/" + "index" + "_tmp.html"
+        template: "{{{null}}}"
+        templateData: {null: "<script src='./assets/js/index.js' defer=''></script>"}
         output: "ghpages/index.html"
       demo:
         preHTML: "views/layout_pre.html"
@@ -287,16 +296,18 @@ module.exports = (grunt) ->
     ]
 
   grunt.registerTask "default", [
-      "create-example"
-      "compile-assets"
-      "compile-docs"
-      "copy"
-      "symlink"
-      "handlebars"
-      "compile-styleguide"
-      "clean:tmp"
+    "create-example"
+    "compile-assets"
+    "compile-docs"
+    "copy"
+    "symlink"
+    "handlebars"
+    "compile-handlebars:index_tmp"
+    "compile-handlebars:index"
+    "compile-styleguide"
+    "clean:tmp"
 #      "gh-pages"
 #      "clean:ghpages"
-    ]
+  ]
 
   grunt.loadNpmTasks "showcase"
