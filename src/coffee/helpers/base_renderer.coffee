@@ -12,10 +12,12 @@ class Tactile.RendererBase
     fill: false
 
   constructor: (options = {}) ->
+    console.log "base constructor"
     @utils = new Tactile.Utils()
     @graph = options.graph
     @tension = options.tension or @tension
     @configure options
+    @animateShowHide = false
     # call constructor of inherited renderers
     @initialize?(options)
 
@@ -181,18 +183,21 @@ class Tactile.RendererBase
     )
 
   animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
+    return unless @animateShowHide
+    console.log "animateShow", "\n\t.canvas > g.#{@_nameToId()} *"
+    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
+      .attr("transform", "translate(0,#{@graph.outerHeight})")
+    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
+      .attr("transform", "translate(0,#{@graph.outerHeight})")
 
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
+    # one step for hide, one step for show
+    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
+      .transition()
+      .duration(@graph.transitionSpeed / 2)
+      .attr("transform", "translate(0,0)")
+    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
+      .transition()
+      .duration(@graph.transitionSpeed / 2)
+      .attr("transform", "translate(0,0")
 
-    @graph.animateShowHide = false
+    @animateShowHide = false

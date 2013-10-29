@@ -19,7 +19,7 @@ class Tactile.Chart
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 500
+  transitionSpeed: 5000
   defaultHeight: 400
   defaultWidth: 680
   defaultAxesOptions:
@@ -282,36 +282,26 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
-    if @animateShowHide
-      left = @padding.left + @prevAxisPadding?.left || 0
-      top = @padding.top + @prevAxisPadding?.top || 0
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    _.each @axesList, (axis) =>
+      axis.render(t)
+
+    if @animateShowHide and @renderers_to_delete.length
       if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
-        # @outerWidth*1.1 - just to be shure to hide
-        # move dots to the right
-        @draggableVis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{@outerWidth*1.1},#{top})")
-        # @outerWidth*1.1 - just to be shure to hide
-        # move lines to the left
-        @vis?.selectAll(".line").transition().duration(@transitionSpeed).attr("transform", "translate(#{-@outerWidth},#{top})").each "end", () =>
-          # move all other down
-          @vis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{left},#{@outerHeight})").each "end", () =>
-            _.each @renderers_to_delete, (r) ->
-              r.delete()
-            @renderers_to_delete = []
-
-            @renderChart(transitionSpeed, options)
       else
-        # prevent changing after axes update
-        left = @padding.left + @prevAxisPadding?.left || 0
-        @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
-
-        @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
-        @vis.transition()
-          .duration(@transitionSpeed)
-          .attr("transform", "translate(#{left},#{@outerHeight})")
-        @draggableVis.transition()
-          .duration(@transitionSpeed)
-          .attr("transform", "translate(#{left},#{@outerHeight})")
+        # one step hide, one step for show
+        @svg.selectAll(".canvas > g:not([class*='tick']) *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(0,#{@outerHeight})")
+        cnt = @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *").length
+        @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(0,#{@outerHeight})")
           .each "end", (d, i) =>
+            return if i != cnt
             # updateSeries
             _.each @renderers_to_delete, (r) ->
               r.delete()
@@ -325,11 +315,12 @@ class Tactile.Chart
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
 
-    _.each @renderers, (renderer) =>
+    _.each @renderers, (renderer, i) =>
+      console.log "_.each @renderers, (renderer) =>", i
+      renderer.animateShowHide = @animateShowHide
       renderer.render(t, true, transitionSpeed)
-
-    _.each @axesList, (axis) =>
-      axis.render(t)
+#      renderer.animateShow()
+    @animateShowHide = false
 
     _.each @gridList, (grid) =>
       grid.render(t)
@@ -581,6 +572,7 @@ class Tactile.Chart
       if s.aggregate is true
         @aggregated[name] = true
       r = new rendererClass(rendererOptions)
+      r.animateShowHide = @animateShowHide
       @renderers.push r
 
   renderersByType: (name) ->

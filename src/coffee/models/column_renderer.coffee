@@ -22,6 +22,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @transition = transition if transition
 
     draw = () =>
+      console.log "column draw"
       if (@series.disabled)
         @dragger?.timesRendered = 0
         @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -183,26 +184,18 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .each("end", ()=>
               count++
               draw() if count = transitionData.length
-              @animateShow() if @graph.animateShowHide
+#              @animateShow() if @graph.animateShowHide
             )
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
           draw()
-          @graph.svg.transition().duration(transitionSpeed)
-            .selectAll(".#{@_nameToId()} rect")
-            .each("end", () => @animateShow() if @graph.animateShowHide)
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
         draw()
-        @graph.svg.transition().duration(transitionSpeed)
-          .selectAll(".#{@_nameToId()} rect")
-          .each("end", () => @animateShow() if @graph.animateShowHide)
     else
       @aggdata = @series.stack
       draw()
-      @graph.svg.transition().duration(transitionSpeed)
-        .selectAll(".#{@_nameToId()} rect")
-        .each("end", () => @animateShow() if @graph.animateShowHide)
+    @animateShow() if @animateShowHide
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
@@ -379,19 +372,18 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-
-    @graph.animateShowHide = false
+#  animateShow: ->
+#    @graph.svg.selectAll(".canvas > g.column.#{@_nameToId()}")
+#      .attr("transform", "translate(0,#{@graph.outerHeight})")
+#    @graph.svg.selectAll(".draggable-canvas > g:not([class*='tick']) #{}")
+#      .attr("transform", "translate(0,#{@graph.outerHeight})")
+#
+#    # one step for hide, one step for show
+#    @graph.svg.selectAll(".canvas > g:not([class*='tick']) *")
+#      .transition()
+#      .duration(@graph.transitionSpeed / 2)
+#      .attr("transform", "translate(0,0)")
+#    @graph.svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
+#      .transition()
+#      .duration(@graph.transitionSpeed / 2)
+#      .attr("transform", "translate(0,0")

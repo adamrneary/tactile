@@ -104,6 +104,8 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
+    @animateShow() if @animateShowHide
+
   stackTransition: (transition, transitionSpeed)=>
     @unstack = false
     @graph.setYFrame([NaN, NaN])

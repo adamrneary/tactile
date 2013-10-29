@@ -68,9 +68,10 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     line.exit().remove()
 
-    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
+#    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @setupTooltips()
+    @animateShow() if @animateShowHide
 
   setupTooltips: ->
     if @series.tooltip
@@ -136,19 +137,25 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
 
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-
-    @graph.animateShowHide = false
+#  animateShow: ->
+#    return unless @animateShowHide
+#    console.log "waterfall animateShow"
+#    console.log "\t.draggable-canvas > g.#{@_nameToId()} *", @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
+#    console.log "\t.draggable-canvas > g.#{@_nameToId()} *", @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
+#    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
+#      .attr("transform", "translate(0,#{@graph.outerHeight})")
+#    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
+#      .attr("transform", "translate(0,#{@graph.outerHeight})")
+#
+#    # one step for hide, one step for show
+#    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
+#      .transition()
+#      .duration(@graph.transitionSpeed / 2)
+#      .attr("transform", "translate(0,0)")
+#    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
+#      .transition()
+#      .duration(@graph.transitionSpeed / 2)
+#      .attr("transform", "translate(0,0")
+#
+#    @animateShowHide = false
+#

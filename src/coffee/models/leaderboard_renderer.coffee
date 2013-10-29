@@ -165,9 +165,10 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       .delay(transitionSpeed / 2)
       .duration(transitionSpeed / 2)
       .attr("transform", (d, i) => "translate(#{@graph.width()-10}, #{(@_yOffset(d, i) - if @type is "normal" then 22 else 16)})")
-    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
+#    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
 
     @lastData = @series.stack
+    @animateShow() if @animateShowHide
 
   _xOffset: =>
 
@@ -190,19 +191,19 @@ class Tactile.LeaderboardRenderer extends Tactile.RendererBase
       @utils.checkNumber(d.barPosition, "#{@name} renderer data[#{i}].barPosition", d)
     )
 
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-
-    @graph.animateShowHide = false
+#  animateShow: ->
+#    left = @graph.padding.left + @graph.axisPadding.left
+#    top = @graph.padding.top + @graph.axisPadding.top
+#
+#    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+#    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
+#    @graph.vis?.transition()
+#      .duration(@graph.transitionSpeed)
+#      .delay(0)
+#      .attr("transform", "translate(#{left},#{top})")
+#    @graph.draggableVis?.transition()
+#      .duration(@graph.transitionSpeed)
+#      .delay(0)
+#      .attr("transform", "translate(#{left},#{top})")
+#
+#    @graph.animateShowHide = false
