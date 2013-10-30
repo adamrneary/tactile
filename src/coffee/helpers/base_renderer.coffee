@@ -12,7 +12,6 @@ class Tactile.RendererBase
     fill: false
 
   constructor: (options = {}) ->
-    console.log "base constructor"
     @utils = new Tactile.Utils()
     @graph = options.graph
     @tension = options.tension or @tension
@@ -184,7 +183,6 @@ class Tactile.RendererBase
 
   animateShow: ->
     return unless @animateShowHide
-    console.log "animateShow", "\n\t.canvas > g.#{@_nameToId()} *"
     @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
       .attr("transform", "translate(0,#{@graph.outerHeight})")
     @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")

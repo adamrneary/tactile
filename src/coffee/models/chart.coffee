@@ -19,7 +19,7 @@ class Tactile.Chart
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 5000
+  transitionSpeed: 500
   defaultHeight: 400
   defaultWidth: 680
   defaultAxesOptions:
@@ -288,27 +288,57 @@ class Tactile.Chart
       axis.render(t)
 
     if @animateShowHide and @renderers_to_delete.length
+      notLine = ""
       if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
-      else
-        # one step hide, one step for show
-        @svg.selectAll(".canvas > g:not([class*='tick']) *")
+        # special animation for line
+        @svg.selectAll(".draggable-canvas > g:not([class*='tick']):not(.line) *")
           .transition()
           .duration(@transitionSpeed / 2)
           .attr("transform", "translate(0,#{@outerHeight})")
-        cnt = @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *").length
-        @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
+        @svg.selectAll(".canvas > g:not([class*='tick']):not(.line) *")
           .transition()
           .duration(@transitionSpeed / 2)
           .attr("transform", "translate(0,#{@outerHeight})")
+        @svg.selectAll(".draggable-canvas > g.line *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(#{@outerWidth},0)")
+        cnt = @svg.selectAll(".canvas > g.line *")[0].length
+        @svg.selectAll(".canvas > g.line *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(-#{@outerWidth},0)")
           .each "end", (d, i) =>
-            return if i != cnt
+            return if i != (cnt-1)
             # updateSeries
             _.each @renderers_to_delete, (r) ->
               r.delete()
             @renderers_to_delete = []
 
             @renderChart(transitionSpeed, options)
+
+      else
+        # animation for everything else
+        # one step hide, one step for show
+        @svg.selectAll(".draggable-canvas > g:not([class*='tick']):not(.line) *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(0,#{@outerHeight})")
+        cnt = @svg.selectAll(".canvas > g:not([class*='tick']):not(.line) *")[0].length
+        @svg.selectAll(".canvas > g:not([class*='tick']):not(.line) *")
+          .transition()
+          .duration(@transitionSpeed / 2)
+          .attr("transform", "translate(0,#{@outerHeight})")
+          .each "end", (d, i) =>
+            return if i != (cnt-1)
+            # updateSeries
+            _.each @renderers_to_delete, (r) ->
+              r.delete()
+            @renderers_to_delete = []
+  
+            @renderChart(transitionSpeed, options)
     else
+      @animateShowHide = false
       @renderChart(transitionSpeed, options)
 
   renderChart: (transitionSpeed, options= {}) ->
@@ -316,10 +346,8 @@ class Tactile.Chart
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
 
     _.each @renderers, (renderer, i) =>
-      console.log "_.each @renderers, (renderer) =>", i
       renderer.animateShowHide = @animateShowHide
       renderer.render(t, true, transitionSpeed)
-#      renderer.animateShow()
     @animateShowHide = false
 
     _.each @gridList, (grid) =>

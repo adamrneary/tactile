@@ -68,10 +68,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     line.exit().remove()
 
-#    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
+    selectObject.each("end", () => @animateShow() if @animateShowHide)
 
     @setupTooltips()
-    @animateShow() if @animateShowHide
 
   setupTooltips: ->
     if @series.tooltip
@@ -136,26 +135,3 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-#  animateShow: ->
-#    return unless @animateShowHide
-#    console.log "waterfall animateShow"
-#    console.log "\t.draggable-canvas > g.#{@_nameToId()} *", @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
-#    console.log "\t.draggable-canvas > g.#{@_nameToId()} *", @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
-#    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
-#      .attr("transform", "translate(0,#{@graph.outerHeight})")
-#    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
-#      .attr("transform", "translate(0,#{@graph.outerHeight})")
-#
-#    # one step for hide, one step for show
-#    @graph.svg.selectAll(".canvas > g.#{@_nameToId()} *")
-#      .transition()
-#      .duration(@graph.transitionSpeed / 2)
-#      .attr("transform", "translate(0,0)")
-#    @graph.svg.selectAll(".draggable-canvas > g.#{@_nameToId()} *")
-#      .transition()
-#      .duration(@graph.transitionSpeed / 2)
-#      .attr("transform", "translate(0,0")
-#
-#    @animateShowHide = false
-#

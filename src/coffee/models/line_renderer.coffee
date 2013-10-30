@@ -68,7 +68,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
       .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
       .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
-#    selectObjects.each("end", () => @animateShow() if @graph.animateShowHide) if transition
+    selectObjects.each("end", () => @animateShow() if @animateShowHide) if transition
 
     circ.exit().remove()
 
@@ -81,7 +81,6 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
         circleOnHover: true
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
-    @animateShow() if @animateShowHide
 
   _circleX: (d, index) ->
     if @aggregated

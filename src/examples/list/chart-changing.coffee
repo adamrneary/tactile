@@ -318,4 +318,4 @@ toPareto.click (e) ->
   chart.render()
 
 # call first renderer
-toWaterfall.click()
+toColumn.click()

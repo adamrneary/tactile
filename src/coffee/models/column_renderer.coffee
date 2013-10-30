@@ -22,7 +22,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @transition = transition if transition
 
     draw = () =>
-      console.log "column draw"
       if (@series.disabled)
         @dragger?.timesRendered = 0
         @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -184,18 +183,20 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .each("end", ()=>
               count++
               draw() if count = transitionData.length
-#              @animateShow() if @graph.animateShowHide
+              @animateShow() if @animateShowHide
             )
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
           draw()
+          @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
         draw()
+        @animateShow() if @animateShowHide
     else
       @aggdata = @series.stack
       draw()
-    @animateShow() if @animateShowHide
+      @animateShow() if @animateShowHide
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
@@ -371,19 +372,3 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-#  animateShow: ->
-#    @graph.svg.selectAll(".canvas > g.column.#{@_nameToId()}")
-#      .attr("transform", "translate(0,#{@graph.outerHeight})")
-#    @graph.svg.selectAll(".draggable-canvas > g:not([class*='tick']) #{}")
-#      .attr("transform", "translate(0,#{@graph.outerHeight})")
-#
-#    # one step for hide, one step for show
-#    @graph.svg.selectAll(".canvas > g:not([class*='tick']) *")
-#      .transition()
-#      .duration(@graph.transitionSpeed / 2)
-#      .attr("transform", "translate(0,0)")
-#    @graph.svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
-#      .transition()
-#      .duration(@graph.transitionSpeed / 2)
-#      .attr("transform", "translate(0,0")
