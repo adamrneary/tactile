@@ -19,7 +19,7 @@ class Tactile.Chart
   offset: 'zero'
   min: undefined
   max: undefined
-  transitionSpeed: 500
+  transitionSpeed: 2500
   defaultHeight: 400
   defaultWidth: 680
   defaultAxesOptions:
@@ -62,6 +62,7 @@ class Tactile.Chart
     @renderers = []
     @renderers_to_delete = []
     @axesList = {}
+    @newAxes = undefined
     @gridList = {}
     @series = new Tactile.SeriesSet([], @)
     @window = {}
@@ -282,11 +283,6 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
-    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
-    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
-    _.each @axesList, (axis) =>
-      axis.render(t)
-
     if @animateShowHide and @renderers_to_delete.length
       notLine = ""
       if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
@@ -315,6 +311,7 @@ class Tactile.Chart
               r.delete()
             @renderers_to_delete = []
 
+            @renderAxes(transitionSpeed, options)
             @renderChart(transitionSpeed, options)
 
       else
@@ -335,11 +332,26 @@ class Tactile.Chart
             _.each @renderers_to_delete, (r) ->
               r.delete()
             @renderers_to_delete = []
-  
+
+            @renderAxes(transitionSpeed, options)
             @renderChart(transitionSpeed, options)
     else
       @animateShowHide = false
+      @renderAxes(transitionSpeed, options)
       @renderChart(transitionSpeed, options)
+
+
+  renderAxes: (transitionSpeed, options= {}) ->
+    @initAxes(@newAxes)
+    @newAxes = undefined
+
+    @_calculateXRange()
+
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
+    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    _.each @axesList, (axis) =>
+      axis.render(t)
+
 
   renderChart: (transitionSpeed, options= {}) ->
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
@@ -418,7 +430,7 @@ class Tactile.Chart
     @min = yMin
     @
 
-  axes: (args) ->
+  initAxes: (args) ->
     return @axesList unless args
     # save prev axisPadding
     @prevAxisPadding = _.clone @axisPadding
@@ -437,6 +449,10 @@ class Tactile.Chart
 
         @initAxis _.extend defaults, args[k]
 
+    @
+  axes: (args) ->
+    return @ unless args
+    @newAxes = args
     @
 
   grid: (args) ->

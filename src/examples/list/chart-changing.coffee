@@ -56,7 +56,7 @@ leaderboardData = [
 chartData = [
   x: new Date(2012, 0, 1).getTime()
   y: 10
-  z: 0
+  z: 20
 ,
   x: new Date(2012, 1, 1).getTime()
   y: 170
@@ -146,7 +146,6 @@ frameVal = [new Date(2012, 1, 1).getTime(), new Date(2012, 10, 1).getTime()] # =
 # create instance of chart
 chart = new Tactile.Chart(unstack: true)
   .element($("#example_view")[0])
-  .setXFrame(frameVal)
 
 
 # Stack / Unstack behavior
@@ -175,7 +174,7 @@ timeSlider.slider
   slide: (event, ui) ->
     chart.setXFrame([new Date(2012,  0+ui.values[0], 1).getTime(),
                      new Date(2012,  0+ui.values[1], 1).getTime()])
-    chart.render()
+    chart.render() unless currentChart is "pareto"
 
 
 # baserenderer for ''
@@ -187,7 +186,7 @@ baseRenderer = () ->
         frame: frameVal
       y:
         dimension: "linear"
-    .addSeries [
+    .addSeries([
       name: "reach actual"
       renderer: currentChart
       sigfigs: 0
@@ -211,7 +210,8 @@ baseRenderer = () ->
       dataTransform: (d) ->
         x: d.x
         y: d.y
-    ], {overwrite: true}
+    ], {overwrite: true})
+    .setXFrame(frameVal)
   chart.render()
 
 
@@ -276,7 +276,7 @@ toLeaderboard.click (e) ->
         barPosition: d.barPosition
         index: d.index
     ], overwrite: true)
-  .axes({})
+    .axes({})
 
   chart.render()
 
