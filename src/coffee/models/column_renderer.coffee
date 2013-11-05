@@ -163,10 +163,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .attr("clip-path", "url(#clip)")
 
           @seriesCanvas().selectAll("rect")
-            .attr("height", (d) => @yFunctionOld().magnitude Math.abs(d.start.y))
-            .attr("y", (d) => @_barY(d.start, true))
-            .attr("x", (d) => @_barX(d.start, true))
-            .attr("width", @_seriesBarWidth())
+#            .attr("height", (d) => @yFunctionOld().magnitude Math.abs(d.start.y))
+#            .attr("y", (d) => @_barY(d.start, true))
+#            .attr("x", (d) => @_barX(d.start, true))
+#            .attr("width", @_seriesBarWidth())
             .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.start, i))
             .attr("stroke", "white")
             .attr("rx", @_edgeRatio)
@@ -179,25 +179,36 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
           @aggdata = aggdataSource
 
           count = 0
-          console.log "\taggregate", calculateMonthRange(@aggdata) > calculateMonthRange(aggdataOldSource)
-          console.log "\tsplit", calculateMonthRange(@aggdata) < calculateMonthRange(aggdataOldSource)
 
           # if we aggregate from months to quarter, from quarter to year:
           #   attrs order change: x -> width -> height
-          if calculateMonthRange(@aggdata) > calculateMonthRange(aggdataOldSource)
+          if calculateMonthRange(_.filter(@aggdata, (d) -> return true unless d.stuff)) > calculateMonthRange(_.filter(aggdataOldSource, (d) -> return true unless d.stuff))
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
               .selectAll(".#{@_nameToId()} rect")
-              .attr("x", (d) => @_barX(d.end))
-              .attr("y", (d) => @_barY(d.start))
+              .attr("height", (d) => @yFunction().magnitude Math.abs(d.end.y))
+              .attr("y", (d) => @_barY(d.end))
+              .attr("class", (d, i) =>
+                ["bar",
+                 ("colorless" unless @series.color)].join(" "))
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(transitionSpeed/3)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("x", (d) => @_barX(d.end, true))
+#              .attr("y", (d) => @_barY(d.start))
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(2*transitionSpeed/3)
               .selectAll(".#{@_nameToId()} rect")
               .attr("width", @_seriesBarWidth())
               .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
               .attr("stroke", "white")
               .attr("rx", @_edgeRatio)
               .attr("ry", @_edgeRatio)
+              .each("end", ()=>
+                count++
+                draw() if count = transitionData.length
+                @animateShow() if @graph.animateShowHide
+              )
 
           # if we aggregate from quarter to months, from year to quarter:
           #   attrs order change: width -> x -> height
@@ -213,22 +224,20 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(transitionSpeed/3)
               .selectAll(".#{@_nameToId()} rect")
-              .attr("x", (d) => @_barX(d.end))
-              .attr("y", (d) => @_barY(d.end, true))
-
-          @graph.svg.transition()
-            .duration(transitionSpeed/3).delay(2*transitionSpeed/3)
-            .selectAll(".#{@_nameToId()} rect")
-            .attr("height", (d) => @yFunction().magnitude Math.abs(d.end.y))
-            .attr("y", (d) => @_barY(d.end))
-            .attr("class", (d, i) =>
-              ["bar",
-                ("colorless" unless @series.color)].join(" "))
-            .each("end", ()=>
-              count++
-              draw() if count = transitionData.length
-              @animateShow() if @graph.animateShowHide
-            )
+              .attr("x", (d) => @_barX(d.end, true))
+            @graph.svg.transition()
+              .duration(transitionSpeed/3).delay(2*transitionSpeed/3)
+              .selectAll(".#{@_nameToId()} rect")
+              .attr("height", (d) => @yFunction().magnitude Math.abs(d.end.y))
+              .attr("y", (d) => @_barY(d.end))
+              .attr("class", (d, i) =>
+                ["bar",
+                  ("colorless" unless @series.color)].join(" "))
+              .each("end", ()=>
+                count++
+                draw() if count = transitionData.length
+                @animateShow() if @graph.animateShowHide
+              )
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
           draw()
@@ -350,13 +359,17 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
   _seriesBarWidth: =>
     if @aggregated
-      stack = @aggdata
+      count = @utils.domainMonthRange(@graph.x.domain())
+      if      12 < count <= 36
+        count = Math.ceil(count/3)
+      else if 36 < count
+        count = Math.ceil(count/12)
       gapSize = @dinGapSize
     else
-      stack = @series.stack
+      count = @series.stack.length
       gapSize = @gapSize
 
-    width = @graph.width() / stack.length
+    width = @graph.width() / count
     if @unstack
       width = width / @graph.series.filter((d) =>
         d.renderer == @name).array.length

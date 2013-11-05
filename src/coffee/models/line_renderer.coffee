@@ -26,8 +26,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
   render: (transition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
     if @aggregated
-#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() if recalculateData
-      @aggdata = @utils.aggregateDataV2 @series.stack, @graph.x.domain() if recalculateData
+      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() if recalculateData
     else
       @aggdata = @series.stack
 
@@ -87,9 +86,9 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
   _circleX: (d, index) ->
     if @aggregated
       count = @utils.domainMonthRange(@graph.x.domain())
-      if 12 < count <= 36
+      if      12 < count <= 36
         count = Math.ceil(count/3)
-      else
+      else if 36 < count
         count = Math.ceil(count/12)
 
       width = @graph.width()

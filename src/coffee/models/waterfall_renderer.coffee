@@ -97,11 +97,15 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
   _seriesBarWidth: =>
     if @aggregated
-      stack = @aggdata
+      count = @utils.domainMonthRange(@graph.x.domain())
+      if      12 < count <= 36
+        count = Math.ceil(count/3)
+      else if 36 < count
+        count = Math.ceil(count/12)
     else
-      stack = @series.stack
+      count = @series.stack.length
 
-    width = @graph.width() / stack.length
+    width = @graph.width() / count
     width = width / @graph.series.filter((d) =>
       d.renderer == @name).array.length
 

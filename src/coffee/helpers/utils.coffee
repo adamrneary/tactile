@@ -94,101 +94,14 @@ class Tactile.Utils
 
     check
 
-  aggregateData: (data, domain) ->
+  aggregateData: (originData, domain) ->
     xDomain = domain
-    data = _.filter data, (d)->
+    data = _.filter originData, (d)->
       d.x >= xDomain[0] and d.x <= xDomain[1]
 
     aggdata = []
     range = data.length
 
-    if range <= 12
-      for i in [0 .. range - 1]
-        tmp = {}
-        tmp.x   = i
-        tmp.y   = data[i].y
-        tmp.y0  = data[i].y0
-        tmp.y00 = data[i].y00
-        tmp.r   = data[i].r || 5
-        tmp.range = [data[i].x, data[i].x]
-        aggdata.push tmp
-      return aggdata
-
-    else if 12 < range <= 36
-      grouper = 3
-      #      @dinGapSize = @gapSize / grouper
-      index = 0
-      for i in [0 .. range - 1] by grouper
-        tmp = {}
-        start = i
-        end   = i + grouper - 1
-        end = range - 1 if end > range - 1
-
-        #        tmp.x = data[start].x + (data[end].x - data[start].x)/2
-        tmp.x = index
-        tmp.y   = 0
-        tmp.y0  = 0
-        tmp.y00 = 0
-        tmp.r   = 5
-        tmp.range = [data[start].x, data[end].x]
-
-        _.each data.slice(start, end + 1), (item)->
-          tmp.y   = tmp.y   + item.y
-          tmp.y0  = tmp.y0  + item.y0
-          tmp.y00 = tmp.y00 + item.y00
-          tmp.r   =           item.r unless _.isUndefined(item.r)
-          tmp.source ||= []
-          tmp.source.push item
-        index = index + 1
-
-        aggdata.push tmp
-      return aggdata
-    else
-      grouper = 12
-      #      @dinGapSize = @gapSize / grouper
-      index = 0
-      for i in [0 .. range - 1] by grouper
-        tmp = {}
-        start = i
-        end   = i + grouper - 1
-        end = range - 1 if end > range - 1
-
-        #        tmp.x = data[start].x + (data[end].x - data[start].x)/2
-        tmp.x = index
-        tmp.y   = 0
-        tmp.y0  = 0
-        tmp.y00 = 0
-        tmp.r   = 5
-        tmp.range = [data[start].x, data[end].x]
-
-        _.each data.slice(start, end + 1), (item)->
-          tmp.y   = tmp.y   + item.y
-          tmp.y0  = tmp.y0  + item.y0
-          tmp.y00 = tmp.y00 + item.y00
-          tmp.r   =           item.r unless _.isUndefined(item.r)
-          tmp.source ||= []
-          tmp.source.push item
-        index = index + 1
-        aggdata.push tmp
-      return aggdata
-
-  domainMonthRange: (domain) ->
-    date = [new Date(domain[0]), new Date(domain[1])]
-
-    #calculate count of month in timeFrame
-    startYear = date[0].getFullYear()
-    startMonth = date[0].getMonth()
-
-    endYear = date[1].getFullYear()
-    endMonth = date[1].getMonth()
-
-    (endYear - startYear) * 12 + (endMonth - startMonth) + 1
-
-
-  aggregateDataV2: (originData, domain) ->
-    xDomain = domain
-    data = _.filter originData, (d)->
-      d.x >= xDomain[0] and d.x <= xDomain[1]
     originalIndex = -1
     originalLastIndex = -1
     for d, i in originData
@@ -197,16 +110,12 @@ class Tactile.Utils
       if _.isEqual(_.last(data), d)
         originalLastIndex = i
 
-    aggdata = []
-    range = data.length
-    console.log "originalIndex", originalIndex
-    console.log "originalLastIndex", originalLastIndex
-
     for d, i in originData
       break unless i < originalIndex
-      aggdata.push _.defaults({x: (i - originalIndex)}, d)
+      aggdata.push _.defaults({x: (i - originalIndex), range: [d.x, d.x], stuff: true}, d)
 
     if range <= 12
+      grouper = 1
       for i in [0 .. range - 1]
         tmp = {}
         tmp.x   = i
@@ -245,7 +154,6 @@ class Tactile.Utils
         index = index + 1
 
         aggdata.push tmp
-
     else
       grouper = 12
       #      @dinGapSize = @gapSize / grouper
@@ -276,7 +184,18 @@ class Tactile.Utils
 
     for d, i in originData
       continue if i < originalLastIndex
-      aggdata.push _.defaults({x: (Math.floor(range/grouper)+1 + (i - originalLastIndex))}, d)
-    console.log "pluck", _.pluck(aggdata, "x")
+      aggdata.push _.defaults({x: (Math.floor(range/grouper)+1 + (i - originalLastIndex)), range: [d.x, d.x], stuff: true}, d)
 
     return aggdata
+
+  domainMonthRange: (domain) ->
+    date = [new Date(domain[0]), new Date(domain[1])]
+
+    #calculate count of month in timeFrame
+    startYear = date[0].getFullYear()
+    startMonth = date[0].getMonth()
+
+    endYear = date[1].getFullYear()
+    endMonth = date[1].getMonth()
+
+    (endYear - startYear) * 12 + (endMonth - startMonth) + 1
