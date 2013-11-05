@@ -26,7 +26,8 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
   render: (transition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
     if @aggregated
-      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() if recalculateData
+#      @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() if recalculateData
+      @aggdata = @utils.aggregateDataV2 @series.stack, @graph.x.domain() if recalculateData
     else
       @aggdata = @series.stack
 
@@ -49,6 +50,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
     if transition then selectObjects = transition.selectAll(".#{@_nameToId()} circle")
     else selectObjects = @seriesDraggableCanvas().selectAll('circle')
+#    selectObjects = @seriesDraggableCanvas().selectAll('circle')
     selectObjects
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("cx", (d, i) => @_circleX(d, i))
@@ -84,7 +86,12 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
 
   _circleX: (d, index) ->
     if @aggregated
-      count = @aggdata.length
+      count = @utils.domainMonthRange(@graph.x.domain())
+      if 12 < count <= 36
+        count = Math.ceil(count/3)
+      else
+        count = Math.ceil(count/12)
+
       width = @graph.width()
       x = d.x * (width / count) + (width / count) / 2
       x

@@ -199,8 +199,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
               .attr("rx", @_edgeRatio)
               .attr("ry", @_edgeRatio)
 
-            # if we aggregate from quarter to months, from year to quarter:
-            #   attrs order change: width -> x -> height
+          # if we aggregate from quarter to months, from year to quarter:
+          #   attrs order change: width -> x -> height
           else
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
