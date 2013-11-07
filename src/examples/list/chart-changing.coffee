@@ -180,12 +180,6 @@ timeSlider.slider
 # baserenderer for ''
 baseRenderer = () ->
   chart.data(chartData)
-    .axes
-      x:
-        dimension: 'time'
-        frame: frameVal
-      y:
-        dimension: "linear"
     .addSeries([
       name: "reach actual"
       renderer: currentChart
@@ -212,6 +206,14 @@ baseRenderer = () ->
         y: d.y
     ], {overwrite: true})
     .setXFrame(frameVal)
+  unless chart.initAxes().length
+    chart.axes
+      x:
+        dimension: 'time'
+        frame: frameVal
+      y:
+        dimension: "linear"
+
   chart.render()
 
 
