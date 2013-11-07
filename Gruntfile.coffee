@@ -61,7 +61,7 @@ module.exports = (grunt) ->
 
           "ghpages/assets/examples.js":   "src/examples/index.coffee"
 
-          "ghpages/assets/js/index.js":   "src/examples/list/index-page.coffee"
+          "ghpages/assets/js/index.js":   "src/examples/list/chart-changing.coffee"
 
           "ghpages/assets/unit_tests.js": [
             "test/client/area.coffee"
@@ -174,8 +174,12 @@ module.exports = (grunt) ->
       index_tmp:
         preHTML:  "views/layout_pre.html"
         postHTML: "views/layout_post.html"
-        template: "views/examples/index_page.hbs"
-        templateData: { header: "CHART-CHANGING", demoblock: "", jsblock: ""}
+        template: "views/examples/index.hbs"
+        templateData:
+          header: "CHART-CHANGING"
+          demoblock: ""
+          jsblock: ""
+          coffeetext: grunt.file.read("src/examples/list/chart-changing.coffee")
         output: "ghpages/" + "index" + "_tmp.html"
       index:
         preHTML: "ghpages/" + "index" + "_tmp.html"
