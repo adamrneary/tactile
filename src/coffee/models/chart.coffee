@@ -309,7 +309,6 @@ class Tactile.Chart
 
 
   renderAxes: (transitionSpeed, options= {}) ->
-    console.log "renderAxes", @newAxes
     @initAxes(@newAxes) if @newAxes
 
     @_calculateXRange()
