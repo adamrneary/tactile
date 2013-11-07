@@ -17,10 +17,10 @@ generateData = (count) =>
   data
 
 chart = new Tactile.Chart(unstack: false)
-.element($("#example_view")[0])
-.data(generateData(maxCount))
-.setXFrame(frameVal)
-.axes
+  .element($("#example_view")[0])
+  .data(generateData(maxCount))
+  .setXFrame(frameVal)
+  .axes
     y: "linear"
     x:
       dimension: "time"
