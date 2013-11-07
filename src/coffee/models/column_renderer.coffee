@@ -21,7 +21,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @_checkData() if @checkData
     @transition = transition if transition
 
-    draw = () =>
+    draw = (transition = undefined) =>
       if (@series.disabled)
         @dragger?.timesRendered = 0
         @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -38,7 +38,15 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         )
       nodes.exit().remove()
 
-      selectObjects = @seriesCanvas().selectAll("rect")
+      if transition
+        canvas = transition.select("g.canvas").selectAll("g.#{@_nameToId()}")
+        draggableCanvas = transition.select("g.draggable-canvascanvas").selectAll("g.#{@_nameToId()}")
+
+      selectObjects = if transition
+          canvas.selectAll("rect")
+        else
+          @seriesCanvas().selectAll("rect")
+
       selectObjects
         .filter((d) => @_filterNaNs(d, "x", "y"))
         .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
@@ -84,6 +92,11 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
       @dragger?.makeHandlers(newCircs)
       @dragger?.updateDraggedNode()
+
+#      selectObjects = if transition
+#        canvas.selectAll("circle")
+#      else
+#        @seriesDraggableCanvas().selectAll("circle")
 
       selectObjects = @seriesDraggableCanvas().selectAll("circle")
       selectObjects
@@ -136,17 +149,13 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     if @aggregated
       if recalculateData
         if @aggdata
-          console.log "domain", @utils.domainMonthRange(@graph.x.domain())
-          console.log "domainOld", @utils.domainMonthRange(@graph.xOld.domain())
-
+          # decide when to animate aggregation
           if           @utils.domainMonthRange(@graph.x.domain()) <= 12
             animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) > 12
           else if 12 < @utils.domainMonthRange(@graph.x.domain()) <= 36
             animateTransition = 36 < @utils.domainMonthRange(@graph.xOld.domain()) || @utils.domainMonthRange(@graph.xOld.domain()) <= 12
           else #  36 < @utils.domainMonthRange(@graph.x.domain())
             animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) <= 36
-
-          console.log "\t", animateTransition
 
           aggdataOld = @aggdata.slice(0)
           aggdataOldSource = aggdataOld.slice(0)
@@ -175,10 +184,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             .attr("clip-path", "url(#clip)")
 
           @seriesCanvas().selectAll("rect")
-#            .attr("height", (d) => @yFunctionOld().magnitude Math.abs(d.start.y))
-#            .attr("y", (d) => @_barY(d.start, true))
-#            .attr("x", (d) => @_barX(d.start, true))
-#            .attr("width", @_seriesBarWidth())
             .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.start, i))
             .attr("stroke", "white")
             .attr("rx", @_edgeRatio)
@@ -194,7 +199,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
           # if we aggregate from months to quarter, from quarter to year:
           #   attrs order change: x -> width -> height
-          if calculateMonthRange(_.filter(@aggdata, (d) -> return true unless d.stuff)) > calculateMonthRange(_.filter(aggdataOldSource, (d) -> return true unless d.stuff))
+          if calculateMonthRange(_.filter(@aggdata, (d) -> return true unless d.stuff)) > calculateMonthRange(_.filter(aggdataOldSource, (d) -> return true unless d.stuff)) and animateTransition
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
               .selectAll(".#{@_nameToId()} rect")
@@ -224,7 +229,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
           # if we aggregate from quarter to months, from year to quarter:
           #   attrs order change: width -> x -> height
-          else
+          else if animateTransition
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
               .selectAll(".#{@_nameToId()} rect")
@@ -250,17 +255,19 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
                 draw() if count = transitionData.length
                 @animateShow() if @graph.animateShowHide
               )
+          else
+            draw(@transition)
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-          draw()
+          draw(@transition)
           @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
-        draw()
+        draw(@transition)
         @animateShow() if @animateShowHide
     else
       @aggdata = @series.stack
-      draw()
+      draw(@transition)
       @animateShow() if @animateShowHide
 
   hideCircles: ()=>
