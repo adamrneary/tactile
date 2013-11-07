@@ -68,7 +68,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
     line.exit().remove()
 
-    selectObject.each("end", () => @animateShow() if @graph.animateShowHide)
+    selectObject.each("end", () => @animateShow() if @animateShowHide)
 
     @setupTooltips()
 
@@ -135,20 +135,3 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-
-    @graph.animateShowHide = false
