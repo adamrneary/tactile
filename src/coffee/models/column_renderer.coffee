@@ -136,6 +136,18 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     if @aggregated
       if recalculateData
         if @aggdata
+          console.log "domain", @utils.domainMonthRange(@graph.x.domain())
+          console.log "domainOld", @utils.domainMonthRange(@graph.xOld.domain())
+
+          if           @utils.domainMonthRange(@graph.x.domain()) <= 12
+            animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) > 12
+          else if 12 < @utils.domainMonthRange(@graph.x.domain()) <= 36
+            animateTransition = 36 < @utils.domainMonthRange(@graph.xOld.domain()) || @utils.domainMonthRange(@graph.xOld.domain()) <= 12
+          else #  36 < @utils.domainMonthRange(@graph.x.domain())
+            animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) <= 36
+
+          console.log "\t", animateTransition
+
           aggdataOld = @aggdata.slice(0)
           aggdataOldSource = aggdataOld.slice(0)
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
