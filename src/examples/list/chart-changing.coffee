@@ -206,7 +206,7 @@ baseRenderer = () ->
         y: d.y
     ], {overwrite: true})
     .setXFrame(frameVal)
-  unless chart.initAxes().length
+  if _.isEmpty(chart.initAxes())
     chart.axes
       x:
         dimension: 'time'

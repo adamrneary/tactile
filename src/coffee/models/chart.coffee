@@ -283,7 +283,6 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
-    @renderAxes(transitionSpeed, options)
     if @animateShowHide and @renderers_to_delete.length
       @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
         .transition()
@@ -301,22 +300,29 @@ class Tactile.Chart
             r.delete()
           @renderers_to_delete = []
 
+          @renderAxes(transitionSpeed, options)
           @renderChart(transitionSpeed, options)
     else
       @animateShowHide = false
+      @renderAxes(transitionSpeed, options)
       @renderChart(transitionSpeed, options)
 
 
   renderAxes: (transitionSpeed, options= {}) ->
-    @initAxes(@newAxes)
-    @newAxes = undefined
+    console.log "renderAxes", @newAxes
+    @initAxes(@newAxes) if @newAxes
 
     @_calculateXRange()
 
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
-    t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    unless _.isEmpty(@newAxes)
+      t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    else
+      t = @svg.transition().duration(transitionSpeed)
     _.each @axesList, (axis) =>
       axis.render(t)
+
+    @newAxes = undefined
 
 
   renderChart: (transitionSpeed, options= {}) ->
