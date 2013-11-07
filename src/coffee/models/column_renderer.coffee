@@ -253,21 +253,15 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
           draw()
-          @graph.svg.transition().duration(transitionSpeed)
-            .selectAll(".#{@_nameToId()} rect")
-            .each("end", () => @animateShow() if @graph.animateShowHide)
+          @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
         draw()
-        @graph.svg.transition().duration(transitionSpeed)
-          .selectAll(".#{@_nameToId()} rect")
-          .each("end", () => @animateShow() if @graph.animateShowHide)
+        @animateShow() if @animateShowHide
     else
       @aggdata = @series.stack
       draw()
-      @graph.svg.transition().duration(transitionSpeed)
-        .selectAll(".#{@_nameToId()} rect")
-        .each("end", () => @animateShow() if @graph.animateShowHide)
+      @animateShow() if @animateShowHide
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
@@ -447,20 +441,3 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     return 0 if @rendererIndex == 0 || @rendererIndex is undefined
     renderers = @graph.renderers.slice(0, @rendererIndex)
     _.filter(renderers,(r) => r.name == @name).length
-
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.draggableVis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-    @graph.vis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-    @graph.draggableVis?.transition()
-      .duration(@graph.transitionSpeed)
-      .delay(0)
-      .attr("transform", "translate(#{left},#{top})")
-
-    @graph.animateShowHide = false

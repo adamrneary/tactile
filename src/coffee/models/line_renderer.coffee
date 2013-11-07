@@ -69,7 +69,7 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
       .attr("stroke", (d) => (if d.dragged or d is @active then @series.color else 'white'))
       .attr("stroke-width", @dotSize / 2 || 2)
       .style("cursor", (d, i)=> if @utils.ourFunctor(@series.isEditable, d, i) then "ns-resize" else "auto")
-    selectObjects.each("end", () => @animateShow() if @graph.animateShowHide) if transition
+    selectObjects.each("end", () => @animateShow() if @animateShowHide) if transition
 
     circ.exit().remove()
 
@@ -96,40 +96,3 @@ class Tactile.LineRenderer extends Tactile.DraggableRenderer
       x
     else
       @graph.x(d.x)
-
-  animateShow: ->
-    left = @graph.padding.left + @graph.axisPadding.left
-    top = @graph.padding.top + @graph.axisPadding.top
-
-    # @outerWidth*1.1 - just to be shure to hide
-    # setup initial position: dots - from right; lines - left; other - bottom
-    # dots
-    @graph.draggableVis?.attr("transform", "translate(#{@graph.outerWidth*1.1},#{top})")
-    # lines
-    @graph.vis?.selectAll(".line").attr("transform", "translate(#{-@graph.outerWidth*1.1},#{top-@graph.outerHeight})")
-    #other
-    @graph.vis?.attr("transform", "translate(#{left},#{@graph.outerHeight})")
-
-    # move from the right
-    @graph.draggableVis?.transition()
-      .transition()
-      .duration(@graph.transitionSpeed)
-      .attr("transform", "translate(#{left},#{top})")
-
-    # move from the left
-    @graph.vis?.selectAll(".line")
-      .transition()
-      .duration(@graph.transitionSpeed)
-      .attr("transform", "translate(0,#{top-@graph.outerHeight})")
-      .each "end", () =>
-        # move from the bottom
-        @graph.vis
-          .transition()
-          .duration(@graph.transitionSpeed)
-          .attr("transform", "translate(#{left},#{top})")
-        @graph.vis?.selectAll(".line")
-          .transition()
-          .duration(@graph.transitionSpeed)
-          .attr("transform", "translate(0,0)")
-
-    @graph.animateShowHide = false

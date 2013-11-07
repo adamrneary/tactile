@@ -62,6 +62,7 @@ class Tactile.Chart
     @renderers = []
     @renderers_to_delete = []
     @axesList = {}
+    @newAxes = undefined
     @gridList = {}
     @series = new Tactile.SeriesSet([], @)
     @window = {}
@@ -282,54 +283,55 @@ class Tactile.Chart
     @_checkY1Domain()
     @_calculateXRange()
 
-    if @animateShowHide
-      left = @padding.left + @prevAxisPadding?.left || 0
-      top = @padding.top + @prevAxisPadding?.top || 0
-      if _.filter(@renderers_to_delete, (r) -> r.name is "line").length
-        # @outerWidth*1.1 - just to be shure to hide
-        # move dots to the right
-        @draggableVis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{@outerWidth*1.1},#{top})")
-        # @outerWidth*1.1 - just to be shure to hide
-        # move lines to the left
-        @vis?.selectAll(".line").transition().duration(@transitionSpeed).attr("transform", "translate(#{-@outerWidth},#{top})").each "end", () =>
-          # move all other down
-          @vis?.transition().duration(@transitionSpeed).attr("transform", "translate(#{left},#{@outerHeight})").each "end", () =>
-            _.each @renderers_to_delete, (r) ->
-              r.delete()
-            @renderers_to_delete = []
+    if @animateShowHide and @renderers_to_delete.length
+      @svg.selectAll(".draggable-canvas > g:not([class*='tick']) *")
+        .transition()
+        .duration(@transitionSpeed / 2)
+        .attr("transform", "translate(0,#{@outerHeight})")
+      cnt = @svg.selectAll(".canvas > g:not([class*='tick']) *")[0].length
+      @svg.selectAll(".canvas > g:not([class*='tick']) *")
+        .transition()
+        .duration(@transitionSpeed / 2)
+        .attr("transform", "translate(0,#{@outerHeight})")
+        .each "end", (d, i) =>
+          return if i != (cnt-1)
+          # updateSeries
+          _.each @renderers_to_delete, (r) ->
+            r.delete()
+          @renderers_to_delete = []
 
-            @renderChart(transitionSpeed, options)
-      else
-        # prevent changing after axes update
-        left = @padding.left + @prevAxisPadding?.left || 0
-        @vis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
-
-        @draggableVis?.attr("transform", "translate(#{left},#{@padding.top + @axisPadding.top})")
-        @vis.transition()
-          .duration(@transitionSpeed)
-          .attr("transform", "translate(#{left},#{@outerHeight})")
-        @draggableVis.transition()
-          .duration(@transitionSpeed)
-          .attr("transform", "translate(#{left},#{@outerHeight})")
-          .each "end", (d, i) =>
-            # updateSeries
-            _.each @renderers_to_delete, (r) ->
-              r.delete()
-            @renderers_to_delete = []
-
-            @renderChart(transitionSpeed, options)
+          @renderAxes(transitionSpeed, options)
+          @renderChart(transitionSpeed, options)
     else
+      @animateShowHide = false
+      @renderAxes(transitionSpeed, options)
       @renderChart(transitionSpeed, options)
+
+
+  renderAxes: (transitionSpeed, options= {}) ->
+    @initAxes(@newAxes) if @newAxes
+
+    @_calculateXRange()
+
+    transitionSpeed = @transitionSpeed if transitionSpeed is undefined
+    unless _.isEmpty(@newAxes)
+      t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
+    else
+      t = @svg.transition().duration(transitionSpeed)
+    _.each @axesList, (axis) =>
+      axis.render(t)
+
+    @newAxes = undefined
+
 
   renderChart: (transitionSpeed, options= {}) ->
     transitionSpeed = @transitionSpeed if transitionSpeed is undefined
     t = @svg.transition().duration(if @timesRendered then transitionSpeed else 0)
 
-    _.each @renderers, (renderer) =>
+    _.each @renderers, (renderer, i) =>
+      renderer.animateShowHide = @animateShowHide
       renderer.render(t, true, transitionSpeed)
-
-    _.each @axesList, (axis) =>
-      axis.render(t)
+    @animateShowHide = false
 
     _.each @gridList, (grid) =>
       grid.render(t)
@@ -399,7 +401,7 @@ class Tactile.Chart
     @min = yMin
     @
 
-  axes: (args) ->
+  initAxes: (args) ->
     return @axesList unless args
     # save prev axisPadding
     @prevAxisPadding = _.clone @axisPadding
@@ -418,6 +420,10 @@ class Tactile.Chart
 
         @initAxis _.extend defaults, args[k]
 
+    @
+  axes: (args) ->
+    return @ unless args
+    @newAxes = args
     @
 
   grid: (args) ->
@@ -581,6 +587,7 @@ class Tactile.Chart
       if s.aggregate is true
         @aggregated[name] = true
       r = new rendererClass(rendererOptions)
+      r.animateShowHide = @animateShowHide
       @renderers.push r
 
   renderersByType: (name) ->
