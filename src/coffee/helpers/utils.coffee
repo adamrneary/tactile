@@ -182,9 +182,9 @@ class Tactile.Utils
         index = index + 1
         aggdata.push tmp
 
-    for d, i in originData
-      continue if i < originalLastIndex
-      aggdata.push _.defaults({x: (Math.floor(range/grouper)+1 + (i - originalLastIndex)), range: [d.x, d.x], stuff: true}, d)
+    for i in [aggdata.length..(originData.length-1)]
+      d = originData[i]
+      aggdata.push _.defaults({x: i-originalIndex, range: [d.x, d.x], stuff: true}, d)
 
     return aggdata
 
@@ -199,3 +199,12 @@ class Tactile.Utils
     endMonth = date[1].getMonth()
 
     (endYear - startYear) * 12 + (endMonth - startMonth) + 1
+
+  animateTransition: (domainOld, domainNew) ->
+    if           @domainMonthRange(domainNew) <= 12
+      animateTransition = @domainMonthRange(domainOld) > 12
+    else if 12 < @domainMonthRange(domainNew) <= 36
+      animateTransition = 36 < @domainMonthRange(domainOld) || @domainMonthRange(domainOld) <= 12
+    else #  36 < @utils.domainMonthRange(@graph.x.domain())
+      animateTransition = @domainMonthRange(domainOld) <= 36
+    return animateTransition

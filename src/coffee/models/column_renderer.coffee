@@ -40,7 +40,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
       if transition
         canvas = transition.select("g.canvas").selectAll("g.#{@_nameToId()}")
-        draggableCanvas = transition.select("g.draggable-canvascanvas").selectAll("g.#{@_nameToId()}")
+        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
 
       selectObjects = if transition
           canvas.selectAll("rect")
@@ -135,27 +135,11 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       # set tooltip for column
       @setupTooltips()
 
-    calculateMonthRange = (dataArray) ->
-      [begin, end] = [_.first(dataArray), _.last(dataArray)]
-      return 0 unless _.has(begin, "range") and _.has(end, "range")
-      return 0 unless _.isArray(begin.range) and _.isArray(end.range)
-      [begin, end] = [begin.range[0], end.range[1]]
-      [begin, end] = [new Date(begin), new Date(end)]
-      return (end.getFullYear() - begin.getFullYear()) * 12 + (end.getMonth() - begin.getMonth()) + 1
-
-    @_checkData() if @checkData
-    @transition = transition if transition
-
     if @aggregated
       if recalculateData
         if @aggdata
           # decide when to animate aggregation
-          if           @utils.domainMonthRange(@graph.x.domain()) <= 12
-            animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) > 12
-          else if 12 < @utils.domainMonthRange(@graph.x.domain()) <= 36
-            animateTransition = 36 < @utils.domainMonthRange(@graph.xOld.domain()) || @utils.domainMonthRange(@graph.xOld.domain()) <= 12
-          else #  36 < @utils.domainMonthRange(@graph.x.domain())
-            animateTransition = @utils.domainMonthRange(@graph.xOld.domain()) <= 36
+          animateTransition = @utils.animateTransition(@graph.xOld.domain(), @graph.x.domain())
 
           aggdataOld = @aggdata.slice(0)
           aggdataOldSource = aggdataOld.slice(0)
@@ -198,7 +182,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
           count = 0
 
           # if we aggregate from months to quarter, from quarter to year:
-          #   attrs order change: x -> width -> height
+          #   attrs order change: y, height -> x -> width
           if calculateMonthRange(_.filter(@aggdata, (d) -> return true unless d.stuff)) > calculateMonthRange(_.filter(aggdataOldSource, (d) -> return true unless d.stuff)) and animateTransition
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
@@ -224,11 +208,10 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
               .each("end", ()=>
                 count++
                 draw() if count = transitionData.length
-                @animateShow() if @graph.animateShowHide
               )
 
           # if we aggregate from quarter to months, from year to quarter:
-          #   attrs order change: width -> x -> height
+          #   attrs order change: width -> x -> y, height
           else if animateTransition
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
@@ -253,7 +236,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
               .each("end", ()=>
                 count++
                 draw() if count = transitionData.length
-                @animateShow() if @graph.animateShowHide
               )
           else
             draw(@transition)
