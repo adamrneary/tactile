@@ -183,7 +183,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
           # if we aggregate from months to quarter, from quarter to year:
           #   attrs order change: y, height -> x -> width
-          if calculateMonthRange(_.filter(@aggdata, (d) -> return true unless d.stuff)) > calculateMonthRange(_.filter(aggdataOldSource, (d) -> return true unless d.stuff)) and animateTransition
+          if (@utils.domainMonthRange(@graph.x.domain()) > @utils.domainMonthRange(@graph.xOld.domain())) and animateTransition
             @graph.svg.transition()
               .duration(transitionSpeed/3).delay(0)
               .selectAll(".#{@_nameToId()} rect")
@@ -207,7 +207,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
               .attr("ry", @_edgeRatio)
               .each("end", ()=>
                 count++
-                draw() if count = transitionData.length
+                draw() if count == transitionData.length
               )
 
           # if we aggregate from quarter to months, from year to quarter:
@@ -235,7 +235,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
                   ("colorless" unless @series.color)].join(" "))
               .each("end", ()=>
                 count++
-                draw() if count = transitionData.length
+                draw() if count == transitionData.length
               )
           else
             draw(@transition)

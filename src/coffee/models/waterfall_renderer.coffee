@@ -36,7 +36,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
       if transition
         canvas =          transition.select("g.canvas").selectAll("g.#{@_nameToId()}")
-        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
 
       selectObject = if transition
           canvas.selectAll("rect")
@@ -54,6 +53,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       line.enter()
         .append("svg:line")
         .attr("clip-path", "url(#clip)")
+
+      if transition
+        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
 
       selectObject = if transition
           draggableCanvas.selectAll("line")
@@ -129,9 +131,10 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
         # if we aggregate from months to quarter, from quarter to year:
         #   attrs order change: x -> width -> height
         if animateTransition and (@utils.domainMonthRange(@graph.x.domain()) > @utils.domainMonthRange(@graph.xOld.domain()))
+          @graph.svg.selectAll("g.#{@_nameToId()} line").remove()
           @graph.svg.transition()
             .duration(transitionSpeed/3).delay(0)
-            .selectAll(".#{@_nameToId()} rect, .#{@_nameToId()} line")
+            .selectAll(".#{@_nameToId()} rect")
             .attr("height", (d) => @yFunction().magnitude Math.abs(d.end.y))
             .attr("y", (d) => @_barY(d.end))
             .attr("class", (d, i) =>
@@ -139,26 +142,27 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
                ("colorless" unless @series.color)].join(" "))
           @graph.svg.transition()
             .duration(transitionSpeed/3).delay(transitionSpeed/3)
-            .selectAll(".#{@_nameToId()} rect, .#{@_nameToId()} line")
+            .selectAll(".#{@_nameToId()} rect")
             .attr("x", (d) => @_barX(d.end, true))
           @graph.svg.transition()
             .duration(transitionSpeed/3).delay(2*transitionSpeed/3)
-            .selectAll(".#{@_nameToId()} rect, .#{@_nameToId()} line")
+            .selectAll(".#{@_nameToId()} rect")
             .attr("width", @_seriesBarWidth())
             .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
             .attr("stroke", "white")
             .attr("rx", @_edgeRatio)
             .attr("ry", @_edgeRatio)
-            .each("end", ()=>
+            .each("end", (d, i)=>
               count++
-              draw() if count = transitionData.length
+              draw() if count == transitionData.length
             )
         # if we aggregate from quarter to months, from year to quarter:
         #   attrs order change: width -> x -> height
         else if animateTransition
+          @graph.svg.selectAll("g.#{@_nameToId()} line").remove()
           @graph.svg.transition()
             .duration(transitionSpeed/3).delay(0)
-            .selectAll(".#{@_nameToId()} rect, .#{@_nameToId()} line")
+            .selectAll(".#{@_nameToId()} rect")
             .attr("width", @_seriesBarWidth())
             .attr("fill", (d, i) => @utils.ourFunctor(@series.color, d.end, i))
             .attr("stroke", "white")
@@ -176,12 +180,13 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
             .attr("class", (d, i) =>
               ["bar",
                ("colorless" unless @series.color)].join(" "))
-            .each("end", ()=>
+            .each("end", (d, i)=>
               count++
-              draw() if count = transitionData.length
+              draw() if count == transitionData.length
             )
         else
-
+          draw(@transition)
+          @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
         draw(@transition)
@@ -190,8 +195,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       @aggdata = @series.stack
       draw(@transition)
       @animateShow() if @animateShowHide
-
-    selectObject.each("end", () => @animateShow() if @animateShowHide)
 
 
   setupTooltips: ->
