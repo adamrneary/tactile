@@ -84,6 +84,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
       @setupTooltips()
 
+      if transition
+        canvas.selectAll("rect").each("end", (d,i) => @animateShow() if @animateShowHide)
+
     if @aggregated
       if recalculateData and @aggdata?.length
         animateTransition = @utils.animateTransition(@graph.xOld.domain(), @graph.x.domain())
@@ -194,7 +197,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     else
       @aggdata = @series.stack
       draw(@transition)
-      @animateShow() if @animateShowHide
+#      @animateShow() if @animateShowHide
 
 
   setupTooltips: ->

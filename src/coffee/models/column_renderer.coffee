@@ -135,6 +135,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       # set tooltip for column
       @setupTooltips()
 
+      if transition
+        canvas.selectAll("rect").each("end", (d,i) => @animateShow() if @animateShowHide)
+
     if @aggregated
       if recalculateData
         if @aggdata
@@ -250,7 +253,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     else
       @aggdata = @series.stack
       draw(@transition)
-      @animateShow() if @animateShowHide
+#      @animateShow() if @animateShowHide
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
