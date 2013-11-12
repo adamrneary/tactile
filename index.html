@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Tactile: Bad-ass interactive charts</title>
@@ -9,127 +9,420 @@
     <link href="vendor/css/styleguide.css" rel="stylesheet" type="text/css">
     <link href="assets/tactile.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/vnd.microsoft.icon" href="images/styleguide/favicon.ico">
-  </head>
+</head>
 
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
 
-          <div class="dropdown">
-            <a href="#" data-toggle="dropdown" class="span2 dropdown-toggle brand">
-              <img src="vendor/images/styleguide/activecell_logo.png" />
-              Tactile.js <i class="icon-arrow-down"></i></a>
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown" class="span2 dropdown-toggle brand">
+                    <img src="vendor/images/styleguide/activecell_logo.png" />
+                    Tactile.js <i class="icon-arrow-down"></i></a>
 
-            <ul role="menu" aria-labelledby="drop2" style="top: 40px;" class="dropdown-menu">
-              <li><a href="http://launchpad.activecell.com/admin">Activecell admin (rails)</a></li>
-              <li><a href="#">Porchetta admin (node/socket)</a></li><li class="divider"></li>
-              <li><a href="http://shotgun-showcase.herokuapp.com">Shotgun.js</a></li>
-              <li><a href="http://striker-showcase.herokuapp.com">Striker.js</a></li>
-              <li><a href="http://tablestakes-showcase.herokuapp.com">Tablestakes.js</a></li>
-              <li class="disabled"><a href="http://tactile-showcase.herokuapp.com">Tactile.js</a></li>
-            </ul>
-          </div>
+                <ul role="menu" aria-labelledby="drop2" style="top: 40px;" class="dropdown-menu">
+                    <li><a href="http://launchpad.activecell.com/admin">Activecell admin (rails)</a></li>
+                    <li><a href="#">Porchetta admin (node/socket)</a></li><li class="divider"></li>
+                    <li><a href="http://shotgun-showcase.herokuapp.com">Shotgun.js</a></li>
+                    <li><a href="http://striker-showcase.herokuapp.com">Striker.js</a></li>
+                    <li><a href="http://tablestakes-showcase.herokuapp.com">Tablestakes.js</a></li>
+                    <li class="disabled"><a href="http://tactile-showcase.herokuapp.com">Tactile.js</a></li>
+                </ul>
+            </div>
 
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a id="home" href="./index.html"><i class="icon-home"></i> Home</a></li>
-              <li><a id="demo" href="./line.html"><i class="icon-home"></i> Demo</a></li>
-              <li><a id="doc" href="./docs.html"><i class="icon-list-alt"></i>Annotated source</a></li>
-              <li><a id="test" href="./test.html"><i class="icon-ok"></i> Tests</a></li>
-              <li><a id="/style_guide" href="./styleguide.html"><i class="icon-magic"></i> Style Guide</a></li>
-              <li><a href="https://github.com/activecell/tactile"><i class="icon-book"></i> Source</a></li>
-            </ul>
-          </div>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li><a id="home" href="./index.html"><i class="icon-home"></i> Home</a></li>
+                    <li><a id="demo" href="./line.html"><i class="icon-home"></i> Demo</a></li>
+                    <li><a id="doc" href="./docs.html"><i class="icon-list-alt"></i>Annotated source</a></li>
+                    <li><a id="test" href="./test.html"><i class="icon-ok"></i> Tests</a></li>
+                    <li><a id="/style_guide" href="./styleguide.html"><i class="icon-magic"></i> Style Guide</a></li>
+                    <li><a href="https://github.com/activecell/tactile"><i class="icon-book"></i> Source</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="page-wrapper textured-with-border">
-      <div id="main-content">
-        EmptyPage
+<div class="page-wrapper textured-with-border">
+    <div id="main-content"><div class="container">
+  <div class="row">
+      <div class="span3">
+          <ul id="cartLinkList" class="nav nav-list">
+              <li class="nav-header">Cartesian series</li>
+              
+          </ul>
+          <ul id="noncartLinkList" class="nav nav-list">
+              <li class="nav-header">Non-cartesian series</li>
+              
+          </ul>
+          <ul id="compLinkList" class="nav nav-list">
+              <li class="nav-header">Components</li>
+              
+          </ul>
       </div>
+
+    <div class="span9">
+      <h3 id="example_header">CHART-CHANGING</h3>
+
+      <div id="above-chart"></div>
+      <div id="example" class="widget-block">
+        <div id="example_view" data-language="coffeescript"></div>
+      </div>
+      <div id="below-chart"></div>
+
+      <h3>Code for example</h3>
+      <pre>
+        <code id="example_js" data-language="coffeescript">buttonGroup = $("<div class='btn-group'></div>")
+
+toColumn = $("<button class='btn btn-mini'>To Column</button>")
+toLines = $("<button class='btn btn-mini'>To Lines</button>")
+toArea = $("<button class='btn btn-mini'>To Area</button>")
+toWaterfall = $("<button class='btn btn-mini'>To Waterfall</button>")
+toLeaderboard = $("<button class='btn btn-mini'>To Leaderboard</button>")
+toPareto = $("<button class='btn btn-mini'>To Pareto</button>")
+
+currentChart = ""
+
+buttonGroup.append toColumn
+buttonGroup.append toLines
+buttonGroup.append toArea
+buttonGroup.append toWaterfall
+buttonGroup.append toLeaderboard
+buttonGroup.append toPareto
+
+$("#above-chart").html ''
+$("#above-chart").prepend buttonGroup
+
+
+stackGroup = $("<div class='btn-group pull-right'></div>")
+
+stack = $("<button class='btn btn-mini'>Stack</button>")
+unstack = $("<button class='btn btn-mini'>Unstack</button>")
+
+stackGroup.append stack
+stackGroup.append unstack
+
+$("#above-chart").append stackGroup
+
+
+# preparwe data
+leaderboardData = [
+  label: "USA"
+  value: 0
+  change: 0
+  barPosition: 0
+,
+  label: "New Zealand"
+  value: 0
+  change: 0
+  barPosition: 0
+,
+  label: "Australia"
+  value: 0
+  change: 0
+  barPosition: 0
+,
+  label: "Canada"
+  value: 0
+  change: 0
+  barPosition: 0
+]
+chartData = [
+  x: new Date(2012, 0, 1).getTime()
+  y: 10
+  z: 20
+,
+  x: new Date(2012, 1, 1).getTime()
+  y: 170
+  z: 200
+,
+  x: new Date(2012, 2, 1).getTime()
+  y: 280
+  z: 100
+,
+  x: new Date(2012, 3, 1).getTime()
+  y: 205
+  z: 240
+,
+  x: new Date(2012, 4, 1).getTime()
+  y: 280
+  z: 100
+,
+  x: new Date(2012, 5, 1).getTime()
+  y: 205
+  z: 240
+,
+  x: new Date(2012, 6, 1).getTime()
+  y: 280
+  z: 100
+,
+  x: new Date(2012, 7, 1).getTime()
+  y: 205
+  z: 240
+,
+  x: new Date(2012, 8, 1).getTime()
+  y: 332
+  z: 490
+,
+  x: new Date(2012, 9, 1).getTime()
+  y: 147
+  z: 142
+,
+  x: new Date(2012, 10, 1).getTime()
+  y: 857
+  z: 285
+,
+  x: new Date(2012, 11, 1).getTime()
+  y: 572
+  z: 428
+] # The same for 'column', 'line', 'area', 'waterfall'
+paretoData = [
+  cumulativePercent: 0.5010861262296834
+  name: "Consulting"
+  value: 1441959.19
+  x: 0
+,
+  cumulativePercent: 0.6864971599775173
+  name: "Television ads"
+  value: 533551.2799999999
+  x: 1
+,
+  cumulativePercent: 0.8375597831432469
+  name: "Radio ads"
+  value: 434707.98
+  x: 2
+,
+  cumulativePercent: 0.9047213226201376
+  name: "Magazine ads"
+  value: 193268.57
+  x: 3
+,
+  cumulativePercent: 0.939700011053397
+  name: "Billboard ads"
+  value: 100657.03000000001
+  x: 4
+,
+  cumulativePercent: 0.9720742427992093
+  name: "Conferences"
+  value: 93162.26999999999
+  x: 5
+,
+  cumulativePercent: 0.9999999999999999
+  name: "Affiliate revenue"
+  value: 80361.04
+  x: 6
+]
+
+# time frame
+frameVal = [new Date(2012, 1, 1).getTime(), new Date(2012, 10, 1).getTime()] # = [2012-Feb-1, 2012-Nov-1]
+
+
+# create instance of chart
+chart = new Tactile.Chart(unstack: true)
+  .element($("#example_view")[0])
+
+
+# Stack / Unstack behavior
+stack.click (e) ->
+  e.stopPropagation()
+  if currentChart in ['column', 'area']
+    chart.stackTransition()
+
+unstack.click (e) ->
+  e.stopPropagation()
+  if currentChart in ['column', 'area']
+    chart.unstackTransition()
+
+
+# Add slider
+timeSlider = $("<div>")
+  .attr("id", "slider")
+  .attr("class", "ui-horizontal-slider")
+
+$("#below-chart").html timeSlider
+timeSlider.slider
+  min: 0
+  max: 11
+  values: [1, 10]
+  range: true
+  slide: (event, ui) ->
+    chart.setXFrame([new Date(2012,  0+ui.values[0], 1).getTime(),
+                     new Date(2012,  0+ui.values[1], 1).getTime()])
+    chart.render() unless currentChart is "pareto"
+
+
+# baserenderer for ''
+baseRenderer = () ->
+  chart.data(chartData)
+    .addSeries([
+      name: "reach actual"
+      renderer: currentChart
+      sigfigs: 0
+      round: false
+      color: "#c05020"
+      fromBaseline: true
+      tooltip: (d) ->
+        d.y + " customers"
+
+      dataTransform: (d) ->
+        x: d.x
+        y: d.z
+    ,
+      name: "planned"
+      renderer: currentChart
+      round: false
+      color: "#6060c0"
+      tooltip: (d) ->
+        d.y + " planned"
+
+      dataTransform: (d) ->
+        x: d.x
+        y: d.y
+    ], {overwrite: true})
+    .setXFrame(frameVal)
+  axes = _.keys(chart.initAxes())
+  unless ("x" in axes) and ("y" in axes)
+    chart.axes
+      x:
+        dimension: 'time'
+        frame: frameVal
+      y:
+        dimension: "linear"
+
+  chart.render()
+
+
+toColumn.click (e) ->
+  currentChart = "column"
+  e.stopPropagation()
+
+  baseRenderer()
+
+toLines.click (e) ->
+  currentChart = "line"
+  e.stopPropagation()
+
+  baseRenderer()
+
+toArea.click (e) ->
+  currentChart = "area"
+  e.stopPropagation()
+
+  baseRenderer()
+
+toWaterfall.click (e) ->
+  currentChart = "waterfall"
+  e.stopPropagation()
+
+  baseRenderer()
+
+toLeaderboard.click (e) ->
+  currentChart = "leaderboard"
+  e.stopPropagation()
+  generateData = (count) =>
+    i = 0
+    while i < count
+      oldValue = leaderboardData[i].value
+      leaderboardData[i].value = Math.floor Math.random() * 1000
+      leaderboardData[i].change = leaderboardData[i].value - oldValue
+      leaderboardData[i].barPosition = leaderboardData[i].value / 1000
+      i++
+
+    i = 0
+    while i < count
+      j = 0
+      index = 0
+      while j < count
+        index++ if leaderboardData[j].value > leaderboardData[i].value
+        j++
+      leaderboardData[i].index = index
+      i++
+
+    leaderboardData
+
+  chart.data(generateData(4))
+    .addSeries([
+      name: "enemies"
+      renderer: "leaderboard"
+      changeFormat: d3.format("f")
+      valueFormat: d3.format("f")
+      dataTransform: (d) ->
+        label: d.label
+        value: d.value
+        change: d.change
+        barPosition: d.barPosition
+        index: d.index
+    ], overwrite: true)
+    .axes({})
+
+  chart.render()
+
+toPareto.click (e) ->
+  currentChart = "pareto"
+  e.stopPropagation()
+
+  chart.data(paretoData)
+    .addSeries([
+        name: "Revenue"
+        color: "#702AFF"
+        renderer: 'column'
+        wide: true
+        round: true
+        dataTransform: (d) ->
+          x: d.x
+          y: d.value
+          name: d.name
+        tooltip: (d) ->
+          "#{d.name}: #{d.y}"
+      ,
+        name: 'Cumulative percentage'
+        color: "#C20055"
+        renderer: 'line'
+        yAxis: 'y1'
+        dataTransform: (d) ->
+          x: d.x
+          y: d.cumulativePercent
+          name: d.name
+        tooltip: (d) ->
+          "#{d.name}: #{(d.y * 100).toFixed(2)}% (cumulative)"
+      ], overwrite: true)
+    .setAutoScale(true)
+    .setMinXFrame(1)
+    .axes
+      y: {dimension: "linear"}
+      y1: {dimension: "linear"}
+
+  chart.render()
+
+# call first renderer
+toColumn.click()</code>
+      </pre>
     </div>
+    <hr>
+  </div>
+</div>
 
-    <script src="vendor/js/jquery.js"></script>
-    <script src="vendor/js/underscore.js"></script>
-    <script src="vendor/js/backbone.js"></script>
-    <script src="assets/d3.js"></script>
-    <script src="vendor/js/bootstrap.js"></script>
-    <script src="vendor/js/coffee-script.js"></script>
-    <script src="vendor/js/jquery-ui.js"></script>
-    <script src="vendor/rainbow/rainbow.js"></script>
-    <script src="vendor/rainbow/language/generic.js"></script>
-    <script src="vendor/rainbow/language/coffeescript.js"></script>
 
-    <script src="assets/tactile.js" defer></script>
-    <!--<script src='assets/examples.js' defer></script>-->
-    <!--<script>-->
-        <!--$(function() {-->
-            <!--app = {}-->
+</div>
+</div>
 
-            <!--var WorkspaceRouter = Backbone.Router.extend({-->
-                <!--routes: {-->
-                    <!--"home": "home",-->
-                    <!--"demo": "demo",-->
-                    <!--"doc":  "doc",-->
-                    <!--"test": "test",-->
-                    <!--"style_guide": "styleGuide"-->
-                <!--},-->
+<script src="vendor/js/jquery.js"></script>
+<script src="vendor/js/underscore.js"></script>
+<script src="vendor/js/backbone.js"></script>
+<script src="assets/d3.js"></script>
+<script src="vendor/js/bootstrap.js"></script>
+<script src="vendor/js/coffee-script.js"></script>
+<script src="vendor/js/jquery-ui.js"></script>
+<script src="vendor/rainbow/rainbow.js"></script>
+<script src="vendor/rainbow/language/generic.js"></script>
+<script src="vendor/rainbow/language/coffeescript.js"></script>
 
-                <!--home: function() {-->
-                    <!--$.get("home.html", function(data) {-->
-                        <!--$("#main-content").html(data);-->
-                    <!--});-->
-                <!--},-->
-
-                <!--demo: function() {-->
-                    <!--$.get("demo.html", function(data) {-->
-                        <!--$("#main-content").html(data);-->
-                    <!--});-->
-                <!--},-->
-
-                <!--doc: function(query, page) {-->
-                    <!--var $block = $('<div/>').attr('id', 'frame');-->
-                    <!--$block.attr('style', 'height: 100%;');-->
-                    <!--$("#main-content").html($block);-->
-                    <!--var $iframe = $('<iframe/>').attr('id', 'tests-iframe');-->
-                    <!--$iframe.attr('style', 'width: 100%; height: 100%; border: none;');-->
-                    <!--$("#frame").html($iframe);-->
-                    <!--$iframe.attr('src', 'annotated_sources/index.html')-->
-                <!--},-->
-
-                <!--test: function(query, page) {-->
-                    <!--var $block = $('<div/>').attr('id', 'frame');-->
-                    <!--$block.attr('style', 'height: 100%;');-->
-                    <!--$("#main-content").html($block);-->
-                    <!--var $iframe = $('<iframe/>').attr('id', 'tests-iframe');-->
-                    <!--$iframe.attr('style', 'width: 100%; height: 100%; border: none;');-->
-                    <!--$("#frame").html($iframe);-->
-                    <!--$iframe.attr('src', 'test_runner.html')-->
-                <!--},-->
-
-                <!--styleGuide: function(query, page) {-->
-                    <!--$.get("styleguide.html", function(data) {-->
-                        <!--$("#main-content").html(data);-->
-                    <!--});-->
-                <!--}-->
-            <!--});-->
-
-            <!--app.router = new WorkspaceRouter();-->
-            <!--Backbone.history.start();-->
-
-            <!--$("#home").on(function(){app.router.navigate("home")});-->
-            <!--$("#demo").on(function(){app.router.navigate("demo")});-->
-            <!--$("#doc").on(function(){app.router.navigate("doc")});-->
-            <!--$("#test").on(function(){app.router.navigate("test")});-->
-            <!--$("#style_guide").on(function(){app.router.navigate("style_guide")});-->
-        <!--});-->
-    <!--</script>-->
-  </body>
-</html>
+<script src="assets/tactile.js" defer></script>
+<!--<script src='assets/examples.js' defer></script>--><script src='./assets/js/index.js' defer=''></script>

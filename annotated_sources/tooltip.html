@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -170,16 +165,16 @@
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Tooltip</span></span>
   <span class="property">@_spotlightMode</span>: <span class="literal">false</span>
 
-  <span class="property">@turnOffspotlight</span>: () -&gt;
+  <span class="property">@turnOffspotlight</span>: <span class="function"><span class="params">()</span> -&gt;</span>
     Tooltip._spotlightMode = <span class="literal">false</span>
 
-  <span class="property">@spotlightOn</span>: (d) -&gt;
+  <span class="property">@spotlightOn</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
     Tooltip._spotlightMode = <span class="literal">true</span>
 
-  <span class="property">@getSpotlight</span>: () -&gt;
+  <span class="property">@getSpotlight</span>: <span class="function"><span class="params">()</span> -&gt;</span>
     Tooltip._spotlightMode
 
-  constructor: (<span class="property">@el</span>, <span class="property">@options</span>) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(<span class="property">@el</span>, <span class="property">@options</span>)</span> -&gt;</span>
     <span class="property">@el</span> = d3.select(<span class="property">@el</span>)
     <span class="property">@annotate</span>()</pre></div></div>
             
@@ -196,7 +191,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  appendTooltip: -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">appendTooltip</span>:<span class="function"> -&gt;</span>
     chartContainer = d3.select(<span class="property">@options</span>.graph._element)
     <span class="keyword">if</span> Tooltip._spotlightMode &amp;&amp; <span class="property">@el</span>.node().classList.contains(<span class="string">"active"</span>)
       tip = chartContainer.select(<span class="string">'.tooltip'</span>)
@@ -211,7 +206,7 @@
 
     <span class="keyword">return</span> tip
 
-  annotate: () -&gt;
+  <span class="attribute">annotate</span>: <span class="function"><span class="params">()</span> -&gt;</span>
     chartContainer = <span class="property">@el</span>.node().nearestViewportElement</pre></div></div>
             
         </li>
@@ -233,7 +228,7 @@ sets the parent node by default</p>
     <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@options</span>.circleOnHover
       <span class="property">@tooltipCircleContainer</span> = <span class="property">@el</span>.node().parentNode
 
-    <span class="function"><span class="title">moveTip</span></span> = (tip) =&gt;
+    <span class="function"><span class="title">moveTip</span> = <span class="params">(tip)</span> =&gt;</span>
       center = [<span class="number">0</span>,<span class="number">0</span>]
       <span class="keyword">if</span> <span class="property">@options</span>.placement <span class="keyword">is</span> <span class="string">"mouse"</span>
         center = d3.mouse(<span class="property">@options</span>.graph._element)
@@ -275,7 +270,7 @@ sets the parent node by default</p>
         .style(<span class="string">"display"</span>,<span class="string">"block"</span>)
         .style(<span class="string">"position"</span>, <span class="string">"fixed"</span>)
 
-    <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mouseover"</span>, () =&gt;
+    <span class="property">@el</span>.<span class="literal">on</span><span class="function"><span class="params">(<span class="string">"mouseover"</span>, () =&gt;
      <span class="keyword">if</span> Tooltip._spotlightMode
         <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@el</span>.node().classList.contains(<span class="string">"active"</span>)
 
@@ -304,7 +299,7 @@ sets the parent node by default</p>
 
       tip.append(<span class="string">"div"</span>).attr(<span class="string">"class"</span>,<span class="string">"arrow"</span>)
       tip.select(<span class="string">'.tooltip-inner'</span>).html(<span class="property">@options</span>.text)
-      inner = () -&gt; tip.classed(<span class="string">'in'</span>, <span class="literal">true</span>)
+      <span class="function"><span class="title">inner</span> = <span class="params">()</span> -&gt;</span> tip.classed(<span class="string">'in'</span>, <span class="literal">true</span>)
 
       setTimeout(inner,<span class="number">10</span>)
 
@@ -312,15 +307,15 @@ sets the parent node by default</p>
       moveTip(tip)
     )
 
-    mouseMove = () -&gt;
+    <span class="function"><span class="title">mouseMove</span> = <span class="params">()</span> -&gt;</span>
       d3.select(<span class="string">".annotation"</span>).call(moveTip.bind(@))
 
     <span class="keyword">if</span> <span class="property">@options</span>.mousemove
       <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mousemove"</span>, mouseMove)
 
-    <span class="property">@el</span>.<span class="literal">on</span>(<span class="string">"mouseout"</span>, () =&gt;
-      <span class="keyword">return</span> <span class="keyword">if</span> Tooltip._spotlightMode <span class="comment"># don't hide the tooltip if spotlight</span>
-      d3.select(<span class="property">@tooltipCircleContainer</span>).selectAll(<span class="string">"circle.tooltip-circle"</span>)
+    <span class="property">@el</span>.<span class="literal">on</span><span class="function"><span class="params">(<span class="string">"mouseout"</span>, () =&gt;
+      <span class="keyword">return</span> <span class="keyword">if</span> Tooltip._spotlightMode # don<span class="string">'t hide the tooltip if spotlight
+      d3.select(@tooltipCircleContainer).selectAll("circle.tooltip-circle")
         .remove()</pre></div></div>
             
         </li>
@@ -342,11 +337,11 @@ sets the parent node by default</p>
         <span class="property">@el</span>.attr(<span class="string">'fill'</span>, <span class="property">@el</span>.attr(<span class="string">'data-fill-color'</span>))
 
       tip = d3.selectAll(<span class="string">".annotation"</span>).classed(<span class="string">'in'</span>, <span class="literal">false</span>)
-      remover = () -&gt; tip.remove()
+      <span class="function"><span class="title">remover</span> = <span class="params">()</span> -&gt;</span> tip.remove()
       setTimeout(remover, <span class="number">150</span>)
     )
 
-  _appendTipCircle: -&gt;
+  <span class="attribute">_appendTipCircle</span>:<span class="function"> -&gt;</span>
     hoveredNode = <span class="property">@el</span>.node().getBBox()
     svgNode = d3.select(<span class="property">@options</span>.graph._element).select(<span class="string">'svg'</span>).node()</pre></div></div>
             
@@ -387,10 +382,10 @@ without appending another circle for tip</p>
         .attr(<span class="string">"fill"</span>, <span class="string">'white'</span>)
         .attr(<span class="string">"stroke-width"</span>, <span class="string">'1'</span>)
 
-d3.selection.prototype.<span class="function"><span class="title">tooltip</span></span> = (f) -&gt;
+d3.selection.prototype.<span class="function"><span class="title">tooltip</span> = <span class="params">(f)</span> -&gt;</span>
   selection = @
   options = {}
-  selection.each (d,i) -&gt;
+  selection.each <span class="function"><span class="params">(d,i)</span> -&gt;</span>
     options = f.apply(@, arguments)
     <span class="keyword">new</span> Tactile.Tooltip(@, options)</pre></div></div>
             

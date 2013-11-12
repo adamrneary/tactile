@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -167,23 +162,24 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  defaults:
-    cartesian: <span class="literal">true</span>
-    tension: <span class="number">0.95</span>
-    strokeWidth: <span class="number">3</span>
-    unstack: <span class="literal">true</span>
-    dotSize: <span class="number">5</span>
-    opacity: <span class="number">1</span>
-    checkData: <span class="literal">false</span>
+  <span class="attribute">defaults</span>:
+    <span class="attribute">cartesian</span>: <span class="literal">true</span>
+    <span class="attribute">tension</span>: <span class="number">0.95</span>
+    <span class="attribute">strokeWidth</span>: <span class="number">3</span>
+    <span class="attribute">unstack</span>: <span class="literal">true</span>
+    <span class="attribute">dotSize</span>: <span class="number">5</span>
+    <span class="attribute">opacity</span>: <span class="number">1</span>
+    <span class="attribute">checkData</span>: <span class="literal">false</span>
 
-    stroke: <span class="literal">false</span>
-    fill: <span class="literal">false</span>
+    <span class="attribute">stroke</span>: <span class="literal">false</span>
+    <span class="attribute">fill</span>: <span class="literal">false</span>
 
-  constructor: (options = {}) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(options = {})</span> -&gt;</span>
     <span class="property">@utils</span> = <span class="keyword">new</span> Tactile.Utils()
     <span class="property">@graph</span> = options.graph
     <span class="property">@tension</span> = options.tension <span class="keyword">or</span> <span class="property">@tension</span>
-    <span class="property">@configure</span> options</pre></div></div>
+    <span class="property">@configure</span> options
+    <span class="property">@animateShowHide</span> = <span class="literal">false</span></pre></div></div>
             
         </li>
         
@@ -200,7 +196,7 @@
             
             <div class="content"><div class='highlight'><pre>    <span class="property">@initialize</span>?(options)
 
-  seriesPathFactory: -&gt;</pre></div></div>
+  <span class="attribute">seriesPathFactory</span>:<span class="function"> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -215,7 +211,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  seriesStrokeFactory: -&gt;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">seriesStrokeFactory</span>:<span class="function"> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -230,18 +226,18 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  domain: -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">domain</span>:<span class="function"> -&gt;</span>
     values = []
     stackedData = <span class="property">@graph</span>.stackedData <span class="keyword">or</span> <span class="property">@graph</span>.stackData()
     topSeriesData = (
       <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> stackedData <span class="keyword">else</span> [stackedData.slice(-<span class="number">1</span>).shift()]
     )
-    topSeriesData.forEach (series) =&gt;
+    topSeriesData.forEach <span class="function"><span class="params">(series)</span> =&gt;</span>
       <span class="keyword">if</span> <span class="property">@name</span> <span class="keyword">is</span> <span class="string">"waterfall"</span>
-        series.forEach (d) =&gt;
+        series.forEach <span class="function"><span class="params">(d)</span> =&gt;</span>
           values.push d.y + d.y00
       <span class="keyword">else</span>
-        series.forEach (d) =&gt;</pre></div></div>
+        series.forEach <span class="function"><span class="params">(d)</span> =&gt;</span></pre></div></div>
             
         </li>
         
@@ -265,32 +261,55 @@ x1, y:10 y-axis will show up to y=30</p>
             values.push d.y + d.y0
 
     <span class="keyword">if</span> stackedData[<span class="number">0</span>].length == <span class="number">0</span>
-      <span class="keyword">return</span> { x: [<span class="number">0</span>, <span class="number">0</span>], y: [<span class="number">0</span>, <span class="number">0</span>] }
+      <span class="keyword">return</span> { <span class="attribute">x</span>: [<span class="number">0</span>, <span class="number">0</span>], <span class="attribute">y</span>: [<span class="number">0</span>, <span class="number">0</span>] }
 
-    xMin = _.min(stackedData[<span class="number">0</span>], (d)-&gt; d.x).x
-    xMax = _.max(stackedData[<span class="number">0</span>], (d)-&gt; d.x).x
-    yMin = (<span class="keyword">if</span> <span class="property">@graph</span>.min <span class="keyword">is</span> <span class="string">"auto"</span> <span class="keyword">then</span> d3.min(values) <span class="keyword">else</span> <span class="property">@graph</span>.min <span class="keyword">or</span> <span class="number">0</span>)
-    yMax = <span class="property">@graph</span>.max <span class="keyword">or</span> d3.max(values)
+    xMin = _.min<span class="function"><span class="params">(stackedData[<span class="number">0</span>], (d)-&gt; d.x)</span>.<span class="title">x</span>
+    <span class="title">xMax</span> = <span class="title">_</span>.<span class="title">max</span><span class="params">(stackedData[<span class="number">0</span>], (d)-&gt; d.x)</span>.<span class="title">x</span>
+    <span class="title">yMin</span> = <span class="params">(<span class="keyword">if</span> <span class="property">@graph</span>.min <span class="keyword">is</span> <span class="string">"auto"</span> <span class="keyword">then</span> d3.min(values) <span class="keyword">else</span> <span class="property">@graph</span>.min <span class="keyword">or</span> <span class="number">0</span>)</span>
+    <span class="title">yMax</span> = @<span class="title">graph</span>.<span class="title">max</span> <span class="title">or</span> <span class="title">d3</span>.<span class="title">max</span><span class="params">(values)</span>
 
-    { x: [xMin, xMax], y: [yMin, yMax] }
+    <span class="title">domain</span> = { <span class="title">x</span>: [<span class="title">xMin</span>, <span class="title">xMax</span>], <span class="title">y</span>: [<span class="title">yMin</span>, <span class="title">yMax</span>] }
 
-  yFunction: -&gt;
+    <span class="title">if</span> <span class="title">_</span>.<span class="title">some</span><span class="params">(_.values(<span class="property">@graph</span>.aggregated))</span>
+      <span class="title">values</span> = []
+      <span class="title">data</span> = @<span class="title">utils</span>.<span class="title">aggregateData</span> @<span class="title">series</span>.<span class="title">stack</span>, @<span class="title">graph</span>.<span class="title">x</span>.<span class="title">domain</span><span class="params">()</span>
+      <span class="title">_</span>.<span class="title">each</span> <span class="title">data</span>, <span class="params">(d)</span> =&gt;</span>
+        <span class="keyword">if</span> <span class="property">@series</span>.renderer <span class="keyword">is</span> <span class="string">'waterfall'</span>
+          values.push d.y + d.y00
+        <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@unstack</span>
+          values.push d.y
+        <span class="keyword">else</span>
+          values.push d.y + d.y0
+
+      <span class="keyword">if</span> data.length == <span class="number">0</span>
+        <span class="keyword">return</span> domain
+
+      yMin = (<span class="keyword">if</span> <span class="property">@graph</span>.min <span class="keyword">is</span> <span class="string">"auto"</span> <span class="keyword">then</span> d3.min(values) <span class="keyword">else</span> <span class="property">@graph</span>.min <span class="keyword">or</span> <span class="number">0</span>)
+      yMax = <span class="property">@graph</span>.max <span class="keyword">or</span> d3.max(values)
+
+      domain.y = [yMin, yMax]
+    domain
+
+  <span class="attribute">yFunction</span>:<span class="function"> -&gt;</span>
     <span class="property">@graph</span>[<span class="property">@series</span>.yAxis]
 
-  render: (transition) =&gt;
+  <span class="attribute">yFunctionOld</span>:<span class="function"> -&gt;</span>
+    <span class="property">@graph</span>[<span class="property">@series</span>.yAxis+<span class="string">"Old"</span>]
+
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span> =&gt;</span>
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
 
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.baseline"</span>)
-        .data([<span class="property">@series</span>.stack])
+        .data([<span class="property">@aggdata</span>])
         .remove()
       <span class="keyword">return</span>
 
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       line = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.line"</span>)
-      .data([<span class="property">@series</span>.stack])
-      .remove()
+        .data([<span class="property">@aggdata</span>])
+        .remove()
       <span class="keyword">return</span></pre></div></div>
             
         </li>
@@ -308,9 +327,9 @@ saves the line plot from having holes</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@series</span>.stack = <span class="property">@series</span>.stack.filter (el) =&gt; <span class="property">@_filterNaNs</span>(el, <span class="string">'x'</span>, <span class="string">'y'</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@series</span>.stack = <span class="property">@series</span>.stack.filter <span class="function"><span class="params">(el)</span> =&gt;</span> <span class="property">@_filterNaNs</span>(el, <span class="string">'x'</span>, <span class="string">'y'</span>)
     line = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.baseline"</span>)
-      .data([<span class="property">@series</span>.stack])
+      .data([<span class="property">@aggdata</span>])
 
     line.enter().append(<span class="string">"svg:path"</span>)
       .attr(<span class="string">"clip-path"</span>,<span class="string">"url(#clip)"</span>)
@@ -318,10 +337,12 @@ saves the line plot from having holes</p>
       .attr(<span class="string">"stroke"</span>, (<span class="keyword">if</span> <span class="property">@stroke</span> <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">"none"</span>))
       .attr(<span class="string">"stroke-width"</span>, <span class="property">@strokeWidth</span>)
       .style(<span class="string">'opacity'</span>, <span class="property">@opacity</span>)
-      .attr(<span class="string">"class"</span>, <span class="string">"baseline <span class="subst">#{@series.className <span class="keyword">or</span> ''}</span>
-       <span class="subst">#{<span class="keyword">if</span> @series.color <span class="keyword">then</span> '' <span class="keyword">else</span> 'colorless'}</span>"</span>)
+      .attr(<span class="string">"class"</span>, <span class="string">"baseline <span class="subst">#{<span class="property">@series</span>.className <span class="keyword">or</span> <span class="string">''</span>}</span>
+       <span class="subst">#{<span class="keyword">if</span> <span class="property">@series</span>.color <span class="keyword">then</span> <span class="string">''</span> <span class="keyword">else</span> <span class="string">'colorless'</span>}</span>"</span>)
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path.baseline"</span>)
+    <span class="keyword">if</span> transition <span class="keyword">then</span> selectObjects = transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path.baseline"</span>)
+    <span class="keyword">else</span> selectObjects = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.baseline"</span>)
+    selectObjects
       .attr(<span class="string">"d"</span>, <span class="property">@seriesPathFactory</span>())</pre></div></div>
             
         </li>
@@ -343,27 +364,27 @@ which is very not desired.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  seriesCanvas: -&gt;
-    <span class="property">@graph</span>.vis?.selectAll(<span class="string">"g.<span class="subst">#{@_nameToId()}</span>"</span>)
-      .data([<span class="property">@series</span>.stack])
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">seriesCanvas</span>:<span class="function"> -&gt;</span>
+    <span class="property">@graph</span>.vis?.selectAll(<span class="string">"g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span>"</span>)
+      .data([<span class="property">@aggdata</span>])
       .enter()
       .append(<span class="string">"g"</span>)
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
       .attr(<span class="string">'class'</span>, <span class="property">@_nameToId</span>() + <span class="string">" "</span> + <span class="property">@name</span>)
 
-    <span class="property">@graph</span>.vis?.selectAll(<span class="string">"g.<span class="subst">#{@_nameToId()}</span>"</span>)
+    <span class="property">@graph</span>.vis?.selectAll(<span class="string">"g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span>"</span>)
 
-  seriesDraggableCanvas: -&gt;
-    <span class="property">@graph</span>.draggableVis?.selectAll(<span class="string">"g.<span class="subst">#{@_nameToId()}</span>"</span>)
-      .data([<span class="property">@series</span>.stack])
+  <span class="attribute">seriesDraggableCanvas</span>:<span class="function"> -&gt;</span>
+    <span class="property">@graph</span>.draggableVis?.selectAll(<span class="string">"g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span>"</span>)
+      .data([<span class="property">@aggdata</span>])
       .enter()
       .append(<span class="string">"g"</span>)
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
       .attr(<span class="string">'class'</span>, <span class="property">@_nameToId</span>() + <span class="string">" "</span> + <span class="property">@name</span>)
 
-    <span class="property">@graph</span>.draggableVis?.selectAll(<span class="string">"g.<span class="subst">#{@_nameToId()}</span>"</span>)
+    <span class="property">@graph</span>.draggableVis?.selectAll(<span class="string">"g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span>"</span>)
 
-  configure: (options) -&gt;</pre></div></div>
+  <span class="attribute">configure</span>: <span class="function"><span class="params">(options)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -380,14 +401,14 @@ which is very not desired.</p>
             
             <div class="content"><div class='highlight'><pre>    defaults = _.extend {}, <span class="property">@defaults</span>, <span class="property">@specificDefaults</span> <span class="keyword">if</span> <span class="property">@specificDefaults</span>?
     options = _.extend {}, defaults, options
-    _.each options, (val, key) =&gt;
+    _.each options, <span class="function"><span class="params">(val, key)</span> =&gt;</span>
       @[key] = val
 
-  <span class="keyword">delete</span>: -&gt;
+  <span class="attribute">delete</span>:<span class="function"> -&gt;</span>
     <span class="property">@seriesCanvas</span>()?.remove()
     <span class="property">@seriesDraggableCanvas</span>()?.remove()
 
-  _nameToId: -&gt;</pre></div></div>
+  <span class="attribute">_nameToId</span>:<span class="function"> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -423,18 +444,49 @@ TODO: Do NOT start a class name with a number! This is only supported in Interne
             <div class="content"><div class='highlight'><pre>    name = <span class="string">"_<span class="subst">#{name}</span>"</span> <span class="keyword">if</span> <span class="regexp">/^\d/</span>.test(name)
     name
 
-  _filterNaNs: (d, args...) =&gt;
-    _.all args, (attr) -&gt;
+  <span class="attribute">_filterNaNs</span>: <span class="function"><span class="params">(d, args...)</span> =&gt;</span>
+    _.all args, <span class="function"><span class="params">(attr)</span> -&gt;</span>
       <span class="keyword">switch</span> <span class="keyword">typeof</span> d[attr]
         <span class="keyword">when</span> <span class="string">"number"</span> <span class="keyword">then</span> !isNaN(d[attr]) <span class="keyword">and</span> d[attr]?
         <span class="keyword">when</span> <span class="string">"string"</span> <span class="keyword">then</span> d[attr]?
 
-  _checkData: =&gt;
+  <span class="attribute">_checkData</span>:<span class="function"> =&gt;</span>
     data = <span class="property">@series</span>.stack
-    data.forEach((d, i) =&gt;
-      <span class="property">@utils</span>.checkNumber(d.x, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].x"</span>)
-      <span class="property">@utils</span>.checkNumber(d.y, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].y"</span>)
-    )</pre></div></div>
+    data.forEach<span class="function"><span class="params">((d, i) =&gt;
+      <span class="property">@utils</span>.checkNumber(d.x, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].x"</span>)
+      <span class="property">@utils</span>.checkNumber(d.y, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].y"</span>)
+    )</span>
+
+  <span class="title">animateShow</span>: -&gt;</span>
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@animateShowHide</span>
+    <span class="property">@graph</span>.svg.selectAll(<span class="string">".canvas &gt; g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span> *"</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(0,<span class="subst">#{<span class="property">@graph</span>.outerHeight}</span>)"</span>)
+    <span class="property">@graph</span>.svg.selectAll(<span class="string">".draggable-canvas &gt; g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span> *"</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(0,<span class="subst">#{<span class="property">@graph</span>.outerHeight}</span>)"</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>one step for hide, one step for show</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="property">@graph</span>.svg.selectAll(<span class="string">".canvas &gt; g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span> *"</span>)
+      .transition()
+      .duration(<span class="property">@graph</span>.transitionSpeed / <span class="number">2</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(0,0)"</span>)
+    <span class="property">@graph</span>.svg.selectAll(<span class="string">".draggable-canvas &gt; g.<span class="subst">#{<span class="property">@_nameToId</span>()}</span> *"</span>)
+      .transition()
+      .duration(<span class="property">@graph</span>.transitionSpeed / <span class="number">2</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(0,0"</span>)
+
+    <span class="property">@animateShowHide</span> = <span class="literal">false</span></pre></div></div>
             
         </li>
         

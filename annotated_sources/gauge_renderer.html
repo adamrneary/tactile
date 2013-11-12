@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -167,13 +162,13 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">GaugeRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  name: <span class="string">"gauge"</span>
+  <span class="attribute">name</span>: <span class="string">"gauge"</span>
 
-  specificDefaults:
-    cartesian: <span class="literal">false</span>
-    oldValueAngle: <span class="number">0</span>
+  <span class="attribute">specificDefaults</span>:
+    <span class="attribute">cartesian</span>: <span class="literal">false</span>
+    <span class="attribute">oldValueAngle</span>: <span class="number">0</span>
 
-  render: (transition, transitionSpeed)-&gt;
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span>-&gt;</span>
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
     scale = d3.scale.linear().range([<span class="number">0</span>, <span class="number">1</span>]).domain(<span class="property">@domain</span>())
@@ -196,7 +191,7 @@
     originTranslate = <span class="string">"translate(<span class="subst">#{translateWidth}</span>, <span class="subst">#{translateHeight}</span>)"</span>
 
 
-    <span class="property">@seriesCanvas</span>().each((d, i)-&gt;
+    <span class="property">@seriesCanvas</span><span class="function"><span class="params">()</span>.<span class="title">each</span><span class="params">((d, i)-&gt;
       arc = d3.select(@).selectAll(<span class="string">"path.gauge.arc"</span>).data([d])
       arc.enter()
         .append(<span class="string">"svg:path"</span>)
@@ -245,7 +240,7 @@
         .attr(<span class="string">"class"</span>, <span class="string">"gauge label value-label"</span>)
       value_label.exit().remove()
 
-    )</pre></div></div>
+    )</span></pre></div></div>
             
         </li>
         
@@ -279,7 +274,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path.gauge.arc"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path.gauge.arc"</span>)
       .attr( <span class="string">"transform"</span>, originTranslate )
       .attr( <span class="string">"d"</span>, outerArc )</pre></div></div>
             
@@ -297,9 +292,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>    plotAngle = minAngle + (scale(plotValue) * angleRange)
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path.gauge.arc-value"</span>)
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path.gauge.arc-value"</span>)
       .attr(<span class="string">"transform"</span>, originTranslate)
-      .attrTween(<span class="string">"d"</span>, (d, i) =&gt;
+      .attrTween<span class="function"><span class="params">(<span class="string">"d"</span>, (d, i) =&gt;
         iEndAngle = d3.interpolate(<span class="property">@graph</span>._deg2rad(<span class="property">@oldValueAngle</span>), <span class="property">@graph</span>._deg2rad(plotAngle) )
         <span class="property">@oldValueAngle</span> = plotAngle
         (t) =&gt;
@@ -308,7 +303,7 @@
             .endAngle(iEndAngle(t))
             .innerRadius( r * ringInset )
             .outerRadius( r * ringWidth )()
-      )</pre></div></div>
+      )</span></pre></div></div>
             
         </li>
         
@@ -335,12 +330,12 @@
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.gauge.pointer"</span>).data([lineData])
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path.gauge.pointer"</span>)
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path.gauge.pointer"</span>)
       .attr(<span class="string">"transform"</span>, <span class="string">"<span class="subst">#{originTranslate}</span> rotate(<span class="subst">#{plotAngle}</span>)"</span>)
       .attr( <span class="string">"d"</span>, pointerLine)
 
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle.gauge.pointer-circle"</span>)
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> circle.gauge.pointer-circle"</span>)
       .attr(<span class="string">"transform"</span>, originTranslate)
       .attr(<span class="string">"r"</span>, <span class="property">@graph</span>.width() / <span class="number">30</span>)</pre></div></div>
             
@@ -357,7 +352,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle.gauge.pointer-nail"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> circle.gauge.pointer-nail"</span>)
       .attr(<span class="string">"transform"</span>, originTranslate)
       .attr(<span class="string">"r"</span>, <span class="property">@graph</span>.width() / <span class="number">90</span>)</pre></div></div>
             
@@ -374,10 +369,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.gauge.label.min-label"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.gauge.label.min-label"</span>)
     .text(<span class="property">@min</span>)
-    .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="number">0.1</span> * @graph.width()}</span>,
-          <span class="subst">#{<span class="number">1.15</span> * @graph.height() * @bottomOffset}</span>)"</span>)</pre></div></div>
+    .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="number">0.1</span> * <span class="property">@graph</span>.width()}</span>,
+          <span class="subst">#{<span class="number">1.15</span> * <span class="property">@graph</span>.height() * <span class="property">@bottomOffset</span>}</span>)"</span>)</pre></div></div>
             
         </li>
         
@@ -392,10 +387,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.gauge.label.max-label"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.gauge.label.max-label"</span>)
       .text(<span class="property">@max</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="number">0.90</span> * @graph.width()}</span>,
-            <span class="subst">#{<span class="number">1.15</span> * @graph.height() * @bottomOffset}</span>)"</span>)</pre></div></div>
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="number">0.90</span> * <span class="property">@graph</span>.width()}</span>,
+            <span class="subst">#{<span class="number">1.15</span> * <span class="property">@graph</span>.height() * <span class="property">@bottomOffset</span>}</span>)"</span>)</pre></div></div>
             
         </li>
         
@@ -410,31 +405,29 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.gauge.label.value-label"</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{( @graph.width() -
-          @graph.padding.right ) / <span class="number">1.95</span>}</span>, <span class="subst">#{<span class="number">1.20</span> * @graph.height() * @bottomOffset}</span>)"</span>)
-      .tween(<span class="string">"text"</span>, (d) -&gt;
-        i = d3.interpolate(<span class="property">@textContent</span>, _<span class="keyword">this</span>.value)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.gauge.label.value-label"</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{( <span class="property">@graph</span>.width() -
+          <span class="property">@graph</span>.padding.right ) / <span class="number">1.95</span>}</span>, <span class="subst">#{<span class="number">1.20</span> * <span class="property">@graph</span>.height() * <span class="property">@bottomOffset</span>}</span>)"</span>)
+      .tween<span class="function"><span class="params">(<span class="string">"text"</span>, (d) -&gt;
+        i = d3.interpolate(<span class="property">@textContent</span>, _this.value)
         (t) -&gt;
           <span class="property">@textContent</span> = Math.floor i(t)
-      )
+      )</span>
 
-
-
-  domain: -&gt;
+  <span class="title">domain</span>: -&gt;</span>
     <span class="property">@value</span> = <span class="property">@series</span>.stack[<span class="number">0</span>].value
     <span class="property">@min</span> = <span class="property">@series</span>.stack[<span class="number">0</span>].min
     <span class="property">@max</span> = <span class="property">@series</span>.stack[<span class="number">0</span>].max
 
     [<span class="property">@min</span>, <span class="property">@max</span>]
 
-  _checkData: ()=&gt;
+  <span class="attribute">_checkData</span>: <span class="function"><span class="params">()</span>=&gt;</span>
     data = <span class="property">@series</span>.stack
-    data.forEach((d, i) =&gt;
-      <span class="property">@utils</span>.checkNumber(d.min, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].min"</span>)
-      <span class="property">@utils</span>.checkNumber(d.max, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].max"</span>)
-      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].value"</span>)
-    )</pre></div></div>
+    data.forEach<span class="function"><span class="params">((d, i) =&gt;
+      <span class="property">@utils</span>.checkNumber(d.min, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].min"</span>)
+      <span class="property">@utils</span>.checkNumber(d.max, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].max"</span>)
+      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].value"</span>)
+    )</span></pre></div></div>
             
         </li>
         

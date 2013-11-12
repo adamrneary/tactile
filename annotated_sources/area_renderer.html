@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -167,52 +162,53 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AreaRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">DraggableRenderer</span></span>
-  name: <span class="string">"area"</span>
-  dotSize: <span class="number">5</span>
+  <span class="attribute">name</span>: <span class="string">"area"</span>
+  <span class="attribute">dotSize</span>: <span class="number">5</span>
 
-  specificDefaults:
-    unstack: <span class="literal">true</span>
-    fill: <span class="literal">true</span>
-    stroke: <span class="literal">true</span>
-    opacity: <span class="number">0.15</span>
+  <span class="attribute">specificDefaults</span>:
+    <span class="attribute">unstack</span>: <span class="literal">true</span>
+    <span class="attribute">fill</span>: <span class="literal">true</span>
+    <span class="attribute">stroke</span>: <span class="literal">true</span>
+    <span class="attribute">opacity</span>: <span class="number">0.15</span>
 
-  _y0: (d) =&gt; <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> d.y0
+  <span class="attribute">_y0</span>: <span class="function"><span class="params">(d)</span> =&gt;</span> <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> d.y0
 
-  initialize: -&gt;
+  <span class="attribute">initialize</span>:<span class="function"> -&gt;</span>
     <span class="keyword">super</span>
-    <span class="property">@dragger</span> = <span class="keyword">new</span> Tactile.Dragger(renderer: @)
+    <span class="property">@dragger</span> = <span class="keyword">new</span> Tactile.Dragger(<span class="attribute">renderer</span>: @)
     <span class="keyword">if</span> <span class="property">@series</span>.dotSize?
       <span class="property">@dotSize</span> = <span class="property">@series</span>.dotSize
     <span class="property">@unstack</span> = <span class="property">@series</span>.unstack <span class="keyword">unless</span> <span class="property">@series</span>.unstack <span class="keyword">is</span> <span class="literal">undefined</span>
 
-  seriesPathFactory: =&gt;
+  <span class="attribute">seriesPathFactory</span>:<span class="function"> =&gt;</span>
     d3.svg.area()
-    .defined((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>))
-    .x((d) =&gt; <span class="property">@graph</span>.x d.x)
-    .y0((d) =&gt; <span class="property">@yFunction</span>() <span class="property">@_y0</span>(d))
-    .y1((d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))
-    .interpolate(<span class="property">@graph</span>.interpolation)
-    .tension <span class="property">@tension</span>
+      .defined<span class="function"><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y0'</span>))</span>
+      .<span class="title">x</span><span class="params">((d) =&gt; <span class="property">@graph</span>.x d.x)</span>
+      .<span class="title">y0</span><span class="params">((d) =&gt; <span class="property">@yFunction</span>() <span class="property">@_y0</span>(d))</span>
+      .<span class="title">y1</span><span class="params">((d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))</span>
+      .<span class="title">interpolate</span><span class="params">(<span class="property">@graph</span>.interpolation)</span>
+      .<span class="title">tension</span> @<span class="title">tension</span>
 
-  seriesStrokeFactory: =&gt;
+  <span class="title">seriesStrokeFactory</span>: =&gt;</span>
     d3.svg.line()
-    .defined((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>))
-    .x((d) =&gt; <span class="property">@graph</span>.x d.x)
-    .y((d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))
-    .interpolate(<span class="property">@graph</span>.interpolation)
-    .tension <span class="property">@tension</span>
+      .defined<span class="function"><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>))</span>
+      .<span class="title">x</span><span class="params">((d) =&gt; <span class="property">@graph</span>.x d.x)</span>
+      .<span class="title">y</span><span class="params">((d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))</span>
+      .<span class="title">interpolate</span><span class="params">(<span class="property">@graph</span>.interpolation)</span>
+      .<span class="title">tension</span> @<span class="title">tension</span>
 
-  render: (transition)-&gt;
-    <span class="property">@_checkData</span>(<span class="property">@series</span>.stack) <span class="keyword">if</span> <span class="property">@checkData</span>
+  <span class="title">render</span>: <span class="params">(transition, recalculateData, transitionSpeed)</span>-&gt;</span>
+    <span class="property">@aggdata</span> = <span class="property">@series</span>.stack
+    <span class="property">@_checkData</span>(<span class="property">@aggdata</span>) <span class="keyword">if</span> <span class="property">@checkData</span>
 
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
-    <span class="keyword">super</span>(<span class="property">@transition</span>)
+    <span class="keyword">super</span>(transition)
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path.stroke"</span>).remove()
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'circle'</span>).remove()
       <span class="keyword">return</span>
 
-    stroke = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'path.stroke'</span>).data([<span class="property">@series</span>.stack])
+    stroke = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'path.stroke'</span>).data([<span class="property">@aggdata</span>])
 
     stroke.enter()
       .append(<span class="string">"svg:path"</span>)
@@ -222,11 +218,13 @@
       .attr(<span class="string">"stroke-width"</span>, <span class="string">'2'</span>)
       .attr(<span class="string">"stroke"</span>, <span class="property">@series</span>.color)
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path.stroke"</span>)
+    <span class="keyword">if</span> transition <span class="keyword">then</span> selectObjects = transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path.stroke"</span>)
+    <span class="keyword">else</span> selectObjects = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">'path.stroke'</span>)
+    selectObjects
       .attr(<span class="string">"d"</span>, <span class="property">@seriesStrokeFactory</span>())
 
     circ = <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">'circle'</span>)
-      .data(<span class="property">@series</span>.stack)
+      .data(<span class="property">@aggdata</span>)
 
     newCircs = circ.enter().append(<span class="string">"svg:circle"</span>)
       .<span class="literal">on</span>(<span class="string">"mousedown"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
@@ -247,35 +245,38 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> circle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>))
-      .attr(<span class="string">"r"</span>,
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> transition <span class="keyword">then</span> selectObjects = transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> circle"</span>)
+    <span class="keyword">else</span> selectObjects = <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">'circle'</span>)
+    selectObjects
+      .filter<span class="function"><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"r"</span>,
         (d) =&gt;
           (<span class="keyword">if</span> (<span class="string">"r"</span> <span class="keyword">of</span> d)
             d.r
           <span class="keyword">else</span>
             (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@dotSize</span> + <span class="number">1</span> <span class="keyword">else</span> <span class="property">@dotSize</span>))
-        )
-      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)
-      .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))
-      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
-      .attr(<span class="string">"class"</span>, (d, i) =&gt; [
-        (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), <span class="comment"># apply active class for active element</span>
-        (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))<span class="comment"># apply editable class for editable element</span>
-      ].join(<span class="string">' '</span>))
-      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
-      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
-      .attr(<span class="string">"stroke-width"</span>, <span class="property">@dotSize</span> / <span class="number">2</span> || <span class="number">2</span>)
-      .style(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)
+        )</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@yFunction</span>() d.y + <span class="property">@_y0</span>(d))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, (d, i) =&gt; [
+        (<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> <span class="property">@active</span>), # apply active class <span class="keyword">for</span> active element
+        (<span class="string">"editable"</span> <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i))# apply editable class <span class="keyword">for</span> editable element
+      ].join(<span class="string">' '</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> <span class="property">@active</span> <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="property">@dotSize</span> / <span class="number">2</span> || <span class="number">2</span>)</span>
+      .<span class="title">style</span><span class="params">(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)</span>
+    <span class="title">selectObjects</span>.<span class="title">each</span><span class="params">(<span class="string">"end"</span>, (d, i) =&gt; <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>)</span>
 
-    circ.exit().remove()
+    <span class="title">circ</span>.<span class="title">exit</span><span class="params">()</span>.<span class="title">remove</span><span class="params">()</span>
 
-    <span class="keyword">if</span> <span class="property">@series</span>.tooltip
-      circ.tooltip (d, i) =&gt;
-        circleColor: <span class="property">@series</span>.color
-        graph: <span class="property">@graph</span>
-        text: <span class="property">@series</span>.tooltip(d)
-        circleOnHover: <span class="literal">true</span></pre></div></div>
+    <span class="title">if</span> @<span class="title">series</span>.<span class="title">tooltip</span>
+      <span class="title">circ</span>.<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+        <span class="attribute">circleColor</span>: <span class="property">@series</span>.color
+        <span class="attribute">graph</span>: <span class="property">@graph</span>
+        <span class="attribute">text</span>: <span class="property">@series</span>.tooltip(d)
+        <span class="attribute">circleOnHover</span>: <span class="literal">true</span></pre></div></div>
             
         </li>
         
@@ -290,9 +291,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        gravity: <span class="string">"right"</span>
+            <div class="content"><div class='highlight'><pre>        <span class="attribute">gravity</span>: <span class="string">"right"</span>
 
-  stackTransition: (transition, transitionSpeed)=&gt;
+
+  <span class="attribute">stackTransition</span>: <span class="function"><span class="params">(transition, transitionSpeed)</span>=&gt;</span>
     <span class="property">@unstack</span> = <span class="literal">false</span>
     <span class="property">@graph</span>.setYFrame([NaN, NaN])
     <span class="property">@graph</span>.setY1Frame([NaN, NaN])
@@ -301,7 +303,7 @@
     <span class="property">@graph</span>._checkY1Domain()
     <span class="property">@render</span>(transition)
 
-  unstackTransition: (transition, transitionSpeed)=&gt;
+  <span class="attribute">unstackTransition</span>: <span class="function"><span class="params">(transition, transitionSpeed)</span>=&gt;</span>
     <span class="property">@unstack</span> = <span class="literal">true</span>
     <span class="property">@graph</span>.setYFrame([NaN, NaN])
     <span class="property">@graph</span>.setY1Frame([NaN, NaN])

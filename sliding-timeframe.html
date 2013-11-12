@@ -56,13 +56,72 @@
       <div class="span3">
           <ul id="cartLinkList" class="nav nav-list">
               <li class="nav-header">Cartesian series</li>
-              <li><a href="./scatter.html">Scatter</a></li><li><a href="./line.html">Line</a></li><li><a href="./column.html">Column</a></li><li><a href="./stacked-column.html">Stacked column</a></li><li><a href="./area.html">Area</a></li><li><a href="./stacked-area.html">Stacked area</a></li><li><a href="./multiple-series.html">Multiple series types</a></li><li><a href="./waterfall-timeseries.html">Waterfall (time series)</a></li></ul>
+              
+                <li><a href="./scatter.html">Scatter</a></li>
+              
+                <li><a href="./line.html">Line</a></li>
+              
+                <li><a href="./column.html">Column</a></li>
+              
+                <li><a href="./stacked-column.html">Stacked column</a></li>
+              
+                <li><a href="./area.html">Area</a></li>
+              
+                <li><a href="./stacked-area.html">Stacked area</a></li>
+              
+                <li><a href="./multiple-series.html">Multiple series types</a></li>
+              
+                <li><a href="./waterfall-timeseries.html">Waterfall (time series)</a></li>
+              
+                <li><a href="./aggregate-column.html">Column Aggregated Data Chart</a></li>
+              
+                <li><a href="./aggregate-line.html">Line Aggregated Data Chart</a></li>
+              
+                <li><a href="./aggregate-waterfall.html">Waterfall Aggregated Data Chart</a></li>
+              
+          </ul>
           <ul id="noncartLinkList" class="nav nav-list">
               <li class="nav-header">Non-cartesian series</li>
-              <li><a href="./gauge.html">Gauge</a></li><li><a href="./leaderboard.html">Leaderboard</a></li><li><a href="./bullet.html">Bullet</a></li><li><a href="./donut.html">Donut</a></li><li><a href="./multi-donut.html">Multiple donuts</a></li></ul>
+              
+                <li><a href="./gauge.html">Gauge</a></li>
+              
+                <li><a href="./leaderboard.html">Leaderboard</a></li>
+              
+                <li><a href="./bullet.html">Bullet</a></li>
+              
+                <li><a href="./donut.html">Donut</a></li>
+              
+                <li><a href="./multi-donut.html">Multiple donuts</a></li>
+              
+                <li><a href="./chart-changing.html">Animation from one chart to another</a></li>
+              
+          </ul>
           <ul id="compLinkList" class="nav nav-list">
               <li class="nav-header">Components</li>
-              <li><a href="./grid.html">Grid</a></li><li><a href="./sliding-timeframe.html">Sliding timeframe</a></li><li><a href="./chart-update.html">Real time updates</a></li><li><a href="./legend.html">Interactive legend</a></li><li><a href="./dual-scaled.html">Secondary y-axis</a></li><li><a href="./axes-toggle.html">Toggling axes</a></li><li><a href="./filter.html">Filters (future)</a></li></ul>
+              
+                  <li><a href="./grid.html">Grid</a></li>
+              
+                  <li><a href="./sliding-timeframe.html">Sliding timeframe</a></li>
+              
+                  <li><a href="./chart-update.html">Real time updates</a></li>
+              
+                  <li><a href="./legend.html">Interactive legend</a></li>
+              
+                  <li><a href="./dual-scaled.html">Secondary y-axis</a></li>
+              
+                  <li><a href="./axes-toggle.html">Toggling axes</a></li>
+              
+                  <li><a href="./filter.html">Filters (future)</a></li>
+              
+                  <li><a href="./stacked-column-big-data.html">Stacked column big data</a></li>
+              
+                  <li><a href="./zoom.html">Zoom</a></li>
+              
+                  <li><a href="./column-zoom.html">Column zoom</a></li>
+              
+                  <li><a href="./dual-scaled-zoom.html">Secondary y-axis zoom</a></li>
+              
+          </ul>
       </div>
 
     <div class="span9">
@@ -144,21 +203,21 @@ data = [
 ]
 
 chart = new Tactile.Chart(grid: true)
-  .element($('#example_view')[0])
+  .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: 'time'}})
+  .axes({x: {dimension: "time"}})
   .setXFrame(frameVal)
   .addSeries [
-    name: 'xy'
-    renderer: 'line'
-    color: '#c05020'
+    name: "xy"
+    renderer: "line"
+    color: "#c05020"
     dataTransform: (d) ->
       x: d.x
       y: d.y
   ,
-    name: 'xz'
-    renderer: 'line'
-    color: '#6060c0'
+    name: "xz"
+    renderer: "line"
+    color: "#6060c0"
     dataTransform: (d) ->
       x: d.x
       y: d.z
@@ -166,12 +225,12 @@ chart = new Tactile.Chart(grid: true)
 
 chart.render()
 
-$('#above-chart').html ''
+$("#above-chart").html ''
 
-sl = $('<div>')
-  .attr('id', 'slider')
-  .attr('class', 'ui-horizontal-slider')
-$('#below-chart').html sl
+sl = $("<div>")
+  .attr("id", "slider")
+  .attr("class", "ui-horizontal-slider")
+$("#below-chart").html sl
 sl.slider
   min: 0
   max: 15

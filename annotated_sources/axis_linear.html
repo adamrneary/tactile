@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -167,7 +162,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AxisLinear</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">AxisBase</span></span>
-  constructor: (options) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(options)</span> -&gt;</span>
     options.axis ?= <span class="string">'x'</span>
     <span class="property">@horizontal</span> = options.axis == <span class="string">'x'</span>
     <span class="keyword">super</span>
@@ -175,7 +170,7 @@
     <span class="property">@_checkOptions</span>()
     <span class="property">@tickSize</span> = options.tickSize <span class="keyword">or</span> <span class="number">2</span>
     <span class="property">@ticks</span> = options.ticks
-    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> (d) -&gt; d
+    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> <span class="function"><span class="params">(d)</span> -&gt;</span> d
     <span class="property">@tickValues</span> = options.tickValues <span class="keyword">or</span> <span class="literal">null</span>
 
     <span class="property">@showZeroLine</span> = options.showZeroLine
@@ -184,9 +179,9 @@
 
     <span class="property">@_setupForOrientation</span>()
 
-  render: (transition) -&gt;
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition)</span> -&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis]?
-    className = <span class="string">"<span class="subst">#{@options.axis}</span>-ticks"</span>
+    className = <span class="string">"<span class="subst">#{<span class="property">@options</span>.axis}</span>-ticks"</span>
     <span class="property">@g</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
     <span class="property">@g</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, [className, <span class="property">@ticksTreatment</span>].join(<span class="string">" "</span>))
 
@@ -220,7 +215,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    className = <span class="string">"<span class="subst">#{@options.axis}</span>-zero-line"</span>
+            <div class="content"><div class='highlight'><pre>    className = <span class="string">"<span class="subst">#{<span class="property">@options</span>.axis}</span>-zero-line"</span>
     <span class="property">@g_zero</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
     <span class="property">@g_zero</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, className)
 
@@ -233,30 +228,30 @@
     line.exit().remove()
 
     transition.select(<span class="string">'.'</span> + className).selectAll(<span class="string">"line"</span>)
-      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="number">0</span>)
-      .attr(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="property">@graph</span>.width())
-      .attr(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))
-      .attr(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.height() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))
-      .attr(<span class="string">"stroke"</span>, <span class="property">@zeroLineColor</span>)
-      .attr(<span class="string">"stroke-width"</span>, <span class="property">@zeroLineWidth</span>)
+      .attr<span class="function"><span class="params">(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="number">0</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d) <span class="keyword">else</span> <span class="property">@graph</span>.width())</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.height() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.axis](d))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, <span class="property">@zeroLineColor</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="property">@zeroLineWidth</span>)</span>
 
-  _setupForOrientation: -&gt;
+  <span class="title">_setupForOrientation</span>: -&gt;</span>
     pixelsPerTick = <span class="property">@options</span>.pixelsPerTick <span class="keyword">or</span> <span class="number">75</span>
     <span class="keyword">if</span> <span class="property">@horizontal</span>
       <span class="property">@orientation</span> = <span class="string">'bottom'</span>
       <span class="property">@ticks</span> ?= Math.floor(<span class="property">@graph</span>.width() / pixelsPerTick)
-      <span class="property">@translateString</span> = <span class="string">"translate(0, <span class="subst">#{(@graph.height() + @marginForBottomTicks)}</span>)"</span>
+      <span class="property">@translateString</span> = <span class="string">"translate(0, <span class="subst">#{(<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>)}</span>)"</span>
     <span class="keyword">else</span>
       <span class="keyword">if</span> <span class="property">@options</span>.axis == <span class="string">'y'</span>
         <span class="property">@orientation</span> = <span class="string">'left'</span>
         <span class="property">@translateString</span> = <span class="string">"translate(-2, 0)"</span>
       <span class="keyword">else</span>
         <span class="property">@orientation</span> = <span class="string">'right'</span>
-        <span class="property">@translateString</span> = <span class="string">"translate(<span class="subst">#{@graph.width()}</span>, 0)"</span>
+        <span class="property">@translateString</span> = <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.width()}</span>, 0)"</span>
 
       <span class="property">@ticks</span> ?= Math.floor(<span class="property">@graph</span>.height() / pixelsPerTick)
 
-  _checkOptions: =&gt;
+  <span class="attribute">_checkOptions</span>:<span class="function"> =&gt;</span>
     <span class="keyword">if</span> <span class="property">@options</span>.ticksTreatment?
       <span class="property">@utils</span>.checkString(<span class="property">@options</span>.ticksTreatment, <span class="string">"AxisLinear options.ticksTreatment"</span>)
 
@@ -268,11 +263,11 @@
 
     <span class="keyword">if</span> <span class="property">@options</span>.frame?
       <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(<span class="property">@options</span>.frame, <span class="string">"AxisLinear options.frame"</span>)
-        <span class="property">@options</span>.frame.forEach((d, i)=&gt;
+        <span class="property">@options</span>.frame.forEach<span class="function"><span class="params">((d, i)=&gt;
           <span class="property">@utils</span>.checkNumber(d, <span class="string">"AxisLinear options.frame[<span class="subst">#{i}</span>]"</span>) <span class="keyword">if</span> d?
-        )
+        )</span>
 
-  destroy: -&gt;
+  <span class="title">destroy</span>: -&gt;</span>
     <span class="keyword">super</span>
     <span class="property">@g_zero</span>.remove()</pre></div></div>
             

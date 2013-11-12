@@ -1,81 +1,11 @@
 (function() {
   var cartesian, components, noncartesian, prepareLinks, showcaseObject;
 
-  cartesian = [
-    {
-      shortLink: "scatter",
-      title: "Scatter"
-    }, {
-      shortLink: "line",
-      title: "Line"
-    }, {
-      shortLink: "column",
-      title: "Column"
-    }, {
-      shortLink: "stacked-column",
-      title: "Stacked column",
-      groupingButtons: true
-    }, {
-      shortLink: "area",
-      title: "Area"
-    }, {
-      shortLink: "stacked-area",
-      title: "Stacked area"
-    }, {
-      shortLink: "multiple-series",
-      title: "Multiple series types"
-    }, {
-      shortLink: "waterfall-timeseries",
-      title: "Waterfall (time series)"
-    }, {
-      shortLink: "aggregated_data",
-      title: "Column Aggregated Data Chart"
-    }
-  ];
+  cartesian = JSON.parse(require("fs").readFileSync("cartesian.json"));
 
-  noncartesian = [
-    {
-      shortLink: "gauge",
-      title: "Gauge"
-    }, {
-      shortLink: "leaderboard",
-      title: "Leaderboard"
-    }, {
-      shortLink: "bullet",
-      title: "Bullet"
-    }, {
-      shortLink: "donut",
-      title: "Donut"
-    }, {
-      shortLink: "multi-donut",
-      title: "Multiple donuts"
-    }
-  ];
+  noncartesian = JSON.parse(require("fs").readFileSync("noncartesian.json"));
 
-  components = [
-    {
-      shortLink: "grid",
-      title: "Grid"
-    }, {
-      shortLink: "sliding-timeframe",
-      title: "Sliding timeframe"
-    }, {
-      shortLink: "chart-update",
-      title: "Real time updates"
-    }, {
-      shortLink: "legend",
-      title: "Interactive legend"
-    }, {
-      shortLink: "dual-scaled",
-      title: "Secondary y-axis"
-    }, {
-      shortLink: "axes-toggle",
-      title: "Toggling axes"
-    }, {
-      shortLink: "filter",
-      title: "Filters (future)"
-    }
-  ];
+  components = JSON.parse(require("fs").readFileSync("components.json"));
 
   showcaseObject = {
     routes: {}
@@ -121,7 +51,7 @@
     });
     Showcase = Backbone.Router.extend(showcaseObject);
     showcase = new Showcase();
-    return window.location.hash = "#aggregated_data";
+    return window.location.hash = "#line";
   });
 
 }).call(this);

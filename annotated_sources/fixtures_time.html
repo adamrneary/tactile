@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -168,7 +163,7 @@
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">FixturesTime</span></span>
 
-  constructor: -&gt;
+  <span class="attribute">constructor</span>:<span class="function"> -&gt;</span>
     <span class="property">@tzOffset</span> = <span class="keyword">new</span> Date().getTimezoneOffset() * <span class="number">60</span>
     <span class="property">@months</span> = [
       <span class="string">"Jan"</span>,
@@ -200,74 +195,74 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      name: <span class="string">"decade"</span>
-      seconds: <span class="number">86400000</span> * <span class="number">365.25</span> * <span class="number">10</span>
-      formatter: (d) -&gt;
+            <div class="content"><div class='highlight'><pre>      <span class="attribute">name</span>: <span class="string">"decade"</span>
+      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">365.25</span> * <span class="number">10</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         parseInt(d.getUTCFullYear() / <span class="number">10</span>) * <span class="number">10</span>
     ,
-      name: <span class="string">"year"</span>
-      seconds: <span class="number">86400000</span> * <span class="number">365.25</span>
-      formatter: (d) -&gt;
+      <span class="attribute">name</span>: <span class="string">"year"</span>
+      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">365.25</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         d.getUTCFullYear()
     ,
-      name: <span class="string">"month"</span>
-      seconds: <span class="number">86400000</span> * <span class="number">30.5</span>
-      formatter: (d) =&gt;
+      <span class="attribute">name</span>: <span class="string">"month"</span>
+      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">30.5</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
         <span class="property">@months</span>[d.getUTCMonth()]
     ,
-      name: <span class="string">"week"</span>
-      seconds: <span class="number">86400000</span> * <span class="number">7</span>
-      formatter: (d) =&gt;
+      <span class="attribute">name</span>: <span class="string">"week"</span>
+      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">7</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
         <span class="property">@formatDate</span> d
     ,
-      name: <span class="string">"day"</span>
-      seconds: <span class="number">86400000</span>
-      formatter: (d) -&gt;
+      <span class="attribute">name</span>: <span class="string">"day"</span>
+      <span class="attribute">seconds</span>: <span class="number">86400000</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         d.getUTCDate()
     ,
-      name: <span class="string">"6 hour"</span>
-      seconds: <span class="number">3600000</span> * <span class="number">6</span>
-      formatter: (d) =&gt;
+      <span class="attribute">name</span>: <span class="string">"6 hour"</span>
+      <span class="attribute">seconds</span>: <span class="number">3600000</span> * <span class="number">6</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
         <span class="property">@formatTime</span> d
     ,
-      name: <span class="string">"hour"</span>
-      seconds: <span class="number">3600000</span>
-      formatter: (d) =&gt;
+      <span class="attribute">name</span>: <span class="string">"hour"</span>
+      <span class="attribute">seconds</span>: <span class="number">3600000</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
         <span class="property">@formatTime</span> d
     ,
-      name: <span class="string">"15 minute"</span>
-      seconds: <span class="number">60000</span> * <span class="number">15</span>
-      formatter: (d) =&gt;
+      <span class="attribute">name</span>: <span class="string">"15 minute"</span>
+      <span class="attribute">seconds</span>: <span class="number">60000</span> * <span class="number">15</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
         <span class="property">@formatTime</span> d
     ,
-      name: <span class="string">"minute"</span>
-      seconds: <span class="number">60000</span>
-      formatter: (d) -&gt;
+      <span class="attribute">name</span>: <span class="string">"minute"</span>
+      <span class="attribute">seconds</span>: <span class="number">60000</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         d.getUTCMinutes()
     ,
-      name: <span class="string">"15 second"</span>
-      seconds: <span class="number">15000</span>
-      formatter: (d) -&gt;
+      <span class="attribute">name</span>: <span class="string">"15 second"</span>
+      <span class="attribute">seconds</span>: <span class="number">15000</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         d.getUTCSeconds() + <span class="string">"s"</span>
     ,
-      name: <span class="string">"second"</span>
-      seconds: <span class="number">1000</span>
-      formatter: (d) -&gt;
+      <span class="attribute">name</span>: <span class="string">"second"</span>
+      <span class="attribute">seconds</span>: <span class="number">1000</span>
+      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
         d.getUTCSeconds() + <span class="string">"s"</span>
     ]
 
-  unit: (unitName) -&gt;
-    <span class="property">@units</span>.filter((unit) -&gt;
+  <span class="attribute">unit</span>: <span class="function"><span class="params">(unitName)</span> -&gt;</span>
+    <span class="property">@units</span>.filter<span class="function"><span class="params">((unit) -&gt;
       unitName <span class="keyword">is</span> unit.name
-    ).shift()
+    )</span>.<span class="title">shift</span><span class="params">()</span>
 
-  formatDate: (d) -&gt;
+  <span class="title">formatDate</span>: <span class="params">(d)</span> -&gt;</span>
     d.toUTCString().match(<span class="regexp">/, (\w+ \w+ \w+)/</span>)[<span class="number">1</span>]
 
-  formatTime: (d) -&gt;
+  <span class="attribute">formatTime</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
     d.toUTCString().match(<span class="regexp">/(\d+:\d+):/</span>)[<span class="number">1</span>]
 
-  ceil: (time, unit) -&gt;
+  <span class="attribute">ceil</span>: <span class="function"><span class="params">(time, unit)</span> -&gt;</span>
     <span class="keyword">if</span> unit.name <span class="keyword">is</span> <span class="string">"year"</span>
       nearFuture = <span class="keyword">new</span> Date((time + unit.seconds - <span class="number">1</span>))
       rounded = <span class="keyword">new</span> Date(<span class="number">0</span>)

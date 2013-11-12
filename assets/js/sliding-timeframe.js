@@ -73,15 +73,15 @@
 
   chart = new Tactile.Chart({
     grid: true
-  }).element($('#example_view')[0]).data(data).axes({
+  }).element($("#example_view")[0]).data(data).axes({
     x: {
-      dimension: 'time'
+      dimension: "time"
     }
   }).setXFrame(frameVal).addSeries([
     {
-      name: 'xy',
-      renderer: 'line',
-      color: '#c05020',
+      name: "xy",
+      renderer: "line",
+      color: "#c05020",
       dataTransform: function(d) {
         return {
           x: d.x,
@@ -89,9 +89,9 @@
         };
       }
     }, {
-      name: 'xz',
-      renderer: 'line',
-      color: '#6060c0',
+      name: "xz",
+      renderer: "line",
+      color: "#6060c0",
       dataTransform: function(d) {
         return {
           x: d.x,
@@ -103,11 +103,11 @@
 
   chart.render();
 
-  $('#above-chart').html('');
+  $("#above-chart").html('');
 
-  sl = $('<div>').attr('id', 'slider').attr('class', 'ui-horizontal-slider');
+  sl = $("<div>").attr("id", "slider").attr("class", "ui-horizontal-slider");
 
-  $('#below-chart').html(sl);
+  $("#below-chart").html(sl);
 
   sl.slider({
     min: 0,

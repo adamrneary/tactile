@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -168,15 +163,26 @@
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Dragger</span></span>
 
-  constructor: (args) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(args)</span> -&gt;</span>
     <span class="property">@renderer</span> = args.renderer
     <span class="property">@graph</span> = <span class="property">@renderer</span>.graph
     <span class="property">@series</span> = <span class="property">@renderer</span>.series
     <span class="property">@drawCircles</span> = args.circles <span class="keyword">or</span> <span class="literal">false</span>
 
-    <span class="property">@afterDrag</span> = <span class="property">@series</span>.afterDrag || -&gt;
-    <span class="property">@onDrag</span> = <span class="property">@series</span>.onDrag || -&gt;
-    <span class="property">@dragged</span> = <span class="literal">null</span></pre></div></div>
+    <span class="property">@afterDrag</span> = <span class="property">@series</span>.afterDrag ||<span class="function"> -&gt;</span>
+    <span class="property">@onDrag</span> = <span class="property">@series</span>.onDrag ||<span class="function"> -&gt;</span>
+    <span class="property">@dragged</span> = <span class="literal">null</span>
+    <span class="property">@_bindMouseEvents</span>()
+    <span class="property">@power</span> = <span class="property">@_calculateSigFigs</span>()
+    <span class="property">@setSpeed</span> = <span class="property">@renderer</span>.transitionSpeed
+    <span class="property">@timesRendered</span> = <span class="number">0</span>
+
+  <span class="attribute">_bindMouseEvents</span>:<span class="function"> -&gt;</span>
+    d3.select(<span class="property">@graph</span>._element)
+      .<span class="literal">on</span>(<span class="string">"mousemove.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_mouseMove</span>)
+      .<span class="literal">on</span>(<span class="string">"touchmove.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_mouseMove</span>)
+      .<span class="literal">on</span>(<span class="string">"mouseup.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_mouseUp</span>)
+      .<span class="literal">on</span>(<span class="string">"touchend.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_mouseUp</span>)</pre></div></div>
             
         </li>
         
@@ -187,31 +193,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>@_bindMouseEvents()</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="property">@power</span> = <span class="property">@_calculateSigFigs</span>()
-    <span class="property">@setSpeed</span> = <span class="property">@renderer</span>.transitionSpeed
-    <span class="property">@timesRendered</span> = <span class="number">0</span>
-
-  _bindMouseEvents: -&gt;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>   d3.select(@graph._element)
-     .on(&quot;mousemove.drag.#{@series.name}&quot;, @_mouseMove)
-     .on(&quot;touchmove.drag.#{@series.name}&quot;, @_mouseMove)
-     .on(&quot;mouseup.drag.#{@series.name}&quot;, @_mouseUp)
-     .on(&quot;touchend.drag.#{@series.name}&quot;, @_mouseUp)</p>
-<p>We need more documentation EVERYWHERE, but at least for this concept...</p>
+              <p>We need more documentation EVERYWHERE, but at least for this concept...</p>
 <p>Sigfigs stands for &quot;significant figures.&quot;</p>
 <p>The idea within a dragger is that you shouldn&#39;t be able to arbitrarily
 drag a node anywhere along a continuous axis, expecting the user to
@@ -227,7 +209,33 @@ as an argument.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _calculateSigFigs: -&gt;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">_calculateSigFigs</span>:<span class="function"> -&gt;</span>
+    test = <span class="property">@series</span>.sigfigs
+    test =  <span class="property">@renderer</span>
+    test =  <span class="property">@renderer</span>.utils.ourFunctor
+    test = <span class="property">@renderer</span>.utils.ourFunctor(<span class="property">@series</span>.sigfigs)
+
+    sigfigs = <span class="property">@renderer</span>.utils.ourFunctor(<span class="property">@series</span>.sigfigs) ? <span class="number">0</span>
+    Math.pow(<span class="number">10</span>, sigfigs)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>bind dragging events to the passed nodes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">makeHandlers</span>: <span class="function"><span class="params">(nodes)</span> -&gt;</span>
+    nodes = <span class="property">@_appendCircles</span>(nodes) <span class="keyword">if</span> <span class="property">@drawCircles</span>
+
+    nodes.<span class="literal">on</span>(<span class="string">"mousedown.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_datapointDrag</span>)
+      .<span class="literal">on</span>(<span class="string">"touchstart.drag.<span class="subst">#{<span class="property">@series</span>.name}</span>"</span>, <span class="property">@_datapointDrag</span>)</pre></div></div>
             
         </li>
         
@@ -238,16 +246,20 @@ as an argument.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>test = @series.sigfigs
-test =  @renderer
-console.log  @renderer.utils
-test =  @renderer.utils.ourFunctor
-test = @renderer.utils.ourFunctor(@series.sigfigs)</p>
+              <p>update value of a draggable node
+so it&#39;s y-value will reflect currently dragged position</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    sigfigs = <span class="property">@renderer</span>.utils.ourFunctor(<span class="property">@series</span>.sigfigs) ? <span class="number">0</span>
-    Math.pow(<span class="number">10</span>, sigfigs)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">updateDraggedNode</span>: <span class="function"><span class="params">()</span> -&gt;</span>
+    <span class="keyword">if</span> <span class="property">@dragged</span>?.y?
+      <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle.editable'</span>)
+        .filter<span class="function"><span class="params">((d, i) =&gt; d <span class="keyword">is</span> <span class="property">@dragged</span>.d)</span>
+        .<span class="title">each</span> <span class="params">(d)</span> =&gt;</span>
+          d.y = <span class="property">@dragged</span>.y
+          d.dragged = <span class="literal">true</span>
+
+  <span class="attribute">_datapointDrag</span>: <span class="function"><span class="params">(d, i)</span> =&gt;</span></pre></div></div>
             
         </li>
         
@@ -257,49 +269,6 @@ test = @renderer.utils.ourFunctor(@series.sigfigs)</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
-              <p>bind dragging events to the passed nodes</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  makeHandlers: (nodes) -&gt;
-    nodes = <span class="property">@_appendCircles</span>(nodes) <span class="keyword">if</span> <span class="property">@drawCircles</span>
-
-    nodes.<span class="literal">on</span>(<span class="string">"mousedown.drag.<span class="subst">#{@series.name}</span>"</span>, <span class="property">@_datapointDrag</span>)
-      .<span class="literal">on</span>(<span class="string">"touchstart.drag.<span class="subst">#{@series.name}</span>"</span>, <span class="property">@_datapointDrag</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>update value of a draggable node
-so it&#39;s y-value will reflect currently dragged position</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  updateDraggedNode: () -&gt;
-    <span class="keyword">if</span> <span class="property">@dragged</span>?.y?
-      <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle.editable'</span>)
-        .filter((d, i) =&gt; d <span class="keyword">is</span> <span class="property">@dragged</span>.d)
-        .each (d) =&gt;
-          d.y = <span class="property">@dragged</span>.y
-          d.dragged = <span class="literal">true</span>
-
-  _datapointDrag: (d, i) =&gt;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>fix for a weird behavior that d is sometimes
 an array with all the nodes of the series</p>
@@ -311,11 +280,11 @@ an array with all the nodes of the series</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>lock the tooltip on the dragged element</p>
 
@@ -323,12 +292,87 @@ an array with all the nodes of the series</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@renderer</span>.utils.ourFunctor(<span class="property">@series</span>.isEditable, d, i)
     Tactile.Tooltip.spotlightOn(d) <span class="keyword">if</span> <span class="property">@series</span>.tooltip
-    <span class="property">@dragged</span> = {d: d, i: i, y: d.y, x: d.x, y0: d.y0}
+    <span class="property">@dragged</span> = {<span class="attribute">d</span>: d, <span class="attribute">i</span>: i, <span class="attribute">y</span>: d.y, <span class="attribute">x</span>: d.x, <span class="attribute">y0</span>: d.y0}
     <span class="property">@update</span>()
     d3.event.preventDefault()
     d3.event.stopPropagation()
 
-  _mouseMove: =&gt;</pre></div></div>
+  <span class="attribute">_mouseMove</span>:<span class="function"> =&gt;</span>
+    p = d3.mouse(<span class="property">@graph</span>.draggableVis.node())
+    t = d3.event.changedTouches
+
+    <span class="keyword">if</span> <span class="property">@dragged</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>TODO: !! move this to tooltip
+TODO: !! update tooltip text continuously on dragging</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+        tip = d3.select(<span class="property">@graph</span>._element).select(<span class="string">'.tooltip'</span>)
+        hoveredNode = <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle.editable'</span>)
+          .filter<span class="function"><span class="params">((d, i) =&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>fix for a weird behavior that d is sometimes
+an array with all the nodes of the series</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            d = <span class="keyword">if</span> _.isArray(d) <span class="keyword">then</span> d[i] <span class="keyword">else</span> d
+            _.isEqual d, <span class="property">@dragged</span>.d
+          )
+          .node()
+          .getBoundingClientRect()
+
+        tip.style(<span class="string">"top"</span>, <span class="string">"<span class="subst">#{hoveredNode.top}</span>px"</span>)
+
+      <span class="property">@renderer</span>.transitionSpeed = <span class="number">0</span>
+      inverted = <span class="property">@renderer</span>.yFunction().invert(Math.max(<span class="number">0</span>, Math.min(<span class="property">@graph</span>.height(), p[<span class="number">1</span>])))
+      value = Math.round(inverted * <span class="property">@power</span>) / <span class="property">@power</span>
+      <span class="keyword">if</span> <span class="property">@renderer</span>.unstack
+        <span class="property">@dragged</span>.y = value
+      <span class="keyword">else</span>
+        <span class="property">@dragged</span>.y = value - <span class="property">@dragged</span>.y0
+      <span class="property">@onDrag</span>(<span class="property">@dragged</span>, <span class="property">@series</span>, <span class="property">@graph</span>)
+      <span class="property">@update</span>()
+      d3.event.preventDefault()
+      d3.event.stopPropagation()
+
+
+  <span class="attribute">_mouseUp</span>:<span class="function"> =&gt;</span>
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@dragged</span>?.y?
+    <span class="keyword">if</span> <span class="property">@dragged</span>.d.source
+      y = <span class="property">@dragged</span>.y / <span class="property">@dragged</span>.d.source.length
+      _.each <span class="property">@dragged</span>.d.source, <span class="function"><span class="params">(d)</span> =&gt;</span>
+        <span class="property">@afterDrag</span>(d, y) <span class="keyword">if</span> <span class="property">@dragged</span>
+    <span class="keyword">else</span>
+      <span class="property">@afterDrag</span>(<span class="property">@dragged</span>.d, <span class="property">@dragged</span>.y, <span class="property">@dragged</span>.i, <span class="property">@series</span>, <span class="property">@graph</span>) <span class="keyword">if</span> <span class="property">@dragged</span>
+
+    <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle.editable'</span>)
+      .data(<span class="property">@renderer</span>.aggdata)
+      .attr<span class="function"><span class="params">(<span class="string">"class"</span>, (d) =&gt;
+        d.dragged = <span class="literal">false</span>
+        <span class="string">"editable"</span>)</span>
+    <span class="title">d3</span>.<span class="title">select</span><span class="params">(<span class="string">"body"</span>)</span>.<span class="title">style</span> "<span class="title">cursor</span>", "<span class="title">auto</span>"
+    @<span class="title">dragged</span> = <span class="title">null</span></pre></div></div>
             
         </li>
         
@@ -339,40 +383,26 @@ an array with all the nodes of the series</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>   p = d3.svg.mouse(@graph.draggableVis.node())
-   t = d3.event.changedTouches</p>
-<p>   if @dragged</p>
-<pre><code> # TODO: !! move this to tooltip
- # TODO: !! update tooltip text continuously on dragging
- if @series.tooltip
-   tip = d3.select(@graph._element).select(&#39;.tooltip&#39;)
-   hoveredNode = @renderer.seriesDraggableCanvas().selectAll(&#39;circle.editable&#39;)
-     .filter((d, i) =&gt;
-       # fix for a weird behavior that d is sometimes
-       # an array with all the nodes of the series
-       d = if _.isArray(d) then d[i] else d
-       d is @dragged.d
-     )
-     .node()
-     .getBoundingClientRect()
-
-   tip.style(&quot;top&quot;, &quot;#{hoveredNode.top}px&quot;)
-
- @renderer.transitionSpeed = 0
- inverted = @renderer.yFunction().invert(Math.max(0, Math.min(@graph.height(), p[1])))
- value = Math.round(inverted * @power) / @power
- if @renderer.unstack
-   @dragged.y = value
- else
-   @dragged.y = value - @dragged.y0
- @onDrag(@dragged, @series, @graph)
- @update()
- d3.event.preventDefault()
- d3.event.stopPropagation()</code></pre>
+              <p>unlock the tooltip from the dragged element</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _mouseUp: =&gt;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Tactile.Tooltip.turnOffspotlight() <span class="keyword">if</span> <span class="property">@series</span>.tooltip
+
+    <span class="property">@renderer</span>.transitionSpeed = <span class="property">@setSpeed</span>
+    <span class="property">@update</span>()
+    d3.event.preventDefault()
+    d3.event.stopPropagation()
+
+  <span class="attribute">update</span>:<span class="function"> =&gt;</span>
+    <span class="property">@renderer</span>.render()
+
+
+  <span class="attribute">_appendCircles</span>: <span class="function"><span class="params">(nodes)</span> -&gt;</span>
+    renderer = <span class="property">@renderer</span>
+
+    circs = <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle'</span>)
+      .data(<span class="property">@series</span>.stack)</pre></div></div>
             
         </li>
         
@@ -383,34 +413,29 @@ an array with all the nodes of the series</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>   return unless @dragged?.y?
-   @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged</p>
-<p>   @renderer.seriesDraggableCanvas().selectAll(&#39;circle.editable&#39;)
-     .data(@series.stack)
-     .attr(&quot;class&quot;,
-       (d) =&gt;
-         d.dragged = false
-         &quot;editable&quot;)
-   d3.select(&quot;body&quot;).style &quot;cursor&quot;, &quot;auto&quot;
-   @dragged = null</p>
-<h1>unlock the tooltip from the dragged element</h1>
-<p>   Tactile.Tooltip.turnOffspotlight() if @series.tooltip</p>
-<p>   @renderer.transitionSpeed = @setSpeed
-   @update()
-   d3.event.preventDefault()
-   d3.event.stopPropagation()</p>
+              <p>append the circles but make them invisible</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  update: =&gt;
-    <span class="property">@renderer</span>.render()
+            <div class="content"><div class='highlight'><pre>    circs.enter().append(<span class="string">"svg:circle"</span>).style(<span class="string">'display'</span>, <span class="string">'none'</span>)
 
+    circs
+      .attr(<span class="string">"r"</span>, <span class="number">4</span>)
+      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
+      .attr<span class="function"><span class="params">(<span class="string">"class"</span>, (d, i) =&gt;
+        [(<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> renderer.active), # apply active class <span class="keyword">for</span> active element
+         (<span class="string">"editable"</span> <span class="keyword">if</span> renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(<span class="string">' '</span>))</span> # <span class="title">apply</span> <span class="title">editable</span> <span class="title">class</span> <span class="title">for</span> <span class="title">editable</span> <span class="title">element</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> renderer.active <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> renderer.active <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="string">'2'</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">'id'</span>, (d, i) -&gt; <span class="string">"node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)</span>
+      .<span class="title">style</span><span class="params">(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> renderer.utils.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)</span>
 
-  _appendCircles: (nodes) -&gt;
-    renderer = <span class="property">@renderer</span>
-
-    circs = <span class="property">@renderer</span>.seriesDraggableCanvas().selectAll(<span class="string">'circle'</span>)
-      .data(<span class="property">@series</span>.stack)</pre></div></div>
+    <span class="title">circs</span>
+      .<span class="title">transition</span><span class="params">()</span>
+      .<span class="title">duration</span><span class="params">(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@renderer</span>.transitionSpeed)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@graph</span>.y d.y)</span></pre></div></div>
             
         </li>
         
@@ -421,30 +446,14 @@ an array with all the nodes of the series</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>append the circles but make them invisible</p>
+              <p>show and hide the circle for the currently hovered element</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    circs.enter().append(<span class="string">"svg:circle"</span>).style(<span class="string">'display'</span>, <span class="string">'none'</span>)
-
-    circs
-      .attr(<span class="string">"r"</span>, <span class="number">4</span>)
-      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#scatter-clip)"</span>)
-      .attr(<span class="string">"class"</span>,
-        (d, i) =&gt;
-          [(<span class="string">"active"</span> <span class="keyword">if</span> d <span class="keyword">is</span> renderer.active), <span class="comment"># apply active class for active element</span>
-          (<span class="string">"editable"</span> <span class="keyword">if</span> renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(<span class="string">' '</span>)) <span class="comment"># apply editable class for editable element</span>
-      .attr(<span class="string">"fill"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> renderer.active <span class="keyword">then</span> <span class="string">'white'</span> <span class="keyword">else</span> <span class="property">@series</span>.color))
-      .attr(<span class="string">"stroke"</span>, (d) =&gt; (<span class="keyword">if</span> d.dragged <span class="keyword">or</span> d <span class="keyword">is</span> renderer.active <span class="keyword">then</span> <span class="property">@series</span>.color <span class="keyword">else</span> <span class="string">'white'</span>))
-      .attr(<span class="string">"stroke-width"</span>, <span class="string">'2'</span>)
-      .attr(<span class="string">'id'</span>, (d, i) -&gt; <span class="string">"node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)
-      .style(<span class="string">"cursor"</span>, (d, i)=&gt; <span class="keyword">if</span> renderer.utils.ourFunctor(<span class="property">@series</span>.isEditable, d, i) <span class="keyword">then</span> <span class="string">"ns-resize"</span> <span class="keyword">else</span> <span class="string">"auto"</span>)
-
-    circs
-      .transition()
-      .duration(<span class="keyword">if</span> <span class="property">@timesRendered</span>++ <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@renderer</span>.transitionSpeed)
-      .attr(<span class="string">"cx"</span>, (d) =&gt; <span class="property">@graph</span>.x d.x)
-      .attr(<span class="string">"cy"</span>, (d) =&gt; <span class="property">@graph</span>.y d.y)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    nodes.<span class="literal">on</span> <span class="string">'mouseover.show-dragging-circle'</span>, <span class="function"><span class="params">(d, i, el)</span> -&gt;</span>
+      renderer.seriesDraggableCanvas().selectAll(<span class="string">'circle:not(.active)'</span>)
+        .style(<span class="string">'display'</span>, <span class="string">'none'</span>)
+      circ = renderer.seriesDraggableCanvas().select(<span class="string">"#node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)</pre></div></div>
             
         </li>
         
@@ -455,24 +464,6 @@ an array with all the nodes of the series</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>show and hide the circle for the currently hovered element</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    nodes.<span class="literal">on</span> <span class="string">'mouseover.show-dragging-circle'</span>, (d, i, el) -&gt;
-      renderer.seriesDraggableCanvas().selectAll(<span class="string">'circle:not(.active)'</span>)
-        .style(<span class="string">'display'</span>, <span class="string">'none'</span>)
-      circ = renderer.seriesDraggableCanvas().select(<span class="string">"#node-<span class="subst">#{i}</span>-<span class="subst">#{d.x}</span>"</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-13">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
-              </div>
               <p>TODO: circle should be placed at the middle of a column
 hoveredNode = d3.select(@).node().getBBox()
 circ.attr(&#39;cx&#39;, hoveredNode.x + hoveredNode.width / 2)</p>
@@ -481,11 +472,11 @@ circ.attr(&#39;cx&#39;, hoveredNode.x + hoveredNode.width / 2)</p>
             
             <div class="content"><div class='highlight'><pre>      circ.style(<span class="string">'display'</span>, <span class="string">''</span>)
 
-    circs.tooltip (d, i) =&gt;
-      graph: <span class="property">@graph</span>
-      text: <span class="property">@series</span>.tooltip(d)
-      circleOnHover: <span class="literal">true</span>
-      gravity: <span class="string">"right"</span>
+    circs.tooltip <span class="function"><span class="params">(d, i)</span> =&gt;</span>
+      <span class="attribute">graph</span>: <span class="property">@graph</span>
+      <span class="attribute">text</span>: <span class="property">@series</span>.tooltip(d)
+      <span class="attribute">circleOnHover</span>: <span class="literal">true</span>
+      <span class="attribute">gravity</span>: <span class="string">"right"</span>
 
     renderer.seriesDraggableCanvas().selectAll(<span class="string">'circle.editable'</span>)</pre></div></div>
             

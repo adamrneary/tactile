@@ -31,6 +31,7 @@
       this.graph = options.graph;
       this.tension = options.tension || this.tension;
       this.configure(options);
+      this.animateShowHide = false;
       if (typeof this.initialize === "function") {
         this.initialize(options);
       }
@@ -41,7 +42,7 @@
     RendererBase.prototype.seriesStrokeFactory = function() {};
 
     RendererBase.prototype.domain = function() {
-      var stackedData, topSeriesData, values, xMax, xMin, yMax, yMin,
+      var data, domain, stackedData, topSeriesData, values, xMax, xMin, yMax, yMin,
         _this = this;
       values = [];
       stackedData = this.graph.stackedData || this.graph.stackData();
@@ -75,45 +76,74 @@
       }).x;
       yMin = (this.graph.min === "auto" ? d3.min(values) : this.graph.min || 0);
       yMax = this.graph.max || d3.max(values);
-      return {
+      domain = {
         x: [xMin, xMax],
         y: [yMin, yMax]
       };
+      if (_.some(_.values(this.graph.aggregated))) {
+        values = [];
+        data = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+        _.each(data, function(d) {
+          if (_this.series.renderer === 'waterfall') {
+            return values.push(d.y + d.y00);
+          } else if (_this.unstack) {
+            return values.push(d.y);
+          } else {
+            return values.push(d.y + d.y0);
+          }
+        });
+        if (data.length === 0) {
+          return domain;
+        }
+        yMin = (this.graph.min === "auto" ? d3.min(values) : this.graph.min || 0);
+        yMax = this.graph.max || d3.max(values);
+        domain.y = [yMin, yMax];
+      }
+      return domain;
     };
 
     RendererBase.prototype.yFunction = function() {
       return this.graph[this.series.yAxis];
     };
 
-    RendererBase.prototype.render = function(transition) {
-      var line,
+    RendererBase.prototype.yFunctionOld = function() {
+      return this.graph[this.series.yAxis + "Old"];
+    };
+
+    RendererBase.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var line, selectObjects,
         _this = this;
       if (this.checkData) {
         this._checkData();
       }
       if (this.series.disabled) {
-        this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]).remove();
+        this.seriesCanvas().selectAll("path.baseline").data([this.aggdata]).remove();
         return;
       }
       if (transition) {
         this.transition = transition;
       }
       if (this.series.disabled) {
-        line = this.seriesCanvas().selectAll("path.line").data([this.series.stack]).remove();
+        line = this.seriesCanvas().selectAll("path.line").data([this.aggdata]).remove();
         return;
       }
       this.series.stack = this.series.stack.filter(function(el) {
         return _this._filterNaNs(el, 'x', 'y');
       });
-      line = this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]);
+      line = this.seriesCanvas().selectAll("path.baseline").data([this.aggdata]);
       line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "baseline " + (this.series.className || '') + "       " + (this.series.color ? '' : 'colorless'));
-      return this.transition.selectAll("." + (this._nameToId()) + " path.baseline").attr("d", this.seriesPathFactory());
+      if (transition) {
+        selectObjects = transition.selectAll("." + (this._nameToId()) + " path.baseline");
+      } else {
+        selectObjects = this.seriesCanvas().selectAll("path.baseline");
+      }
+      return selectObjects.attr("d", this.seriesPathFactory());
     };
 
     RendererBase.prototype.seriesCanvas = function() {
       var _ref, _ref1;
       if ((_ref = this.graph.vis) != null) {
-        _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
+        _ref.selectAll("g." + (this._nameToId())).data([this.aggdata]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
       }
       return (_ref1 = this.graph.vis) != null ? _ref1.selectAll("g." + (this._nameToId())) : void 0;
     };
@@ -121,7 +151,7 @@
     RendererBase.prototype.seriesDraggableCanvas = function() {
       var _ref, _ref1;
       if ((_ref = this.graph.draggableVis) != null) {
-        _ref.selectAll("g." + (this._nameToId())).data([this.series.stack]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
+        _ref.selectAll("g." + (this._nameToId())).data([this.aggdata]).enter().append("g").attr("clip-path", "url(#scatter-clip)").attr('class', this._nameToId() + " " + this.name);
       }
       return (_ref1 = this.graph.draggableVis) != null ? _ref1.selectAll("g." + (this._nameToId())) : void 0;
     };
@@ -177,6 +207,17 @@
         _this.utils.checkNumber(d.x, "" + _this.name + " renderer data[" + i + "].x");
         return _this.utils.checkNumber(d.y, "" + _this.name + " renderer data[" + i + "].y");
       });
+    };
+
+    RendererBase.prototype.animateShow = function() {
+      if (!this.animateShowHide) {
+        return;
+      }
+      this.graph.svg.selectAll(".canvas > g." + (this._nameToId()) + " *").attr("transform", "translate(0," + this.graph.outerHeight + ")");
+      this.graph.svg.selectAll(".draggable-canvas > g." + (this._nameToId()) + " *").attr("transform", "translate(0," + this.graph.outerHeight + ")");
+      this.graph.svg.selectAll(".canvas > g." + (this._nameToId()) + " *").transition().duration(this.graph.transitionSpeed / 2).attr("transform", "translate(0,0)");
+      this.graph.svg.selectAll(".draggable-canvas > g." + (this._nameToId()) + " *").transition().duration(this.graph.transitionSpeed / 2).attr("transform", "translate(0,0");
+      return this.animateShowHide = false;
     };
 
     return RendererBase;
@@ -251,16 +292,16 @@
       }
       setNext = false;
       i = 0;
-      while (i < this.series.stack.length) {
-        if (this.active === this.series.stack[i]) {
-          if (this.active === this.series.stack[i]) {
+      while (i < this.aggdata.length) {
+        if (this.active === this.aggdata[i]) {
+          if (this.active === this.aggdata[i]) {
             setNext = true;
           }
           i++;
           continue;
         }
-        if (this.utils.ourFunctor(this.series.isEditable, this.series.stack[i], i) && setNext) {
-          this.active = this.series.stack[i];
+        if (this.utils.ourFunctor(this.series.isEditable, this.aggdata[i], i) && setNext) {
+          this.active = this.aggdata[i];
           break;
         }
         i++;
@@ -277,17 +318,17 @@
         return;
       }
       setNext = false;
-      i = this.series.stack.length - 1;
+      i = this.aggdata.length - 1;
       while (i >= 0) {
-        if (this.active === this.series.stack[i]) {
-          if (this.active === this.series.stack[i]) {
+        if (this.active === this.aggdata[i]) {
+          if (this.active === this.aggdata[i]) {
             setNext = true;
           }
           i--;
           continue;
         }
-        if (this.utils.ourFunctor(this.series.isEditable, this.series.stack[i], i) && setNext) {
-          this.active = this.series.stack[i];
+        if (this.utils.ourFunctor(this.series.isEditable, this.aggdata[i], i) && setNext) {
+          this.active = this.aggdata[i];
           break;
         }
         i--;
@@ -730,6 +771,7 @@
           tmp.y = data[i].y;
           tmp.y0 = data[i].y0;
           tmp.y00 = data[i].y00;
+          tmp.r = data[i].r || 5;
           tmp.range = [data[i].x, data[i].x];
           aggdata.push(tmp);
         }
@@ -748,12 +790,18 @@
           tmp.y = 0;
           tmp.y0 = 0;
           tmp.y00 = 0;
+          tmp.r = 5;
+          tmp.range = [data[start].x, data[end].x];
           _.each(data.slice(start, end + 1), function(item) {
             tmp.y = tmp.y + item.y;
             tmp.y0 = tmp.y0 + item.y0;
-            return tmp.y00 = tmp.y00 + item.y00;
+            tmp.y00 = tmp.y00 + item.y00;
+            if (!_.isUndefined(item.r)) {
+              tmp.r = item.r;
+            }
+            tmp.source || (tmp.source = []);
+            return tmp.source.push(item);
           });
-          tmp.range = [data[start].x, data[end].x];
           index = index + 1;
           aggdata.push(tmp);
         }
@@ -772,12 +820,18 @@
           tmp.y = 0;
           tmp.y0 = 0;
           tmp.y00 = 0;
+          tmp.r = 5;
+          tmp.range = [data[start].x, data[end].x];
           _.each(data.slice(start, end + 1), function(item) {
             tmp.y = tmp.y + item.y;
             tmp.y0 = tmp.y0 + item.y0;
-            return tmp.y00 = tmp.y00 + item.y00;
+            tmp.y00 = tmp.y00 + item.y00;
+            if (!_.isUndefined(item.r)) {
+              tmp.r = item.r;
+            }
+            tmp.source || (tmp.source = []);
+            return tmp.source.push(item);
           });
-          tmp.range = [data[start].x, data[end].x];
           index = index + 1;
           aggdata.push(tmp);
         }
@@ -837,7 +891,7 @@
     AreaRenderer.prototype.seriesPathFactory = function() {
       var _this = this;
       return d3.svg.area().defined(function(d) {
-        return _this._filterNaNs(d, 'x', 'y');
+        return _this._filterNaNs(d, 'x', 'y', 'y0');
       }).x(function(d) {
         return _this.graph.x(d.x);
       }).y0(function(d) {
@@ -858,25 +912,31 @@
       }).interpolate(this.graph.interpolation).tension(this.tension);
     };
 
-    AreaRenderer.prototype.render = function(transition) {
-      var circ, newCircs, stroke, _ref2, _ref3,
+    AreaRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var circ, newCircs, selectObjects, stroke, _ref2, _ref3,
         _this = this;
+      this.aggdata = this.series.stack;
       if (this.checkData) {
-        this._checkData(this.series.stack);
+        this._checkData(this.aggdata);
       }
       if (transition) {
         this.transition = transition;
       }
-      AreaRenderer.__super__.render.call(this, this.transition);
+      AreaRenderer.__super__.render.call(this, transition);
       if (this.series.disabled) {
         this.seriesCanvas().selectAll("path.stroke").remove();
         this.seriesCanvas().selectAll('circle').remove();
         return;
       }
-      stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
+      stroke = this.seriesCanvas().selectAll('path.stroke').data([this.aggdata]);
       stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('class', 'stroke').attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color);
-      this.transition.selectAll("." + (this._nameToId()) + " path.stroke").attr("d", this.seriesStrokeFactory());
-      circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
+      if (transition) {
+        selectObjects = transition.selectAll("." + (this._nameToId()) + " path.stroke");
+      } else {
+        selectObjects = this.seriesCanvas().selectAll('path.stroke');
+      }
+      selectObjects.attr("d", this.seriesStrokeFactory());
+      circ = this.seriesDraggableCanvas().selectAll('circle').data(this.aggdata);
       newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
       if ((_ref2 = this.dragger) != null) {
         _ref2.makeHandlers(newCircs);
@@ -884,7 +944,12 @@
       if ((_ref3 = this.dragger) != null) {
         _ref3.updateDraggedNode(circ);
       }
-      this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+      if (transition) {
+        selectObjects = transition.selectAll("." + (this._nameToId()) + " circle");
+      } else {
+        selectObjects = this.seriesDraggableCanvas().selectAll('circle');
+      }
+      selectObjects.filter(function(d) {
         return _this._filterNaNs(d, 'x', 'y');
       }).attr("r", function(d) {
         if ("r" in d) {
@@ -919,6 +984,11 @@
           return "ns-resize";
         } else {
           return "auto";
+        }
+      });
+      selectObjects.each("end", function(d, i) {
+        if (_this.animateShowHide) {
+          return _this.animateShow();
         }
       });
       circ.exit().remove();
@@ -968,7 +1038,7 @@
       this.utils = new Tactile.Utils();
       this.graph = options.graph;
       this.ticksTreatment = options.ticksTreatment || "plain";
-      this.fontSize = this.ticksTreatement ? 10 : 12;
+      this.fontSize = _.indexOf(this.ticksTreatement, "small") !== -1 ? 10 : 12;
       this.frame = options.frame;
       this.marginForBottomTicks = 10;
       this.handleBottomPadding();
@@ -993,9 +1063,7 @@
         new_domain = [axis1, axis1 + extent * (this.down - axis1) / (rup - axis1)];
         axis.domain(new_domain);
       }
-      this.graph.render(0, {
-        zooming: true
-      });
+      this.graph.render(0);
       d3.event.preventDefault();
       return d3.event.stopPropagation();
     };
@@ -1208,6 +1276,11 @@
       this.marginTop = options.paddingBottom || 5;
       this.time = new Tactile.FixturesTime();
       this.grid = options.grid;
+      this.tickSize = options.tickSize || 2;
+      this.tickValues = options.tickValues || null;
+      this.tickFormat = options.tickFormat || function(d) {
+        return this.appropriateTimeUnit().formatter(new Date(d));
+      };
     }
 
     AxisTime.prototype.appropriateTimeUnit = function() {
@@ -1250,30 +1323,54 @@
     };
 
     AxisTime.prototype.render = function(transition) {
-      var ticks,
+      var aggregated, text, ticks,
         _this = this;
       if (this.graph.x == null) {
         return;
       }
+      if (transition) {
+        this.transition = transition;
+      }
+      aggregated = _.some(_.values(this.graph.aggregated));
+      if (aggregated) {
+        this.aggLabels = this._getLabels(this.graph.x.domain());
+      } else {
+        this.aggLabels = this.tickOffsets();
+      }
       this.g = this.graph.vis.selectAll('g.x-ticks').data([0]);
       this.g.enter().append('g').attr('class', 'x-ticks');
-      ticks = this.g.selectAll('g.x-tick').data(this._getLabels(this.graph.x.domain()));
-      ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' '));
-      ticks.attr("transform", function(d) {
-        return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
+      ticks = this.g.selectAll('g.x-tick').data(this.aggLabels);
+      ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d, i) {
+        return "translate(" + (_this.graph.outerWidth * 1.1) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
       });
-      ticks.exit().remove();
+      this.transition.selectAll(".x-tick").attr("transform", function(d, i) {
+        if (aggregated) {
+          return "translate(" + (_this._tickX(d.value, i)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
+        } else {
+          return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
+        }
+      }).each("end", function(d) {
+        return ticks.exit().remove();
+      });
       this.g.selectAll('g.x-tick').each(function(d, i) {
         var text;
         text = d3.select(this).selectAll("text").data([d]);
         text.enter().append("text").attr("class", "title");
         return text.exit().remove();
       });
-      return this.g.selectAll("g.x-tick").selectAll("text").attr("y", this.marginTop).text(function(d) {
-        return d.label;
-      }).append("tspan").attr("y", this.marginTop + this.fontSize).attr("x", 0).text(function(d) {
-        return d.secondary;
+      text = this.g.selectAll("g.x-tick").selectAll("text");
+      text.attr("y", this.marginTop).text(function(d) {
+        if (aggregated) {
+          return d.label;
+        } else {
+          return d.unit.formatter(new Date(d.value));
+        }
       });
+      if (aggregated) {
+        return text.append("tspan").attr("y", this.marginTop + this.fontSize).attr("x", 0).text(function(d) {
+          return d.secondary;
+        });
+      }
     };
 
     AxisTime.prototype._checkOptions = function() {
@@ -1326,12 +1423,12 @@
           endDate = new Date(timeFrame[0]);
           endDate.setMonth(startMonth + i + grouper - 1);
           item.value = startDate.getTime();
-          item.label = "" + (startDate.toUTCString().split(' ')[2]) + " - " + (endDate.toUTCString().split(' ')[2]);
+          item.label = "" + (startDate.toUTCString().split(' ')[2]) + "-" + (endDate.toUTCString().split(' ')[2]);
           if (startDate.getTime() === date[1].getTime()) {
             item.label = startDate.toUTCString().split(' ')[2];
           } else if (endDate.getTime() > date[1].getTime()) {
             endDate = date[1];
-            item.label = "" + (startDate.toUTCString().split(' ')[2]) + " - " + (endDate.toUTCString().split(' ')[2]);
+            item.label = "" + (startDate.toUTCString().split(' ')[2]) + "-" + (endDate.toUTCString().split(' ')[2]);
           }
           item.secondary = "" + (endDate.getFullYear());
           labels.push(item);
@@ -1351,13 +1448,22 @@
           }
           if (startDate.getMonth() === 0) {
             item.label = "" + (startDate.getFullYear());
+          } else if (startDate.getTime() === endDate.getTime()) {
+            item.label = "" + (startDate.getMonth() + 1) + "/" + (startDate.getFullYear());
           } else {
-            item.label = "" + (startDate.getMonth() + 1) + "/" + (startDate.getFullYear()) + " - " + (startDate.getMonth()) + "/" + (endDate.getFullYear());
+            item.label = "" + (startDate.getMonth() + 1) + "/" + (startDate.getFullYear()) + "-" + (endDate.getMonth() + 1) + "/" + (endDate.getFullYear());
           }
           labels.push(item);
         }
       }
       return labels;
+    };
+
+    AxisTime.prototype._tickX = function(value, index) {
+      var count, width;
+      width = this.graph.width();
+      count = this.aggLabels.length;
+      return index * (width / count) + (width / count) / 2;
     };
 
     return AxisTime;
@@ -1403,7 +1509,7 @@
       }
     };
 
-    BulletRenderer.prototype.render = function(transition, transitionSpeed) {
+    BulletRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
       var bars, render,
         _this = this;
       if (this.checkData) {
@@ -1713,6 +1819,7 @@
 
     ColumnRenderer.prototype.specificDefaults = {
       gapSize: 0.15,
+      dinGapSize: 1,
       tension: null,
       round: true,
       unstack: true
@@ -1731,12 +1838,13 @@
         this.round = this.series.round;
       }
       if (this.series.unstack !== void 0) {
-        return this.unstack = this.series.unstack;
+        this.unstack = this.series.unstack;
       }
+      return this.aggregated = this.graph.aggregated[this.name];
     };
 
-    ColumnRenderer.prototype.render = function(transition) {
-      var circ, newCircs, nodes, _ref4, _ref5, _ref6,
+    ColumnRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var aggdata, aggdataOld, aggdataOldSource, aggdataSource, animateTransition, count, draw, maxAggdata, maxAggdataOld, minAggdata, minAggdataOld, nodes, transitionData,
         _this = this;
       if (this.checkData) {
         this._checkData();
@@ -1744,119 +1852,262 @@
       if (transition) {
         this.transition = transition;
       }
-      if (this.series.disabled) {
-        if ((_ref4 = this.dragger) != null) {
-          _ref4.timesRendered = 0;
+      draw = function(transition) {
+        var canvas, circ, draggableCanvas, newCircs, nodes, selectObjects, _ref4, _ref5, _ref6;
+        if (transition == null) {
+          transition = void 0;
         }
-        this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
-        this.seriesDraggableCanvas().selectAll("circle").data(this.series.stack).remove();
-        return;
-      }
-      nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-      nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", function(d, i) {
-        _this.setActive(d, i);
-        return _this.hideCircles();
-      });
-      this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-        return _this._filterNaNs(d, "x", "y");
-      }).attr("height", function(d) {
-        return _this.yFunction().magnitude(Math.abs(d.y));
-      }).attr("y", this._barY).attr("x", this._barX).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
-        return _this.utils.ourFunctor(_this.series.color, d, i);
-      }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
-        return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
-      });
-      nodes.exit().remove();
-      nodes.on("mouseover.show-dragging-circle", function(d, i, el) {
-        var circ;
-        _this.hideCircles();
-        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
-        return circ.style("display", "");
-      });
-      nodes.on("mouseout.hide-dragging-circle", function(d, i) {
-        var circ;
-        if (d === _this.active) {
+        if (_this.series.disabled) {
+          if ((_ref4 = _this.dragger) != null) {
+            _ref4.timesRendered = 0;
+          }
+          _this.seriesCanvas().selectAll("rect").data(_this.aggdata).remove();
+          _this.seriesDraggableCanvas().selectAll("circle").data(_this.aggdata).remove();
           return;
         }
-        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
-        if (d3.event.relatedTarget === circ.node()) {
-          return;
+        nodes = _this.seriesCanvas().selectAll("rect").data(_this.aggdata);
+        nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", function(d, i) {
+          _this.setActive(d, i);
+          return _this.hideCircles();
+        });
+        nodes.exit().remove();
+        if (transition) {
+          canvas = transition.select("g.canvas").selectAll("g." + (_this._nameToId()));
+          draggableCanvas = transition.select("g.draggable-canvas").selectAll("g." + (_this._nameToId()));
         }
-        return circ.style("display", "none");
-      });
-      circ = this.seriesDraggableCanvas().selectAll("circle").data(this.series.stack);
-      newCircs = circ.enter().append("svg:circle").style("display", "none").on("mousedown", function(d, i) {
-        _this.setActive(d, i);
-        return _this.hideCircles();
-      }).on("mouseout.hide-dragging-circle", function(d, i) {
-        if (d === _this.active) {
-          return;
+        selectObjects = transition ? canvas.selectAll("rect") : _this.seriesCanvas().selectAll("rect");
+        selectObjects.filter(function(d) {
+          return _this._filterNaNs(d, "x", "y");
+        }).attr("height", function(d) {
+          return _this.yFunction().magnitude(Math.abs(d.y));
+        }).attr("y", function(d) {
+          return _this._barY(d);
+        }).attr("x", function(d) {
+          return _this._barX(d);
+        }).attr("width", _this._seriesBarWidth()).attr("fill", function(d, i) {
+          return _this.utils.ourFunctor(_this.series.color, d, i);
+        }).attr("stroke", "white").attr("rx", _this._edgeRatio).attr("ry", _this._edgeRatio).attr("class", function(d, i) {
+          return ["bar", (!_this.series.color ? "colorless" : void 0), (d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
+        });
+        nodes.on("mouseover.show-dragging-circle", function(d, i, el) {
+          var circ;
+          _this.hideCircles();
+          circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+          return circ.style("display", "");
+        });
+        nodes.on("mouseout.hide-dragging-circle", function(d, i) {
+          var circ;
+          if (d === _this.active) {
+            return;
+          }
+          circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+          if (d3.event.relatedTarget === circ.node()) {
+            return;
+          }
+          return circ.style("display", "none");
+        });
+        circ = _this.seriesDraggableCanvas().selectAll("circle").data(_this.aggdata);
+        newCircs = circ.enter().append("svg:circle").style("display", "none").on("mousedown", function(d, i) {
+          _this.setActive(d, i);
+          return _this.hideCircles();
+        }).on("mouseout.hide-dragging-circle", function(d, i) {
+          if (d === _this.active) {
+            return;
+          }
+          circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
+          if (d3.event.relatedTarget === circ.node()) {
+            return;
+          }
+          return circ.style("display", "none");
+        });
+        if ((_ref5 = _this.dragger) != null) {
+          _ref5.makeHandlers(newCircs);
         }
-        circ = _this.seriesDraggableCanvas().selectAll("#node-" + i + "-" + d.x);
-        if (d3.event.relatedTarget === circ.node()) {
-          return;
+        if ((_ref6 = _this.dragger) != null) {
+          _ref6.updateDraggedNode();
         }
-        return circ.style("display", "none");
-      });
-      if ((_ref5 = this.dragger) != null) {
-        _ref5.makeHandlers(newCircs);
-      }
-      if ((_ref6 = this.dragger) != null) {
-        _ref6.updateDraggedNode();
-      }
-      this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-        return _this._filterNaNs(d, "x", "y");
-      }).attr("cx", function(d) {
-        return _this._barX(d) + _this._seriesBarWidth() / 2;
-      }).attr("cy", function(d) {
-        return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
-      }).attr("r", function(d) {
-        if ("r" in d) {
-          return d.r;
-        } else {
-          if (d.dragged || d === _this.active) {
-            return _this.dotSize + 1;
+        selectObjects = _this.seriesDraggableCanvas().selectAll("circle");
+        selectObjects.filter(function(d) {
+          return _this._filterNaNs(d, "x", "y");
+        }).attr("cx", function(d) {
+          return _this._barX(d) + _this._seriesBarWidth() / 2;
+        }).attr("cy", function(d) {
+          return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
+        }).attr("r", function(d) {
+          if ("r" in d) {
+            return d.r;
           } else {
-            return _this.dotSize;
+            if (d.dragged || _.isEqual(d, _this.active)) {
+              return _this.dotSize + 1;
+            } else {
+              return _this.dotSize;
+            }
+          }
+        }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
+          return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
+        }).attr("fill", function(d, i) {
+          if (d.dragged || d === _this.active) {
+            return "white";
+          } else {
+            return _this.utils.ourFunctor(_this.series.color, d, i);
+          }
+        }).attr("stroke", function(d, i) {
+          if (d.dragged || d === _this.active) {
+            return _this.utils.ourFunctor(_this.series.color, d, i);
+          } else {
+            return "white";
+          }
+        }).attr("stroke-width", 2).attr("id", function(d, i) {
+          return "node-" + i + "-" + d.x;
+        }).style("cursor", function(d, i) {
+          if (_this.utils.ourFunctor(_this.series.isEditable, d, i)) {
+            return "ns-resize";
+          } else {
+            return "auto";
+          }
+        });
+        circ.exit().remove();
+        if (_this.series.tooltip) {
+          circ.tooltip(function(d, i) {
+            return {
+              circleColor: _this.series.color,
+              graph: _this.graph,
+              text: _this.series.tooltip(d),
+              circleOnHover: true,
+              tooltipCircleContainer: _this.graph.vis.node(),
+              gravity: "right"
+            };
+          });
+        }
+        return _this.setupTooltips();
+      };
+      if (this.aggregated) {
+        if (recalculateData) {
+          if (this.aggdata) {
+            animateTransition = this.utils.animateTransition(this.graph.xOld.domain(), this.graph.x.domain());
+            aggdataOld = this.aggdata.slice(0);
+            aggdataOldSource = aggdataOld.slice(0);
+            this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+            aggdata = this.aggdata.slice(0);
+            aggdataSource = this.aggdata.slice(0);
+            maxAggdataOld = (_.max(aggdataOldSource, function(d) {
+              return d.x;
+            })).x;
+            maxAggdata = (_.max(aggdataSource, function(d) {
+              return d.x;
+            })).x;
+            minAggdataOld = (_.min(aggdataOldSource, function(d) {
+              return d.x;
+            })).x;
+            minAggdata = (_.min(aggdataSource, function(d) {
+              return d.x;
+            })).x;
+            aggdataOld.push({
+              inf: true,
+              r: 0,
+              x: Math.max(maxAggdataOld, maxAggdata) + 1,
+              y: 0,
+              y0: 0,
+              y00: 0,
+              range: [_.last(aggdataOldSource).range[1] + 1, Infinity]
+            });
+            aggdataOld.unshift({
+              inf: true,
+              r: 0,
+              x: Math.min(minAggdataOld, minAggdata) - 1,
+              y: 0,
+              y0: 0,
+              y00: 0,
+              range: [-Infinity, _.first(aggdataOldSource).range[0] - 1]
+            });
+            aggdata.push({
+              inf: true,
+              r: 0,
+              x: Math.max(maxAggdataOld, maxAggdata) + 1,
+              y: 0,
+              y0: 0,
+              y00: 0,
+              range: [_.last(aggdataSource).range[1] + 1, Infinity]
+            });
+            aggdata.unshift({
+              inf: true,
+              r: 0,
+              x: Math.min(minAggdataOld, minAggdata) - 1,
+              y: 0,
+              y0: 0,
+              y00: 0,
+              range: [-Infinity, _.first(aggdataSource).range[0] - 1]
+            });
+            transitionData = [];
+            _.each(aggdata, function(d) {
+              return _.each(aggdataOld, function(oldD) {
+                if (!(oldD.range[0] > d.range[1] || oldD.range[1] < d.range[0]) && !(d.inf && oldD.inf)) {
+                  return transitionData.push({
+                    start: oldD,
+                    end: d
+                  });
+                }
+              });
+            });
+            this.aggdata = aggdataOldSource;
+            nodes = this.seriesCanvas().selectAll("rect").data(transitionData);
+            nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
+            this.seriesCanvas().selectAll("rect").attr("height", function(d) {
+              return _this.yFunctionOld().magnitude(Math.abs(d.start.y));
+            }).attr("y", function(d) {
+              return _this._barY(d.start, true);
+            }).attr("x", function(d) {
+              return _this._barX(d.start, true);
+            }).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+              return _this.utils.ourFunctor(_this.series.color, d.start, i);
+            }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+              return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+            });
+            nodes.exit().remove();
+            this.aggdata = aggdataSource;
+            count = 0;
+            return this.graph.svg.transition().duration(transitionSpeed).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
+              return _this.yFunction().magnitude(Math.abs(d.end.y));
+            }).attr("y", function(d) {
+              return _this._barY(d.end);
+            }).attr("x", function(d) {
+              return _this._barX(d.end);
+            }).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+              return _this.utils.ourFunctor(_this.series.color, d.end, i);
+            }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+              return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+            }).each("end", function() {
+              count++;
+              if (count = transitionData.length) {
+                draw();
+              }
+              if (_this.animateShowHide) {
+                return _this.animateShow();
+              }
+            });
+          } else {
+            this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+            draw(this.transition);
+            if (this.animateShowHide) {
+              return this.animateShow();
+            }
+          }
+        } else {
+          if (!this.aggdata) {
+            this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+          }
+          draw(this.transition);
+          if (this.animateShowHide) {
+            return this.animateShow();
           }
         }
-      }).attr("clip-path", "url(#scatter-clip)").attr("class", function(d, i) {
-        return [(d === _this.active ? "active" : void 0), (_this.utils.ourFunctor(_this.series.isEditable, d, i) ? "editable" : void 0)].join(" ");
-      }).attr("fill", function(d, i) {
-        if (d.dragged || d === _this.active) {
-          return "white";
-        } else {
-          return _this.utils.ourFunctor(_this.series.color, d, i);
+      } else {
+        this.aggdata = this.series.stack;
+        draw(this.transition);
+        if (this.animateShowHide) {
+          return this.animateShow();
         }
-      }).attr("stroke", function(d, i) {
-        if (d.dragged || d === _this.active) {
-          return _this.utils.ourFunctor(_this.series.color, d, i);
-        } else {
-          return "white";
-        }
-      }).attr("stroke-width", 2).attr("id", function(d, i) {
-        return "node-" + i + "-" + d.x;
-      }).style("cursor", function(d, i) {
-        if (_this.utils.ourFunctor(_this.series.isEditable, d, i)) {
-          return "ns-resize";
-        } else {
-          return "auto";
-        }
-      });
-      circ.exit().remove();
-      if (this.series.tooltip) {
-        circ.tooltip(function(d, i) {
-          return {
-            circleColor: _this.series.color,
-            graph: _this.graph,
-            text: _this.series.tooltip(d),
-            circleOnHover: true,
-            tooltipCircleContainer: _this.graph.vis.node(),
-            gravity: "right"
-          };
-        });
       }
-      return this.setupTooltips();
     };
 
     ColumnRenderer.prototype.hideCircles = function() {
@@ -1895,20 +2146,26 @@
     };
 
     ColumnRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
-      var _this = this;
+      var transitionCount,
+        _this = this;
       this.unstack = false;
       this.graph.setYFrame([NaN, NaN]);
       this.graph.setY1Frame([NaN, NaN]);
       this.graph.discoverRange();
       this.graph._checkYDomain();
       this.graph._checkY1Domain();
-      transition.selectAll("." + (this._nameToId()) + " rect").delay(function(d, i) {
-        return i * (transitionSpeed / 12);
-      }).attr("y", this._barY).attr("height", function(d) {
+      transitionCount = 2;
+      transition.selectAll("." + (this._nameToId()) + " rect").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+        return i * transitionSpeed / transitionCount / _this.series.stack.length;
+      }).attr("y", function(d) {
+        return _this._barY(d);
+      }).attr("height", function(d) {
         return _this.yFunction().magnitude(Math.abs(d.y));
-      }).transition().attr("x", this._barX).attr("width", this._seriesBarWidth());
-      return transition.selectAll("." + (this._nameToId()) + " circle").delay(function(d, i) {
-        return i * (transitionSpeed / 12);
+      }).transition().attr("x", function(d) {
+        return _this._barX(d);
+      }).attr("width", this._seriesBarWidth());
+      return transition.selectAll("." + (this._nameToId()) + " circle").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+        return i * transitionSpeed / transitionCount / _this.series.stack.length;
       }).attr("cy", function(d) {
         return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
       }).transition().attr("cx", function(d) {
@@ -1917,20 +2174,26 @@
     };
 
     ColumnRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
-      var _this = this;
+      var transitionCount,
+        _this = this;
       this.unstack = true;
       this.graph.setYFrame([NaN, NaN]);
       this.graph.setY1Frame([NaN, NaN]);
       this.graph.discoverRange();
       this.graph._checkYDomain();
       this.graph._checkY1Domain();
-      transition.selectAll("." + (this._nameToId()) + " rect").delay(function(d, i) {
-        return i * (transitionSpeed / 12);
-      }).attr("x", this._barX).attr("width", this._seriesBarWidth()).transition().attr("y", this._barY).attr("height", function(d) {
+      transitionCount = 2;
+      transition.selectAll("." + (this._nameToId()) + " rect").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+        return i * transitionSpeed / transitionCount / _this.series.stack.length;
+      }).attr("x", function(d) {
+        return _this._barX(d);
+      }).attr("width", this._seriesBarWidth()).transition().attr("y", function(d) {
+        return _this._barY(d);
+      }).attr("height", function(d) {
         return _this.yFunction().magnitude(Math.abs(d.y));
       });
-      return transition.selectAll("." + (this._nameToId()) + " circle").delay(function(d, i) {
-        return i * (transitionSpeed / 12);
+      return transition.selectAll("." + (this._nameToId()) + " circle").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+        return i * transitionSpeed / transitionCount / _this.series.stack.length;
       }).attr("cx", function(d) {
         return _this._barX(d) + _this._seriesBarWidth() / 2;
       }).transition().attr("cy", function(d) {
@@ -1952,10 +2215,14 @@
       }
     };
 
-    ColumnRenderer.prototype.seriesWidth = function() {
+    ColumnRenderer.prototype.seriesWidth = function(old) {
       var stackWidth, width;
       if (this.series.stack.length >= 2) {
-        stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
+        if (old) {
+          stackWidth = this.graph.xOld(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
+        } else {
+          stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
+        }
         return width = stackWidth / (1 + this.gapSize);
       } else {
         return width = this.graph.width() / (1 + this.gapSize);
@@ -1963,19 +2230,22 @@
     };
 
     ColumnRenderer.prototype._seriesBarWidth = function() {
-      var stackWidth, width,
+      var gapSize, stack, width,
         _this = this;
-      if (this.series.stack.length >= 2) {
-        stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
-        width = stackWidth / (1 + this.gapSize);
+      if (this.aggregated) {
+        stack = this.aggdata;
+        gapSize = this.dinGapSize;
       } else {
-        width = this.graph.width() / (1 + this.gapSize);
+        stack = this.series.stack;
+        gapSize = this.gapSize;
       }
+      width = this.graph.width() / stack.length;
       if (this.unstack) {
         width = width / this.graph.series.filter(function(d) {
-          return d.renderer === "column";
+          return d.renderer === _this.name;
         }).array.length;
       }
+      width = width - (2 * gapSize);
       return width;
     };
 
@@ -1989,30 +2259,62 @@
       }
     };
 
-    ColumnRenderer.prototype._barX = function(d) {
-      var initialX, seriesBarWidth, x;
-      x = this.graph.x(d.x);
+    ColumnRenderer.prototype._barX = function(d, old) {
+      var cnt_series, initialX, seriesBarWidth, x,
+        _this = this;
       seriesBarWidth = this._seriesBarWidth();
-      initialX = x + this._barXOffset(seriesBarWidth);
+      if (this.aggregated) {
+        x = d.x;
+        cnt_series = this.graph.series.filter(function(d) {
+          return d.renderer === _this.name;
+        }).array.length;
+        initialX = x * (seriesBarWidth + 2 * this.dinGapSize) + this.dinGapSize;
+      } else {
+        if (old) {
+          x = this.graph.xOld(d.x);
+        } else {
+          x = this.graph.x(d.x);
+        }
+        initialX = x + this._barXOffset(seriesBarWidth);
+      }
       if (this.unstack) {
+        if (this.aggregated) {
+          initialX = x * (seriesBarWidth + 2 * this.dinGapSize) * cnt_series + this.gapSize;
+        }
         return initialX + (this._columnRendererIndex() * seriesBarWidth);
       } else {
         return initialX;
       }
     };
 
-    ColumnRenderer.prototype._barY = function(d) {
+    ColumnRenderer.prototype._barY = function(d, old) {
       if (this.unstack) {
         if (d.y > 0) {
-          return this.yFunction()(d.y);
+          if (old) {
+            return this.yFunctionOld()(d.y);
+          } else {
+            return this.yFunction()(d.y);
+          }
         } else {
-          return this.yFunction()(0);
+          if (old) {
+            return this.yFunctionOld()(0);
+          } else {
+            return this.yFunction()(0);
+          }
         }
       } else {
         if (d.y > 0) {
-          return this.yFunction()(d.y + d.y0);
+          if (old) {
+            return this.yFunctionOld()(d.y + d.y0);
+          } else {
+            return this.yFunction()(d.y + d.y0);
+          }
         } else {
-          return this.yFunction()(d.y0);
+          if (old) {
+            return this.yFunctionOld()(d.y0);
+          } else {
+            return this.yFunction()(d.y0);
+          }
         }
       }
     };
@@ -2101,7 +2403,7 @@
       }
     };
 
-    DonutRenderer.prototype.render = function(transition, transitionSpeed) {
+    DonutRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
       var _this = this;
       if (this.checkData) {
         this._checkData();
@@ -2250,7 +2552,7 @@
     DonutRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
       var xMargin, xOffset, yMargin, yOffset,
         _this = this;
-      if (!this.unstack) {
+      if (this.unstack) {
         return;
       }
       this.unstack = false;
@@ -2276,7 +2578,7 @@
     DonutRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
       var xMargin, xOffset, yMargin, yOffset,
         _this = this;
-      if (this.unstack) {
+      if (!this.unstack) {
         return;
       }
       this.unstack = true;
@@ -2521,15 +2823,22 @@
       this.afterDrag = this.series.afterDrag || function() {};
       this.onDrag = this.series.onDrag || function() {};
       this.dragged = null;
+      this._bindMouseEvents();
       this.power = this._calculateSigFigs();
       this.setSpeed = this.renderer.transitionSpeed;
       this.timesRendered = 0;
     }
 
-    Dragger.prototype._bindMouseEvents = function() {};
+    Dragger.prototype._bindMouseEvents = function() {
+      return d3.select(this.graph._element).on("mousemove.drag." + this.series.name, this._mouseMove).on("touchmove.drag." + this.series.name, this._mouseMove).on("mouseup.drag." + this.series.name, this._mouseUp).on("touchend.drag." + this.series.name, this._mouseUp);
+    };
 
     Dragger.prototype._calculateSigFigs = function() {
-      var sigfigs, _ref5;
+      var sigfigs, test, _ref5;
+      test = this.series.sigfigs;
+      test = this.renderer;
+      test = this.renderer.utils.ourFunctor;
+      test = this.renderer.utils.ourFunctor(this.series.sigfigs);
       sigfigs = (_ref5 = this.renderer.utils.ourFunctor(this.series.sigfigs)) != null ? _ref5 : 0;
       return Math.pow(10, sigfigs);
     };
@@ -2574,9 +2883,67 @@
       return d3.event.stopPropagation();
     };
 
-    Dragger.prototype._mouseMove = function() {};
+    Dragger.prototype._mouseMove = function() {
+      var hoveredNode, inverted, p, t, tip, value,
+        _this = this;
+      p = d3.mouse(this.graph.draggableVis.node());
+      t = d3.event.changedTouches;
+      if (this.dragged) {
+        if (this.series.tooltip) {
+          tip = d3.select(this.graph._element).select('.tooltip');
+          hoveredNode = this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
+            d = _.isArray(d) ? d[i] : d;
+            return _.isEqual(d, _this.dragged.d);
+          }).node().getBoundingClientRect();
+          tip.style("top", "" + hoveredNode.top + "px");
+        }
+        this.renderer.transitionSpeed = 0;
+        inverted = this.renderer.yFunction().invert(Math.max(0, Math.min(this.graph.height(), p[1])));
+        value = Math.round(inverted * this.power) / this.power;
+        if (this.renderer.unstack) {
+          this.dragged.y = value;
+        } else {
+          this.dragged.y = value - this.dragged.y0;
+        }
+        this.onDrag(this.dragged, this.series, this.graph);
+        this.update();
+        d3.event.preventDefault();
+        return d3.event.stopPropagation();
+      }
+    };
 
-    Dragger.prototype._mouseUp = function() {};
+    Dragger.prototype._mouseUp = function() {
+      var y, _ref5,
+        _this = this;
+      if (((_ref5 = this.dragged) != null ? _ref5.y : void 0) == null) {
+        return;
+      }
+      if (this.dragged.d.source) {
+        y = this.dragged.y / this.dragged.d.source.length;
+        _.each(this.dragged.d.source, function(d) {
+          if (_this.dragged) {
+            return _this.afterDrag(d, y);
+          }
+        });
+      } else {
+        if (this.dragged) {
+          this.afterDrag(this.dragged.d, this.dragged.y, this.dragged.i, this.series, this.graph);
+        }
+      }
+      this.renderer.seriesDraggableCanvas().selectAll('circle.editable').data(this.renderer.aggdata).attr("class", function(d) {
+        d.dragged = false;
+        return "editable";
+      });
+      d3.select("body").style("cursor", "auto");
+      this.dragged = null;
+      if (this.series.tooltip) {
+        Tactile.Tooltip.turnOffspotlight();
+      }
+      this.renderer.transitionSpeed = this.setSpeed;
+      this.update();
+      d3.event.preventDefault();
+      return d3.event.stopPropagation();
+    };
 
     Dragger.prototype.update = function() {
       return this.renderer.render();
@@ -2777,7 +3144,7 @@
       oldValueAngle: 0
     };
 
-    GaugeRenderer.prototype.render = function(transition, transitionSpeed) {
+    GaugeRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
       var angleRange, lineData, maxAngle, minAngle, originTranslate, outerArc, plotAngle, plotValue, pointerHeadLength, pointerLine, pointerTailLength, pointerWidth, r, ringInset, ringWidth, scale, totalSizeDivide, translateHeight, translateWidth,
         _this = this;
       if (this.checkData) {
@@ -2895,7 +3262,7 @@
       this.horizontal = options.grid !== 'x';
     }
 
-    Grid.prototype.render = function(transition) {
+    Grid.prototype.render = function(transition, recalculateData, transitionSpeed) {
       var className, line,
         _this = this;
       className = "" + this.options.grid + "-grid";
@@ -2973,16 +3340,26 @@
       }
     };
 
-    LeaderboardRenderer.prototype.render = function(transition, transitionSpeed) {
-      var bars, className, data,
+    LeaderboardRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var bars, className, data, left, selectObject, top, _ref7, _ref8,
         _this = this;
       if (this.checkData) {
         this._checkData();
       }
+      if (this.animateShowHide) {
+        left = this.graph.padding.left + this.graph.axisPadding.left;
+        top = this.graph.padding.top + this.graph.axisPadding.top;
+        if ((_ref7 = this.graph.vis) != null) {
+          _ref7.attr("transform", "translate(" + left + "," + (this.graph.outerHeight * 1.1) + ")");
+        }
+        if ((_ref8 = this.graph.draggableVis) != null) {
+          _ref8.attr("transform", "translate(" + left + "," + (this.graph.outerHeight * 1.1) + ")");
+        }
+      }
       className = "leaderboard-" + this.type;
       data = _.map(this.series.stack, function(d, i) {
-        var _ref7;
-        d.lastData = ((_ref7 = _this.lastData) != null ? _ref7[i] : void 0) || {
+        var _ref9;
+        d.lastData = ((_ref9 = _this.lastData) != null ? _ref9[i] : void 0) || {
           barPosition: 0,
           change: 0,
           label: "",
@@ -3044,8 +3421,8 @@
       this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".value").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).duration(transitionSpeed / 2).tween("text", function(d) {
-        var i, _ref7;
-        i = d3.interpolate((_ref7 = d.lastData) != null ? _ref7.value : void 0, d.value);
+        var i, _ref9;
+        i = d3.interpolate((_ref9 = d.lastData) != null ? _ref9.value : void 0, d.value);
         return function(t) {
           return this.textContent = _this.valueFormat(i(t));
         };
@@ -3053,8 +3430,8 @@
       this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".change").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).duration(transitionSpeed / 2).tween("text", function(d) {
-        var i, _ref7;
-        i = d3.interpolate((_ref7 = d.lastData) != null ? _ref7.change : void 0, d.change);
+        var i, _ref9;
+        i = d3.interpolate((_ref9 = d.lastData) != null ? _ref9.change : void 0, d.change);
         return function(t) {
           return this.textContent = _this.changeFormat(i(t));
         };
@@ -3089,10 +3466,15 @@
       this.transition.selectAll(("." + (this._nameToId()) + " text.") + className + ".change").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("y", this._yOffset);
-      this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
+      selectObject = this.transition.selectAll("." + (this._nameToId()) + " path").filter(function(d) {
         return !isNaN(d.value) && !isNaN(d.change) && !isNaN(d.barPosition) && (d.label != null) && (d.value != null) && (d.change != null) && (d.barPosition != null);
       }).delay(transitionSpeed / 2).duration(transitionSpeed / 2).attr("transform", function(d, i) {
         return "translate(" + (_this.graph.width() - 10) + ", " + (_this._yOffset(d, i) - (_this.type === "normal" ? 22 : 16)) + ")";
+      });
+      selectObject.each("end", function() {
+        if (_this.animateShowHide) {
+          return _this.animateShow();
+        }
       });
       return this.lastData = this.series.stack;
     };
@@ -3125,6 +3507,28 @@
       });
     };
 
+    LeaderboardRenderer.prototype.animateShow = function() {
+      var left, top, _ref10, _ref7, _ref8, _ref9;
+      if (!this.animateShowHide) {
+        return;
+      }
+      left = this.graph.padding.left + this.graph.axisPadding.left;
+      top = this.graph.padding.top + this.graph.axisPadding.top;
+      if ((_ref7 = this.graph.vis) != null) {
+        _ref7.attr("transform", "translate(" + left + "," + this.graph.outerHeight + ")");
+      }
+      if ((_ref8 = this.graph.draggableVis) != null) {
+        _ref8.attr("transform", "translate(" + left + "," + this.graph.outerHeight + ")");
+      }
+      if ((_ref9 = this.graph.vis) != null) {
+        _ref9.transition().duration(this.graph.transitionSpeed / 2).delay(0).attr("transform", "translate(" + left + "," + top + ")");
+      }
+      if ((_ref10 = this.graph.draggableVis) != null) {
+        _ref10.transition().duration(this.graph.transitionSpeed / 2).delay(0).attr("transform", "translate(" + left + "," + top + ")");
+      }
+      return this.animateShowHide = false;
+    };
+
     return LeaderboardRenderer;
 
   })(Tactile.RendererBase);
@@ -3151,8 +3555,8 @@
       var _this = this;
       return d3.svg.line().defined(function(d) {
         return !isNaN(d.y) && !isNaN(d.x) && (d.y != null) && (d.x != null);
-      }).x(function(d) {
-        return _this.graph.x(d.x);
+      }).x(function(d, i) {
+        return _this._circleX(d, i);
       }).y(function(d) {
         return _this.yFunction()(d.y);
       }).interpolate(this.graph.interpolation).tension(this.tension);
@@ -3164,25 +3568,33 @@
         renderer: this
       });
       if (this.series.dotSize != null) {
-        return this.dotSize = this.series.dotSize;
+        this.dotSize = this.series.dotSize;
       }
+      return this.aggregated = this.graph.aggregated[this.name];
     };
 
-    LineRenderer.prototype.render = function(transition) {
-      var circ, newCircs, _ref8, _ref9,
+    LineRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var circ, newCircs, selectObjects, _ref8, _ref9,
         _this = this;
       if (this.checkData) {
         this._checkData();
       }
+      if (this.aggregated) {
+        if (recalculateData) {
+          this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+        }
+      } else {
+        this.aggdata = this.series.stack;
+      }
       if (transition) {
         this.transition = transition;
       }
-      LineRenderer.__super__.render.call(this, this.transition);
+      LineRenderer.__super__.render.call(this, transition);
       if (this.series.disabled) {
-        this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack).remove();
+        this.seriesDraggableCanvas().selectAll('circle').data(this.aggdata).remove();
         return;
       }
-      circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
+      circ = this.seriesDraggableCanvas().selectAll('circle').data(this.aggdata);
       newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
       if ((_ref8 = this.dragger) != null) {
         _ref8.makeHandlers(newCircs);
@@ -3190,10 +3602,15 @@
       if ((_ref9 = this.dragger) != null) {
         _ref9.updateDraggedNode();
       }
-      this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+      if (transition) {
+        selectObjects = transition.selectAll("." + (this._nameToId()) + " circle");
+      } else {
+        selectObjects = this.seriesDraggableCanvas().selectAll('circle');
+      }
+      selectObjects.filter(function(d) {
         return _this._filterNaNs(d, 'x', 'y');
-      }).attr("cx", function(d) {
-        return _this.graph.x(d.x);
+      }).attr("cx", function(d, i) {
+        return _this._circleX(d, i);
       }).attr("cy", function(d) {
         return _this.yFunction()(d.y);
       }).attr("r", function(d) {
@@ -3227,6 +3644,13 @@
           return "auto";
         }
       });
+      if (transition) {
+        selectObjects.each("end", function() {
+          if (_this.animateShowHide) {
+            return _this.animateShow();
+          }
+        });
+      }
       circ.exit().remove();
       if (this.series.tooltip) {
         return circ.tooltip(function(d, i) {
@@ -3238,6 +3662,18 @@
             gravity: "right"
           };
         });
+      }
+    };
+
+    LineRenderer.prototype._circleX = function(d, index) {
+      var count, width, x;
+      if (this.aggregated) {
+        count = this.aggdata.length;
+        width = this.graph.width();
+        x = d.x * (width / count) + (width / count) / 2;
+        return x;
+      } else {
+        return this.graph.x(d.x);
       }
     };
 
@@ -3322,7 +3758,7 @@
       stroke: false
     };
 
-    ScatterRenderer.prototype.render = function(transition) {
+    ScatterRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
       var circ,
         _this = this;
       if (this.checkData) {
@@ -3411,14 +3847,20 @@
       if (options == null) {
         options = {};
       }
-      return this.gapSize = options.gapSize || this.gapSize;
+      this.gapSize = options.gapSize || this.gapSize;
+      return this.aggregated = this.graph.aggregated[this.name];
     };
 
-    WaterfallRenderer.prototype.render = function(transition) {
-      var line, nodes, _ref10,
+    WaterfallRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+      var line, nodes, selectObject, _ref10,
         _this = this;
       if (this.checkData) {
         this._checkData();
+      }
+      if (this.aggregated) {
+        this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+      } else {
+        this.aggdata = this.series.stack;
       }
       if (transition) {
         this.transition = transition;
@@ -3427,13 +3869,18 @@
         if ((_ref10 = this.dragger) != null) {
           _ref10.timesRendered = 0;
         }
-        this.seriesCanvas().selectAll("rect").data(this.series.stack).remove();
-        this.seriesDraggableCanvas().selectAll("line").data(this.series.stack).remove();
+        this.seriesCanvas().selectAll("rect").data(this.aggdata).remove();
+        this.seriesDraggableCanvas().selectAll("line").data(this.aggdata).remove();
         return;
       }
-      nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-      nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
-      this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+      nodes = this.seriesCanvas().selectAll("rect").data(this.aggdata);
+      nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", this.setActive);
+      if (transition) {
+        selectObject = this.transition.selectAll("." + (this._nameToId()) + " rect");
+      } else {
+        selectObject = this.seriesCanvas().selectAll("rect");
+      }
+      selectObject.filter(function(d) {
         return _this._filterNaNs(d, 'x', 'y', 'y00');
       }).attr("height", function(d) {
         return _this.graph.y.magnitude(Math.abs(d.y));
@@ -3441,9 +3888,9 @@
         return _this._barY(d);
       }).attr("x", this._barX).attr("width", this._seriesBarWidth() / (1 + this.gapSize)).attr("fill", this.series.color);
       nodes.exit().remove();
-      line = this.seriesDraggableCanvas().selectAll("line").data(this.series.stack);
+      line = this.seriesDraggableCanvas().selectAll("line").data(this.aggdata);
       line.enter().append("svg:line").attr("clip-path", "url(#clip)");
-      this.transition.selectAll("." + (this._nameToId()) + " line").filter(function(d) {
+      selectObject = this.transition.selectAll("." + (this._nameToId()) + " line").filter(function(d) {
         return _this._filterNaNs(d, 'x', 'y', 'y00');
       }).attr("x1", function(d) {
         return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
@@ -3467,6 +3914,12 @@
           return 0;
         } else {
           return 1;
+        }
+      });
+      line.exit().remove();
+      selectObject.each("end", function() {
+        if (_this.animateShowHide) {
+          return _this.animateShow();
         }
       });
       return this.setupTooltips();
@@ -3506,17 +3959,19 @@
     };
 
     WaterfallRenderer.prototype._seriesBarWidth = function() {
-      var stackWidth, width,
+      var stack, width,
         _this = this;
-      if (this.series.stack.length >= 2) {
-        stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
-        width = stackWidth / (1 + this.gapSize);
+      if (this.aggregated) {
+        stack = this.aggdata;
       } else {
-        width = this.graph.width() / (1 + this.gapSize);
+        stack = this.series.stack;
       }
-      return width = width / this.graph.series.filter(function(d) {
-        return d.renderer === 'waterfall';
-      }).length();
+      width = this.graph.width() / stack.length;
+      width = width / this.graph.series.filter(function(d) {
+        return d.renderer === _this.name;
+      }).array.length;
+      width = width - (2 * this.gapSize);
+      return width;
     };
 
     WaterfallRenderer.prototype._barXOffset = function(seriesBarWidth) {
@@ -3526,11 +3981,21 @@
     };
 
     WaterfallRenderer.prototype._barX = function(d) {
-      var initialX, seriesBarWidth, x;
-      x = this.graph.x(d.x);
+      var cnt_series, initialX, seriesBarWidth, x,
+        _this = this;
       seriesBarWidth = this._seriesBarWidth();
-      initialX = x + this._barXOffset(seriesBarWidth);
-      return initialX + (this._waterfalRendererIndex() * seriesBarWidth);
+      if (this.aggregated) {
+        x = d.x;
+        cnt_series = this.graph.series.filter(function(d) {
+          return d.renderer === _this.name;
+        }).array.length;
+        initialX = x * (seriesBarWidth + 2 * this.gapSize) * cnt_series + this.gapSize;
+        return initialX + (this._waterfalRendererIndex() * seriesBarWidth);
+      } else {
+        x = this.graph.x(d.x);
+        initialX = x + this._barXOffset(seriesBarWidth);
+        return initialX + (this._waterfalRendererIndex() * seriesBarWidth);
+      }
     };
 
     WaterfallRenderer.prototype._barY = function(d, i) {
@@ -3567,8 +4032,7 @@
       'donut': Tactile.DonutRenderer,
       'waterfall': Tactile.WaterfallRenderer,
       'leaderboard': Tactile.LeaderboardRenderer,
-      'bullet': Tactile.BulletRenderer,
-      'aggcolumn': Tactile.AggColumnRenderer
+      'bullet': Tactile.BulletRenderer
     };
 
     Chart.prototype.defaultPadding = {
@@ -3585,6 +4049,13 @@
       left: 0
     };
 
+    Chart.prototype.prevAxisPadding = {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    };
+
     Chart.prototype.interpolation = 'monotone';
 
     Chart.prototype.offset = 'zero';
@@ -3593,7 +4064,7 @@
 
     Chart.prototype.max = void 0;
 
-    Chart.prototype.transitionSpeed = 750;
+    Chart.prototype.transitionSpeed = 500;
 
     Chart.prototype.defaultHeight = 400;
 
@@ -3634,6 +4105,14 @@
 
     Chart.prototype._lastYTranslate = 0;
 
+    Chart.prototype.aggregated = {
+      column: false,
+      line: false,
+      waterfall: false
+    };
+
+    Chart.prototype.animateShowHide = false;
+
     function Chart(args) {
       if (args == null) {
         args = {};
@@ -3671,7 +4150,9 @@
       this.padding = _.defaults({}, args.padding, this.defaultPadding);
       this.axisPadding = _.defaults({}, args.axisPadding, this.defaultAxisPadding);
       this.renderers = [];
+      this.renderers_to_delete = [];
       this.axesList = {};
+      this.newAxes = void 0;
       this.gridList = {};
       this.series = new Tactile.SeriesSet([], this);
       this.window = {};
@@ -3707,7 +4188,8 @@
     }
 
     Chart.prototype.addSeries = function(series, options) {
-      var newSeries;
+      var newSeries,
+        _this = this;
       if (options == null) {
         options = {
           overwrite: false
@@ -3716,6 +4198,9 @@
       if (!series) {
         return;
       }
+      _.each(this.aggregated, function(value, key) {
+        return _this.aggregated[key] = false;
+      });
       if (!_.isArray(series)) {
         series = [series];
       }
@@ -3724,6 +4209,11 @@
       });
       this.series.add(newSeries, options.overwrite);
       this.initRenderers(newSeries);
+      if (options.overwrite) {
+        this.animateShowHide = true;
+      } else {
+        this.animateShowHide = false;
+      }
       return this;
     };
 
@@ -3794,6 +4284,11 @@
     };
 
     Chart.prototype.setXFrame = function(xFrame) {
+      this.xOld = d3.scale.linear().domain(this.x.domain()).range(this.x.range());
+      this.yOld = d3.scale.linear().domain(this.y.domain()).range(this.y.range());
+      this.yOld.magnitude = d3.scale.linear().domain(this.y.magnitude.domain()).range(this.y.magnitude.range());
+      this.y1Old = d3.scale.linear().domain(this.y1.domain()).range(this.y1.range());
+      this.y1Old.magnitude = d3.scale.linear().domain(this.y1.magnitude.domain()).range(this.y1.magnitude.range());
       this.x.domain(xFrame);
       return this;
     };
@@ -3889,7 +4384,7 @@
     };
 
     Chart.prototype.render = function(transitionSpeed, options) {
-      var t, _ref10, _ref11,
+      var cnt, _ref10, _ref11,
         _this = this;
       if (options == null) {
         options = {};
@@ -3911,16 +4406,66 @@
       this._checkYDomain();
       this._checkY1Domain();
       this._calculateXRange();
+      if (this.animateShowHide && this.renderers_to_delete.length) {
+        this.svg.selectAll(".draggable-canvas > g:not([class*='tick']) *").transition().duration(this.transitionSpeed / 2).attr("transform", "translate(0," + this.outerHeight + ")");
+        cnt = this.svg.selectAll(".canvas > g:not([class*='tick']) *")[0].length;
+        return this.svg.selectAll(".canvas > g:not([class*='tick']) *").transition().duration(this.transitionSpeed / 2).attr("transform", "translate(0," + this.outerHeight + ")").each("end", function(d, i) {
+          if (i !== (cnt - 1)) {
+            return;
+          }
+          _.each(_this.renderers_to_delete, function(r) {
+            return r["delete"]();
+          });
+          _this.renderers_to_delete = [];
+          _this.renderAxes(transitionSpeed, options);
+          return _this.renderChart(transitionSpeed, options);
+        });
+      } else {
+        this.animateShowHide = false;
+        this.renderAxes(transitionSpeed, options);
+        return this.renderChart(transitionSpeed, options);
+      }
+    };
+
+    Chart.prototype.renderAxes = function(transitionSpeed, options) {
+      var t,
+        _this = this;
+      if (options == null) {
+        options = {};
+      }
+      if (this.newAxes) {
+        this.initAxes(this.newAxes);
+      }
+      this._calculateXRange();
+      if (transitionSpeed === void 0) {
+        transitionSpeed = this.transitionSpeed;
+      }
+      if (!_.isEmpty(this.newAxes)) {
+        t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
+      } else {
+        t = this.svg.transition().duration(transitionSpeed);
+      }
+      _.each(this.axesList, function(axis) {
+        return axis.render(t);
+      });
+      return this.newAxes = void 0;
+    };
+
+    Chart.prototype.renderChart = function(transitionSpeed, options) {
+      var t,
+        _this = this;
+      if (options == null) {
+        options = {};
+      }
       if (transitionSpeed === void 0) {
         transitionSpeed = this.transitionSpeed;
       }
       t = this.svg.transition().duration(this.timesRendered ? transitionSpeed : 0);
-      _.each(this.renderers, function(renderer) {
-        return renderer.render(t, _this.timesRendered ? transitionSpeed : 0);
+      _.each(this.renderers, function(renderer, i) {
+        renderer.animateShowHide = _this.animateShowHide;
+        return renderer.render(t, true, transitionSpeed);
       });
-      _.each(this.axesList, function(axis) {
-        return axis.render(t);
-      });
+      this.animateShowHide = false;
       _.each(this.gridList, function(grid) {
         return grid.render(t);
       });
@@ -4025,11 +4570,12 @@
       return this;
     };
 
-    Chart.prototype.axes = function(args) {
+    Chart.prototype.initAxes = function(args) {
       var _this = this;
       if (!args) {
         return this.axesList;
       }
+      this.prevAxisPadding = _.clone(this.axisPadding);
       _.each(_.toArray(this.axesList), function(axis) {
         return axis.destroy();
       });
@@ -4046,6 +4592,14 @@
           return _this.initAxis(_.extend(defaults, args[k]));
         }
       });
+      return this;
+    };
+
+    Chart.prototype.axes = function(args) {
+      if (!args) {
+        return this;
+      }
+      this.newAxes = args;
       return this;
     };
 
@@ -4207,7 +4761,11 @@
           series: s,
           rendererIndex: index + renderersSize
         });
+        if (s.aggregate === true) {
+          _this.aggregated[name] = true;
+        }
         r = new rendererClass(rendererOptions);
+        r.animateShowHide = _this.animateShowHide;
         return _this.renderers.push(r);
       });
     };
@@ -4222,9 +4780,7 @@
       if (_.isEmpty(this.renderers)) {
         return;
       }
-      _.each(this.renderers, function(r) {
-        return r["delete"]();
-      });
+      this.renderers_to_delete = _.clone(this.renderers);
       this.renderers = [];
       return this.timesRendered = 0;
     };
@@ -4240,12 +4796,6 @@
         return r.unstack = false;
       });
       _.each(this.renderersByType('column'), function(r) {
-        return r.stackTransition(t, transitionSpeed);
-      });
-      _.each(this.renderersByType('aggcolumn'), function(r) {
-        return r.unstack = false;
-      });
-      _.each(this.renderersByType('aggcolumn'), function(r) {
         return r.stackTransition(t, transitionSpeed);
       });
       _.each(this.renderersByType('area'), function(r) {
@@ -4272,12 +4822,6 @@
         transitionSpeed = this.transitionSpeed;
       }
       t = this.svg.transition().duration(transitionSpeed);
-      _.each(this.renderersByType('aggcolumn'), function(r) {
-        return r.unstack = true;
-      });
-      _.each(this.renderersByType('aggcolumn'), function(r) {
-        return r.unstackTransition(t, transitionSpeed);
-      });
       _.each(this.renderersByType('column'), function(r) {
         return r.unstack = true;
       });
@@ -4427,13 +4971,7 @@
 
     Chart.prototype._containsColumnChart = function() {
       return _.any(this.renderers, function(r) {
-        return r.name === 'column' || r.name === 'aggcolumn' || r.name === 'waterfall';
-      });
-    };
-
-    Chart.prototype._containsAggChart = function() {
-      return _.any(this.renderers, function(r) {
-        return r.name === 'aggcolumn';
+        return r.name === 'column' || r.name === 'waterfall';
       });
     };
 
@@ -4600,7 +5138,7 @@
       var barWidth, dR, lastRange, rangeEnd, rangeStart, renders;
       if (this._containsColumnChart()) {
         renders = _.filter(this.renderers, function(r) {
-          return r.name === 'column' || r.name === 'aggcolumn' || r.name === 'waterfall';
+          return r.name === 'column' || r.name === 'waterfall';
         });
         lastRange = this.width();
         dR = lastRange / 2;

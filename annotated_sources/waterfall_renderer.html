@@ -54,11 +54,6 @@
               </a>
             
               
-              <a class="source" href="aggregate_column_renderer.html">
-                aggregate_column_renderer.coffee
-              </a>
-            
-              
               <a class="source" href="area_renderer.html">
                 area_renderer.coffee
               </a>
@@ -167,51 +162,57 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">WaterfallRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  name: <span class="string">"waterfall"</span>
+  <span class="attribute">name</span>: <span class="string">"waterfall"</span>
 
-  specificDefaults:
-    gapSize: <span class="number">0.15</span>
-    round: <span class="literal">true</span>
-    unstack: <span class="literal">true</span>
+  <span class="attribute">specificDefaults</span>:
+    <span class="attribute">gapSize</span>: <span class="number">0.15</span>
+    <span class="attribute">round</span>: <span class="literal">true</span>
+    <span class="attribute">unstack</span>: <span class="literal">true</span>
 
-  initialize: (options = {}) -&gt;
+  <span class="attribute">initialize</span>: <span class="function"><span class="params">(options = {})</span> -&gt;</span>
     <span class="property">@gapSize</span> = options.gapSize || <span class="property">@gapSize</span>
+    <span class="property">@aggregated</span> = <span class="property">@graph</span>.aggregated[<span class="property">@name</span>]
 
-  render: (transition)=&gt;
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span>=&gt;</span>
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
+    <span class="keyword">if</span> <span class="property">@aggregated</span>
+      <span class="property">@aggdata</span> = <span class="property">@utils</span>.aggregateData <span class="property">@series</span>.stack, <span class="property">@graph</span>.x.domain()
+    <span class="keyword">else</span>
+      <span class="property">@aggdata</span> = <span class="property">@series</span>.stack
 
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
     <span class="keyword">if</span> (<span class="property">@series</span>.disabled)
       <span class="property">@dragger</span>?.timesRendered = <span class="number">0</span>
-      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack).remove()
-      <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"line"</span>).data(<span class="property">@series</span>.stack).remove()
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@aggdata</span>).remove()
+      <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"line"</span>).data(<span class="property">@aggdata</span>).remove()
       <span class="keyword">return</span>
 
-    nodes = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@series</span>.stack)
+    nodes = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).data(<span class="property">@aggdata</span>)
     nodes.enter()
       .append(<span class="string">"svg:rect"</span>)
       .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
-      .<span class="literal">on</span>(<span class="string">"click"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
+      .<span class="literal">on</span>(<span class="string">"mousedown"</span>, <span class="property">@setActive</span>)<span class="comment"># set active element if click on it</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))
-      .attr(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))
-      .attr(<span class="string">"y"</span>, (d)=&gt; <span class="property">@_barY</span>(d))
-      .attr(<span class="string">"x"</span>, <span class="property">@_barX</span>)
-      .attr(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))
-      .attr(<span class="string">"fill"</span>, <span class="property">@series</span>.color)
+    <span class="keyword">if</span> transition <span class="keyword">then</span> selectObject = <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> rect"</span>)
+    <span class="keyword">else</span> selectObject = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>)
+    selectObject.filter<span class="function"><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"height"</span>, (d) =&gt; <span class="property">@graph</span>.y.magnitude Math.abs(d.y))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, (d)=&gt; <span class="property">@_barY</span>(d))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, <span class="property">@_barX</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"width"</span>, <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, <span class="property">@series</span>.color)</span>
 
-    nodes.exit().remove()
+    <span class="title">nodes</span>.<span class="title">exit</span><span class="params">()</span>.<span class="title">remove</span><span class="params">()</span>
 
-    line = <span class="property">@seriesDraggableCanvas</span>().selectAll(<span class="string">"line"</span>).data(<span class="property">@series</span>.stack)
-    line.enter()
-      .append(<span class="string">"svg:line"</span>)
-      .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)
+    <span class="title">line</span> = @<span class="title">seriesDraggableCanvas</span><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"line"</span>)</span>.<span class="title">data</span><span class="params">(<span class="property">@aggdata</span>)</span>
+    <span class="title">line</span>.<span class="title">enter</span><span class="params">()</span>
+      .<span class="title">append</span><span class="params">(<span class="string">"svg:line"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"clip-path"</span>, <span class="string">"url(#clip)"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> line"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))
-      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))
-      .attr(<span class="string">"x2"</span>, (d, i) =&gt;
+    <span class="title">selectObject</span> = @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> line"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'y00'</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"x1"</span>, (d) =&gt; <span class="property">@_barX</span>(d) + <span class="property">@_seriesBarWidth</span>() / (<span class="number">1</span> + <span class="property">@gapSize</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"x2"</span>, (d, i) =&gt;
         gapCount = <span class="property">@graph</span>.series.filter(
           (d) =&gt;
             d.renderer == <span class="string">'waterfall'</span>
@@ -221,70 +222,82 @@
         <span class="keyword">else</span>
           stackWidthCur = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[i].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[i-<span class="number">1</span>].x) || <span class="number">0</span>
           <span class="property">@_barX</span>(d, i)-(<span class="keyword">if</span>  <span class="property">@_waterfalRendererIndex</span>() <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> stackWidthCur - <span class="property">@_seriesBarWidth</span>()*gapCount <span class="keyword">else</span> <span class="number">0</span>) - <span class="property">@_seriesBarWidth</span>()
-      )
-      .attr(<span class="string">"y1"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))
-      .attr(<span class="string">"y2"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))
-      .attr(<span class="string">"stroke"</span>, <span class="string">"#BEBEBE"</span>)
-      .attr(<span class="string">"stroke-width"</span>, (d, i)=&gt;
-        <span class="keyword">if</span> (<span class="property">@_waterfalRendererIndex</span>() <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">and</span> i <span class="keyword">is</span> <span class="number">0</span>) <span class="keyword">or</span> (<span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.fromBaseline, d, i)) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="number">1</span>)
+      )</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y1"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y2"</span>, (d)=&gt;<span class="property">@_barY</span>(d)+(<span class="keyword">if</span> d.y &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="property">@graph</span>.y.magnitude Math.abs(d.y) <span class="keyword">else</span> <span class="number">0</span>))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, <span class="string">"#BEBEBE"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, (d, i)=&gt;
+        <span class="keyword">if</span> (<span class="property">@_waterfalRendererIndex</span>() <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">and</span> i <span class="keyword">is</span> <span class="number">0</span>) <span class="keyword">or</span> (<span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.fromBaseline, d, i)) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="number">1</span>)</span>
 
-    <span class="property">@setupTooltips</span>()
+    <span class="title">line</span>.<span class="title">exit</span><span class="params">()</span>.<span class="title">remove</span><span class="params">()</span>
 
-  setupTooltips: -&gt;
+    <span class="title">selectObject</span>.<span class="title">each</span><span class="params">(<span class="string">"end"</span>, () =&gt; <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>)</span>
+
+    @<span class="title">setupTooltips</span><span class="params">()</span>
+
+  <span class="title">setupTooltips</span>: -&gt;</span>
     <span class="keyword">if</span> <span class="property">@series</span>.tooltip
-      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).tooltip (d, i) =&gt;
-        circleColor: <span class="property">@series</span>.color
-        graph: <span class="property">@graph</span>
-        text: <span class="property">@series</span>.tooltip(d)
-        circleOnHover: <span class="literal">false</span>
-        tooltipCircleContainer: <span class="property">@graph</span>.vis.node()
-        gravity: <span class="string">"right"</span>
+      <span class="property">@seriesCanvas</span><span class="function"><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"rect"</span>)</span>.<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+        <span class="attribute">circleColor</span>: <span class="property">@series</span>.color
+        <span class="attribute">graph</span>: <span class="property">@graph</span>
+        <span class="attribute">text</span>: <span class="property">@series</span>.tooltip(d)
+        <span class="attribute">circleOnHover</span>: <span class="literal">false</span>
+        <span class="attribute">tooltipCircleContainer</span>: <span class="property">@graph</span>.vis.node()
+        <span class="attribute">gravity</span>: <span class="string">"right"</span>
 
 
-  barWidth: -&gt;
+  <span class="attribute">barWidth</span>:<span class="function"> -&gt;</span>
     data = <span class="property">@series</span>.stack
     count = data.length
     barWidth = <span class="property">@graph</span>.width() / count * (<span class="number">1</span> - <span class="property">@gapSize</span>)
 
-  seriesWidth: =&gt;
+  <span class="attribute">seriesWidth</span>:<span class="function"> =&gt;</span>
     <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
       stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
       width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
     <span class="keyword">else</span>
       width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
 
-  _seriesBarWidth: =&gt;
-    <span class="keyword">if</span> <span class="property">@series</span>.stack.length &gt;= <span class="number">2</span>
-      stackWidth = <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">1</span>].x) - <span class="property">@graph</span>.x(<span class="property">@series</span>.stack[<span class="number">0</span>].x)
-      width = stackWidth / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+  <span class="attribute">_seriesBarWidth</span>:<span class="function"> =&gt;</span>
+    <span class="keyword">if</span> <span class="property">@aggregated</span>
+      stack = <span class="property">@aggdata</span>
     <span class="keyword">else</span>
-      width = <span class="property">@graph</span>.width() / (<span class="number">1</span> + <span class="property">@gapSize</span>)
+      stack = <span class="property">@series</span>.stack
 
-    width = width / <span class="property">@graph</span>.series.filter(
-      (d) =&gt;
-        d.renderer == <span class="string">'waterfall'</span>
-    ).length()
+    width = <span class="property">@graph</span>.width() / stack.length
+    width = width / <span class="property">@graph</span>.series.filter<span class="function"><span class="params">((d) =&gt;
+      d.renderer == <span class="property">@name</span>)</span>.<span class="title">array</span>.<span class="title">length</span>
 
-  _barXOffset: (seriesBarWidth) -&gt;
+    <span class="title">width</span> = <span class="title">width</span> - <span class="params">(<span class="number">2</span> * <span class="property">@gapSize</span>)</span>
+    <span class="title">width</span>
+
+  <span class="title">_barXOffset</span>: <span class="params">(seriesBarWidth)</span> -&gt;</span>
     count = <span class="property">@graph</span>.renderersByType(<span class="property">@name</span>).length
     barXOffset = -seriesBarWidth * count / <span class="number">2</span>
 
-  _barX: (d) =&gt;
-    x = <span class="property">@graph</span>.x(d.x)
+  <span class="attribute">_barX</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
     seriesBarWidth = <span class="property">@_seriesBarWidth</span>()
-    initialX = x + <span class="property">@_barXOffset</span>(seriesBarWidth)
-    initialX + (<span class="property">@_waterfalRendererIndex</span>() * seriesBarWidth)
+    <span class="keyword">if</span> <span class="property">@aggregated</span>
+      x = d.x
+      cnt_series = <span class="property">@graph</span>.series.filter<span class="function"><span class="params">((d) =&gt;
+        d.renderer == <span class="property">@name</span>)</span>.<span class="title">array</span>.<span class="title">length</span>
+      <span class="title">initialX</span> = <span class="title">x</span> * <span class="params">(seriesBarWidth + <span class="number">2</span> * <span class="property">@gapSize</span>)</span> * <span class="title">cnt_series</span> + @<span class="title">gapSize</span>
+      <span class="title">initialX</span> + <span class="params">(<span class="property">@_waterfalRendererIndex</span>() * seriesBarWidth)</span>
+    <span class="title">else</span>
+      <span class="title">x</span> = @<span class="title">graph</span>.<span class="title">x</span><span class="params">(d.x)</span>
+      <span class="title">initialX</span> = <span class="title">x</span> + @<span class="title">_barXOffset</span><span class="params">(seriesBarWidth)</span>
+      <span class="title">initialX</span> + <span class="params">(<span class="property">@_waterfalRendererIndex</span>() * seriesBarWidth)</span>
 
-  _barY: (d, i) =&gt;
+  <span class="title">_barY</span>: <span class="params">(d, i)</span> =&gt;</span>
     <span class="keyword">if</span> d.y &gt; <span class="number">0</span>
       <span class="property">@graph</span>.y(d.y + d.y00)
     <span class="keyword">else</span>
       <span class="property">@graph</span>.y(d.y00)
 
-  _waterfalRendererIndex: -&gt;
+  <span class="attribute">_waterfalRendererIndex</span>:<span class="function"> -&gt;</span>
     <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> <span class="property">@rendererIndex</span> == <span class="number">0</span> || <span class="property">@rendererIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>
     renderers = <span class="property">@graph</span>.renderers.slice(<span class="number">0</span>, <span class="property">@rendererIndex</span>)
-    _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length</pre></div></div>
+    _.filter<span class="function"><span class="params">(renderers,(r) =&gt; r.name == <span class="property">@name</span>)</span>.<span class="title">length</span></pre></div></div>
             
         </li>
         
