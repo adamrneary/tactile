@@ -21,7 +21,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @_checkData() if @checkData
     @transition = transition if transition
 
-    draw = () =>
+    draw = (transition = undefined) =>
       if (@series.disabled)
         @dragger?.timesRendered = 0
         @seriesCanvas().selectAll("rect").data(@aggdata).remove()
@@ -38,7 +38,15 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         )
       nodes.exit().remove()
 
-      selectObjects = @seriesCanvas().selectAll("rect")
+      if transition
+        canvas = transition.select("g.canvas").selectAll("g.#{@_nameToId()}")
+        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
+
+      selectObjects = if transition
+          canvas.selectAll("rect")
+        else
+          @seriesCanvas().selectAll("rect")
+
       selectObjects
         .filter((d) => @_filterNaNs(d, "x", "y"))
         .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
@@ -125,6 +133,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     if @aggregated
       if recalculateData
         if @aggdata
+          # decide when to animate aggregation
+          animateTransition = @utils.animateTransition(@graph.xOld.domain(), @graph.x.domain())
+
           aggdataOld = @aggdata.slice(0)
           aggdataOldSource = aggdataOld.slice(0)
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
@@ -187,15 +198,15 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
             )
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-          draw()
+          draw(@transition)
           @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
-        draw()
+        draw(@transition)
         @animateShow() if @animateShowHide
     else
       @aggdata = @series.stack
-      draw()
+      draw(@transition)
       @animateShow() if @animateShowHide
 
   hideCircles: ()=>
