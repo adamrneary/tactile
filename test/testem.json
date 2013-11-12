@@ -1,0 +1,8 @@
+{
+  "test_page": "ghpages/test_runner.html",
+  "launch_in_ci": ["phantomjs"],
+  "launch_in_dev": ["phantomjs"],
+  "serve_files": [
+    "ghpages/assets/*.js"
+  ]
+}

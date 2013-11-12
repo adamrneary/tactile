@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+      <div class="span3">
+          <ul id="cartLinkList" class="nav nav-list">
+              <li class="nav-header">Cartesian series</li>
+              {{#each cartesianLinks}}
+                <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
+          <ul id="noncartLinkList" class="nav nav-list">
+              <li class="nav-header">Non-cartesian series</li>
+              {{#each nonCartesianLinks}}
+                <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
+          <ul id="compLinkList" class="nav nav-list">
+              <li class="nav-header">Components</li>
+              {{#each componentLinks}}
+                  <li><a href="./{{{this.shortLink}}}.html">{{{this.title}}}</a></li>
+              {{/each}}
+          </ul>
+      </div>
+
+    <div class="span9">
+      <h3 id="example_header">{{{header}}}</h3>
+
+      <div id="above-chart"></div>
+      <div id="example" class="widget-block">
+        <div id="example_view" data-language="coffeescript"></div>
+      </div>
+      <div id="below-chart"></div>
+
+      <h3>Code for example</h3>
+      <pre>
+        <code id="example_js" data-language="coffeescript">{{{coffeetext}}}</code>
+      </pre>
+    </div>
+    <hr>
+  </div>
+</div>
+{{{demoblock}}}
+{{{jsblock}}}

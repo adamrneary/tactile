@@ -1,0 +1,46 @@
+[
+  {
+    "shortLink":"scatter",
+    "title":"Scatter"
+  },
+  {
+    "shortLink":"line",
+    "title":"Line"
+  },
+  {
+    "shortLink":"column",
+    "title":"Column"},
+  {
+    "shortLink":"stacked-column",
+    "title":"Stacked column",
+    "groupingButtons":true
+  },
+  {
+    "shortLink":"area",
+    "title":"Area"
+  },
+  {
+    "shortLink":"stacked-area",
+    "title":"Stacked area"
+  },
+  {
+    "shortLink":"multiple-series",
+    "title":"Multiple series types"
+  },
+  {
+    "shortLink":"waterfall-timeseries",
+    "title":"Waterfall (time series)"
+  },
+  {
+    "shortLink":"aggregate-column",
+    "title":"Column Aggregated Data Chart"
+  },
+  {
+    "shortLink":"aggregate-line",
+    "title":"Line Aggregated Data Chart"
+  },
+  {
+    "shortLink":"aggregate-waterfall",
+    "title":"Waterfall Aggregated Data Chart"
+  }
+]

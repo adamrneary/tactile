@@ -1,0 +1,13 @@
+.DS_Store
+/bower_components
+/node_modules
+/ghpages
+
+.idea
+.sass-cache
+.grunt
+
+.rvmrc
+build/
+test/cov/
+test/reports/
