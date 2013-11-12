@@ -247,6 +247,9 @@
 
       <span class="property">@setupTooltips</span>()
 
+      <span class="keyword">if</span> transition
+        canvas.selectAll(<span class="string">"rect"</span>).each(<span class="string">"end"</span>, (d,i) =&gt; <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>)
+
     <span class="keyword">if</span> <span class="property">@aggregated</span>
       <span class="keyword">if</span> recalculateData <span class="keyword">and</span> <span class="property">@aggdata</span>?.length
         animateTransition = <span class="property">@utils</span>.animateTransition(<span class="property">@graph</span>.xOld.domain(), <span class="property">@graph</span>.x.domain())
@@ -381,11 +384,22 @@
         <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>
     <span class="keyword">else</span>
       <span class="property">@aggdata</span> = <span class="property">@series</span>.stack
-      draw(<span class="property">@transition</span>)
-      <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>
+      draw(<span class="property">@transition</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <pre><code> @animateShow() if @animateShowHide</code></pre>
 
-
-  setupTooltips: -&gt;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setupTooltips: -&gt;
     <span class="keyword">if</span> <span class="property">@series</span>.tooltip
       <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"rect"</span>).tooltip (d, i) =&gt;
         circleColor: <span class="property">@series</span>.color

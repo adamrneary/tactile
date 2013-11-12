@@ -2030,7 +2030,14 @@
             };
           });
         }
-        return _this.setupTooltips();
+        _this.setupTooltips();
+        if (transition) {
+          return canvas.selectAll("rect").each("end", function(d, i) {
+            if (_this.animateShowHide) {
+              return _this.animateShow();
+            }
+          });
+        }
       };
       if (this.aggregated) {
         if (recalculateData) {
@@ -2170,10 +2177,7 @@
         }
       } else {
         this.aggdata = this.series.stack;
-        draw(this.transition);
-        if (this.animateShowHide) {
-          return this.animateShow();
-        }
+        return draw(this.transition);
       }
     };
 
@@ -4002,7 +4006,14 @@
           }
         });
         line.exit().remove();
-        return _this.setupTooltips();
+        _this.setupTooltips();
+        if (transition) {
+          return canvas.selectAll("rect").each("end", function(d, i) {
+            if (_this.animateShowHide) {
+              return _this.animateShow();
+            }
+          });
+        }
       };
       if (this.aggregated) {
         if (recalculateData && ((_ref10 = this.aggdata) != null ? _ref10.length : void 0)) {
@@ -4139,10 +4150,7 @@
         }
       } else {
         this.aggdata = this.series.stack;
-        draw(this.transition);
-        if (this.animateShowHide) {
-          return this.animateShow();
-        }
+        return draw(this.transition);
       }
     };
 
