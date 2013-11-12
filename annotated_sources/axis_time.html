@@ -162,7 +162,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">AxisTime</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">AxisBase</span></span>
-  <span class="attribute">constructor</span>: <span class="function"><span class="params">(options)</span> -&gt;</span>
+  constructor: (options) -&gt;
     <span class="property">@horizontal</span> = <span class="literal">true</span>
     <span class="keyword">super</span>
     <span class="property">@_checkOptions</span>()
@@ -173,19 +173,19 @@
     <span class="property">@grid</span> = options.grid
     <span class="property">@tickSize</span> = options.tickSize <span class="keyword">or</span> <span class="number">2</span>
     <span class="property">@tickValues</span> = options.tickValues <span class="keyword">or</span> <span class="literal">null</span>
-    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> <span class="function"><span class="params">(d)</span> -&gt;</span> <span class="property">@appropriateTimeUnit</span>().formatter(<span class="keyword">new</span> Date(d))
+    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> (d) -&gt; <span class="property">@appropriateTimeUnit</span>().formatter(<span class="keyword">new</span> Date(d))
 
-  <span class="attribute">appropriateTimeUnit</span>:<span class="function"> -&gt;</span>
+  appropriateTimeUnit: -&gt;
     unit = <span class="literal">undefined</span>
     units = <span class="property">@time</span>.units
     domain = <span class="property">@graph</span>.x.domain()
     rangeSeconds = domain[<span class="number">1</span>] - domain[<span class="number">0</span>]
-    units.forEach <span class="function"><span class="params">(u)</span> -&gt;</span>
+    units.forEach (u) -&gt;
       unit = unit <span class="keyword">or</span> u <span class="keyword">if</span> Math.floor(rangeSeconds / u.seconds) &gt;= <span class="number">2</span>
 
     unit <span class="keyword">or</span> <span class="property">@time</span>.units[<span class="property">@time</span>.units.length - <span class="number">1</span>]
 
-  <span class="attribute">tickOffsets</span>:<span class="function"> -&gt;</span>
+  tickOffsets: -&gt;
     domain = <span class="property">@graph</span>.x.domain()
     unit = <span class="property">@fixedTimeUnit</span> <span class="keyword">or</span> <span class="property">@appropriateTimeUnit</span>()
 
@@ -203,15 +203,15 @@
 
     <span class="keyword">while</span> tickValue &lt;= domainMax
       offsets.push
-        <span class="attribute">value</span>: tickValue
-        <span class="attribute">unit</span>: unit
+        value: tickValue
+        unit: unit
 
       runningTick = tickValue + unit.seconds / <span class="number">2</span>
       tickValue = <span class="property">@time</span>.ceil(runningTick, unit)
 
     offsets
 
-  <span class="attribute">render</span>: <span class="function"><span class="params">(transition)</span>-&gt;</span>
+  render: (transition)-&gt;
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>.x?
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
     aggregated = _.some(_.values(<span class="property">@graph</span>.aggregated))
@@ -229,19 +229,19 @@
     ticks.enter()
       .append(<span class="string">'g'</span>)
       .attr(<span class="string">"class"</span>, [<span class="string">"x-tick"</span>, <span class="property">@ticksTreatment</span>].join(<span class="string">' '</span>))
-      .attr <span class="string">"transform"</span>, <span class="function"><span class="params">(d, i)</span> =&gt;</span>
-        <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.outerWidth*<span class="number">1.1</span>}</span>, <span class="subst">#{<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>}</span>)"</span>
+      .attr <span class="string">"transform"</span>, (d, i) =&gt;
+        <span class="string">"translate(<span class="subst">#{@graph.outerWidth*<span class="number">1.1</span>}</span>, <span class="subst">#{@graph.height() + @marginForBottomTicks}</span>)"</span>
 
     <span class="property">@transition</span>.selectAll(<span class="string">".x-tick"</span>)
-      .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt;
+      .attr(<span class="string">"transform"</span>, (d, i) =&gt;
         <span class="keyword">if</span> aggregated
-          <span class="string">"translate(<span class="subst">#{<span class="property">@_tickX</span>(d.value, i)}</span>, <span class="subst">#{<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>}</span>)"</span>
+          <span class="string">"translate(<span class="subst">#{@_tickX(d.value, i)}</span>, <span class="subst">#{@graph.height() + @marginForBottomTicks}</span>)"</span>
         <span class="keyword">else</span>
-          <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.x(d.value)}</span>, <span class="subst">#{<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>}</span>)"</span>)</span>
-      .<span class="title">each</span> "<span class="title">end</span>", <span class="params">(d)</span> -&gt;</span>
+          <span class="string">"translate(<span class="subst">#{@graph.x(d.value)}</span>, <span class="subst">#{@graph.height() + @marginForBottomTicks}</span>)"</span>)
+      .each <span class="string">"end"</span>, (d) -&gt;
         ticks.exit().remove()
 
-    <span class="property">@g</span>.selectAll<span class="function"><span class="params">(<span class="string">'g.x-tick'</span>)</span>.<span class="title">each</span><span class="params">((d, i)-&gt;
+    <span class="property">@g</span>.selectAll(<span class="string">'g.x-tick'</span>).each((d, i)-&gt;
       text = d3.select(@).selectAll(<span class="string">"text"</span>).data([d])
       text.enter()
         .append(<span class="string">"text"</span>)
@@ -280,18 +280,18 @@
             
             <div class="content"><div class='highlight'><pre>    text = <span class="property">@g</span>.selectAll(<span class="string">"g.x-tick"</span>).selectAll(<span class="string">"text"</span>)
     text.attr(<span class="string">"y"</span>, <span class="property">@marginTop</span>)
-      .text<span class="function"><span class="params">((d) -&gt;
+      .text((d) -&gt;
         <span class="keyword">if</span> aggregated
           d.label
         <span class="keyword">else</span>
-          d.unit.formatter(<span class="keyword">new</span> Date(d.value)))</span>
-    <span class="title">if</span> <span class="title">aggregated</span>
-      <span class="title">text</span>.<span class="title">append</span><span class="params">(<span class="string">"tspan"</span>)</span>
-        .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@marginTop</span> + <span class="property">@fontSize</span>)</span>
-        .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, <span class="number">0</span>)</span>
-        .<span class="title">text</span> <span class="params">(d)</span> -&gt;</span> d.secondary
+          d.unit.formatter(<span class="keyword">new</span> Date(d.value)))
+    <span class="keyword">if</span> aggregated
+      text.append(<span class="string">"tspan"</span>)
+        .attr(<span class="string">"y"</span>, <span class="property">@marginTop</span> + <span class="property">@fontSize</span>)
+        .attr(<span class="string">"x"</span>, <span class="number">0</span>)
+        .text (d) -&gt; d.secondary
 
-  <span class="attribute">_checkOptions</span>: <span class="function"><span class="params">()</span>=&gt;</span>
+  _checkOptions: ()=&gt;
     <span class="keyword">if</span> <span class="property">@options</span>.ticksTreatment?
       <span class="property">@utils</span>.checkString(<span class="property">@options</span>.ticksTreatment, <span class="string">"AxisTime options.ticksTreatment"</span>)
 
@@ -303,11 +303,11 @@
 
     <span class="keyword">if</span> <span class="property">@options</span>.frame?
       <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(<span class="property">@options</span>.frame, <span class="string">"AxisTime options.frame"</span>)
-        <span class="property">@options</span>.frame.forEach<span class="function"><span class="params">((d, i)=&gt;
+        <span class="property">@options</span>.frame.forEach((d, i)=&gt;
           <span class="property">@utils</span>.checkNumber(d, <span class="string">"AxisTime options.frame[<span class="subst">#{i}</span>]"</span>) <span class="keyword">if</span> d?
-        )</span>
+        )
 
-  <span class="title">_getLabels</span>: <span class="params">(timeFrame)</span> -&gt;</span>
+  _getLabels: (timeFrame) -&gt;
     labels = []
 
     date = [<span class="keyword">new</span> Date(timeFrame[<span class="number">0</span>]), <span class="keyword">new</span> Date(timeFrame[<span class="number">1</span>])]</pre></div></div>
@@ -338,9 +338,9 @@
         tmpDate = <span class="keyword">new</span> Date(timeFrame[<span class="number">0</span>])
         tmpDate.setMonth(startMonth + i);
         labels.push
-          <span class="attribute">value</span>: tmpDate.getTime()
-          <span class="attribute">label</span>: tmpDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]
-          <span class="attribute">secondary</span>: tmpDate.getFullYear().toString()</pre></div></div>
+          value: tmpDate.getTime()
+          label: tmpDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]
+          secondary: tmpDate.getFullYear().toString()</pre></div></div>
             
         </li>
         
@@ -368,12 +368,12 @@ quarterly data and aggregate</p>
 
         item.value = startDate.getTime()
 
-        item.label = <span class="string">"<span class="subst">#{startDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>-<span class="subst">#{endDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>"</span>
+        item.label = <span class="string">"<span class="subst">#{startDate.toUTCString().split(' ')[<span class="number">2</span>]}</span>-<span class="subst">#{endDate.toUTCString().split(' ')[<span class="number">2</span>]}</span>"</span>
         <span class="keyword">if</span> startDate.getTime() <span class="keyword">is</span> date[<span class="number">1</span>].getTime()
           item.label = startDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]
         <span class="keyword">else</span> <span class="keyword">if</span> endDate.getTime() &gt; date[<span class="number">1</span>].getTime()
           endDate = date[<span class="number">1</span>]
-          item.label = <span class="string">"<span class="subst">#{startDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>-<span class="subst">#{endDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>"</span>
+          item.label = <span class="string">"<span class="subst">#{startDate.toUTCString().split(' ')[<span class="number">2</span>]}</span>-<span class="subst">#{endDate.toUTCString().split(' ')[<span class="number">2</span>]}</span>"</span>
         item.secondary = <span class="string">"<span class="subst">#{endDate.getFullYear()}</span>"</span>
 
         labels.push item</pre></div></div>
@@ -419,7 +419,7 @@ data and aggregate.</p>
         labels.push item
     labels
 
-  <span class="attribute">_tickX</span>: <span class="function"><span class="params">(value, index)</span> -&gt;</span>
+  _tickX: (value, index) -&gt;
     width = <span class="property">@graph</span>.width()
     count = <span class="property">@aggLabels</span>.length
 

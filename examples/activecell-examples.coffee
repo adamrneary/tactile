@@ -1,33 +1,36 @@
-maxCount = 73
-frameVal = [new Date(2011, 13, 1).getTime(),
-            new Date(2011, 49, 1).getTime()]
+count = 73
+frameVal = [new Date(2012,  2, 1).getTime(), new Date(2012,  2+count, 1).getTime()]
 
 generateData = (count) =>
   data = []
   i = 0
   while i < count
     data[i] =
-      period: new Date(2011,  0 + i, 1).getTime()
+      period: new Date(2012,  0 + i, 1).getTime()
       y0: Math.floor Math.random()*100
       y1: Math.floor Math.random()*100
       y2: Math.floor Math.random()*100
-    #      y3: Math.floor Math.random()*100
-    #      y4: Math.floor Math.random()*100
+      y3: Math.floor Math.random()*100
+      y4: Math.floor Math.random()*100
+      y5: Math.floor Math.random()*100
+      y6: Math.floor Math.random()*100
+      y7: Math.floor Math.random()*100
     i++
   data
 
 chart = new Tactile.Chart(unstack: false)
   .element($("#example_view")[0])
-  .data(generateData(maxCount))
+  .setAutoScale(false)
+  .data(generateData(count))
   .setXFrame(frameVal)
   .axes
     y: "linear"
     x:
       dimension: "time"
-      ticksTreatment: "align-middle small"
+      options:
+        ticksTreatment: "align-middle"
 
 chart.addSeries [
-  aggregate: true
   name: "y0"
   renderer: "column"
   round: false
@@ -47,9 +50,6 @@ chart.addSeries [
   dataTransform: (d) ->
     x: d.period
     y: d.y1
-  isEditable: true
-  afterDrag: (d, y) ->
-    console.log "d:#{d}, y:#{y}"
 ,
   name: "y2"
   renderer: "column"
@@ -60,6 +60,56 @@ chart.addSeries [
   dataTransform: (d) ->
     x: d.period
     y: d.y2
+,
+  name: "y3"
+  renderer: "column"
+  round: false
+  color: "#2e8b57"
+  tooltip: (d) ->
+    d.y + " y3"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y3
+,
+  name: "y4"
+  renderer: "column"
+  round: false
+  color: "#ff7f24"
+  tooltip: (d) ->
+    d.y + " y4"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y4
+,
+  name: "y5"
+  renderer: "column"
+  round: false
+  color: "#1f7f24"
+  tooltip: (d) ->
+    d.y + " y5"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y5
+,
+  name: "y6"
+  renderer: "column"
+  round: false
+  color: "#ff7024"
+  tooltip: (d) ->
+    d.y + " y6"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y6
+,
+  name: "y7"
+  renderer: "column"
+  round: false
+  color: "#f07000"
+  tooltip: (d) ->
+    d.y + " y7"
+  dataTransform: (d) ->
+    x: d.period
+    y: d.y7
 ]
 
 chart.render()
@@ -69,25 +119,16 @@ chart.render()
 buttonGroup = $("<div class='btn-group'></div>")
 groupButton = $("<button class='btn btn-mini'>Grouped</button>")
 stackButton = $("<button class='btn btn-mini'>Stacked</button>")
-setDataButton = $("<button class='btn btn-mini btn-success'>Set data</button>")
-dataCountSpinBox = $("<input type='number' min='0' max='73' step='1' value='36' class='span1'>")
 
 buttonGroup.prepend groupButton
 buttonGroup.prepend stackButton
-buttonGroup.prepend setDataButton
 $("#above-chart").html ''
 $("#above-chart").prepend buttonGroup
-$("#above-chart").prepend dataCountSpinBox
 stackButton.click (e) ->
   chart.stackTransition()
   e.stopPropagation()
 groupButton.click (e) ->
   chart.unstackTransition()
-  e.stopPropagation()
-setDataButton.click (e) ->
-  data = generateData(dataCountSpinBox.val())
-  chart.data(data)
-  chart.render(1000)
   e.stopPropagation()
 
 sl = $("<div>")
@@ -95,11 +136,12 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: 0
-  max: maxCount
-  values: [13, 49]
+  min: new Date(2012,  0, 1).getTime()
+  max: new Date(2012,  2 + count, 1).getTime()
+  values: frameVal
   range: true
-  stop: (event, ui) ->
-    chart.setXFrame([new Date(2011,  0+ui.values[0], 1).getTime(),
-                     new Date(2011,  0+ui.values[1], 1).getTime()])
+  slide: (event, ui) ->
+    console.time "render"
+    chart.setXFrame(ui.values)
     chart.render()
+    console.timeEnd "render"

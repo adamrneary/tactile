@@ -134,7 +134,7 @@
     max: maxCount,
     values: [13, 49],
     range: true,
-    slide: function(event, ui) {
+    stop: function(event, ui) {
       chart.setXFrame([new Date(2011, 0 + ui.values[0], 1).getTime(), new Date(2011, 0 + ui.values[1], 1).getTime()]);
       return chart.render();
     }

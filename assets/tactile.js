@@ -756,16 +756,39 @@
       return check;
     };
 
-    Utils.prototype.aggregateData = function(data, domain) {
-      var aggdata, end, grouper, i, index, range, start, tmp, xDomain, _i, _j, _k, _ref1, _ref2, _ref3;
+    Utils.prototype.aggregateData = function(originData, domain) {
+      var aggdata, d, data, end, grouper, i, index, originalIndex, originalLastIndex, range, start, tmp, xDomain, _i, _j, _k, _l, _len, _len1, _m, _n, _ref1, _ref2, _ref3, _ref4, _ref5;
       xDomain = domain;
-      data = _.filter(data, function(d) {
+      data = _.filter(originData, function(d) {
         return d.x >= xDomain[0] && d.x <= xDomain[1];
       });
       aggdata = [];
       range = data.length;
+      originalIndex = -1;
+      originalLastIndex = -1;
+      for (i = _i = 0, _len = originData.length; _i < _len; i = ++_i) {
+        d = originData[i];
+        if (_.isEqual(data[0], d)) {
+          originalIndex = i;
+        }
+        if (_.isEqual(_.last(data), d)) {
+          originalLastIndex = i;
+        }
+      }
+      for (i = _j = 0, _len1 = originData.length; _j < _len1; i = ++_j) {
+        d = originData[i];
+        if (!(i < originalIndex)) {
+          break;
+        }
+        aggdata.push(_.defaults({
+          x: i - originalIndex,
+          range: [d.x, d.x],
+          stuff: true
+        }, d));
+      }
       if (range <= 12) {
-        for (i = _i = 0, _ref1 = range - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        grouper = 1;
+        for (i = _k = 0, _ref1 = range - 1; 0 <= _ref1 ? _k <= _ref1 : _k >= _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
           tmp = {};
           tmp.x = i;
           tmp.y = data[i].y;
@@ -775,11 +798,10 @@
           tmp.range = [data[i].x, data[i].x];
           aggdata.push(tmp);
         }
-        return aggdata;
       } else if ((12 < range && range <= 36)) {
         grouper = 3;
         index = 0;
-        for (i = _j = 0, _ref2 = range - 1; grouper > 0 ? _j <= _ref2 : _j >= _ref2; i = _j += grouper) {
+        for (i = _l = 0, _ref2 = range - 1; grouper > 0 ? _l <= _ref2 : _l >= _ref2; i = _l += grouper) {
           tmp = {};
           start = i;
           end = i + grouper - 1;
@@ -805,11 +827,10 @@
           index = index + 1;
           aggdata.push(tmp);
         }
-        return aggdata;
       } else {
         grouper = 12;
         index = 0;
-        for (i = _k = 0, _ref3 = range - 1; grouper > 0 ? _k <= _ref3 : _k >= _ref3; i = _k += grouper) {
+        for (i = _m = 0, _ref3 = range - 1; grouper > 0 ? _m <= _ref3 : _m >= _ref3; i = _m += grouper) {
           tmp = {};
           start = i;
           end = i + grouper - 1;
@@ -835,8 +856,38 @@
           index = index + 1;
           aggdata.push(tmp);
         }
-        return aggdata;
       }
+      for (i = _n = _ref4 = aggdata.length, _ref5 = originData.length - 1; _ref4 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = _ref4 <= _ref5 ? ++_n : --_n) {
+        d = originData[i];
+        aggdata.push(_.defaults({
+          x: i - originalIndex,
+          range: [d.x, d.x],
+          stuff: true
+        }, d));
+      }
+      return aggdata;
+    };
+
+    Utils.prototype.domainMonthRange = function(domain) {
+      var date, endMonth, endYear, startMonth, startYear;
+      date = [new Date(domain[0]), new Date(domain[1])];
+      startYear = date[0].getFullYear();
+      startMonth = date[0].getMonth();
+      endYear = date[1].getFullYear();
+      endMonth = date[1].getMonth();
+      return (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+    };
+
+    Utils.prototype.animateTransition = function(domainOld, domainNew) {
+      var animateTransition, _ref1;
+      if (this.domainMonthRange(domainNew) <= 12) {
+        animateTransition = this.domainMonthRange(domainOld) > 12;
+      } else if ((12 < (_ref1 = this.domainMonthRange(domainNew)) && _ref1 <= 36)) {
+        animateTransition = 36 < this.domainMonthRange(domainOld) || this.domainMonthRange(domainOld) <= 12;
+      } else {
+        animateTransition = this.domainMonthRange(domainOld) <= 36;
+      }
+      return animateTransition;
     };
 
     return Utils;
@@ -2052,13 +2103,7 @@
             this.aggdata = aggdataOldSource;
             nodes = this.seriesCanvas().selectAll("rect").data(transitionData);
             nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
-            this.seriesCanvas().selectAll("rect").attr("height", function(d) {
-              return _this.yFunctionOld().magnitude(Math.abs(d.start.y));
-            }).attr("y", function(d) {
-              return _this._barY(d.start, true);
-            }).attr("x", function(d) {
-              return _this._barX(d.start, true);
-            }).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+            this.seriesCanvas().selectAll("rect").attr("fill", function(d, i) {
               return _this.utils.ourFunctor(_this.series.color, d.start, i);
             }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
               return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
@@ -2066,25 +2111,47 @@
             nodes.exit().remove();
             this.aggdata = aggdataSource;
             count = 0;
-            return this.graph.svg.transition().duration(transitionSpeed).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
-              return _this.yFunction().magnitude(Math.abs(d.end.y));
-            }).attr("y", function(d) {
-              return _this._barY(d.end);
-            }).attr("x", function(d) {
-              return _this._barX(d.end);
-            }).attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
-              return _this.utils.ourFunctor(_this.series.color, d.end, i);
-            }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
-              return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
-            }).each("end", function() {
-              count++;
-              if (count = transitionData.length) {
-                draw();
-              }
-              if (_this.animateShowHide) {
-                return _this.animateShow();
-              }
-            });
+            if ((this.utils.domainMonthRange(this.graph.x.domain()) > this.utils.domainMonthRange(this.graph.xOld.domain())) && animateTransition) {
+              this.graph.svg.transition().duration(transitionSpeed / 3).delay(0).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
+                return _this.yFunction().magnitude(Math.abs(d.end.y));
+              }).attr("y", function(d) {
+                return _this._barY(d.end);
+              }).attr("class", function(d, i) {
+                return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+              });
+              this.graph.svg.transition().duration(transitionSpeed / 3).delay(transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("x", function(d) {
+                return _this._barX(d.end, true);
+              });
+              return this.graph.svg.transition().duration(transitionSpeed / 3).delay(2 * transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+                return _this.utils.ourFunctor(_this.series.color, d.end, i);
+              }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).each("end", function() {
+                count++;
+                if (count === transitionData.length) {
+                  return draw();
+                }
+              });
+            } else if (animateTransition) {
+              this.graph.svg.transition().duration(transitionSpeed / 3).delay(0).selectAll("." + (this._nameToId()) + " rect").attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+                return _this.utils.ourFunctor(_this.series.color, d.end, i);
+              }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+              this.graph.svg.transition().duration(transitionSpeed / 3).delay(transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("x", function(d) {
+                return _this._barX(d.end, true);
+              });
+              return this.graph.svg.transition().duration(transitionSpeed / 3).delay(2 * transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
+                return _this.yFunction().magnitude(Math.abs(d.end.y));
+              }).attr("y", function(d) {
+                return _this._barY(d.end);
+              }).attr("class", function(d, i) {
+                return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+              }).each("end", function() {
+                count++;
+                if (count === transitionData.length) {
+                  return draw();
+                }
+              });
+            } else {
+              return draw(this.transition);
+            }
           } else {
             this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
             draw(this.transition);
@@ -2230,16 +2297,21 @@
     };
 
     ColumnRenderer.prototype._seriesBarWidth = function() {
-      var gapSize, stack, width,
+      var count, gapSize, width,
         _this = this;
       if (this.aggregated) {
-        stack = this.aggdata;
+        count = this.utils.domainMonthRange(this.graph.x.domain());
+        if ((12 < count && count <= 36)) {
+          count = Math.ceil(count / 3);
+        } else if (36 < count) {
+          count = Math.ceil(count / 12);
+        }
         gapSize = this.dinGapSize;
       } else {
-        stack = this.series.stack;
+        count = this.series.stack.length;
         gapSize = this.gapSize;
       }
-      width = this.graph.width() / stack.length;
+      width = this.graph.width() / count;
       if (this.unstack) {
         width = width / this.graph.series.filter(function(d) {
           return d.renderer === _this.name;
@@ -3668,7 +3740,12 @@
     LineRenderer.prototype._circleX = function(d, index) {
       var count, width, x;
       if (this.aggregated) {
-        count = this.aggdata.length;
+        count = this.utils.domainMonthRange(this.graph.x.domain());
+        if ((12 < count && count <= 36)) {
+          count = Math.ceil(count / 3);
+        } else if (36 < count) {
+          count = Math.ceil(count / 12);
+        }
         width = this.graph.width();
         x = d.x * (width / count) + (width / count) / 2;
         return x;
@@ -3852,77 +3929,221 @@
     };
 
     WaterfallRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
-      var line, nodes, selectObject, _ref10,
+      var aggdata, aggdataOld, aggdataOldSource, aggdataSource, animateTransition, count, draw, maxAggdata, maxAggdataOld, minAggdata, minAggdataOld, nodes, transitionData, _ref10,
         _this = this;
       if (this.checkData) {
         this._checkData();
+      }
+      if (transition) {
+        this.transition = transition;
       }
       if (this.aggregated) {
         this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
       } else {
         this.aggdata = this.series.stack;
       }
-      if (transition) {
-        this.transition = transition;
-      }
-      if (this.series.disabled) {
-        if ((_ref10 = this.dragger) != null) {
-          _ref10.timesRendered = 0;
+      draw = function(transition) {
+        var canvas, draggableCanvas, line, nodes, selectObject, _ref10;
+        if (transition == null) {
+          transition = void 0;
         }
-        this.seriesCanvas().selectAll("rect").data(this.aggdata).remove();
-        this.seriesDraggableCanvas().selectAll("line").data(this.aggdata).remove();
-        return;
-      }
-      nodes = this.seriesCanvas().selectAll("rect").data(this.aggdata);
-      nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", this.setActive);
-      if (transition) {
-        selectObject = this.transition.selectAll("." + (this._nameToId()) + " rect");
+        if (_this.series.disabled) {
+          if ((_ref10 = _this.dragger) != null) {
+            _ref10.timesRendered = 0;
+          }
+          _this.seriesCanvas().selectAll("rect").data(_this.aggdata).remove();
+          _this.seriesDraggableCanvas().selectAll("line").data(_this.aggdata).remove();
+          return;
+        }
+        nodes = _this.seriesCanvas().selectAll("rect").data(_this.aggdata);
+        nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", _this.setActive);
+        nodes.exit().remove();
+        if (transition) {
+          canvas = transition.select("g.canvas").selectAll("g." + (_this._nameToId()));
+        }
+        selectObject = transition ? canvas.selectAll("rect") : _this.seriesCanvas().selectAll("rect");
+        selectObject.filter(function(d) {
+          return _this._filterNaNs(d, 'x', 'y', 'y00');
+        }).attr("height", function(d) {
+          return _this.graph.y.magnitude(Math.abs(d.y));
+        }).attr("y", function(d) {
+          return _this._barY(d);
+        }).attr("x", _this._barX).attr("width", _this._seriesBarWidth() / (1 + _this.gapSize)).attr("fill", _this.series.color);
+        line = _this.seriesDraggableCanvas().selectAll("line").data(_this.aggdata);
+        line.enter().append("svg:line").attr("clip-path", "url(#clip)");
+        if (transition) {
+          draggableCanvas = transition.select("g.draggable-canvas").selectAll("g." + (_this._nameToId()));
+        }
+        selectObject = transition ? draggableCanvas.selectAll("line") : _this.seriesDraggableCanvas().selectAll("line");
+        selectObject.filter(function(d) {
+          return _this._filterNaNs(d, 'x', 'y', 'y00');
+        }).attr("x1", function(d) {
+          return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
+        }).attr("x2", function(d, i) {
+          var gapCount, stackWidthCur;
+          gapCount = _this.graph.series.filter(function(d) {
+            return d.renderer === 'waterfall';
+          }).length();
+          if (i === 0) {
+            return _this._barX(d, i) - _this._seriesBarWidth();
+          } else {
+            stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x) || 0;
+            return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? stackWidthCur - _this._seriesBarWidth() * gapCount : 0) - _this._seriesBarWidth();
+          }
+        }).attr("y1", function(d) {
+          return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
+        }).attr("y2", function(d) {
+          return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
+        }).attr("stroke", "#BEBEBE").attr("stroke-width", function(d, i) {
+          if ((_this._waterfalRendererIndex() === 0 && i === 0) || (_this.utils.ourFunctor(_this.series.fromBaseline, d, i))) {
+            return 0;
+          } else {
+            return 1;
+          }
+        });
+        line.exit().remove();
+        return _this.setupTooltips();
+      };
+      if (this.aggregated) {
+        if (recalculateData && ((_ref10 = this.aggdata) != null ? _ref10.length : void 0)) {
+          animateTransition = this.utils.animateTransition(this.graph.xOld.domain(), this.graph.x.domain());
+          aggdataOld = this.aggdata.slice(0);
+          aggdataOldSource = aggdataOld.slice(0);
+          this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+          aggdata = this.aggdata.slice(0);
+          aggdataSource = this.aggdata.slice(0);
+          maxAggdataOld = (_.max(aggdataOldSource, function(d) {
+            return d.x;
+          })).x;
+          maxAggdata = (_.max(aggdataSource, function(d) {
+            return d.x;
+          })).x;
+          minAggdataOld = (_.min(aggdataOldSource, function(d) {
+            return d.x;
+          })).x;
+          minAggdata = (_.min(aggdataSource, function(d) {
+            return d.x;
+          })).x;
+          aggdataOld.push({
+            inf: true,
+            r: 0,
+            x: Math.max(maxAggdataOld, maxAggdata) + 1,
+            y: 0,
+            y0: 0,
+            y00: 0,
+            range: [_.last(aggdataOldSource).range[1] + 1, Infinity]
+          });
+          aggdataOld.unshift({
+            inf: true,
+            r: 0,
+            x: Math.min(minAggdataOld, minAggdata) - 1,
+            y: 0,
+            y0: 0,
+            y00: 0,
+            range: [-Infinity, _.first(aggdataOldSource).range[0] - 1]
+          });
+          aggdata.push({
+            inf: true,
+            r: 0,
+            x: Math.max(maxAggdataOld, maxAggdata) + 1,
+            y: 0,
+            y0: 0,
+            y00: 0,
+            range: [_.last(aggdataSource).range[1] + 1, Infinity]
+          });
+          aggdata.unshift({
+            inf: true,
+            r: 0,
+            x: Math.min(minAggdataOld, minAggdata) - 1,
+            y: 0,
+            y0: 0,
+            y00: 0,
+            range: [-Infinity, _.first(aggdataSource).range[0] - 1]
+          });
+          transitionData = [];
+          _.each(aggdata, function(d) {
+            return _.each(aggdataOld, function(oldD) {
+              if (!(oldD.range[0] > d.range[1] || oldD.range[1] < d.range[0]) && !(d.inf && oldD.inf)) {
+                return transitionData.push({
+                  start: oldD,
+                  end: d
+                });
+              }
+            });
+          });
+          this.aggdata = aggdataOldSource;
+          nodes = this.seriesCanvas().selectAll("rect").data(transitionData);
+          nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)");
+          this.seriesCanvas().selectAll("rect").attr("fill", function(d, i) {
+            return _this.utils.ourFunctor(_this.series.color, d.start, i);
+          }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).attr("class", function(d, i) {
+            return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+          });
+          nodes.exit().remove();
+          this.aggdata = aggdataSource;
+          count = 0;
+          if (animateTransition && (this.utils.domainMonthRange(this.graph.x.domain()) > this.utils.domainMonthRange(this.graph.xOld.domain()))) {
+            this.graph.svg.selectAll("g." + (this._nameToId()) + " line").remove();
+            this.graph.svg.transition().duration(transitionSpeed / 3).delay(0).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
+              return _this.yFunction().magnitude(Math.abs(d.end.y));
+            }).attr("y", function(d) {
+              return _this._barY(d.end);
+            }).attr("class", function(d, i) {
+              return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+            });
+            this.graph.svg.transition().duration(transitionSpeed / 3).delay(transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("x", function(d) {
+              return _this._barX(d.end, true);
+            });
+            return this.graph.svg.transition().duration(transitionSpeed / 3).delay(2 * transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+              return _this.utils.ourFunctor(_this.series.color, d.end, i);
+            }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio).each("end", function(d, i) {
+              count++;
+              if (count === transitionData.length) {
+                return draw();
+              }
+            });
+          } else if (animateTransition) {
+            this.graph.svg.selectAll("g." + (this._nameToId()) + " line").remove();
+            this.graph.svg.transition().duration(transitionSpeed / 3).delay(0).selectAll("." + (this._nameToId()) + " rect").attr("width", this._seriesBarWidth()).attr("fill", function(d, i) {
+              return _this.utils.ourFunctor(_this.series.color, d.end, i);
+            }).attr("stroke", "white").attr("rx", this._edgeRatio).attr("ry", this._edgeRatio);
+            this.graph.svg.transition().duration(transitionSpeed / 3).delay(transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("x", function(d) {
+              return _this._barX(d.end, true);
+            });
+            return this.graph.svg.transition().duration(transitionSpeed / 3).delay(2 * transitionSpeed / 3).selectAll("." + (this._nameToId()) + " rect").attr("height", function(d) {
+              return _this.yFunction().magnitude(Math.abs(d.end.y));
+            }).attr("y", function(d) {
+              return _this._barY(d.end);
+            }).attr("class", function(d, i) {
+              return ["bar", (!_this.series.color ? "colorless" : void 0)].join(" ");
+            }).each("end", function(d, i) {
+              count++;
+              if (count === transitionData.length) {
+                return draw();
+              }
+            });
+          } else {
+            draw(this.transition);
+            if (this.animateShowHide) {
+              return this.animateShow();
+            }
+          }
+        } else {
+          if (!this.aggdata) {
+            this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
+          }
+          draw(this.transition);
+          if (this.animateShowHide) {
+            return this.animateShow();
+          }
+        }
       } else {
-        selectObject = this.seriesCanvas().selectAll("rect");
+        this.aggdata = this.series.stack;
+        draw(this.transition);
+        if (this.animateShowHide) {
+          return this.animateShow();
+        }
       }
-      selectObject.filter(function(d) {
-        return _this._filterNaNs(d, 'x', 'y', 'y00');
-      }).attr("height", function(d) {
-        return _this.graph.y.magnitude(Math.abs(d.y));
-      }).attr("y", function(d) {
-        return _this._barY(d);
-      }).attr("x", this._barX).attr("width", this._seriesBarWidth() / (1 + this.gapSize)).attr("fill", this.series.color);
-      nodes.exit().remove();
-      line = this.seriesDraggableCanvas().selectAll("line").data(this.aggdata);
-      line.enter().append("svg:line").attr("clip-path", "url(#clip)");
-      selectObject = this.transition.selectAll("." + (this._nameToId()) + " line").filter(function(d) {
-        return _this._filterNaNs(d, 'x', 'y', 'y00');
-      }).attr("x1", function(d) {
-        return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
-      }).attr("x2", function(d, i) {
-        var gapCount, stackWidthCur;
-        gapCount = _this.graph.series.filter(function(d) {
-          return d.renderer === 'waterfall';
-        }).length();
-        if (i === 0) {
-          return _this._barX(d, i) - _this._seriesBarWidth();
-        } else {
-          stackWidthCur = _this.graph.x(_this.series.stack[i].x) - _this.graph.x(_this.series.stack[i - 1].x) || 0;
-          return _this._barX(d, i) - (_this._waterfalRendererIndex() === 0 ? stackWidthCur - _this._seriesBarWidth() * gapCount : 0) - _this._seriesBarWidth();
-        }
-      }).attr("y1", function(d) {
-        return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
-      }).attr("y2", function(d) {
-        return _this._barY(d) + (d.y > 0 ? _this.graph.y.magnitude(Math.abs(d.y)) : 0);
-      }).attr("stroke", "#BEBEBE").attr("stroke-width", function(d, i) {
-        if ((_this._waterfalRendererIndex() === 0 && i === 0) || (_this.utils.ourFunctor(_this.series.fromBaseline, d, i))) {
-          return 0;
-        } else {
-          return 1;
-        }
-      });
-      line.exit().remove();
-      selectObject.each("end", function() {
-        if (_this.animateShowHide) {
-          return _this.animateShow();
-        }
-      });
-      return this.setupTooltips();
     };
 
     WaterfallRenderer.prototype.setupTooltips = function() {
@@ -3959,14 +4180,19 @@
     };
 
     WaterfallRenderer.prototype._seriesBarWidth = function() {
-      var stack, width,
+      var count, width,
         _this = this;
       if (this.aggregated) {
-        stack = this.aggdata;
+        count = this.utils.domainMonthRange(this.graph.x.domain());
+        if ((12 < count && count <= 36)) {
+          count = Math.ceil(count / 3);
+        } else if (36 < count) {
+          count = Math.ceil(count / 12);
+        }
       } else {
-        stack = this.series.stack;
+        count = this.series.stack.length;
       }
-      width = this.graph.width() / stack.length;
+      width = this.graph.width() / count;
       width = width / this.graph.series.filter(function(d) {
         return d.renderer === _this.name;
       }).array.length;
