@@ -1422,10 +1422,9 @@
     };
 
     AxisTime.prototype._getLabels = function(timeFrame) {
-      var Add, dataMonthRange, dataTimeFrame, date, endMonth, endYear, grouper, i, labels, range, rangeAfter, rangeBefore, startMonth, startYear, _i, _j, _k, _ref2, _ref3,
+      var Add, dataTimeFrame, date, endMonth, endYear, grouper, i, labels, range, rangeAfter, rangeBefore, startMonth, startYear, _i, _j, _k, _ref2, _ref3,
         _this = this;
       dataTimeFrame = this.utils.getWholeDataTimeRange(this.graph.series.array);
-      dataMonthRange = this.utils.domainMonthRange(dataTimeFrame);
       labels = [];
       date = [new Date(timeFrame[0]), new Date(timeFrame[1])];
       startYear = date[0].getFullYear();
@@ -1491,13 +1490,13 @@
           return item;
         };
       }
-      for (i = _i = -rangeBefore; grouper > 0 ? _i <= -1 : _i >= -1; i = _i += grouper) {
+      for (i = _i = -1; -grouper > 0 ? _i <= -rangeBefore : _i >= -rangeBefore; i = _i += -grouper) {
         labels.push(Add(i));
       }
       for (i = _j = 0, _ref2 = range - 1; grouper > 0 ? _j <= _ref2 : _j >= _ref2; i = _j += grouper) {
         labels.push(Add(i));
       }
-      for (i = _k = range, _ref3 = rangeAfter - 1; grouper > 0 ? _k <= _ref3 : _k >= _ref3; i = _k += grouper) {
+      for (i = _k = range, _ref3 = range + rangeAfter - 1; grouper > 0 ? _k <= _ref3 : _k >= _ref3; i = _k += grouper) {
         labels.push(Add(i));
       }
       labels.shift();
@@ -1505,14 +1504,17 @@
     };
 
     AxisTime.prototype._tickX = function(value, index) {
-      var count, width,
+      var count, offset, width,
         _this = this;
       width = this.graph.width();
       count = _.filter(this.aggLabels, function(item) {
         var _ref2;
         return (_this.graph.x.domain()[0] <= (_ref2 = item.value) && _ref2 <= _this.graph.x.domain()[1]);
       }).length;
-      return index * (width / count) + (width / count) / 2;
+      offset = _.filter(this.aggLabels, function(item) {
+        return item.value < _this.graph.x.domain()[0];
+      }).length;
+      return (index - offset) * (width / count) + (width / count) / 2;
     };
 
     return AxisTime;

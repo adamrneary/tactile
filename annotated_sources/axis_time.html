@@ -339,7 +339,6 @@
 
   <span class="title">_getLabels</span>: <span class="params">(timeFrame)</span> -&gt;</span>
     dataTimeFrame = <span class="property">@utils</span>.getWholeDataTimeRange(<span class="property">@graph</span>.series.array)
-    dataMonthRange = <span class="property">@utils</span>.domainMonthRange(dataTimeFrame)
 
     labels = []
 
@@ -465,7 +464,7 @@ data and aggregate.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [-rangeBefore .. -<span class="number">1</span>] <span class="keyword">by</span> grouper
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [-<span class="number">1</span> .. -rangeBefore] <span class="keyword">by</span> -grouper
       labels.push Add(i)
 
     <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0.</span>.range - <span class="number">1</span>] <span class="keyword">by</span> grouper
@@ -484,7 +483,7 @@ data and aggregate.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [range .. rangeAfter-<span class="number">1</span>] <span class="keyword">by</span> grouper
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [range .. range+rangeAfter-<span class="number">1</span>] <span class="keyword">by</span> grouper
       labels.push Add(i)
 
     labels.shift()
@@ -495,8 +494,11 @@ data and aggregate.</p>
     count = _.filter<span class="function"><span class="params">(<span class="property">@aggLabels</span>, (item) =&gt;
       <span class="property">@graph</span>.x.domain()[<span class="number">0</span>] &lt;= item.value &lt;= <span class="property">@graph</span>.x.domain()[<span class="number">1</span>]
     )</span>.<span class="title">length</span>
+    <span class="title">offset</span> = <span class="title">_</span>.<span class="title">filter</span><span class="params">(<span class="property">@aggLabels</span>, (item) =&gt;
+      item.value &lt; <span class="property">@graph</span>.x.domain()[<span class="number">0</span>]
+    )</span>.<span class="title">length</span>
 
-    <span class="title">index</span> * <span class="params">(width / count)</span> + <span class="params">(width / count)</span> / 2</pre></div></div>
+    <span class="params">(index - offset)</span> * <span class="params">(width / count)</span> + <span class="params">(width / count)</span> / 2</pre></div></div>
             
         </li>
         
