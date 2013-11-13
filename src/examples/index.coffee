@@ -2,14 +2,6 @@ cartesian = JSON.parse require("fs").readFileSync("cartesian.json")
 noncartesian = JSON.parse require("fs").readFileSync("noncartesian.json")
 components = JSON.parse require("fs").readFileSync("components.json")
 
-# core = [
-#   shortLink: "area_renderer"
-#   title: "area renderer"
-# ,
-#   shortLink: "axis_time"
-#   title: "axis_time"
-# ]
-
 showcaseObject = routes: {}
 prepareLinks = (route, el) ->
   link = $("<a>").attr("href", "#" + route.shortLink).text(route.title)
@@ -39,10 +31,7 @@ $(document).ready ->
     prepareLinks route, $("#noncartLinkList")
   _.map components, (route) ->
     prepareLinks route, $("#compLinkList")
-  # _.map core, (route) ->
-  #   prepareLinks route, $("#coreLinkList")
 
   Showcase = Backbone.Router.extend(showcaseObject)
   showcase = new Showcase()
-#  showcase.navigate "#line"  unless window.location.hash
   window.location.hash = "#line"

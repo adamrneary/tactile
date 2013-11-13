@@ -26,21 +26,5 @@
   {
     "shortLink":"filter",
     "title":"Filters (future)"
-  },
-  {
-    "shortLink":"stacked-column-big-data",
-    "title":"Stacked column big data"
-  },
-  {
-    "shortLink":"zoom",
-    "title":"Zoom"
-  },
-  {
-    "shortLink":"column-zoom",
-    "title":"Column zoom"
-  },
-  {
-    "shortLink":"dual-scaled-zoom",
-    "title":"Secondary y-axis zoom"
   }
 ]
