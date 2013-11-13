@@ -101,7 +101,7 @@ chart.render()
 
 # interactions
 
-groupButton = $("<button class='btn btn-mini'>Grouped</button>")
+groupButton = $("<button class='btn btn-mini active'>Grouped</button>")
 stackButton = $("<button class='btn btn-mini'>Stacked</button>")
 buttonGroup = $("<div class='btn-group'></div>")
 buttonGroup.prepend groupButton 
@@ -112,9 +112,13 @@ $("#above-chart").prepend buttonGroup
 
 stackButton.click (e) ->
   chart.stackTransition()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 groupButton.click (e) ->
   chart.unstackTransition()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 
 sl = $("<div>")
