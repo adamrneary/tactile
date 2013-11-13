@@ -10,9 +10,9 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     @gapSize = options.gapSize || @gapSize
     @aggregated = @graph.aggregated[@name]
 
-  render: (transition, recalculateData, transitionSpeed)=>
+  render: (originalTransition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
-    @transition = transition if transition
+    @transition = originalTransition if originalTransition
 
     if @aggregated
       @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
@@ -84,7 +84,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
 
       @setupTooltips()
 
-      if transition
+      if transition and @animateShowHide
         canvas.selectAll("rect").each("end", (d,i) => @animateShow() if @animateShowHide)
 
     if @aggregated
@@ -188,16 +188,14 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
               draw() if count == transitionData.length
             )
         else
-          draw(@transition)
+          draw(originalTransition)
           @animateShow() if @animateShowHide
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
-        draw(@transition)
-        @animateShow() if @animateShowHide
+        draw(originalTransition)
     else
       @aggdata = @series.stack
-      draw(@transition)
-#      @animateShow() if @animateShowHide
+      draw(originalTransition)
 
 
   setupTooltips: ->

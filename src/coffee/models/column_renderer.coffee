@@ -17,9 +17,9 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @unstack = @series.unstack unless @series.unstack is undefined
     @aggregated = @graph.aggregated[@name]
 
-  render: (transition, recalculateData, transitionSpeed)=>
+  render: (originalTransition, recalculateData, transitionSpeed)=>
     @_checkData() if @checkData
-    @transition = transition if transition
+    @transition = originalTransition if originalTransition
 
     draw = (transition = undefined) =>
       if (@series.disabled)
@@ -40,7 +40,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
 
       if transition
         canvas = transition.select("g.canvas").selectAll("g.#{@_nameToId()}")
-        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
 
       selectObjects = if transition
           canvas.selectAll("rect")
@@ -93,12 +92,13 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       @dragger?.makeHandlers(newCircs)
       @dragger?.updateDraggedNode()
 
-#      selectObjects = if transition
-#        canvas.selectAll("circle")
-#      else
-#        @seriesDraggableCanvas().selectAll("circle")
+      if transition
+        draggableCanvas = transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}")
 
-      selectObjects = @seriesDraggableCanvas().selectAll("circle")
+      selectObjects = if transition
+          draggableCanvas.selectAll("circle")
+        else
+          @seriesDraggableCanvas().selectAll("circle")
       selectObjects
         .filter((d) => @_filterNaNs(d, "x", "y"))
         .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
@@ -135,7 +135,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       # set tooltip for column
       @setupTooltips()
 
-      if transition
+      if transition and @animateShowHide
         canvas.selectAll("rect").each("end", (d,i) => @animateShow() if @animateShowHide)
 
     if @aggregated
@@ -241,19 +241,16 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
                 draw() if count == transitionData.length
               )
           else
-            draw(@transition)
+            draw(originalTransition)
         else
           @aggdata = @utils.aggregateData @series.stack, @graph.x.domain()
-          draw(@transition)
-          @animateShow() if @animateShowHide
+          draw(originalTransition)
       else
         @aggdata = @utils.aggregateData @series.stack, @graph.x.domain() unless @aggdata
-        draw(@transition)
-        @animateShow() if @animateShowHide
+        draw(originalTransition)
     else
       @aggdata = @series.stack
-      draw(@transition)
-#      @animateShow() if @animateShowHide
+      draw(originalTransition)
 
   hideCircles: ()=>
     @seriesDraggableCanvas().selectAll("circle")
