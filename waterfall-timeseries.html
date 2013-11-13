@@ -101,8 +101,6 @@
               
                   <li><a href="./grid.html">Grid</a></li>
               
-                  <li><a href="./sliding-timeframe.html">Sliding timeframe</a></li>
-              
                   <li><a href="./chart-update.html">Real time updates</a></li>
               
                   <li><a href="./legend.html">Interactive legend</a></li>
@@ -112,14 +110,6 @@
                   <li><a href="./axes-toggle.html">Toggling axes</a></li>
               
                   <li><a href="./filter.html">Filters (future)</a></li>
-              
-                  <li><a href="./stacked-column-big-data.html">Stacked column big data</a></li>
-              
-                  <li><a href="./zoom.html">Zoom</a></li>
-              
-                  <li><a href="./column-zoom.html">Column zoom</a></li>
-              
-                  <li><a href="./dual-scaled-zoom.html">Secondary y-axis zoom</a></li>
               
           </ul>
       </div>
@@ -229,8 +219,8 @@ sl = $("<div>")
 $("#below-chart").html sl
 sl.slider
   min: 0
-  max: 11
-  values: [0, 11]
+  max: 7
+  values: [0, 7]
   range: true
   slide: (event, ui) ->
     chart.setXFrame([new Date(2012,  0+ui.values[0], 1).getTime(),

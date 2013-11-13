@@ -115,8 +115,8 @@
 
   sl.slider({
     min: 0,
-    max: 11,
-    values: [0, 11],
+    max: 7,
+    values: [0, 7],
     range: true,
     slide: function(event, ui) {
       chart.setXFrame([new Date(2012, 0 + ui.values[0], 1).getTime(), new Date(2012, 0 + ui.values[1], 1).getTime()]);

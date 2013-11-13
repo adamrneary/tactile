@@ -105,7 +105,7 @@ $("#below-chart").html sl
 sl.slider
   min: 0 # Jan
   max: 11 # Dec
-  values: [0, 11]
+  values: [2, 11]
   range: true
   slide: (event, ui) ->
     chart.setXFrame([new Date(2012,  0+ui.values[0], 1).getTime(),

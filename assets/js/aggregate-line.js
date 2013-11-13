@@ -1,5 +1,5 @@
 (function() {
-  var buttonGroup, chart, dataCountSpinBox, frameVal, generateData, groupButton, maxCount, setDataButton, sl, stackButton,
+  var buttonGroup, chart, dataCountSpinBox, frameVal, generateData, maxCount, setDataButton, sl,
     _this = this;
 
   maxCount = 73;
@@ -89,17 +89,9 @@
 
   buttonGroup = $("<div class='btn-group'></div>");
 
-  groupButton = $("<button class='btn btn-mini'>Grouped</button>");
-
-  stackButton = $("<button class='btn btn-mini'>Stacked</button>");
-
   setDataButton = $("<button class='btn btn-mini btn-success'>Set data</button>");
 
   dataCountSpinBox = $("<input type='number' min='0' max='73' step='1' value='36' class='span1'>");
-
-  buttonGroup.prepend(groupButton);
-
-  buttonGroup.prepend(stackButton);
 
   buttonGroup.prepend(setDataButton);
 
@@ -108,16 +100,6 @@
   $("#above-chart").prepend(buttonGroup);
 
   $("#above-chart").prepend(dataCountSpinBox);
-
-  stackButton.click(function(e) {
-    chart.stackTransition();
-    return e.stopPropagation();
-  });
-
-  groupButton.click(function(e) {
-    chart.unstackTransition();
-    return e.stopPropagation();
-  });
 
   setDataButton.click(function(e) {
     var data;

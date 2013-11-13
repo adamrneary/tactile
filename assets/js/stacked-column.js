@@ -116,7 +116,7 @@
 
   chart.render();
 
-  groupButton = $("<button class='btn btn-mini'>Grouped</button>");
+  groupButton = $("<button class='btn btn-mini active'>Grouped</button>");
 
   stackButton = $("<button class='btn btn-mini'>Stacked</button>");
 
@@ -132,11 +132,15 @@
 
   stackButton.click(function(e) {
     chart.stackTransition();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
     return e.stopPropagation();
   });
 
   groupButton.click(function(e) {
     chart.unstackTransition();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
     return e.stopPropagation();
   });
 
@@ -147,7 +151,7 @@
   sl.slider({
     min: 0,
     max: 11,
-    values: [0, 11],
+    values: [2, 11],
     range: true,
     slide: function(event, ui) {
       chart.setXFrame([new Date(2012, 0 + ui.values[0], 1).getTime(), new Date(2012, 0 + ui.values[1], 1).getTime()]);

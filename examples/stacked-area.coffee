@@ -75,7 +75,7 @@ chart.addSeries [
 chart.render()
 
 stackButton = $("<button class='btn btn-mini'>Stack</button>")
-unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
+unstackButton = $("<button class='btn btn-mini active'>Unstack</button>")
 buttonGroup = $("<div class='btn-group'></div>")
 buttonGroup.prepend stackButton
 buttonGroup.prepend unstackButton
@@ -84,9 +84,13 @@ $("#above-chart").html ''
 $("#above-chart").prepend buttonGroup
 unstackButton.click (e) ->
   chart.unstackTransition()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 stackButton.click (e) ->
   chart.stackTransition()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 
 sl = $("<div>")

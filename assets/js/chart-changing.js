@@ -4,7 +4,7 @@
 
   buttonGroup = $("<div class='btn-group'></div>");
 
-  toColumn = $("<button class='btn btn-mini'>To Column</button>");
+  toColumn = $("<button class='btn btn-mini active'>To Column</button>");
 
   toLines = $("<button class='btn btn-mini'>To Lines</button>");
 
@@ -38,7 +38,7 @@
 
   stack = $("<button class='btn btn-mini'>Stack</button>");
 
-  unstack = $("<button class='btn btn-mini'>Unstack</button>");
+  unstack = $("<button class='btn btn-mini active'>Unstack</button>");
 
   stackGroup.append(stack);
 
@@ -169,6 +169,8 @@
 
   stack.click(function(e) {
     e.stopPropagation();
+    stackGroup.find("button").removeClass("active");
+    $(this).addClass("active");
     if (currentChart === 'column' || currentChart === 'area') {
       return chart.stackTransition();
     }
@@ -176,6 +178,8 @@
 
   unstack.click(function(e) {
     e.stopPropagation();
+    stackGroup.find("button").removeClass("active");
+    $(this).addClass("active");
     if (currentChart === 'column' || currentChart === 'area') {
       return chart.unstackTransition();
     }
@@ -190,7 +194,7 @@
     max: 11,
     values: [1, 10],
     range: true,
-    slide: function(event, ui) {
+    stop: function(event, ui) {
       frameVal = [new Date(2012, 0 + ui.values[0], 1).getTime(), new Date(2012, 0 + ui.values[1], 1).getTime()];
       chart.setXFrame(frameVal);
       if (currentChart !== "pareto") {
@@ -254,24 +258,40 @@
   toColumn.click(function(e) {
     currentChart = "column";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").removeAttr("disabled");
+    stack.removeClass("active");
+    unstack.addClass("active");
     return baseRenderer();
   });
 
   toLines.click(function(e) {
     currentChart = "line";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").attr("disabled", "disabled");
     return baseRenderer();
   });
 
   toArea.click(function(e) {
     currentChart = "area";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").removeAttr("disabled");
+    stack.removeClass("active");
+    unstack.addClass("active");
     return baseRenderer();
   });
 
   toWaterfall.click(function(e) {
     currentChart = "waterfall";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").attr("disabled", "disabled");
     return baseRenderer();
   });
 
@@ -280,6 +300,9 @@
       _this = this;
     currentChart = "leaderboard";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").attr("disabled", "disabled");
     generateData = function(count) {
       var i, index, j, oldValue;
       i = 0;
@@ -330,6 +353,9 @@
   toPareto.click(function(e) {
     currentChart = "pareto";
     e.stopPropagation();
+    buttonGroup.find("button").removeClass("active");
+    $(this).addClass("active");
+    stackGroup.find("button").attr("disabled", "disabled");
     chart.data(paretoData).addSeries([
       {
         name: "Revenue",

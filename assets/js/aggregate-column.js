@@ -87,7 +87,7 @@
 
   buttonGroup = $("<div class='btn-group'></div>");
 
-  groupButton = $("<button class='btn btn-mini'>Grouped</button>");
+  groupButton = $("<button class='btn btn-mini active'>Grouped</button>");
 
   stackButton = $("<button class='btn btn-mini'>Stacked</button>");
 
@@ -109,11 +109,15 @@
 
   stackButton.click(function(e) {
     chart.stackTransition();
+    $(".btn-group button").removeClass("active");
+    $(this).addClass("active");
     return e.stopPropagation();
   });
 
   groupButton.click(function(e) {
     chart.unstackTransition();
+    $(".btn-group button").removeClass("active");
+    $(this).addClass("active");
     return e.stopPropagation();
   });
 

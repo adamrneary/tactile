@@ -101,8 +101,6 @@
               
                   <li><a href="./grid.html">Grid</a></li>
               
-                  <li><a href="./sliding-timeframe.html">Sliding timeframe</a></li>
-              
                   <li><a href="./chart-update.html">Real time updates</a></li>
               
                   <li><a href="./legend.html">Interactive legend</a></li>
@@ -112,14 +110,6 @@
                   <li><a href="./axes-toggle.html">Toggling axes</a></li>
               
                   <li><a href="./filter.html">Filters (future)</a></li>
-              
-                  <li><a href="./stacked-column-big-data.html">Stacked column big data</a></li>
-              
-                  <li><a href="./zoom.html">Zoom</a></li>
-              
-                  <li><a href="./column-zoom.html">Column zoom</a></li>
-              
-                  <li><a href="./dual-scaled-zoom.html">Secondary y-axis zoom</a></li>
               
           </ul>
       </div>
@@ -241,7 +231,7 @@ chart = new Tactile.Chart()
 chart.render()
   
 stackButton = $("<button class='btn btn-mini'>Stack</button>")
-unstackButton = $("<button class='btn btn-mini'>Unstack</button>")
+unstackButton = $("<button class='btn btn-mini active'>Unstack</button>")
 buttonGroup = $("<div class='btn-group'></div>")
 buttonGroup.prepend stackButton
 buttonGroup.prepend unstackButton 
@@ -252,9 +242,13 @@ $("#above-chart").prepend buttonGroup
 
 unstackButton.click (e) ->
   chart.unstackTransition(1500)
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 stackButton.click (e) ->
   chart.stackTransition(1500)
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
   e.stopPropagation()
 
 $("#below-chart").html ''</code>

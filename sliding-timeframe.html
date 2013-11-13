@@ -113,14 +113,6 @@
               
                   <li><a href="./filter.html">Filters (future)</a></li>
               
-                  <li><a href="./stacked-column-big-data.html">Stacked column big data</a></li>
-              
-                  <li><a href="./zoom.html">Zoom</a></li>
-              
-                  <li><a href="./column-zoom.html">Column zoom</a></li>
-              
-                  <li><a href="./dual-scaled-zoom.html">Secondary y-axis zoom</a></li>
-              
           </ul>
       </div>
 
@@ -205,7 +197,7 @@ data = [
 chart = new Tactile.Chart(grid: true)
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: "time"}})
+  .axes({x: {dimension: "linear"}})
   .setXFrame(frameVal)
   .addSeries [
     name: "xy"

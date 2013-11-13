@@ -101,8 +101,6 @@
               
                   <li><a href="./grid.html">Grid</a></li>
               
-                  <li><a href="./sliding-timeframe.html">Sliding timeframe</a></li>
-              
                   <li><a href="./chart-update.html">Real time updates</a></li>
               
                   <li><a href="./legend.html">Interactive legend</a></li>
@@ -112,14 +110,6 @@
                   <li><a href="./axes-toggle.html">Toggling axes</a></li>
               
                   <li><a href="./filter.html">Filters (future)</a></li>
-              
-                  <li><a href="./stacked-column-big-data.html">Stacked column big data</a></li>
-              
-                  <li><a href="./zoom.html">Zoom</a></li>
-              
-                  <li><a href="./column-zoom.html">Column zoom</a></li>
-              
-                  <li><a href="./dual-scaled-zoom.html">Secondary y-axis zoom</a></li>
               
           </ul>
       </div>
@@ -137,7 +127,7 @@
       <pre>
         <code id="example_js" data-language="coffeescript">buttonGroup = $("<div class='btn-group'></div>")
 
-toColumn = $("<button class='btn btn-mini'>To Column</button>")
+toColumn = $("<button class='btn btn-mini active'>To Column</button>")
 toLines = $("<button class='btn btn-mini'>To Lines</button>")
 toArea = $("<button class='btn btn-mini'>To Area</button>")
 toWaterfall = $("<button class='btn btn-mini'>To Waterfall</button>")
@@ -160,7 +150,7 @@ $("#above-chart").prepend buttonGroup
 stackGroup = $("<div class='btn-group pull-right'></div>")
 
 stack = $("<button class='btn btn-mini'>Stack</button>")
-unstack = $("<button class='btn btn-mini'>Unstack</button>")
+unstack = $("<button class='btn btn-mini active'>Unstack</button>")
 
 stackGroup.append stack
 stackGroup.append unstack
@@ -288,11 +278,17 @@ chart = new Tactile.Chart(unstack: true)
 # Stack / Unstack behavior
 stack.click (e) ->
   e.stopPropagation()
+  stackGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+
   if currentChart in ['column', 'area']
     chart.stackTransition()
 
 unstack.click (e) ->
   e.stopPropagation()
+  stackGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+
   if currentChart in ['column', 'area']
     chart.unstackTransition()
 
@@ -308,7 +304,7 @@ timeSlider.slider
   max: 11
   values: [1, 10]
   range: true
-  slide: (event, ui) ->
+  stop: (event, ui) ->
     frameVal = [new Date(2012,  0+ui.values[0], 1).getTime(),
                 new Date(2012,  0+ui.values[1], 1).getTime()]
     chart.setXFrame(frameVal)
@@ -359,30 +355,50 @@ baseRenderer = () ->
 toColumn.click (e) ->
   currentChart = "column"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").removeAttr("disabled")
+  stack.removeClass("active")
+  unstack.addClass("active")
 
   baseRenderer()
 
 toLines.click (e) ->
   currentChart = "line"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").attr("disabled", "disabled")
 
   baseRenderer()
 
 toArea.click (e) ->
   currentChart = "area"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").removeAttr("disabled")
+  stack.removeClass("active")
+  unstack.addClass("active")
 
   baseRenderer()
 
 toWaterfall.click (e) ->
   currentChart = "waterfall"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").attr("disabled", "disabled")
 
   baseRenderer()
 
 toLeaderboard.click (e) ->
   currentChart = "leaderboard"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").attr("disabled", "disabled")
+
   generateData = (count) =>
     i = 0
     while i < count
@@ -424,6 +440,9 @@ toLeaderboard.click (e) ->
 toPareto.click (e) ->
   currentChart = "pareto"
   e.stopPropagation()
+  buttonGroup.find("button").removeClass("active")
+  $(this).addClass("active")
+  stackGroup.find("button").attr("disabled", "disabled")
 
   chart.data(paretoData)
     .addSeries([

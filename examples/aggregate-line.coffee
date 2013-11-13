@@ -69,23 +69,13 @@ chart.render()
 # interactions
 
 buttonGroup = $("<div class='btn-group'></div>")
-groupButton = $("<button class='btn btn-mini'>Grouped</button>")
-stackButton = $("<button class='btn btn-mini'>Stacked</button>")
 setDataButton = $("<button class='btn btn-mini btn-success'>Set data</button>")
 dataCountSpinBox = $("<input type='number' min='0' max='73' step='1' value='36' class='span1'>")
 
-buttonGroup.prepend groupButton
-buttonGroup.prepend stackButton
 buttonGroup.prepend setDataButton
 $("#above-chart").html ''
 $("#above-chart").prepend buttonGroup
 $("#above-chart").prepend dataCountSpinBox
-stackButton.click (e) ->
-  chart.stackTransition()
-  e.stopPropagation()
-groupButton.click (e) ->
-  chart.unstackTransition()
-  e.stopPropagation()
 setDataButton.click (e) ->
   data = generateData(dataCountSpinBox.val())
   chart.data(data)

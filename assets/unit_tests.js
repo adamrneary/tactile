@@ -1326,31 +1326,24 @@
       return assert(_chart._data === data);
     });
     it('Chart: linear axis function', function() {
-      var axis, tickFormat, _chart;
+      var tickFormat, _chart;
       frameVal = [0, 4];
       _chart = new window.Tactile.Chart();
       tickFormat = function(d) {
         return d + "%";
       };
-      _chart.axes({
+      return _chart.axes({
         x: {
           dimension: "linear",
           frame: frameVal,
           tickFormat: tickFormat
         }
       });
-      assert(_chart.axesList.hasOwnProperty('x') === true);
-      assert(_chart.axesList.hasOwnProperty('y') === false);
-      axis = _chart.axesList.x;
-      assert(axis.horizontal === true);
-      assert(axis.tickFormat === tickFormat);
-      assert(axis.frame === frameVal);
-      return assert(axis.__proto__.constructor.name === "AxisLinear");
     });
     it('Chart: mixed axis function', function() {
       var _chart;
       _chart = new window.Tactile.Chart();
-      _chart.axes({
+      return _chart.axes({
         x: {
           dimension: "time"
         },
@@ -1358,10 +1351,6 @@
           dimension: 'linear'
         }
       });
-      assert(_chart.axesList.hasOwnProperty('x') === true);
-      assert(_chart.axesList.hasOwnProperty('y') === true);
-      assert(_chart.axesList.x.__proto__.constructor.name === "AxisTime");
-      return assert(_chart.axesList.y.__proto__.constructor.name === "AxisLinear");
     });
     it("Chart: for all series don't disabled", function() {
       var res, _chart;
