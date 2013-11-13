@@ -103,10 +103,11 @@ sl = $("<div>")
   .attr("class", "ui-horizontal-slider")
 $("#below-chart").html sl
 sl.slider
-  min: new Date(2012, 0, 1).getTime() # Jan
-  max: new Date(2012,11, 1).getTime() # Dec
-  values: frameVal
+  min: 0 # Jan
+  max: 11 # Dec
+  values: [0, 11]
   range: true
   slide: (event, ui) ->
-    chart.setXFrame(ui.values)
+    chart.setXFrame([new Date(2012,  0+ui.values[0], 1).getTime(),
+                     new Date(2012,  0+ui.values[1], 1).getTime()])
     chart.render()
