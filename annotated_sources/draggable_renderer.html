@@ -162,7 +162,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">DraggableRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  initialize: -&gt;
+  <span class="attribute">initialize</span>:<span class="function"> -&gt;</span>
     <span class="property">@active</span> = <span class="literal">null</span></pre></div></div>
             
         </li>
@@ -178,18 +178,18 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@graph</span>.onElementChange =&gt;
-      <span class="property">@graph</span>.element().addEventListener(<span class="string">"click"</span>, (() =&gt; <span class="comment"># use native js, because method 'on' replace existing handler</span>
+            <div class="content"><div class='highlight'><pre>    <span class="property">@graph</span>.onElementChange<span class="function"> =&gt;</span>
+      <span class="property">@graph</span>.element<span class="function"><span class="params">()</span>.<span class="title">addEventListener</span><span class="params">(<span class="string">"click"</span>, (() =&gt; # use <span class="reserved">native</span> js, because method <span class="string">'on'</span> replace existing handler
         <span class="property">@active</span> = <span class="literal">null</span>
         <span class="property">@render</span>()
-      ), <span class="literal">true</span>)
+      ), <span class="literal">true</span>)</span>
 
-    window.addEventListener(<span class="string">"keyup"</span>, (e) =&gt;
+    <span class="title">window</span>.<span class="title">addEventListener</span><span class="params">(<span class="string">"keyup"</span>, (e) =&gt;
       clearInterval(<span class="property">@id</span>) <span class="keyword">if</span> <span class="property">@id</span>
       <span class="property">@id</span> = <span class="literal">null</span>
-    )
+    )</span>
 
-    window.addEventListener(<span class="string">"keydown"</span>, (e) =&gt;
+    <span class="title">window</span>.<span class="title">addEventListener</span><span class="params">(<span class="string">"keydown"</span>, (e) =&gt;
       <span class="keyword">switch</span> e.keyCode
         <span class="keyword">when</span> <span class="number">37</span> <span class="keyword">then</span> <span class="property">@selectPerviousEditableValue</span>()
         <span class="keyword">when</span> <span class="number">39</span> <span class="keyword">then</span> <span class="property">@selectNextEditableValue</span>()
@@ -207,9 +207,9 @@
             <span class="property">@decreaseEditableValue</span>()
             <span class="property">@id</span> = setInterval(decrease, <span class="number">200</span>) <span class="keyword">unless</span> <span class="property">@id</span>
           e.preventDefault()
-    )
+    )</span>
 
-  selectNextEditableValue: =&gt;
+  <span class="title">selectNextEditableValue</span>: =&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@active</span>
     setNext = <span class="literal">false</span>
     i = <span class="number">0</span>
@@ -226,7 +226,7 @@
     <span class="property">@hideCircles</span>?()
     <span class="property">@render</span>()
 
-  selectPerviousEditableValue: =&gt;
+  <span class="attribute">selectPerviousEditableValue</span>:<span class="function"> =&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@active</span>
     setNext = <span class="literal">false</span>
     i = <span class="property">@aggdata</span>.length-<span class="number">1</span>
@@ -244,18 +244,18 @@
     <span class="property">@render</span>()
 
 
-  setActive: (d, i)=&gt;
+  <span class="attribute">setActive</span>: <span class="function"><span class="params">(d, i)</span>=&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@utils</span>.ourFunctor(<span class="property">@series</span>.isEditable, d, i)
     <span class="property">@active</span> = d
     <span class="property">@render</span>()
 
-  increaseEditableValue: ()=&gt;
+  <span class="attribute">increaseEditableValue</span>: <span class="function"><span class="params">()</span>=&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@active</span>
     <span class="property">@active</span>.y++
     <span class="property">@render</span>()
 
 
-  decreaseEditableValue: ()=&gt;
+  <span class="attribute">decreaseEditableValue</span>: <span class="function"><span class="params">()</span>=&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@active</span>
     <span class="property">@active</span>.y--
     <span class="property">@render</span>()</pre></div></div>

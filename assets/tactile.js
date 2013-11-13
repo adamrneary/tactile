@@ -1894,14 +1894,14 @@
       return this.aggregated = this.graph.aggregated[this.name];
     };
 
-    ColumnRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+    ColumnRenderer.prototype.render = function(originalTransition, recalculateData, transitionSpeed) {
       var aggdata, aggdataOld, aggdataOldSource, aggdataSource, animateTransition, count, draw, maxAggdata, maxAggdataOld, minAggdata, minAggdataOld, nodes, transitionData,
         _this = this;
       if (this.checkData) {
         this._checkData();
       }
-      if (transition) {
-        this.transition = transition;
+      if (originalTransition) {
+        this.transition = originalTransition;
       }
       draw = function(transition) {
         var canvas, circ, draggableCanvas, newCircs, nodes, selectObjects, _ref4, _ref5, _ref6;
@@ -1924,7 +1924,6 @@
         nodes.exit().remove();
         if (transition) {
           canvas = transition.select("g.canvas").selectAll("g." + (_this._nameToId()));
-          draggableCanvas = transition.select("g.draggable-canvas").selectAll("g." + (_this._nameToId()));
         }
         selectObjects = transition ? canvas.selectAll("rect") : _this.seriesCanvas().selectAll("rect");
         selectObjects.filter(function(d) {
@@ -1977,7 +1976,10 @@
         if ((_ref6 = _this.dragger) != null) {
           _ref6.updateDraggedNode();
         }
-        selectObjects = _this.seriesDraggableCanvas().selectAll("circle");
+        if (transition) {
+          draggableCanvas = transition.select("g.draggable-canvas").selectAll("g." + (_this._nameToId()));
+        }
+        selectObjects = transition ? draggableCanvas.selectAll("circle") : _this.seriesDraggableCanvas().selectAll("circle");
         selectObjects.filter(function(d) {
           return _this._filterNaNs(d, "x", "y");
         }).attr("cx", function(d) {
@@ -2031,7 +2033,7 @@
           });
         }
         _this.setupTooltips();
-        if (transition) {
+        if (transition && _this.animateShowHide) {
           return canvas.selectAll("rect").each("end", function(d, i) {
             if (_this.animateShowHide) {
               return _this.animateShow();
@@ -2157,27 +2159,21 @@
                 }
               });
             } else {
-              return draw(this.transition);
+              return draw(originalTransition);
             }
           } else {
             this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
-            draw(this.transition);
-            if (this.animateShowHide) {
-              return this.animateShow();
-            }
+            return draw(originalTransition);
           }
         } else {
           if (!this.aggdata) {
             this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
           }
-          draw(this.transition);
-          if (this.animateShowHide) {
-            return this.animateShow();
-          }
+          return draw(originalTransition);
         }
       } else {
         this.aggdata = this.series.stack;
-        return draw(this.transition);
+        return draw(originalTransition);
       }
     };
 
@@ -3932,14 +3928,14 @@
       return this.aggregated = this.graph.aggregated[this.name];
     };
 
-    WaterfallRenderer.prototype.render = function(transition, recalculateData, transitionSpeed) {
+    WaterfallRenderer.prototype.render = function(originalTransition, recalculateData, transitionSpeed) {
       var aggdata, aggdataOld, aggdataOldSource, aggdataSource, animateTransition, count, draw, maxAggdata, maxAggdataOld, minAggdata, minAggdataOld, nodes, transitionData, _ref10,
         _this = this;
       if (this.checkData) {
         this._checkData();
       }
-      if (transition) {
-        this.transition = transition;
+      if (originalTransition) {
+        this.transition = originalTransition;
       }
       if (this.aggregated) {
         this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
@@ -4007,7 +4003,7 @@
         });
         line.exit().remove();
         _this.setupTooltips();
-        if (transition) {
+        if (transition && _this.animateShowHide) {
           return canvas.selectAll("rect").each("end", function(d, i) {
             if (_this.animateShowHide) {
               return _this.animateShow();
@@ -4134,7 +4130,7 @@
               }
             });
           } else {
-            draw(this.transition);
+            draw(originalTransition);
             if (this.animateShowHide) {
               return this.animateShow();
             }
@@ -4143,14 +4139,11 @@
           if (!this.aggdata) {
             this.aggdata = this.utils.aggregateData(this.series.stack, this.graph.x.domain());
           }
-          draw(this.transition);
-          if (this.animateShowHide) {
-            return this.animateShow();
-          }
+          return draw(originalTransition);
         }
       } else {
         this.aggdata = this.series.stack;
-        return draw(this.transition);
+        return draw(originalTransition);
       }
     };
 

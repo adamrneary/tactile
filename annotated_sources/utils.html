@@ -162,11 +162,11 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Utils</span></span>
-  <span class="property">@log</span>: (m) -&gt;
+  <span class="property">@log</span>: <span class="function"><span class="params">(m)</span> -&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> Tactile.debug <span class="keyword">is</span> <span class="literal">true</span>
     console.log m
 
-  <span class="property">@warn</span>: (m) -&gt;
+  <span class="property">@warn</span>: <span class="function"><span class="params">(m)</span> -&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> Tactile.debug <span class="keyword">is</span> <span class="literal">true</span>
     console.warn m</pre></div></div>
             
@@ -204,7 +204,7 @@ order to return a string.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  ourFunctor: () -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="attribute">ourFunctor</span>: <span class="function"><span class="params">()</span> -&gt;</span>
     <span class="keyword">switch</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>]
       <span class="keyword">when</span> <span class="literal">undefined</span>
         <span class="literal">undefined</span>
@@ -213,7 +213,7 @@ order to return a string.</p>
       <span class="keyword">else</span>
         arguments[<span class="number">0</span>]
 
-  checkString: (str, strName, d) -&gt;
+  <span class="attribute">checkString</span>: <span class="function"><span class="params">(str, strName, d)</span> -&gt;</span>
     check = <span class="literal">true</span>
 
     <span class="keyword">if</span> <span class="keyword">typeof</span> str <span class="keyword">isnt</span> <span class="string">"string"</span>
@@ -226,7 +226,7 @@ order to return a string.</p>
 
     check
 
-  checkNumber: (num, numName, d) -&gt;
+  <span class="attribute">checkNumber</span>: <span class="function"><span class="params">(num, numName, d)</span> -&gt;</span>
     check = <span class="literal">true</span>
 
     <span class="keyword">if</span> <span class="keyword">typeof</span> num <span class="keyword">isnt</span> <span class="string">"number"</span>
@@ -236,7 +236,7 @@ order to return a string.</p>
 
     check
 
-  checkArray: (arr, arrName, d) -&gt;
+  <span class="attribute">checkArray</span>: <span class="function"><span class="params">(arr, arrName, d)</span> -&gt;</span>
     check = <span class="literal">true</span>
     <span class="keyword">if</span> !_.isArray(arr)
       Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{arrName}</span>' invalid type: <span class="subst">#{arr}</span>, array expected"</span>)
@@ -245,7 +245,7 @@ order to return a string.</p>
 
     check
 
-  checkFunction: (func, funcName, d) -&gt;
+  <span class="attribute">checkFunction</span>: <span class="function"><span class="params">(func, funcName, d)</span> -&gt;</span>
     check = <span class="literal">true</span>
     <span class="keyword">if</span> !_.isFunction(func)
       Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{funcName}</span>' invalid type: <span class="subst">#{func}</span>, function expected"</span>)
@@ -254,7 +254,7 @@ order to return a string.</p>
 
     check
 
-  checkObject: (obj, objName, d) -&gt;
+  <span class="attribute">checkObject</span>: <span class="function"><span class="params">(obj, objName, d)</span> -&gt;</span>
     check = <span class="literal">true</span>
     <span class="keyword">if</span> <span class="keyword">typeof</span> str <span class="keyword">isnt</span> <span class="string">"object"</span>
       Tactile.Utils.warn(<span class="string">"Tactile error: '<span class="subst">#{objName}</span>' invalid type: <span class="subst">#{obj}</span>, object expected"</span>)
@@ -263,9 +263,9 @@ order to return a string.</p>
 
     check
 
-  aggregateData: (originData, domain) -&gt;
+  <span class="attribute">aggregateData</span>: <span class="function"><span class="params">(originData, domain)</span> -&gt;</span>
     xDomain = domain
-    data = _.filter originData, (d)-&gt;
+    data = _.filter originData, <span class="function"><span class="params">(d)</span>-&gt;</span>
       d.x &gt;= xDomain[<span class="number">0</span>] <span class="keyword">and</span> d.x &lt;= xDomain[<span class="number">1</span>]
 
     aggdata = []
@@ -281,7 +281,7 @@ order to return a string.</p>
 
     <span class="keyword">for</span> d, i <span class="keyword">in</span> originData
       <span class="keyword">break</span> <span class="keyword">unless</span> i &lt; originalIndex
-      aggdata.push _.defaults({x: (i - originalIndex), range: [d.x, d.x], stuff: <span class="literal">true</span>}, d)
+      aggdata.push _.defaults({<span class="attribute">x</span>: (i - originalIndex), <span class="attribute">range</span>: [d.x, d.x], <span class="attribute">stuff</span>: <span class="literal">true</span>}, d)
 
     <span class="keyword">if</span> range &lt;= <span class="number">12</span>
       grouper = <span class="number">1</span>
@@ -338,7 +338,7 @@ order to return a string.</p>
         tmp.r   = <span class="number">5</span>
         tmp.range = [data[start].x, data[end].x]
 
-        _.each data.slice(start, end + <span class="number">1</span>), (item)-&gt;
+        _.each data.slice<span class="function"><span class="params">(start, end + <span class="number">1</span>)</span>, <span class="params">(item)</span>-&gt;</span>
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
@@ -391,7 +391,7 @@ order to return a string.</p>
         tmp.r   = <span class="number">5</span>
         tmp.range = [data[start].x, data[end].x]
 
-        _.each data.slice(start, end + <span class="number">1</span>), (item)-&gt;
+        _.each data.slice<span class="function"><span class="params">(start, end + <span class="number">1</span>)</span>, <span class="params">(item)</span>-&gt;</span>
           tmp.y   = tmp.y   + item.y
           tmp.y0  = tmp.y0  + item.y0
           tmp.y00 = tmp.y00 + item.y00
@@ -403,11 +403,11 @@ order to return a string.</p>
 
     <span class="keyword">for</span> i <span class="keyword">in</span> [aggdata.length..(originData.length-<span class="number">1</span>)]
       d = originData[i]
-      aggdata.push _.defaults({x: i-originalIndex, range: [d.x, d.x], stuff: <span class="literal">true</span>}, d)
+      aggdata.push _.defaults({<span class="attribute">x</span>: i-originalIndex, <span class="attribute">range</span>: [d.x, d.x], <span class="attribute">stuff</span>: <span class="literal">true</span>}, d)
 
     <span class="keyword">return</span> aggdata
 
-  domainMonthRange: (domain) -&gt;
+  <span class="attribute">domainMonthRange</span>: <span class="function"><span class="params">(domain)</span> -&gt;</span>
     date = [<span class="keyword">new</span> Date(domain[<span class="number">0</span>]), <span class="keyword">new</span> Date(domain[<span class="number">1</span>])]</pre></div></div>
             
         </li>
@@ -431,7 +431,7 @@ order to return a string.</p>
 
     (endYear - startYear) * <span class="number">12</span> + (endMonth - startMonth) + <span class="number">1</span>
 
-  animateTransition: (domainOld, domainNew) -&gt;
+  <span class="attribute">animateTransition</span>: <span class="function"><span class="params">(domainOld, domainNew)</span> -&gt;</span>
     <span class="keyword">if</span>           <span class="property">@domainMonthRange</span>(domainNew) &lt;= <span class="number">12</span>
       animateTransition = <span class="property">@domainMonthRange</span>(domainOld) &gt; <span class="number">12</span>
     <span class="keyword">else</span> <span class="keyword">if</span> <span class="number">12</span> &lt; <span class="property">@domainMonthRange</span>(domainNew) &lt;= <span class="number">36</span>

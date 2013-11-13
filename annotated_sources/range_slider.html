@@ -183,13 +183,13 @@ and sliderClass if you wish to call
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">RangeSlider</span></span>
-  constructor: (options) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(options)</span> -&gt;</span>
     <span class="property">@element</span> = options.element
     <span class="property">@graph</span> = options.graph
     <span class="property">@timeSliderClass</span> = options.sliderClass
 
-    <span class="property">@updateCallback</span> = options.updateCallback || -&gt;
-    <span class="property">@initCallback</span> = options.updateCallback || -&gt;</pre></div></div>
+    <span class="property">@updateCallback</span> = options.updateCallback ||<span class="function"> -&gt;</span>
+    <span class="property">@initCallback</span> = options.updateCallback ||<span class="function"> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -204,7 +204,7 @@ and sliderClass if you wish to call
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    $ =&gt;
+            <div class="content"><div class='highlight'><pre>    $<span class="function"> =&gt;</span>
       values = options.values || [
         <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>], <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>]
       ]
@@ -217,11 +217,11 @@ and sliderClass if you wish to call
         sliderContainer = <span class="property">@element</span>
 
       sliderContainer.slider
-        range: <span class="literal">true</span>
-        min: <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>]
-        max: <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>]
-        values: values
-        slide: (event, ui) =&gt;
+        <span class="attribute">range</span>: <span class="literal">true</span>
+        <span class="attribute">min</span>: <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>]
+        <span class="attribute">max</span>: <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>]
+        <span class="attribute">values</span>: values
+        <span class="attribute">slide</span>: <span class="function"><span class="params">(event, ui)</span> =&gt;</span>
           <span class="property">@updateGraph</span>(ui.values)</pre></div></div>
             
         </li>
@@ -243,7 +243,7 @@ and sliderClass if you wish to call
             <span class="property">@graph</span>.window.xMax = <span class="literal">undefined</span>
 
 
-    <span class="property">@graph</span>.onUpdate =&gt;
+    <span class="property">@graph</span>.onUpdate<span class="function"> =&gt;</span>
       values = $(<span class="property">@element</span>).slider(<span class="string">"option"</span>, <span class="string">"values"</span>)
       $(<span class="property">@element</span>).slider <span class="string">"option"</span>, <span class="string">"min"</span>, <span class="property">@graph</span>.dataDomain()[<span class="number">0</span>]
       $(<span class="property">@element</span>).slider <span class="string">"option"</span>, <span class="string">"max"</span>, <span class="property">@graph</span>.dataDomain()[<span class="number">1</span>]
@@ -252,7 +252,7 @@ and sliderClass if you wish to call
       $(<span class="property">@element</span>).slider <span class="string">"option"</span>, <span class="string">"values"</span>, values
 
 
-  updateGraph: (values) =&gt;
+  <span class="attribute">updateGraph</span>: <span class="function"><span class="params">(values)</span> =&gt;</span>
     <span class="property">@graph</span>.window.xMin = values[<span class="number">0</span>]
     <span class="property">@graph</span>.window.xMax = values[<span class="number">1</span>]
     <span class="property">@updateCallback</span>(values, <span class="property">@element</span>)

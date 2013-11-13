@@ -162,25 +162,25 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Series</span></span>
-  constructor: (options = {}) -&gt;
+  <span class="attribute">constructor</span>: <span class="function"><span class="params">(options = {})</span> -&gt;</span>
     defaults =
-      dataTransform: (d) -&gt; d
-      yAxis: <span class="string">'y'</span>
+      <span class="attribute">dataTransform</span>: <span class="function"><span class="params">(d)</span> -&gt;</span> d
+      <span class="attribute">yAxis</span>: <span class="string">'y'</span>
 
     _.defaults options, defaults
-    _.each options, (val, key) =&gt;
+    _.each options, <span class="function"><span class="params">(val, key)</span> =&gt;</span>
       @[key] = val
 
-  ofDefaultAxis: -&gt;
+  <span class="attribute">ofDefaultAxis</span>:<span class="function"> -&gt;</span>
     <span class="property">@yAxis</span> <span class="keyword">is</span> <span class="string">'y'</span>
 
-  disable: -&gt;
+  <span class="attribute">disable</span>:<span class="function"> -&gt;</span>
     <span class="property">@disabled</span> = <span class="literal">true</span>
 
-  enable: -&gt;
+  <span class="attribute">enable</span>:<span class="function"> -&gt;</span>
     <span class="property">@disabled</span> = <span class="literal">false</span>
 
-  toggle: -&gt;
+  <span class="attribute">toggle</span>:<span class="function"> -&gt;</span>
     <span class="property">@disabled</span> = <span class="keyword">not</span> <span class="property">@disabled</span></pre></div></div>
             
         </li>

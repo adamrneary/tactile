@@ -162,46 +162,46 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">BulletRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  name: <span class="string">"bullet"</span>
+  <span class="attribute">name</span>: <span class="string">"bullet"</span>
 
-  specificDefaults:
-    format: d3.format(<span class="string">"p"</span>)
-    tickCount: <span class="number">5</span>
-    barHeight: <span class="number">50</span>
-    margin:
-      top: <span class="number">5</span>
-      right: <span class="number">40</span>
-      bottom: <span class="number">20</span>
-      left: <span class="number">120</span>
+  <span class="attribute">specificDefaults</span>:
+    <span class="attribute">format</span>: d3.format(<span class="string">"p"</span>)
+    <span class="attribute">tickCount</span>: <span class="number">5</span>
+    <span class="attribute">barHeight</span>: <span class="number">50</span>
+    <span class="attribute">margin</span>:
+      <span class="attribute">top</span>: <span class="number">5</span>
+      <span class="attribute">right</span>: <span class="number">40</span>
+      <span class="attribute">bottom</span>: <span class="number">20</span>
+      <span class="attribute">left</span>: <span class="number">120</span>
 
-  initialize: =&gt;
+  <span class="attribute">initialize</span>:<span class="function"> =&gt;</span>
     <span class="property">@format</span> = <span class="property">@series</span>.format <span class="keyword">unless</span> <span class="property">@series</span>.format <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@margin</span> = <span class="property">@series</span>.margin <span class="keyword">unless</span> <span class="property">@series</span>.margin <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@tickCount</span> = <span class="property">@series</span>.tickCount <span class="keyword">unless</span> <span class="property">@series</span>.tickCount <span class="keyword">is</span> <span class="literal">undefined</span>
 
-  render: (transition, recalculateData, transitionSpeed) -&gt;
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span> -&gt;</span>
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
 
-    width: <span class="property">@margin</span>.width - <span class="property">@margin</span>.left - <span class="property">@margin</span>.right
-    height: <span class="property">@barHeight</span> - <span class="property">@margin</span>.top - <span class="property">@margin</span>.bottom
+    <span class="attribute">width</span>: <span class="property">@margin</span>.width - <span class="property">@margin</span>.left - <span class="property">@margin</span>.right
+    <span class="attribute">height</span>: <span class="property">@barHeight</span> - <span class="property">@margin</span>.top - <span class="property">@margin</span>.bottom
 
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
 
-    <span class="property">@series</span>.stack.forEach((d, i) -&gt;
+    <span class="property">@series</span>.stack.forEach<span class="function"><span class="params">((d, i) -&gt;
         d.maxValue = d3.max([d3.max(d.ranges, (d) -&gt; d.value), d3.max(d.measures, (d) -&gt; d.value), d3.max(d.markers, (d) -&gt; d.value)])
         d.minValue = d3.min([d3.min(d.ranges, (d) -&gt; d.value), d3.min(d.measures, (d) -&gt; d.value), d3.min(d.markers, (d) -&gt; d.value)])
-    )
+    )</span>
 
-    bars = <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"g.bullet.bars"</span>)
-      .data(<span class="property">@series</span>.stack)
+    <span class="title">bars</span> = @<span class="title">seriesCanvas</span><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.bars"</span>)</span>
+      .<span class="title">data</span><span class="params">(<span class="property">@series</span>.stack)</span>
 
-    bars.enter()
-      .append(<span class="string">"svg:g"</span>)
-      .attr(<span class="string">"class"</span>, <span class="string">"bullet bars"</span>)
+    <span class="title">bars</span>.<span class="title">enter</span><span class="params">()</span>
+      .<span class="title">append</span><span class="params">(<span class="string">"svg:g"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, <span class="string">"bullet bars"</span>)</span>
 
-    bars.exit().remove()
+    <span class="title">bars</span>.<span class="title">exit</span><span class="params">()</span>.<span class="title">remove</span><span class="params">()</span>
 
-    <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"g.bullet.bars"</span>).each((d, i) -&gt;</pre></div></div>
+    @<span class="title">seriesCanvas</span><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.bars"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;</pre></div></div>
             
         </li>
         
@@ -221,7 +221,7 @@
           .append(<span class="string">"svg:g"</span>)
           .attr(<span class="string">"class"</span>, <span class="string">"bullet titles"</span>)
 
-        d3.select(@).selectAll(<span class="string">"g.bullet.titles"</span>).each((d, i) -&gt;
+        d3.select<span class="function"><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.titles"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
           title = d3.select(@).selectAll(<span class="string">"text.bullet.title"</span>).data([d])
           title.enter()
             .append(<span class="string">"text"</span>)
@@ -233,7 +233,7 @@
             .append(<span class="string">"text"</span>)
             .attr(<span class="string">"class"</span>, <span class="string">"bullet subtitle"</span>)
           subtitle.exit().remove()
-        )</pre></div></div>
+        )</span></pre></div></div>
             
         </li>
         
@@ -249,26 +249,26 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        rengesData = d.ranges.slice()
-        rengesData.sort((a, b)-&gt;
+        rengesData.sort<span class="function"><span class="params">((a, b)-&gt;
           <span class="keyword">if</span> Math.abs(a.value) &gt; Math.abs(b.value)
             -<span class="number">1</span>
           <span class="keyword">else</span> <span class="keyword">if</span> Math.abs(a.value) &lt; Math.abs(b.value)
             <span class="number">1</span>
           <span class="keyword">else</span>
             <span class="number">0</span>
-        )
-        ranges = d3.select(@).selectAll(<span class="string">"g.bullet.ranges"</span>).data([rengesData])
-        ranges.enter()
-          .append(<span class="string">"svg:g"</span>)
-          .attr(<span class="string">"class"</span>, <span class="string">"bullet ranges"</span>)
+        )</span>
+        <span class="title">ranges</span> = <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.ranges"</span>)</span>.<span class="title">data</span><span class="params">([rengesData])</span>
+        <span class="title">ranges</span>.<span class="title">enter</span><span class="params">()</span>
+          .<span class="title">append</span><span class="params">(<span class="string">"svg:g"</span>)</span>
+          .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, <span class="string">"bullet ranges"</span>)</span>
 
-        d3.select(@).selectAll(<span class="string">"g.bullet.ranges"</span>).each((d, i) -&gt;
+        <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.ranges"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
           range = d3.select(@).selectAll(<span class="string">"rect.bullet.range"</span>).data(d)
           range.enter()
             .append(<span class="string">"svg:rect"</span>)
             .attr(<span class="string">"class"</span>, <span class="string">"bullet range"</span>)
           range.exit().remove()
-        )</pre></div></div>
+        )</span></pre></div></div>
             
         </li>
         
@@ -284,26 +284,26 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        measuresData = d.measures.slice()
-        measuresData.sort((a, b)-&gt;
+        measuresData.sort<span class="function"><span class="params">((a, b)-&gt;
           <span class="keyword">if</span> Math.abs(a.value) &gt; Math.abs(b.value)
             -<span class="number">1</span>
           <span class="keyword">else</span> <span class="keyword">if</span> Math.abs(a.value) &lt; Math.abs(b.value)
             <span class="number">1</span>
           <span class="keyword">else</span>
             <span class="number">0</span>
-        )
-        measures = d3.select(@).selectAll(<span class="string">"g.bullet.measures"</span>).data([measuresData])
-        measures.enter()
-          .append(<span class="string">"svg:g"</span>)
-          .attr(<span class="string">"class"</span>, <span class="string">"bullet measures"</span>)
+        )</span>
+        <span class="title">measures</span> = <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.measures"</span>)</span>.<span class="title">data</span><span class="params">([measuresData])</span>
+        <span class="title">measures</span>.<span class="title">enter</span><span class="params">()</span>
+          .<span class="title">append</span><span class="params">(<span class="string">"svg:g"</span>)</span>
+          .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, <span class="string">"bullet measures"</span>)</span>
 
-        d3.select(@).selectAll(<span class="string">"g.bullet.measures"</span>).each((d, i) -&gt;
+        <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.measures"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
           measure = d3.select(@).selectAll(<span class="string">"rect.bullet.measure"</span>).data(d)
           measure.enter()
             .append(<span class="string">"svg:rect"</span>)
             .attr(<span class="string">"class"</span>, <span class="string">"bullet measure"</span>)
           measure.exit().remove()
-        )</pre></div></div>
+        )</span></pre></div></div>
             
         </li>
         
@@ -323,13 +323,13 @@
           .append(<span class="string">"svg:g"</span>)
           .attr(<span class="string">"class"</span>, <span class="string">"bullet markers"</span>)
 
-        d3.select(@).selectAll(<span class="string">"g.bullet.markers"</span>).each((d, i) -&gt;
+        d3.select<span class="function"><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.markers"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
           marker = d3.select(@).selectAll(<span class="string">"line.bullet.marker"</span>).data(d)
           marker.enter()
             .append(<span class="string">"svg:line"</span>)
             .attr(<span class="string">"class"</span>, <span class="string">"bullet marker"</span>)
           marker.exit().remove()
-        )
+        )</span>
     )</pre></div></div>
             
         </li>
@@ -345,26 +345,26 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> g.bullet.titles"</span>)
-      .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{@_xOffset(d, i) - <span class="number">6</span>}</span>, <span class="subst">#{@_yOffset(d, i) + @barHeight/<span class="number">2</span> - <span class="number">5</span>}</span>)"</span>)
+            <div class="content"><div class='highlight'><pre>    <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> g.bullet.titles"</span>)
+      .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{<span class="property">@_xOffset</span>(d, i) - <span class="number">6</span>}</span>, <span class="subst">#{<span class="property">@_yOffset</span>(d, i) + <span class="property">@barHeight</span>/<span class="number">2</span> - <span class="number">5</span>}</span>)"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.bullet.title"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'title'</span>))
-      .duration(transitionSpeed)
-      .text((d) -&gt; d.title)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(3 -8)"</span>)
-      .attr(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.bullet.title"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'title'</span>))</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+      .<span class="title">text</span><span class="params">((d) -&gt; d.title)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(3 -8)"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.bullet.subtitle"</span>)
-      .filter((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'subtitle'</span>))
-      .duration(transitionSpeed)
-      .text((d) -&gt; d.subtitle)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(3 -8)"</span>)
-      .attr(<span class="string">"dy"</span>, <span class="string">"1em"</span>)
-      .attr(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.bullet.subtitle"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; <span class="property">@_filterNaNs</span>(d, <span class="string">'subtitle'</span>))</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+      .<span class="title">text</span><span class="params">((d) -&gt; d.subtitle)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(3 -8)"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"dy"</span>, <span class="string">"1em"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)</span>
 
-    render = @
-    <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"g.bullet.bars"</span>).each((d, i) -&gt;
+    <span class="title">render</span> = @
+    @<span class="title">seriesCanvas</span><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.bars"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
       <span class="keyword">if</span> d.minValue &lt; <span class="number">0</span> <span class="keyword">and</span> d.maxValue &lt; <span class="number">0</span>
         scal = d3.scale.linear()
           .domain([d.minValue, <span class="number">0</span>])
@@ -398,15 +398,15 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>      render.seriesCanvas().selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.ranges"</span>)
-        .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)
+        .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)</span>
 
-      curEl.selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> rect.bullet.range"</span>)
-        .filter((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))
-        .duration(transitionSpeed)
-        .attr(<span class="string">"x"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span> <span class="keyword">then</span> scal(<span class="number">0</span>) <span class="keyword">else</span> scal(d.value))
-        .attr(<span class="string">"height"</span>, render.barHeight/<span class="number">2</span>)
-        .attr(<span class="string">"width"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span>  <span class="keyword">then</span> scal(d.value) - scal(<span class="number">0</span>) <span class="keyword">else</span> scal(<span class="number">0</span>) - scal(d.value))
-        .attr(<span class="string">"fill"</span>, (d) -&gt; d.color)</pre></div></div>
+      <span class="title">curEl</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{render._nameToId()}</span> rect.bullet.range"</span>)</span>
+        .<span class="title">filter</span><span class="params">((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))</span>
+        .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span> <span class="keyword">then</span> scal(<span class="number">0</span>) <span class="keyword">else</span> scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"height"</span>, render.barHeight/<span class="number">2</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"width"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span>  <span class="keyword">then</span> scal(d.value) - scal(<span class="number">0</span>) <span class="keyword">else</span> scal(<span class="number">0</span>) - scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, (d) -&gt; d.color)</span></pre></div></div>
             
         </li>
         
@@ -422,16 +422,16 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>      render.seriesCanvas().selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.measures"</span>)
-        .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)
+        .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)</span>
 
-      curEl.selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> rect.bullet.measure"</span>)
-        .filter((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))
-        .duration(transitionSpeed)
-        .attr(<span class="string">"x"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span> <span class="keyword">then</span> scal(<span class="number">0</span>) <span class="keyword">else</span> scal(d.value))
-        .attr(<span class="string">"height"</span>, render.barHeight / <span class="number">2</span> / <span class="number">3</span>)
-        .attr(<span class="string">"transform"</span>, <span class="string">"translate(0, <span class="subst">#{render.barHeight / <span class="number">2</span> / <span class="number">3</span>}</span>)"</span>)
-        .attr(<span class="string">"width"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span>  <span class="keyword">then</span> scal(d.value) - scal(<span class="number">0</span>) <span class="keyword">else</span> scal(<span class="number">0</span>) - scal(d.value))
-        .attr(<span class="string">"fill"</span>, (d) -&gt; d.color)</pre></div></div>
+      <span class="title">curEl</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{render._nameToId()}</span> rect.bullet.measure"</span>)</span>
+        .<span class="title">filter</span><span class="params">((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))</span>
+        .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span> <span class="keyword">then</span> scal(<span class="number">0</span>) <span class="keyword">else</span> scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"height"</span>, render.barHeight / <span class="number">2</span> / <span class="number">3</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(0, <span class="subst">#{render.barHeight / <span class="number">2</span> / <span class="number">3</span>}</span>)"</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"width"</span>, (d) =&gt; <span class="keyword">if</span> d.value &gt; <span class="number">0</span>  <span class="keyword">then</span> scal(d.value) - scal(<span class="number">0</span>) <span class="keyword">else</span> scal(<span class="number">0</span>) - scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, (d) -&gt; d.color)</span></pre></div></div>
             
         </li>
         
@@ -447,17 +447,17 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>      render.seriesCanvas().selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.markers"</span>)
-        .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)
+        .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)</span>
 
-      curEl.selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> line.bullet.marker"</span>)
-        .filter((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))
-        .duration(transitionSpeed)
-        .attr(<span class="string">"x1"</span>, (d) -&gt; scal(d.value))
-        .attr(<span class="string">"x2"</span>, (d) -&gt; scal(d.value))
-        .attr(<span class="string">"y1"</span>, <span class="number">2</span>)
-        .attr(<span class="string">"y2"</span>, render.barHeight/<span class="number">2</span> - <span class="number">2</span>)
-        .attr(<span class="string">"stroke"</span>, (d) -&gt; d.color)
-        .attr(<span class="string">"stroke-width"</span>, <span class="number">2</span>)</pre></div></div>
+      <span class="title">curEl</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{render._nameToId()}</span> line.bullet.marker"</span>)</span>
+        .<span class="title">filter</span><span class="params">((d) =&gt; render._filterNaNs(d, <span class="string">'value'</span>, <span class="string">'color'</span>))</span>
+        .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x1"</span>, (d) -&gt; scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x2"</span>, (d) -&gt; scal(d.value))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"y1"</span>, <span class="number">2</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"y2"</span>, render.barHeight/<span class="number">2</span> - <span class="number">2</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, (d) -&gt; d.color)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="number">2</span>)</span></pre></div></div>
             
         </li>
         
@@ -477,7 +477,7 @@
         .append(<span class="string">"svg:g"</span>)
         .attr(<span class="string">"class"</span>, <span class="string">"bullet ticks"</span>)
 
-      curEl.selectAll(<span class="string">"g.bullet.ticks"</span>).each((d, i) -&gt;
+      curEl.selectAll<span class="function"><span class="params">(<span class="string">"g.bullet.ticks"</span>)</span>.<span class="title">each</span><span class="params">((d, i) -&gt;
         tick = d3.select(@).selectAll(<span class="string">"g.bullet.tick"</span>).data(d)
         tickEnter = tick.enter()
           .append(<span class="string">"svg:g"</span>)
@@ -499,9 +499,9 @@
           .duration(transitionSpeed)
           .style(<span class="string">"opacity"</span>, <span class="number">1e-6</span>)
           .remove()
-      )
-      d3.select(@).selectAll(<span class="string">"g.bullet.ticks line"</span>).data(scal.ticks(render.tickCount))
-      d3.select(@).selectAll(<span class="string">"g.bullet.ticks text"</span>).data(scal.ticks(render.tickCount))</pre></div></div>
+      )</span>
+      <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.ticks line"</span>)</span>.<span class="title">data</span><span class="params">(scal.ticks(render.tickCount))</span>
+      <span class="title">d3</span>.<span class="title">select</span><span class="params">(@)</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"g.bullet.ticks text"</span>)</span>.<span class="title">data</span><span class="params">(scal.ticks(render.tickCount))</span></pre></div></div>
             
         </li>
         
@@ -517,86 +517,86 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>      render.seriesCanvas().selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.ticks"</span>)
-        .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)
+        .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{render._xOffset(d, i)}</span>, <span class="subst">#{render._yOffset(d, i)}</span>)"</span>)</span>
 
-      curEl.selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.tick line"</span>)
-        .duration(transitionSpeed)
-        .attr(<span class="string">"x1"</span>, (d) -&gt; scal(d))
-        .attr(<span class="string">"x2"</span>, (d) -&gt; scal(d))
-        .attr(<span class="string">"y1"</span>, render.barHeight/<span class="number">2</span>)
-        .attr(<span class="string">"y2"</span>, render.barHeight/<span class="number">2</span> + <span class="number">4</span>)
-        .attr(<span class="string">"stroke"</span>, <span class="string">"#BBBBBB"</span>)
-        .attr(<span class="string">"stroke-width"</span>, <span class="number">1</span>)
-        .style(<span class="string">"opacity"</span>, <span class="number">1</span>)
+      <span class="title">curEl</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.tick line"</span>)</span>
+        .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x1"</span>, (d) -&gt; scal(d))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x2"</span>, (d) -&gt; scal(d))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"y1"</span>, render.barHeight/<span class="number">2</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"y2"</span>, render.barHeight/<span class="number">2</span> + <span class="number">4</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, <span class="string">"#BBBBBB"</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="number">1</span>)</span>
+        .<span class="title">style</span><span class="params">(<span class="string">"opacity"</span>, <span class="number">1</span>)</span>
 
-      curEl.selectAll(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.tick text"</span>)
-        .duration(transitionSpeed)
-        .attr(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)
-        .attr(<span class="string">"x"</span>, (d) -&gt; scal(d))
-        .attr(<span class="string">"y"</span>, render.barHeight/<span class="number">2</span> + <span class="number">4</span>)
-        .attr(<span class="string">"dy"</span>, <span class="string">"1em"</span>)
-        .style(<span class="string">"opacity"</span>, <span class="number">1</span>)
-        .text((d)-&gt; render.format(d))
+      <span class="title">curEl</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{render._nameToId()}</span> g.bullet.tick text"</span>)</span>
+        .<span class="title">duration</span><span class="params">(transitionSpeed)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, (d) -&gt; scal(d))</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, render.barHeight/<span class="number">2</span> + <span class="number">4</span>)</span>
+        .<span class="title">attr</span><span class="params">(<span class="string">"dy"</span>, <span class="string">"1em"</span>)</span>
+        .<span class="title">style</span><span class="params">(<span class="string">"opacity"</span>, <span class="number">1</span>)</span>
+        .<span class="title">text</span><span class="params">((d)-&gt; render.format(d))</span>
     )
 
-    <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".bullet.range"</span>)
-      .filter((d, i) =&gt; d.tooltip)
-      .tooltip (d, i) =&gt;
-        graph: @.graph
-        text: d.tooltip
-        gravity: <span class="string">"right"</span>
-        placement: <span class="string">"right"</span>
+    @<span class="title">seriesCanvas</span><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".bullet.range"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d, i) =&gt; d.tooltip)</span>
+      .<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+        <span class="attribute">graph</span>: @.graph
+        <span class="attribute">text</span>: d.tooltip
+        <span class="attribute">gravity</span>: <span class="string">"right"</span>
+        <span class="attribute">placement</span>: <span class="string">"right"</span>
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".bullet.measure"</span>)
-      .filter((d, i) =&gt; d.tooltip)
-      .tooltip (d, i) =&gt;
-        graph: @.graph
-        text: d.tooltip
-        gravity: <span class="string">"right"</span>
-        placement: <span class="string">"right"</span>
+      .filter<span class="function"><span class="params">((d, i) =&gt; d.tooltip)</span>
+      .<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+        <span class="attribute">graph</span>: @.graph
+        <span class="attribute">text</span>: d.tooltip
+        <span class="attribute">gravity</span>: <span class="string">"right"</span>
+        <span class="attribute">placement</span>: <span class="string">"right"</span>
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">".bullet.marker"</span>)
-      .filter((d, i) =&gt; d.tooltip)
-      .tooltip (d, i) =&gt;
-        graph: @.graph
-        text: d.tooltip
-        gravity: <span class="string">"right"</span>
-        placement: <span class="string">"right"</span>
+      .filter<span class="function"><span class="params">((d, i) =&gt; d.tooltip)</span>
+      .<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+        <span class="attribute">graph</span>: @.graph
+        <span class="attribute">text</span>: d.tooltip
+        <span class="attribute">gravity</span>: <span class="string">"right"</span>
+        <span class="attribute">placement</span>: <span class="string">"right"</span>
 
-  _xOffset: (d, i)=&gt;
+  <span class="attribute">_xOffset</span>: <span class="function"><span class="params">(d, i)</span>=&gt;</span>
     <span class="property">@margin</span>.left
 
-  _yOffset: (d, i)=&gt;
+  <span class="attribute">_yOffset</span>: <span class="function"><span class="params">(d, i)</span>=&gt;</span>
     yMargin = (<span class="property">@graph</span>.height() - <span class="property">@series</span>.stack.length * <span class="property">@barHeight</span> - <span class="property">@margin</span>.top - <span class="property">@margin</span>.bottom) / (<span class="property">@series</span>.stack.length + <span class="number">1</span>)
     yMargin + (<span class="property">@barHeight</span> + yMargin) * <span class="property">@_index</span>(d, i) + <span class="property">@margin</span>.top
 
-  _index: (d, i) =&gt;
+  <span class="attribute">_index</span>: <span class="function"><span class="params">(d, i)</span> =&gt;</span>
     <span class="keyword">if</span> !isNaN(d.index) <span class="keyword">and</span> d.index?
       d.index
     <span class="keyword">else</span>
       i
 
-  _checkData: ()=&gt;
+  <span class="attribute">_checkData</span>: <span class="function"><span class="params">()</span>=&gt;</span>
     data = <span class="property">@series</span>.stack
-    data.forEach((d, i) =&gt;
-      <span class="property">@utils</span>.checkString(d.title, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].title"</span>)
-      <span class="property">@utils</span>.checkString(d.subtitle, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].subtitle"</span>)
-      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.ranges, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].ranges"</span>)
+    data.forEach<span class="function"><span class="params">((d, i) =&gt;
+      <span class="property">@utils</span>.checkString(d.title, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].title"</span>)
+      <span class="property">@utils</span>.checkString(d.subtitle, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].subtitle"</span>)
+      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.ranges, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].ranges"</span>)
         d.ranges.forEach((r, j)=&gt;
-          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].ranges[<span class="subst">#{j}</span>].value"</span>)
-          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].ranges[<span class="subst">#{j}</span>].color"</span>)
+          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].ranges[<span class="subst">#{j}</span>].value"</span>)
+          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].ranges[<span class="subst">#{j}</span>].color"</span>)
         )
-      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.measures, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].measures"</span>)
+      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.measures, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].measures"</span>)
         d.measures.forEach((r, j)=&gt;
-          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].measures[<span class="subst">#{j}</span>].value"</span>)
-          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].measures[<span class="subst">#{j}</span>].color"</span>)
+          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].measures[<span class="subst">#{j}</span>].value"</span>)
+          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].measures[<span class="subst">#{j}</span>].color"</span>)
         )
-      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.markers, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].markers"</span>)
+      <span class="keyword">if</span> <span class="property">@utils</span>.checkArray(d.markers, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].markers"</span>)
         d.markers.forEach((r, j)=&gt;
-          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].markers[<span class="subst">#{j}</span>].value"</span>)
-          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].markers[<span class="subst">#{j}</span>].color"</span>)
+          <span class="property">@utils</span>.checkNumber(r.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].markers[<span class="subst">#{j}</span>].value"</span>)
+          <span class="property">@utils</span>.checkString(r.color, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].markers[<span class="subst">#{j}</span>].color"</span>)
         )
-    )</pre></div></div>
+    )</span></pre></div></div>
             
         </li>
         

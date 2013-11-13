@@ -191,7 +191,8 @@
     values: [1, 10],
     range: true,
     slide: function(event, ui) {
-      chart.setXFrame([new Date(2012, 0 + ui.values[0], 1).getTime(), new Date(2012, 0 + ui.values[1], 1).getTime()]);
+      frameVal = [new Date(2012, 0 + ui.values[0], 1).getTime(), new Date(2012, 0 + ui.values[1], 1).getTime()];
+      chart.setXFrame(frameVal);
       if (currentChart !== "pareto") {
         return chart.render();
       }

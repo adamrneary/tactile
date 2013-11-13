@@ -162,34 +162,34 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">LeaderboardRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
-  name: <span class="string">"leaderboard"</span>
+  <span class="attribute">name</span>: <span class="string">"leaderboard"</span>
 
-  specificDefaults:
-    changeFormat: d3.format(<span class="string">"p"</span>)
-    valueFormat: d3.format(<span class="string">"p"</span>)
-    barHeight: <span class="number">15</span>
-    type: <span class="string">"normal"</span>
-    labelLimit: Infinity
+  <span class="attribute">specificDefaults</span>:
+    <span class="attribute">changeFormat</span>: d3.format(<span class="string">"p"</span>)
+    <span class="attribute">valueFormat</span>: d3.format(<span class="string">"p"</span>)
+    <span class="attribute">barHeight</span>: <span class="number">15</span>
+    <span class="attribute">type</span>: <span class="string">"normal"</span>
+    <span class="attribute">labelLimit</span>: Infinity
 
-  initialize: =&gt;
+  <span class="attribute">initialize</span>:<span class="function"> =&gt;</span>
     <span class="property">@changeFormat</span> = <span class="property">@series</span>.changeFormat <span class="keyword">unless</span> <span class="property">@series</span>.changeFormat <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@valueFormat</span> = <span class="property">@series</span>.valueFormat <span class="keyword">unless</span> <span class="property">@series</span>.valueFormat <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@type</span> = <span class="property">@series</span>.type <span class="keyword">unless</span> <span class="property">@series</span>.type <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@labelLimit</span> = <span class="property">@series</span>.labelLimit <span class="keyword">unless</span> <span class="property">@series</span>.labelLimit <span class="keyword">is</span> <span class="literal">undefined</span>
 
-  render: (transition, recalculateData, transitionSpeed)-&gt;
+  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span>-&gt;</span>
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
     <span class="keyword">if</span> <span class="property">@animateShowHide</span>
       left = <span class="property">@graph</span>.padding.left + <span class="property">@graph</span>.axisPadding.left
       top = <span class="property">@graph</span>.padding.top + <span class="property">@graph</span>.axisPadding.top
 
-      <span class="property">@graph</span>.vis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{@graph.outerHeight*<span class="number">1.1</span>}</span>)"</span>)
-      <span class="property">@graph</span>.draggableVis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{@graph.outerHeight*<span class="number">1.1</span>}</span>)"</span>)
+      <span class="property">@graph</span>.vis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{<span class="property">@graph</span>.outerHeight*<span class="number">1.1</span>}</span>)"</span>)
+      <span class="property">@graph</span>.draggableVis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{<span class="property">@graph</span>.outerHeight*<span class="number">1.1</span>}</span>)"</span>)
 
     className = <span class="string">"leaderboard-"</span> + <span class="property">@type</span>
 
-    data = _.map <span class="property">@series</span>.stack, (d, i) =&gt;
-      d.lastData = <span class="property">@lastData</span>?[i] <span class="keyword">or</span> {barPosition: <span class="number">0</span>, change: <span class="number">0</span>, label: <span class="string">""</span>, value: <span class="number">0</span>}
+    data = _.map <span class="property">@series</span>.stack, <span class="function"><span class="params">(d, i)</span> =&gt;</span>
+      d.lastData = <span class="property">@lastData</span>?[i] <span class="keyword">or</span> {<span class="attribute">barPosition</span>: <span class="number">0</span>, <span class="attribute">change</span>: <span class="number">0</span>, <span class="attribute">label</span>: <span class="string">""</span>, <span class="attribute">value</span>: <span class="number">0</span>}
       d
 
     <span class="property">@transition</span> = transition <span class="keyword">if</span> transition
@@ -203,7 +203,7 @@
     bars.exit().remove()
 
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"g."</span> + className + <span class="string">".bars"</span>)
-      .each((d, i)-&gt;
+      .each<span class="function"><span class="params">((d, i)-&gt;
         track = d3.select(@).selectAll(<span class="string">"rect."</span> + className + <span class="string">".track"</span>).data([d])
         track.enter()
           .append(<span class="string">"svg:rect"</span>)
@@ -239,133 +239,133 @@
           .append(<span class="string">"svg:path"</span>)
         triangle.exit().remove()
         triangle
-      )
+      )</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect."</span> + className + <span class="string">".track"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"width"</span>, <span class="property">@graph</span>.width())
-      .attr(<span class="string">"height"</span>, <span class="number">6</span>)
-      .attr(<span class="string">"rx"</span>, <span class="number">4</span>)
-      .attr(<span class="string">"ry"</span>, <span class="number">4</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> rect."</span> + className + <span class="string">".track"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"width"</span>, <span class="property">@graph</span>.width())</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"height"</span>, <span class="number">6</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"rx"</span>, <span class="number">4</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"ry"</span>, <span class="number">4</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect."</span> + className + <span class="string">".bar"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"height"</span>, <span class="number">6</span>)
-      .attr(<span class="string">"width"</span>, (d) =&gt;
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> rect."</span> + className + <span class="string">".bar"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"height"</span>, <span class="number">6</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"width"</span>, (d) =&gt;
         width = <span class="property">@graph</span>.width()*d.barPosition
-        <span class="keyword">if</span> width &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> width)
-      .attr(<span class="string">"rx"</span>, <span class="number">4</span>)
-      .attr(<span class="string">"ry"</span>, <span class="number">4</span>)
+        <span class="keyword">if</span> width &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> width)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"rx"</span>, <span class="number">4</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"ry"</span>, <span class="number">4</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".label"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .text((d) =&gt; <span class="keyword">if</span> d.label.length &gt; <span class="property">@labelLimit</span> + <span class="number">2</span> <span class="keyword">then</span> <span class="string">"<span class="subst">#{d.label.slice(<span class="number">0</span>, @labelLimit)}</span>…"</span> <span class="keyword">else</span> d.label)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(3, <span class="subst">#{<span class="keyword">if</span> @type <span class="keyword">is</span> "normal" <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".label"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">text</span><span class="params">((d) =&gt; <span class="keyword">if</span> d.label.length &gt; <span class="property">@labelLimit</span> + <span class="number">2</span> <span class="keyword">then</span> <span class="string">"<span class="subst">#{d.label.slice(<span class="number">0</span>, <span class="property">@labelLimit</span>)}</span>…"</span> <span class="keyword">else</span> d.label)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(3, <span class="subst">#{<span class="keyword">if</span> <span class="property">@type</span> <span class="keyword">is</span> <span class="string">"normal"</span> <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".value"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .tween(<span class="string">"text"</span>, (d) -&gt;
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".value"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">tween</span><span class="params">(<span class="string">"text"</span>, (d) -&gt;
         i = d3.interpolate(d.lastData?.value, d.value)
         (t) -&gt;
-          <span class="property">@textContent</span> = _<span class="keyword">this</span>.valueFormat i(t)
-      )
-      .attr(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@graph.width()-<span class="number">40</span>}</span>, <span class="subst">#{<span class="keyword">if</span> @type <span class="keyword">is</span> "normal" <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)
+          <span class="property">@textContent</span> = _this.valueFormat i(t)
+      )</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.width()-<span class="number">40</span>}</span>, <span class="subst">#{<span class="keyword">if</span> <span class="property">@type</span> <span class="keyword">is</span> <span class="string">"normal"</span> <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".change"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .tween(<span class="string">"text"</span>, (d) -&gt;
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".change"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">tween</span><span class="params">(<span class="string">"text"</span>, (d) -&gt;
         i = d3.interpolate(d.lastData?.change, d.change)
         (t) -&gt;
-          <span class="property">@textContent</span> = _<span class="keyword">this</span>.changeFormat i(t)
-      )
-      .attr(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@graph.width()}</span>, <span class="subst">#{<span class="keyword">if</span> @type <span class="keyword">is</span> "normal" <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)
+          <span class="property">@textContent</span> = _this.changeFormat i(t)
+      )</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"end"</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.width()}</span>, <span class="subst">#{<span class="keyword">if</span> <span class="property">@type</span> <span class="keyword">is</span> <span class="string">"normal"</span> <span class="keyword">then</span> -<span class="number">5</span> <span class="keyword">else</span> -<span class="number">2</span>}</span>)"</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"d"</span>, d3.svg.symbol().size(<span class="number">18</span>).type((d) -&gt;
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"d"</span>, d3.svg.symbol().size(<span class="number">18</span>).type((d) -&gt;
         <span class="keyword">if</span> d.change &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="string">"triangle-up"</span>
         <span class="keyword">else</span> <span class="keyword">if</span> d.change &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="string">"triangle-down"</span>
-      ))
-      .attr(<span class="string">"class"</span>, (d) -&gt;
+      ))</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, (d) -&gt;
         <span class="keyword">if</span> d.change &gt; <span class="number">0</span> <span class="keyword">then</span> <span class="string">"triangle-up"</span>
         <span class="keyword">else</span> <span class="keyword">if</span> d.change &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="string">"triangle-down"</span>
-      )
+      )</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect."</span> + className + <span class="string">".track"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> rect."</span> + className + <span class="string">".track"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> rect."</span> + className + <span class="string">".bar"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> rect."</span> + className + <span class="string">".bar"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".label"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".label"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".value"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".value"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)</span>
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text."</span> + className + <span class="string">".change"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)
+    @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text."</span> + className + <span class="string">".change"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>)</span>
 
-    selectObject = <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
-      .filter((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)
-      .delay(transitionSpeed / <span class="number">2</span>)
-      .duration(transitionSpeed / <span class="number">2</span>)
-      .attr(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{@graph.width()-<span class="number">10</span>}</span>, <span class="subst">#{(@_yOffset(d, i) - <span class="keyword">if</span> @type <span class="keyword">is</span> "normal" <span class="keyword">then</span> <span class="number">22</span> <span class="keyword">else</span> <span class="number">16</span>)}</span>)"</span>)
-    selectObject.each(<span class="string">"end"</span>, () =&gt; <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>)
+    <span class="title">selectObject</span> = @<span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)</span>
+      .<span class="title">filter</span><span class="params">((d) =&gt; !isNaN(d.value) <span class="keyword">and</span> !isNaN(d.change) <span class="keyword">and</span> !isNaN(d.barPosition) <span class="keyword">and</span> d.label? <span class="keyword">and</span> d.value? <span class="keyword">and</span> d.change? <span class="keyword">and</span> d.barPosition?)</span>
+      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">2</span>)</span>
+      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt; <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.width()-<span class="number">10</span>}</span>, <span class="subst">#{(<span class="property">@_yOffset</span>(d, i) - <span class="keyword">if</span> <span class="property">@type</span> <span class="keyword">is</span> <span class="string">"normal"</span> <span class="keyword">then</span> <span class="number">22</span> <span class="keyword">else</span> <span class="number">16</span>)}</span>)"</span>)</span>
+    <span class="title">selectObject</span>.<span class="title">each</span><span class="params">(<span class="string">"end"</span>, () =&gt; <span class="property">@animateShow</span>() <span class="keyword">if</span> <span class="property">@animateShowHide</span>)</span>
 
-    <span class="property">@lastData</span> = <span class="property">@series</span>.stack
+    @<span class="title">lastData</span> = @<span class="title">series</span>.<span class="title">stack</span>
 
-  _xOffset: =&gt;
+  <span class="title">_xOffset</span>: =&gt;</span>
 
-  _yOffset: (d, i)=&gt;
+  <span class="attribute">_yOffset</span>: <span class="function"><span class="params">(d, i)</span>=&gt;</span>
     yMargin = (<span class="property">@graph</span>.height() - <span class="property">@series</span>.stack.length * <span class="property">@barHeight</span>) / (<span class="property">@series</span>.stack.length + <span class="number">1</span>)
     yMargin + <span class="property">@barHeight</span> + (<span class="property">@barHeight</span> + yMargin) * <span class="property">@_index</span>(d, i)
 
-  _index: (d, i) =&gt;
+  <span class="attribute">_index</span>: <span class="function"><span class="params">(d, i)</span> =&gt;</span>
     <span class="keyword">if</span> !isNaN(d.index) <span class="keyword">and</span> d.index?
       d.index
     <span class="keyword">else</span>
       i
 
-  _checkData: ()=&gt;
+  <span class="attribute">_checkData</span>: <span class="function"><span class="params">()</span>=&gt;</span>
     data = <span class="property">@series</span>.stack
-    data.forEach((d, i) =&gt;
-      <span class="property">@utils</span>.checkString(d.color, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].label"</span>, d)
-      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].value"</span>, d)
-      <span class="property">@utils</span>.checkNumber(d.change, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].change"</span>, d)
-      <span class="property">@utils</span>.checkNumber(d.barPosition, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].barPosition"</span>, d)
-    )
+    data.forEach<span class="function"><span class="params">((d, i) =&gt;
+      <span class="property">@utils</span>.checkString(d.color, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].label"</span>, d)
+      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].value"</span>, d)
+      <span class="property">@utils</span>.checkNumber(d.change, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].change"</span>, d)
+      <span class="property">@utils</span>.checkNumber(d.barPosition, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].barPosition"</span>, d)
+    )</span>
 
-  animateShow: -&gt;
+  <span class="title">animateShow</span>: -&gt;</span>
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@animateShowHide</span>
     left = <span class="property">@graph</span>.padding.left + <span class="property">@graph</span>.axisPadding.left
     top = <span class="property">@graph</span>.padding.top + <span class="property">@graph</span>.axisPadding.top
 
-    <span class="property">@graph</span>.vis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{@graph.outerHeight}</span>)"</span>)
-    <span class="property">@graph</span>.draggableVis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{@graph.outerHeight}</span>)"</span>)
+    <span class="property">@graph</span>.vis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{<span class="property">@graph</span>.outerHeight}</span>)"</span>)
+    <span class="property">@graph</span>.draggableVis?.attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{left}</span>,<span class="subst">#{<span class="property">@graph</span>.outerHeight}</span>)"</span>)
     <span class="property">@graph</span>.vis?.transition()
       .duration(<span class="property">@graph</span>.transitionSpeed / <span class="number">2</span>)
       .delay(<span class="number">0</span>)
