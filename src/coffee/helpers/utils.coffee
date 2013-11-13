@@ -208,3 +208,13 @@ class Tactile.Utils
     else #  36 < @utils.domainMonthRange(@graph.x.domain())
       animateTransition = @domainMonthRange(domainOld) <= 36
     return animateTransition
+
+  getWholeDataTimeRange: (seriesArray) ->
+    min = Infinity
+    max = -Infinity
+    _.each seriesArray, (series) ->
+      x = _.pluck series.stack, "x"
+      x = _.filter x, (d) -> d
+      min = _.first(x) if _.first(x) < min
+      max = _.last(x) if _.last(x) > max
+    return [min, max]
