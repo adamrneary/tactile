@@ -438,7 +438,17 @@ order to return a string.</p>
       animateTransition = <span class="number">36</span> &lt; <span class="property">@domainMonthRange</span>(domainOld) || <span class="property">@domainMonthRange</span>(domainOld) &lt;= <span class="number">12</span>
     <span class="keyword">else</span> <span class="comment">#  36 &lt; @utils.domainMonthRange(@graph.x.domain())</span>
       animateTransition = <span class="property">@domainMonthRange</span>(domainOld) &lt;= <span class="number">36</span>
-    <span class="keyword">return</span> animateTransition</pre></div></div>
+    <span class="keyword">return</span> animateTransition
+
+  <span class="attribute">getWholeDataTimeRange</span>: <span class="function"><span class="params">(seriesArray)</span> -&gt;</span>
+    min = Infinity
+    max = -Infinity
+    _.each seriesArray, <span class="function"><span class="params">(series)</span> -&gt;</span>
+      x = _.pluck series.stack, <span class="string">"x"</span>
+      x = _.filter x, <span class="function"><span class="params">(d)</span> -&gt;</span> d
+      min = _.first(x) <span class="keyword">if</span> _.first(x) &lt; min
+      max = _.last(x) <span class="keyword">if</span> _.last(x) &gt; max
+    <span class="keyword">return</span> [min, max]</pre></div></div>
             
         </li>
         

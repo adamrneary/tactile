@@ -890,6 +890,26 @@
       return animateTransition;
     };
 
+    Utils.prototype.getWholeDataTimeRange = function(seriesArray) {
+      var max, min;
+      min = Infinity;
+      max = -Infinity;
+      _.each(seriesArray, function(series) {
+        var x;
+        x = _.pluck(series.stack, "x");
+        x = _.filter(x, function(d) {
+          return d;
+        });
+        if (_.first(x) < min) {
+          min = _.first(x);
+        }
+        if (_.last(x) > max) {
+          return max = _.last(x);
+        }
+      });
+      return [min, max];
+    };
+
     return Utils;
 
   })();
@@ -1325,69 +1345,24 @@
       this._checkOptions();
       this.fixedTimeUnit = options.timeUnit;
       this.marginTop = options.paddingBottom || 5;
-      this.time = new Tactile.FixturesTime();
       this.grid = options.grid;
       this.tickSize = options.tickSize || 2;
       this.tickValues = options.tickValues || null;
-      this.tickFormat = options.tickFormat || function(d) {
-        return this.appropriateTimeUnit().formatter(new Date(d));
-      };
+      this.tickFormat = options.tickFormat || null;
     }
 
-    AxisTime.prototype.appropriateTimeUnit = function() {
-      var domain, rangeSeconds, unit, units;
-      unit = void 0;
-      units = this.time.units;
-      domain = this.graph.x.domain();
-      rangeSeconds = domain[1] - domain[0];
-      units.forEach(function(u) {
-        if (Math.floor(rangeSeconds / u.seconds) >= 2) {
-          return unit = unit || u;
-        }
-      });
-      return unit || this.time.units[this.time.units.length - 1];
-    };
-
-    AxisTime.prototype.tickOffsets = function() {
-      var domain, domainMax, domainMin, offsets, runningTick, tickValue, unit;
-      domain = this.graph.x.domain();
-      unit = this.fixedTimeUnit || this.appropriateTimeUnit();
-      if (unit.name === "month") {
-        domainMin = domain[0] - 86400000 * 3;
-        domainMax = domain[1] + 86400000 * 3;
-      } else {
-        domainMin = domain[0];
-        domainMax = domain[1];
-      }
-      offsets = [];
-      runningTick = domainMin;
-      tickValue = this.time.ceil(runningTick, unit);
-      while (tickValue <= domainMax) {
-        offsets.push({
-          value: tickValue,
-          unit: unit
-        });
-        runningTick = tickValue + unit.seconds / 2;
-        tickValue = this.time.ceil(runningTick, unit);
-      }
-      return offsets;
-    };
-
-    AxisTime.prototype.render = function(transition) {
-      var aggregated, text, ticks,
+    AxisTime.prototype.render = function(originalTransition) {
+      var domain, text, ticks,
         _this = this;
       if (this.graph.x == null) {
         return;
       }
-      if (transition) {
-        this.transition = transition;
+      domain = this.graph.x.domain();
+      if (originalTransition) {
+        this.transition = originalTransition;
       }
-      aggregated = _.some(_.values(this.graph.aggregated));
-      if (aggregated) {
-        this.aggLabels = this._getLabels(this.graph.x.domain());
-      } else {
-        this.aggLabels = this.tickOffsets();
-      }
+      this.aggregated = _.some(_.values(this.graph.aggregated));
+      this.aggLabels = this._getLabels(domain);
       this.g = this.graph.vis.selectAll('g.x-ticks').data([0]);
       this.g.enter().append('g').attr('class', 'x-ticks');
       ticks = this.g.selectAll('g.x-tick').data(this.aggLabels);
@@ -1395,7 +1370,7 @@
         return "translate(" + (_this.graph.outerWidth * 1.1) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
       });
       this.transition.selectAll(".x-tick").attr("transform", function(d, i) {
-        if (aggregated) {
+        if (_this.aggregated) {
           return "translate(" + (_this._tickX(d.value, i)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
         } else {
           return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
@@ -1411,13 +1386,13 @@
       });
       text = this.g.selectAll("g.x-tick").selectAll("text");
       text.attr("y", this.marginTop).text(function(d) {
-        if (aggregated) {
-          return d.label;
+        if (d.value < domain[0]) {
+          return "";
         } else {
-          return d.unit.formatter(new Date(d.value));
+          return d.label;
         }
       });
-      if (aggregated) {
+      if (this.aggregated) {
         return text.append("tspan").attr("y", this.marginTop + this.fontSize).attr("x", 0).text(function(d) {
           return d.secondary;
         });
@@ -1447,7 +1422,10 @@
     };
 
     AxisTime.prototype._getLabels = function(timeFrame) {
-      var date, endDate, endMonth, endYear, grouper, i, item, labels, range, startDate, startMonth, startYear, tmpDate, _i, _j, _k, _ref2, _ref3, _ref4;
+      var Add, dataMonthRange, dataTimeFrame, date, endMonth, endYear, grouper, i, labels, range, rangeAfter, rangeBefore, startMonth, startYear, _i, _j, _k, _ref2, _ref3,
+        _this = this;
+      dataTimeFrame = this.utils.getWholeDataTimeRange(this.graph.series.array);
+      dataMonthRange = this.utils.domainMonthRange(dataTimeFrame);
       labels = [];
       date = [new Date(timeFrame[0]), new Date(timeFrame[1])];
       startYear = date[0].getFullYear();
@@ -1455,19 +1433,24 @@
       endYear = date[1].getFullYear();
       endMonth = date[1].getMonth();
       range = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
-      if (range <= 12) {
-        for (i = _i = 0, _ref2 = range - 1; 0 <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+      rangeBefore = this.utils.domainMonthRange([dataTimeFrame[0], timeFrame[0]]);
+      rangeAfter = this.utils.domainMonthRange([timeFrame[1], dataTimeFrame[1]]);
+      if (range <= 12 || !this.aggregated) {
+        grouper = 1;
+        Add = function(i) {
+          var item, tmpDate;
           tmpDate = new Date(timeFrame[0]);
           tmpDate.setMonth(startMonth + i);
-          labels.push({
+          return item = {
             value: tmpDate.getTime(),
             label: tmpDate.toUTCString().split(' ')[2],
             secondary: tmpDate.getFullYear().toString()
-          });
-        }
+          };
+        };
       } else if ((12 < range && range <= 36)) {
         grouper = 3;
-        for (i = _j = 0, _ref3 = range - 1; grouper > 0 ? _j <= _ref3 : _j >= _ref3; i = _j += grouper) {
+        Add = function(i) {
+          var endDate, item, startDate;
           item = {};
           startDate = new Date(timeFrame[0]);
           startDate.setMonth(startMonth + i);
@@ -1482,11 +1465,12 @@
             item.label = "" + (startDate.toUTCString().split(' ')[2]) + "-" + (endDate.toUTCString().split(' ')[2]);
           }
           item.secondary = "" + (endDate.getFullYear());
-          labels.push(item);
-        }
+          return item;
+        };
       } else {
         grouper = 12;
-        for (i = _k = 0, _ref4 = range - 1; grouper > 0 ? _k <= _ref4 : _k >= _ref4; i = _k += grouper) {
+        Add = function(i) {
+          var endDate, item, startDate;
           item = {};
           item.secondary = "";
           startDate = new Date(timeFrame[0]);
@@ -1504,16 +1488,30 @@
           } else {
             item.label = "" + (startDate.getMonth() + 1) + "/" + (startDate.getFullYear()) + "-" + (endDate.getMonth() + 1) + "/" + (endDate.getFullYear());
           }
-          labels.push(item);
-        }
+          return item;
+        };
       }
+      for (i = _i = -rangeBefore; grouper > 0 ? _i <= -1 : _i >= -1; i = _i += grouper) {
+        labels.push(Add(i));
+      }
+      for (i = _j = 0, _ref2 = range - 1; grouper > 0 ? _j <= _ref2 : _j >= _ref2; i = _j += grouper) {
+        labels.push(Add(i));
+      }
+      for (i = _k = range, _ref3 = rangeAfter - 1; grouper > 0 ? _k <= _ref3 : _k >= _ref3; i = _k += grouper) {
+        labels.push(Add(i));
+      }
+      labels.shift();
       return labels;
     };
 
     AxisTime.prototype._tickX = function(value, index) {
-      var count, width;
+      var count, width,
+        _this = this;
       width = this.graph.width();
-      count = this.aggLabels.length;
+      count = _.filter(this.aggLabels, function(item) {
+        var _ref2;
+        return (_this.graph.x.domain()[0] <= (_ref2 = item.value) && _ref2 <= _this.graph.x.domain()[1]);
+      }).length;
       return index * (width / count) + (width / count) / 2;
     };
 
@@ -3073,130 +3071,6 @@
     };
 
     return Dragger;
-
-  })();
-
-  Tactile.FixturesTime = (function() {
-    function FixturesTime() {
-      var _this = this;
-      this.tzOffset = new Date().getTimezoneOffset() * 60;
-      this.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      this.units = [
-        {
-          name: "decade",
-          seconds: 86400000 * 365.25 * 10,
-          formatter: function(d) {
-            return parseInt(d.getUTCFullYear() / 10) * 10;
-          }
-        }, {
-          name: "year",
-          seconds: 86400000 * 365.25,
-          formatter: function(d) {
-            return d.getUTCFullYear();
-          }
-        }, {
-          name: "month",
-          seconds: 86400000 * 30.5,
-          formatter: function(d) {
-            return _this.months[d.getUTCMonth()];
-          }
-        }, {
-          name: "week",
-          seconds: 86400000 * 7,
-          formatter: function(d) {
-            return _this.formatDate(d);
-          }
-        }, {
-          name: "day",
-          seconds: 86400000,
-          formatter: function(d) {
-            return d.getUTCDate();
-          }
-        }, {
-          name: "6 hour",
-          seconds: 3600000 * 6,
-          formatter: function(d) {
-            return _this.formatTime(d);
-          }
-        }, {
-          name: "hour",
-          seconds: 3600000,
-          formatter: function(d) {
-            return _this.formatTime(d);
-          }
-        }, {
-          name: "15 minute",
-          seconds: 60000 * 15,
-          formatter: function(d) {
-            return _this.formatTime(d);
-          }
-        }, {
-          name: "minute",
-          seconds: 60000,
-          formatter: function(d) {
-            return d.getUTCMinutes();
-          }
-        }, {
-          name: "15 second",
-          seconds: 15000,
-          formatter: function(d) {
-            return d.getUTCSeconds() + "s";
-          }
-        }, {
-          name: "second",
-          seconds: 1000,
-          formatter: function(d) {
-            return d.getUTCSeconds() + "s";
-          }
-        }
-      ];
-    }
-
-    FixturesTime.prototype.unit = function(unitName) {
-      return this.units.filter(function(unit) {
-        return unitName === unit.name;
-      }).shift();
-    };
-
-    FixturesTime.prototype.formatDate = function(d) {
-      return d.toUTCString().match(/, (\w+ \w+ \w+)/)[1];
-    };
-
-    FixturesTime.prototype.formatTime = function(d) {
-      return d.toUTCString().match(/(\d+:\d+):/)[1];
-    };
-
-    FixturesTime.prototype.ceil = function(time, unit) {
-      var nearFuture, rounded;
-      if (unit.name === "year") {
-        nearFuture = new Date(time + unit.seconds - 1);
-        rounded = new Date(0);
-        rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-        rounded.setUTCMonth(0);
-        rounded.setUTCDate(1);
-        rounded.setUTCHours(0);
-        rounded.setUTCMinutes(0);
-        rounded.setUTCSeconds(0);
-        rounded.setUTCMilliseconds(0);
-        return rounded.getTime();
-      }
-      if (unit.name === "month") {
-        nearFuture = new Date(time);
-        nearFuture.setUTCMonth(nearFuture.getUTCMonth() + 1, 15);
-        rounded = new Date(0);
-        rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-        rounded.setUTCMonth(nearFuture.getMonth());
-        rounded.setUTCDate(1);
-        rounded.setUTCHours(0);
-        rounded.setUTCMinutes(0);
-        rounded.setUTCSeconds(0);
-        rounded.setUTCMilliseconds(0);
-        return rounded.getTime();
-      }
-      return Math.ceil(time / unit.seconds) * unit.seconds;
-    };
-
-    return FixturesTime;
 
   })();
 

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>axis_time.coffee</title>
+  <title>axis_time.old.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -71,6 +71,11 @@
               
               <a class="source" href="axis_time.html">
                 axis_time.coffee
+              </a>
+            
+              
+              <a class="source" href="axis_time.old.html">
+                axis_time.old.coffee
               </a>
             
               
@@ -146,7 +151,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>axis_time.coffee</h1>
+                  <h1>axis_time.old.coffee</h1>
               </div>
           </li>
         
@@ -168,86 +173,57 @@
     <span class="property">@_checkOptions</span>()
 
     <span class="property">@fixedTimeUnit</span> = options.timeUnit
-    <span class="property">@marginTop</span> = options.paddingBottom <span class="keyword">or</span> <span class="number">5</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>   @time = new Tactile.FixturesTime()</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="property">@grid</span> = options.grid
+    <span class="property">@marginTop</span> = options.paddingBottom <span class="keyword">or</span> <span class="number">5</span>
+    <span class="property">@time</span> = <span class="keyword">new</span> Tactile.FixturesTime()
+    <span class="property">@grid</span> = options.grid
     <span class="property">@tickSize</span> = options.tickSize <span class="keyword">or</span> <span class="number">2</span>
-    <span class="property">@tickValues</span> = options.tickValues <span class="keyword">or</span> <span class="literal">null</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>   @tickFormat = options.tickFormat or (d) -&gt; @appropriateTimeUnit().formatter(new Date(d))</p>
+    <span class="property">@tickValues</span> = options.tickValues <span class="keyword">or</span> <span class="literal">null</span>
+    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> <span class="function"><span class="params">(d)</span> -&gt;</span> <span class="property">@appropriateTimeUnit</span>().formatter(<span class="keyword">new</span> Date(d))
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="property">@tickFormat</span> = options.tickFormat <span class="keyword">or</span> <span class="literal">null</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p> appropriateTimeUnit: -&gt;
-   unit = undefined
-   units = @time.units
-   domain = @graph.x.domain()
-   rangeSeconds = domain[1] - domain[0]
-   units.forEach (u) -&gt;
-     unit = unit or u if Math.floor(rangeSeconds / u.seconds) &gt;= 2</p>
-<p>   unit or @time.units[@time.units.length - 1]</p>
-<p> tickOffsets: -&gt;
-   domain = @graph.x.domain()
-   unit = @fixedTimeUnit or @appropriateTimeUnit()</p>
-<p>   if unit.name is &quot;month&quot;
-     domainMin = domain[0] - 86400000<em>3
-     domainMax = domain[1] + 86400000</em>3
-   else
-     domainMin = domain[0]
-     domainMax = domain[1]</p>
-<p>   offsets = []</p>
-<p>   runningTick = domainMin
-   tickValue = @time.ceil(runningTick, unit)</p>
-<p>   while tickValue &lt;= domainMax
-     offsets.push
-       value: tickValue
-       unit: unit</p>
-<pre><code> runningTick = tickValue + unit.seconds / 2
- tickValue = @time.ceil(runningTick, unit)</code></pre>
-<p>   offsets</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="attribute">render</span>: <span class="function"><span class="params">(originalTransition)</span>-&gt;</span>
-    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>.x?
-
+  <span class="attribute">appropriateTimeUnit</span>:<span class="function"> -&gt;</span>
+    unit = <span class="literal">undefined</span>
+    units = <span class="property">@time</span>.units
     domain = <span class="property">@graph</span>.x.domain()
+    rangeSeconds = domain[<span class="number">1</span>] - domain[<span class="number">0</span>]
+    units.forEach <span class="function"><span class="params">(u)</span> -&gt;</span>
+      unit = unit <span class="keyword">or</span> u <span class="keyword">if</span> Math.floor(rangeSeconds / u.seconds) &gt;= <span class="number">2</span>
+
+    unit <span class="keyword">or</span> <span class="property">@time</span>.units[<span class="property">@time</span>.units.length - <span class="number">1</span>]
+
+  <span class="attribute">tickOffsets</span>:<span class="function"> -&gt;</span>
+    domain = <span class="property">@graph</span>.x.domain()
+    unit = <span class="property">@fixedTimeUnit</span> <span class="keyword">or</span> <span class="property">@appropriateTimeUnit</span>()
+
+    <span class="keyword">if</span> unit.name <span class="keyword">is</span> <span class="string">"month"</span>
+      domainMin = domain[<span class="number">0</span>] - <span class="number">86400000</span>*<span class="number">3</span>
+      domainMax = domain[<span class="number">1</span>] + <span class="number">86400000</span>*<span class="number">3</span>
+    <span class="keyword">else</span>
+      domainMin = domain[<span class="number">0</span>]
+      domainMax = domain[<span class="number">1</span>]
+
+    offsets = []
+
+    runningTick = domainMin
+    tickValue = <span class="property">@time</span>.ceil(runningTick, unit)
+
+    <span class="keyword">while</span> tickValue &lt;= domainMax
+      offsets.push
+        <span class="attribute">value</span>: tickValue
+        <span class="attribute">unit</span>: unit
+
+      runningTick = tickValue + unit.seconds / <span class="number">2</span>
+      tickValue = <span class="property">@time</span>.ceil(runningTick, unit)
+
+    offsets
+
+  <span class="attribute">render</span>: <span class="function"><span class="params">(originalTransition)</span>-&gt;</span>
+    <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@graph</span>.x?
     <span class="property">@transition</span> = originalTransition <span class="keyword">if</span> originalTransition
-    <span class="property">@aggregated</span> = _.some(_.values(<span class="property">@graph</span>.aggregated))
-    <span class="property">@aggLabels</span> = <span class="property">@_getLabels</span>(domain)
+    aggregated = _.some(_.values(<span class="property">@graph</span>.aggregated))
+    <span class="keyword">if</span> aggregated
+      <span class="property">@aggLabels</span> = <span class="property">@_getLabels</span>(<span class="property">@graph</span>.x.domain())
+    <span class="keyword">else</span>
+      <span class="property">@aggLabels</span> = <span class="property">@tickOffsets</span>()
 
     <span class="property">@g</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'g.x-ticks'</span>).data([<span class="number">0</span>])
     <span class="property">@g</span>.enter().append(<span class="string">'g'</span>).attr(<span class="string">'class'</span>, <span class="string">'x-ticks'</span>)
@@ -263,11 +239,11 @@
 
     <span class="property">@transition</span>.selectAll(<span class="string">".x-tick"</span>)
       .attr<span class="function"><span class="params">(<span class="string">"transform"</span>, (d, i) =&gt;
-        <span class="keyword">if</span> <span class="property">@aggregated</span>
+        <span class="keyword">if</span> aggregated
           <span class="string">"translate(<span class="subst">#{<span class="property">@_tickX</span>(d.value, i)}</span>, <span class="subst">#{<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>}</span>)"</span>
         <span class="keyword">else</span>
           <span class="string">"translate(<span class="subst">#{<span class="property">@graph</span>.x(d.value)}</span>, <span class="subst">#{<span class="property">@graph</span>.height() + <span class="property">@marginForBottomTicks</span>}</span>)"</span>)</span>
-    .<span class="title">each</span> "<span class="title">end</span>", <span class="params">(d)</span> -&gt;</span>
+      .<span class="title">each</span> "<span class="title">end</span>", <span class="params">(d)</span> -&gt;</span>
         ticks.exit().remove()
 
     <span class="property">@g</span>.selectAll<span class="function"><span class="params">(<span class="string">'g.x-tick'</span>)</span>.<span class="title">each</span><span class="params">((d, i)-&gt;
@@ -279,11 +255,11 @@
         </li>
         
         
-        <li id="section-5">
+        <li id="section-2">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <pre><code>   .style(&quot;cursor&quot;, &quot;ew-resize&quot;)</code></pre>
 
@@ -295,11 +271,11 @@
         </li>
         
         
-        <li id="section-6">
+        <li id="section-3">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>   @g.selectAll(&quot;text&quot;)
      .on(&quot;mousedown.drag&quot;,  @_axisDrag)
@@ -310,12 +286,11 @@
             <div class="content"><div class='highlight'><pre>    text = <span class="property">@g</span>.selectAll(<span class="string">"g.x-tick"</span>).selectAll(<span class="string">"text"</span>)
     text.attr(<span class="string">"y"</span>, <span class="property">@marginTop</span>)
       .text<span class="function"><span class="params">((d) -&gt;
-        <span class="keyword">if</span> d.value &lt; domain[<span class="number">0</span>]
-          <span class="string">""</span>
-        <span class="keyword">else</span>
+        <span class="keyword">if</span> aggregated
           d.label
-      )</span>
-    <span class="title">if</span> @<span class="title">aggregated</span>
+        <span class="keyword">else</span>
+          d.unit.formatter(<span class="keyword">new</span> Date(d.value)))</span>
+    <span class="title">if</span> <span class="title">aggregated</span>
       <span class="title">text</span>.<span class="title">append</span><span class="params">(<span class="string">"tspan"</span>)</span>
         .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@marginTop</span> + <span class="property">@fontSize</span>)</span>
         .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, <span class="number">0</span>)</span>
@@ -338,9 +313,6 @@
         )</span>
 
   <span class="title">_getLabels</span>: <span class="params">(timeFrame)</span> -&gt;</span>
-    dataTimeFrame = <span class="property">@utils</span>.getWholeDataTimeRange(<span class="property">@graph</span>.series.array)
-    dataMonthRange = <span class="property">@utils</span>.domainMonthRange(dataTimeFrame)
-
     labels = []
 
     date = [<span class="keyword">new</span> Date(timeFrame[<span class="number">0</span>]), <span class="keyword">new</span> Date(timeFrame[<span class="number">1</span>])]</pre></div></div>
@@ -348,11 +320,11 @@
         </li>
         
         
-        <li id="section-7">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>calculate count of month in timeFrame</p>
 
@@ -365,15 +337,12 @@
     endMonth = date[<span class="number">1</span>].getMonth()
 
     range = (endYear - startYear) * <span class="number">12</span> + (endMonth - startMonth) + <span class="number">1</span>
-    rangeBefore = <span class="property">@utils</span>.domainMonthRange([dataTimeFrame[<span class="number">0</span>], timeFrame[<span class="number">0</span>]])
-    rangeAfter = <span class="property">@utils</span>.domainMonthRange([timeFrame[<span class="number">1</span>], dataTimeFrame[<span class="number">1</span>]])
 
-    <span class="keyword">if</span> range &lt;= <span class="number">12</span> <span class="keyword">or</span> !<span class="property">@aggregated</span>
-      grouper = <span class="number">1</span>
-      <span class="function"><span class="title">Add</span> = <span class="params">(i)</span> =&gt;</span>
+    <span class="keyword">if</span> range &lt;= <span class="number">12</span>
+      <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0.</span>.range - <span class="number">1</span>]
         tmpDate = <span class="keyword">new</span> Date(timeFrame[<span class="number">0</span>])
         tmpDate.setMonth(startMonth + i);
-        item =
+        labels.push
           <span class="attribute">value</span>: tmpDate.getTime()
           <span class="attribute">label</span>: tmpDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]
           <span class="attribute">secondary</span>: tmpDate.getFullYear().toString()</pre></div></div>
@@ -381,11 +350,11 @@
         </li>
         
         
-        <li id="section-8">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>Else if there are 36 or fewer periods to display, we will display
 quarterly data and aggregate</p>
@@ -394,7 +363,7 @@ quarterly data and aggregate</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="keyword">else</span> <span class="keyword">if</span> <span class="number">12</span> &lt; range &lt;= <span class="number">36</span>
       grouper = <span class="number">3</span>
-      <span class="function"><span class="title">Add</span> = <span class="params">(i)</span> =&gt;</span>
+      <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0</span> .. (range - <span class="number">1</span>)] <span class="keyword">by</span> grouper
         item = {}
 
         startDate = <span class="keyword">new</span> Date(timeFrame[<span class="number">0</span>])
@@ -411,16 +380,17 @@ quarterly data and aggregate</p>
           endDate = date[<span class="number">1</span>]
           item.label = <span class="string">"<span class="subst">#{startDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>-<span class="subst">#{endDate.toUTCString().split(<span class="string">' '</span>)[<span class="number">2</span>]}</span>"</span>
         item.secondary = <span class="string">"<span class="subst">#{endDate.getFullYear()}</span>"</span>
-        item</pre></div></div>
+
+        labels.push item</pre></div></div>
             
         </li>
         
         
-        <li id="section-9">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>If there are more than 36 columns to display, we will display annual
 data and aggregate.</p>
@@ -455,48 +425,41 @@ data and aggregate.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>extend from left with negotive indexes</p>
+<p>fill with values</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [-rangeBefore .. -<span class="number">1</span>] <span class="keyword">by</span> grouper
-      labels.push Add(i)
-
-    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0.</span>.range - <span class="number">1</span>] <span class="keyword">by</span> grouper
-      labels.push Add(i)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0</span> .. (range - <span class="number">1</span>)] <span class="keyword">by</span> grouper
+        labels.push Add(i)</pre></div></div>
             
         </li>
         
         
-        <li id="section-11">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>extend array from right</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [range .. rangeAfter-<span class="number">1</span>] <span class="keyword">by</span> grouper
-      labels.push Add(i)
-
-    labels.shift()
+            <div class="content"><div class='highlight'><pre>    console.log labels
     labels
 
   <span class="attribute">_tickX</span>: <span class="function"><span class="params">(value, index)</span> -&gt;</span>
     width = <span class="property">@graph</span>.width()
-    count = _.filter<span class="function"><span class="params">(<span class="property">@aggLabels</span>, (item) =&gt;
-      <span class="property">@graph</span>.x.domain()[<span class="number">0</span>] &lt;= item.value &lt;= <span class="property">@graph</span>.x.domain()[<span class="number">1</span>]
-    )</span>.<span class="title">length</span>
+    count = <span class="property">@aggLabels</span>.length
 
-    <span class="title">index</span> * <span class="params">(width / count)</span> + <span class="params">(width / count)</span> / 2</pre></div></div>
+    index * (width / count) + (width / count) / <span class="number">2</span></pre></div></div>
             
         </li>
         

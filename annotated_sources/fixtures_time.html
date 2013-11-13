@@ -158,135 +158,115 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              
+              <p>class Tactile.FixturesTime</p>
+<p> constructor: -&gt;
+   @tzOffset = new Date().getTimezoneOffset() * 60
+   @months = [
+     &quot;Jan&quot;,
+     &quot;Feb&quot;,
+     &quot;Mar&quot;,
+     &quot;Apr&quot;,
+     &quot;May&quot;,
+     &quot;Jun&quot;,
+     &quot;Jul&quot;,
+     &quot;Aug&quot;,
+     &quot;Sep&quot;,
+     &quot;Oct&quot;,
+     &quot;Nov&quot;,
+     &quot;Dec&quot;
+   ]</p>
+<p>   @units =  [</p>
+<pre><code> # seconds: [time_in_milliseconds]
+ name: &quot;decade&quot;
+ seconds: 86400000 * 365.25 * 10
+ formatter: (d) -&gt;
+   parseInt(d.getUTCFullYear() / 10) * 10</code></pre>
+<p>   ,
+     name: &quot;year&quot;
+     seconds: 86400000 <em> 365.25
+     formatter: (d) -&gt;
+       d.getUTCFullYear()
+   ,
+     name: &quot;month&quot;
+     seconds: 86400000 </em> 30.5
+     formatter: (d) =&gt;
+       @months[d.getUTCMonth()]
+   ,
+     name: &quot;week&quot;
+     seconds: 86400000 <em> 7
+     formatter: (d) =&gt;
+       @formatDate d
+   ,
+     name: &quot;day&quot;
+     seconds: 86400000
+     formatter: (d) -&gt;
+       d.getUTCDate()
+   ,
+     name: &quot;6 hour&quot;
+     seconds: 3600000 </em> 6
+     formatter: (d) =&gt;
+       @formatTime d
+   ,
+     name: &quot;hour&quot;
+     seconds: 3600000
+     formatter: (d) =&gt;
+       @formatTime d
+   ,
+     name: &quot;15 minute&quot;
+     seconds: 60000 * 15
+     formatter: (d) =&gt;
+       @formatTime d
+   ,
+     name: &quot;minute&quot;
+     seconds: 60000
+     formatter: (d) -&gt;
+       d.getUTCMinutes()
+   ,
+     name: &quot;15 second&quot;
+     seconds: 15000
+     formatter: (d) -&gt;
+       d.getUTCSeconds() + &quot;s&quot;
+   ,
+     name: &quot;second&quot;
+     seconds: 1000
+     formatter: (d) -&gt;
+       d.getUTCSeconds() + &quot;s&quot;
+   ]</p>
+<p> unit: (unitName) -&gt;
+   @units.filter((unit) -&gt;
+     unitName is unit.name
+   ).shift()</p>
+<p> formatDate: (d) -&gt;
+   d.toUTCString().match(/, (\w+ \w+ \w+)/)[1]</p>
+<p> formatTime: (d) -&gt;
+   d.toUTCString().match(/(\d+:\d+):/)[1]</p>
+<p> ceil: (time, unit) -&gt;
+   if unit.name is &quot;year&quot;
+     nearFuture = new Date((time + unit.seconds - 1))
+     rounded = new Date(0)
+     rounded.setUTCFullYear nearFuture.getUTCFullYear()
+     rounded.setUTCMonth 0
+     rounded.setUTCDate 1
+     rounded.setUTCHours 0
+     rounded.setUTCMinutes 0
+     rounded.setUTCSeconds 0
+     rounded.setUTCMilliseconds 0
+     return rounded.getTime()
+   if unit.name is &quot;month&quot;
+     nearFuture = new Date((time))
+     nearFuture.setUTCMonth(nearFuture.getUTCMonth() + 1, 15)
+     rounded = new Date(0)
+     rounded.setUTCFullYear nearFuture.getUTCFullYear()
+     rounded.setUTCMonth nearFuture.getMonth()
+     rounded.setUTCDate 1
+     rounded.setUTCHours 0
+     rounded.setUTCMinutes 0
+     rounded.setUTCSeconds 0
+     rounded.setUTCMilliseconds 0
+     return rounded.getTime()
+   Math.ceil(time / unit.seconds) * unit.seconds</p>
+
             </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">FixturesTime</span></span>
-
-  <span class="attribute">constructor</span>:<span class="function"> -&gt;</span>
-    <span class="property">@tzOffset</span> = <span class="keyword">new</span> Date().getTimezoneOffset() * <span class="number">60</span>
-    <span class="property">@months</span> = [
-      <span class="string">"Jan"</span>,
-      <span class="string">"Feb"</span>,
-      <span class="string">"Mar"</span>,
-      <span class="string">"Apr"</span>,
-      <span class="string">"May"</span>,
-      <span class="string">"Jun"</span>,
-      <span class="string">"Jul"</span>,
-      <span class="string">"Aug"</span>,
-      <span class="string">"Sep"</span>,
-      <span class="string">"Oct"</span>,
-      <span class="string">"Nov"</span>,
-      <span class="string">"Dec"</span>
-    ]
-
-    <span class="property">@units</span> =  [</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>seconds: [time_in_milliseconds]</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>      <span class="attribute">name</span>: <span class="string">"decade"</span>
-      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">365.25</span> * <span class="number">10</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        parseInt(d.getUTCFullYear() / <span class="number">10</span>) * <span class="number">10</span>
-    ,
-      <span class="attribute">name</span>: <span class="string">"year"</span>
-      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">365.25</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        d.getUTCFullYear()
-    ,
-      <span class="attribute">name</span>: <span class="string">"month"</span>
-      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">30.5</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
-        <span class="property">@months</span>[d.getUTCMonth()]
-    ,
-      <span class="attribute">name</span>: <span class="string">"week"</span>
-      <span class="attribute">seconds</span>: <span class="number">86400000</span> * <span class="number">7</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
-        <span class="property">@formatDate</span> d
-    ,
-      <span class="attribute">name</span>: <span class="string">"day"</span>
-      <span class="attribute">seconds</span>: <span class="number">86400000</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        d.getUTCDate()
-    ,
-      <span class="attribute">name</span>: <span class="string">"6 hour"</span>
-      <span class="attribute">seconds</span>: <span class="number">3600000</span> * <span class="number">6</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
-        <span class="property">@formatTime</span> d
-    ,
-      <span class="attribute">name</span>: <span class="string">"hour"</span>
-      <span class="attribute">seconds</span>: <span class="number">3600000</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
-        <span class="property">@formatTime</span> d
-    ,
-      <span class="attribute">name</span>: <span class="string">"15 minute"</span>
-      <span class="attribute">seconds</span>: <span class="number">60000</span> * <span class="number">15</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> =&gt;</span>
-        <span class="property">@formatTime</span> d
-    ,
-      <span class="attribute">name</span>: <span class="string">"minute"</span>
-      <span class="attribute">seconds</span>: <span class="number">60000</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        d.getUTCMinutes()
-    ,
-      <span class="attribute">name</span>: <span class="string">"15 second"</span>
-      <span class="attribute">seconds</span>: <span class="number">15000</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        d.getUTCSeconds() + <span class="string">"s"</span>
-    ,
-      <span class="attribute">name</span>: <span class="string">"second"</span>
-      <span class="attribute">seconds</span>: <span class="number">1000</span>
-      <span class="attribute">formatter</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-        d.getUTCSeconds() + <span class="string">"s"</span>
-    ]
-
-  <span class="attribute">unit</span>: <span class="function"><span class="params">(unitName)</span> -&gt;</span>
-    <span class="property">@units</span>.filter<span class="function"><span class="params">((unit) -&gt;
-      unitName <span class="keyword">is</span> unit.name
-    )</span>.<span class="title">shift</span><span class="params">()</span>
-
-  <span class="title">formatDate</span>: <span class="params">(d)</span> -&gt;</span>
-    d.toUTCString().match(<span class="regexp">/, (\w+ \w+ \w+)/</span>)[<span class="number">1</span>]
-
-  <span class="attribute">formatTime</span>: <span class="function"><span class="params">(d)</span> -&gt;</span>
-    d.toUTCString().match(<span class="regexp">/(\d+:\d+):/</span>)[<span class="number">1</span>]
-
-  <span class="attribute">ceil</span>: <span class="function"><span class="params">(time, unit)</span> -&gt;</span>
-    <span class="keyword">if</span> unit.name <span class="keyword">is</span> <span class="string">"year"</span>
-      nearFuture = <span class="keyword">new</span> Date((time + unit.seconds - <span class="number">1</span>))
-      rounded = <span class="keyword">new</span> Date(<span class="number">0</span>)
-      rounded.setUTCFullYear nearFuture.getUTCFullYear()
-      rounded.setUTCMonth <span class="number">0</span>
-      rounded.setUTCDate <span class="number">1</span>
-      rounded.setUTCHours <span class="number">0</span>
-      rounded.setUTCMinutes <span class="number">0</span>
-      rounded.setUTCSeconds <span class="number">0</span>
-      rounded.setUTCMilliseconds <span class="number">0</span>
-      <span class="keyword">return</span> rounded.getTime()
-    <span class="keyword">if</span> unit.name <span class="keyword">is</span> <span class="string">"month"</span>
-      nearFuture = <span class="keyword">new</span> Date((time))
-      nearFuture.setUTCMonth(nearFuture.getUTCMonth() + <span class="number">1</span>, <span class="number">15</span>)
-      rounded = <span class="keyword">new</span> Date(<span class="number">0</span>)
-      rounded.setUTCFullYear nearFuture.getUTCFullYear()
-      rounded.setUTCMonth nearFuture.getMonth()
-      rounded.setUTCDate <span class="number">1</span>
-      rounded.setUTCHours <span class="number">0</span>
-      rounded.setUTCMinutes <span class="number">0</span>
-      rounded.setUTCSeconds <span class="number">0</span>
-      rounded.setUTCMilliseconds <span class="number">0</span>
-      <span class="keyword">return</span> rounded.getTime()
-    Math.ceil(time / unit.seconds) * unit.seconds</pre></div></div>
             
         </li>
         
