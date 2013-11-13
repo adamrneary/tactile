@@ -123,7 +123,6 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
   _getLabels: (timeFrame) ->
     dataTimeFrame = @utils.getWholeDataTimeRange(@graph.series.array)
-    dataMonthRange = @utils.domainMonthRange(dataTimeFrame)
 
     labels = []
 
@@ -202,14 +201,14 @@ class Tactile.AxisTime extends Tactile.AxisBase
         return item
 
     # extend from left with negotive indexes
-    for i in [-rangeBefore .. -1] by grouper
+    for i in [-1 .. -rangeBefore] by -grouper
       labels.push Add(i)
 
     for i in [0..range - 1] by grouper
       labels.push Add(i)
 
     # extend array from right
-    for i in [range .. rangeAfter-1] by grouper
+    for i in [range .. range+rangeAfter-1] by grouper
       labels.push Add(i)
 
     labels.shift()
@@ -220,5 +219,8 @@ class Tactile.AxisTime extends Tactile.AxisBase
     count = _.filter(@aggLabels, (item) =>
       @graph.x.domain()[0] <= item.value <= @graph.x.domain()[1]
     ).length
+    offset = _.filter(@aggLabels, (item) =>
+      item.value < @graph.x.domain()[0]
+    ).length
 
-    index * (width / count) + (width / count) / 2
+    (index - offset) * (width / count) + (width / count) / 2
