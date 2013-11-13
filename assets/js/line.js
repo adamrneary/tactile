@@ -107,28 +107,6 @@
           y: d.z
         };
       }
-    }, {
-      name: "friends",
-      dotSize: 2,
-      renderer: "line",
-      sigfigs: 1,
-      color: "#6060c0",
-      yAxis: 'y1',
-      isEditable: function(d, i) {
-        return d.x === 2;
-      },
-      afterDrag: function(d, y, i, draggedSeries, graph) {
-        return graph.data()[i].z = y;
-      },
-      tooltip: function(d) {
-        return d.y + " friends";
-      },
-      dataTransform: function(d) {
-        return {
-          x: d.x,
-          y: d.z + d.y
-        };
-      }
     }
   ]);
 
