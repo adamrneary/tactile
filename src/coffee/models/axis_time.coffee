@@ -94,7 +94,7 @@ class Tactile.AxisTime extends Tactile.AxisBase
     text = @g.selectAll("g.x-tick").selectAll("text")
     text.attr("y", @marginTop)
       .text((d) ->
-        if d.value < domain[0]
+        if domain[1] < d.value or d.value < domain[0]
           ""
         else
           d.label
@@ -103,7 +103,11 @@ class Tactile.AxisTime extends Tactile.AxisBase
       text.append("tspan")
         .attr("y", @marginTop + @fontSize)
         .attr("x", 0)
-        .text (d) -> d.secondary
+        .text (d) ->
+          if domain[1] < d.value or d.value < domain[0]
+            ""
+          else
+            d.secondary
 
   _checkOptions: ()=>
     if @options.ticksTreatment?
