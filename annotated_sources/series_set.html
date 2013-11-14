@@ -162,28 +162,28 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">SeriesSet</span></span>
-  <span class="attribute">constructor</span>: <span class="function"><span class="params">(<span class="property">@array</span> = [], <span class="property">@graph</span>)</span> -&gt;</span>
+  constructor: (<span class="property">@array</span> = [], <span class="property">@graph</span>) -&gt;
     <span class="property">@_exposeArray</span>()
 
-  <span class="attribute">active</span>:<span class="function"> =&gt;</span>
-    <span class="property">@filter</span> <span class="function"><span class="params">(s)</span> -&gt;</span>
+  active: =&gt;
+    <span class="property">@filter</span> (s) -&gt;
       <span class="keyword">not</span> s.disabled
 
-  <span class="attribute">ofDefaultAxis</span>:<span class="function"> -&gt;</span>
-    <span class="property">@filter</span> <span class="function"><span class="params">(s)</span> -&gt;</span>
+  ofDefaultAxis: -&gt;
+    <span class="property">@filter</span> (s) -&gt;
       s.ofDefaultAxis()
 
-  <span class="attribute">ofAlternateScale</span>:<span class="function"> -&gt;</span>
-    <span class="property">@filter</span> <span class="function"><span class="params">(s)</span> -&gt;</span>
+  ofAlternateScale: -&gt;
+    <span class="property">@filter</span> (s) -&gt;
       <span class="keyword">not</span> s.ofDefaultAxis()
 
-  <span class="attribute">filter</span>: <span class="function"><span class="params">(f)</span> -&gt;</span>
+  filter: (f) -&gt;
     <span class="keyword">new</span> Tactile.SeriesSet <span class="property">@array</span>.filter(f), <span class="property">@graph</span>
 
-  <span class="attribute">length</span>: <span class="function"><span class="params">()</span> =&gt;</span>
+  length: () =&gt;
     <span class="property">@array</span>.length
 
-  <span class="attribute">add</span>: <span class="function"><span class="params">(newSeries, overwrite = <span class="literal">false</span>)</span> -&gt;</span>
+  add: (newSeries, overwrite = <span class="literal">false</span>) -&gt;
     <span class="keyword">if</span> overwrite
       <span class="property">@array</span> = newSeries
       <span class="property">@graph</span>.clearRenderers()
@@ -206,8 +206,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="attribute">_exposeArray</span>:<span class="function"> -&gt;</span>
-    _.each <span class="property">@array</span>, <span class="function"><span class="params">(val, key)</span> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>  _exposeArray: -&gt;
+    _.each <span class="property">@array</span>, (val, key) =&gt;
       @[key] = val</pre></div></div>
             
         </li>
@@ -227,20 +227,20 @@ Note that this works with using of dataTransform on the @graph._data</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="attribute">flat</span>: <span class="function"><span class="params">(key)</span> -&gt;</span>
-    transformed = _.flatten<span class="function"><span class="params">(<span class="property">@array</span>.map((s) =&gt; <span class="property">@graph</span>._data.map(s.dataTransform)), <span class="literal">true</span>)</span>
-    <span class="title">transformed</span>.<span class="title">map</span> <span class="params">(d)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  flat: (key) -&gt;
+    transformed = _.flatten(<span class="property">@array</span>.map((s) =&gt; <span class="property">@graph</span>._data.map(s.dataTransform)), <span class="literal">true</span>)
+    transformed.map (d) -&gt;
       d[key]
 
 
-  <span class="attribute">map</span>: <span class="function"><span class="params">(f)</span> =&gt;</span>
+  map: (f) =&gt;
     <span class="property">@array</span>.map(f)
 
-  <span class="attribute">forEach</span>: <span class="function"><span class="params">(f)</span> =&gt;</span>
+  forEach: (f) =&gt;
     <span class="property">@array</span>.forEach(f)
 
-  <span class="attribute">disableAll</span>:<span class="function"> -&gt;</span>
-    _.each <span class="property">@array</span>, <span class="function"><span class="params">(s)</span> -&gt;</span>
+  disableAll: -&gt;
+    _.each <span class="property">@array</span>, (s) -&gt;
       s.disable()</pre></div></div>
             
         </li>

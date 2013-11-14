@@ -68,7 +68,7 @@ data = [
 chart = new Tactile.Chart(grid: true)
   .element($("#example_view")[0])
   .data(data)
-  .axes({x: {dimension: "linear"}})
+  .axes({x: {dimension: "time"}})
   .setXFrame(frameVal)
   .addSeries [
     name: "xy"

@@ -75,7 +75,7 @@
     grid: true
   }).element($("#example_view")[0]).data(data).axes({
     x: {
-      dimension: "linear"
+      dimension: "time"
     }
   }).setXFrame(frameVal).addSeries([
     {

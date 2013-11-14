@@ -163,20 +163,20 @@
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">DonutRenderer</span> <span class="keyword">extends</span> <span class="title">Tactile</span>.<span class="title">RendererBase</span></span>
   Tactile = window.Tactile <span class="keyword">or</span> {}
-  <span class="attribute">name</span>: <span class="string">"donut"</span>
-  <span class="attribute">specificDefaults</span>:
-    <span class="attribute">cartesian</span>: <span class="literal">false</span>
-    <span class="attribute">minMargin</span>: <span class="number">10</span>
-    <span class="attribute">unstack</span>: <span class="literal">true</span>
+  name: <span class="string">"donut"</span>
+  specificDefaults:
+    cartesian: <span class="literal">false</span>
+    minMargin: <span class="number">10</span>
+    unstack: <span class="literal">true</span>
 
-  <span class="attribute">initialize</span>:<span class="function"> =&gt;</span>
+  initialize: =&gt;
     <span class="property">@stackedInnerRadius</span> = <span class="property">@series</span>.stackedInnerRadius <span class="keyword">unless</span> <span class="property">@series</span>.stackedInnerRadius <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@stackedOuterRadius</span> = <span class="property">@series</span>.stackedOuterRadius <span class="keyword">unless</span> <span class="property">@series</span>.stackedOuterRadius <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@innerRadius</span> = <span class="property">@series</span>.innerRadius <span class="keyword">unless</span> <span class="property">@series</span>.innerRadius <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@outerRadius</span> = <span class="property">@series</span>.outerRadius <span class="keyword">unless</span> <span class="property">@series</span>.outerRadius <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="property">@stackedIndex</span> = <span class="property">@series</span>.stackedIndex <span class="keyword">unless</span> <span class="property">@series</span>.stackedIndex <span class="keyword">is</span> <span class="literal">undefined</span>
 
-  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span> =&gt;</span>
+  render: (transition, recalculateData, transitionSpeed) =&gt;
     <span class="property">@_checkData</span>() <span class="keyword">if</span> <span class="property">@checkData</span>
 
     <span class="property">@_setOuterRadius</span>()
@@ -188,34 +188,34 @@
     <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"donut-arc"</span>)
       .data(<span class="property">@series</span>.stack).enter().append(<span class="string">"path"</span>)
 
-    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)
+    <span class="property">@transition</span>.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
       .attr(<span class="string">"class"</span>, <span class="string">"donut-arc"</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="property">@_xOffset</span>()}</span>,<span class="subst">#{<span class="property">@_yOffset</span>()}</span>)"</span>)
-      .attr<span class="function"><span class="params">(<span class="string">"d"</span>, (d, i) =&gt;
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@_xOffset()}</span>,<span class="subst">#{@_yOffset()}</span>)"</span>)
+      .attr(<span class="string">"d"</span>, (d, i) =&gt;
         arc = d3.svg.arc()
           .startAngle(<span class="property">@_startAngle</span>(d, i))
           .endAngle(<span class="property">@_endAngle</span>(d, i))
           .innerRadius(<span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="property">@getInnerRadius</span>() <span class="keyword">else</span> <span class="property">@getStackedInnerRadius</span>())
           .outerRadius(<span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="property">@getOuterRadius</span>() <span class="keyword">else</span> <span class="property">@getStackedOuterRadius</span>())()
-      )</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, <span class="string">"white"</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, ((d) -&gt; d.color), <span class="string">"stroke"</span>)</span>
+      )
+      .attr(<span class="string">"stroke"</span>, <span class="string">"white"</span>)
+      .attr(<span class="string">"fill"</span>, ((d) -&gt; d.color), <span class="string">"stroke"</span>)
 
-    @<span class="title">seriesCanvas</span><span class="params">()</span>.<span class="title">append</span><span class="params">(<span class="string">"svg:text"</span>)</span>
-      .<span class="title">text</span><span class="params">(<span class="property">@series</span>.name)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"class"</span>, <span class="string">"donut-label"</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"fill"</span>, <span class="string">"black"</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"font-size"</span>, <span class="number">15</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, <span class="property">@_xOffset</span>())</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>())</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"opacity"</span>, <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span>)</span>
+    <span class="property">@seriesCanvas</span>().append(<span class="string">"svg:text"</span>)
+      .text(<span class="property">@series</span>.name)
+      .attr(<span class="string">"class"</span>, <span class="string">"donut-label"</span>)
+      .attr(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)
+      .attr(<span class="string">"fill"</span>, <span class="string">"black"</span>)
+      .attr(<span class="string">"font-size"</span>, <span class="number">15</span>)
+      .attr(<span class="string">"x"</span>, <span class="property">@_xOffset</span>())
+      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>())
+      .attr(<span class="string">"opacity"</span>, <span class="keyword">if</span> <span class="property">@unstack</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span>)
 
-    @<span class="title">setupTooltips</span><span class="params">()</span>
+    <span class="property">@setupTooltips</span>()
 
-  <span class="title">setupTooltips</span>: =&gt;</span>
+  setupTooltips: =&gt;
     <span class="keyword">if</span> <span class="property">@series</span>.tooltip
-      <span class="property">@seriesCanvas</span><span class="function"><span class="params">()</span>.<span class="title">selectAll</span><span class="params">(<span class="string">"path"</span>)</span>.<span class="title">tooltip</span> <span class="params">(d, i)</span> =&gt;</span>
+      <span class="property">@seriesCanvas</span>().selectAll(<span class="string">"path"</span>).tooltip (d, i) =&gt;
         arc = d3.svg.arc()
           .startAngle(<span class="property">@_startAngle</span>(d, i))
           .endAngle(<span class="property">@_endAngle</span>(d, i))
@@ -225,85 +225,85 @@
         center = arc.centroid(d)
         center[<span class="number">0</span>] -= <span class="number">10</span> <span class="comment"># because tooltip have left margin 10</span>
 
-        <span class="attribute">color</span>: <span class="property">@series</span>.color
-        <span class="attribute">graph</span>: <span class="property">@graph</span>
-        <span class="attribute">text</span>: <span class="property">@series</span>.tooltip(d)
-        <span class="attribute">gravity</span>: <span class="string">"right"</span>
-        <span class="attribute">displacement</span>: center
+        color: <span class="property">@series</span>.color
+        graph: <span class="property">@graph</span>
+        text: <span class="property">@series</span>.tooltip(d)
+        gravity: <span class="string">"right"</span>
+        displacement: center
 
-  <span class="attribute">getOuterRadius</span>:<span class="function"> =&gt;</span>
+  getOuterRadius: =&gt;
     <span class="property">@outerRadius</span>
 
-  <span class="attribute">getInnerRadius</span>:<span class="function"> =&gt;</span>
+  getInnerRadius: =&gt;
     <span class="property">@innerRadius</span>
 
-  <span class="attribute">getStackedOuterRadius</span>:<span class="function"> =&gt;</span>
+  getStackedOuterRadius: =&gt;
     <span class="property">@stackedOuterRadius</span>
 
-  <span class="attribute">getStackedInnerRadius</span>:<span class="function"> =&gt;</span>
+  getStackedInnerRadius: =&gt;
     <span class="property">@stackedInnerRadius</span>
 
-  <span class="attribute">getMaxOuterRadius</span>:<span class="function"> =&gt;</span>
+  getMaxOuterRadius: =&gt;
     max = <span class="literal">undefined</span>
     <span class="property">@graph</span>.renderers.filter(
-      <span class="function"><span class="params">(r)</span> =&gt;</span>
+      (r) =&gt;
         r.name == <span class="property">@name</span>
-    ).forEach<span class="function"><span class="params">((r) =&gt;
+    ).forEach((r) =&gt;
       radius = r.getOuterRadius()
       <span class="keyword">if</span> !isNaN(radius) <span class="keyword">and</span> radius?
         <span class="keyword">if</span> !isNaN(max) <span class="keyword">and</span> max?
           max = radius <span class="keyword">if</span> max &lt; radius
         <span class="keyword">else</span>
           max = radius
-    )</span>
-    <span class="title">max</span>
+    )
+    max
 
-  <span class="title">getMaxInnerRadius</span>: =&gt;</span>
+  getMaxInnerRadius: =&gt;
     max = <span class="literal">undefined</span>
     <span class="property">@graph</span>.renderers.filter(
-      <span class="function"><span class="params">(r)</span> =&gt;</span>
+      (r) =&gt;
         r.name == <span class="property">@name</span>
-    ).forEach<span class="function"><span class="params">((r) =&gt;
+    ).forEach((r) =&gt;
       radius = r.getInnerRadius()
       <span class="keyword">if</span> !isNaN(radius) <span class="keyword">and</span> radius?
         <span class="keyword">if</span> !isNaN(max) <span class="keyword">and</span> max?
           max = radius <span class="keyword">if</span> max &lt; radius
         <span class="keyword">else</span>
           max = radius
-    )</span>
-    <span class="title">max</span>
+    )
+    max
 
-  <span class="title">getMaxStackedOuterRadius</span>: =&gt;</span>
+  getMaxStackedOuterRadius: =&gt;
     max = <span class="literal">undefined</span>
     <span class="property">@graph</span>.renderers.filter(
-      <span class="function"><span class="params">(r)</span> =&gt;</span>
+      (r) =&gt;
         r.name == <span class="property">@name</span>
-    ).forEach<span class="function"><span class="params">((r) =&gt;
+    ).forEach((r) =&gt;
       radius = r.getStackedOuterRadius()
       <span class="keyword">if</span> !isNaN(radius) <span class="keyword">and</span> radius?
         <span class="keyword">if</span> !isNaN(max) <span class="keyword">and</span> max?
           max = radius <span class="keyword">if</span> max &lt; radius
         <span class="keyword">else</span>
           max = radius
-    )</span>
-    <span class="title">max</span>
+    )
+    max
 
-  <span class="title">getMaxStackedInnerRadius</span>: =&gt;</span>
+  getMaxStackedInnerRadius: =&gt;
     max = <span class="literal">undefined</span>
     <span class="property">@graph</span>.renderers.filter(
-      <span class="function"><span class="params">(r)</span> =&gt;</span>
+      (r) =&gt;
         r.name == <span class="property">@name</span>
-    ).forEach<span class="function"><span class="params">((r) =&gt;
+    ).forEach((r) =&gt;
       radius = r.getStackedInnerRadius()
       <span class="keyword">if</span> !isNaN(radius) <span class="keyword">and</span> radius?
         <span class="keyword">if</span> !isNaN(max) <span class="keyword">and</span> max?
           max = radius <span class="keyword">if</span> max &lt; radius
         <span class="keyword">else</span>
           max = radius
-    )</span>
-    <span class="title">max</span>
+    )
+    max
 
-  <span class="title">stackTransition</span>: <span class="params">(transition, transitionSpeed)</span> =&gt;</span>
+  stackTransition: (transition, transitionSpeed) =&gt;
     <span class="keyword">return</span> <span class="keyword">if</span> <span class="property">@unstack</span>
     <span class="property">@unstack</span> = <span class="literal">false</span>
     xMargin = (<span class="property">@graph</span>.width() - <span class="property">@getMaxStackedOuterRadius</span>() * <span class="number">2</span>) / <span class="number">2</span>
@@ -312,25 +312,25 @@
     xOffset = xMargin + <span class="property">@getMaxStackedOuterRadius</span>() + (<span class="property">@getMaxStackedOuterRadius</span>() - <span class="property">@getMaxOuterRadius</span>()) * Math.cos((<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>() - Math.PI / <span class="number">2</span>)
     yOffset = yMargin + <span class="property">@getMaxStackedOuterRadius</span>() + (<span class="property">@getMaxStackedOuterRadius</span>() - <span class="property">@getMaxOuterRadius</span>()) * Math.sin((<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>() - Math.PI / <span class="number">2</span>)
 
-    transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
       .duration(transitionSpeed / <span class="number">3</span>)
       .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{xOffset}</span>,<span class="subst">#{yOffset}</span>)"</span>)
 
-    transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.donut-label"</span>)
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.donut-label"</span>)
       .duration(transitionSpeed / <span class="number">3</span>)
       .attr(<span class="string">"x"</span>, xOffset)
       .attr(<span class="string">"y"</span>, yOffset)
 
-    transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.donut-label"</span>)
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.donut-label"</span>)
       .delay(transitionSpeed / <span class="number">3</span>)
       .duration(transitionSpeed / <span class="number">3</span>)
       .attr(<span class="string">"opacity"</span>, <span class="number">0</span>)
 
-    transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
       .delay(transitionSpeed * <span class="number">2</span> / <span class="number">3</span>)
       .duration(transitionSpeed / <span class="number">3</span>)
-      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="property">@_xOffset</span>()}</span>,<span class="subst">#{<span class="property">@_yOffset</span>()}</span>)"</span>)
-      .attrTween<span class="function"><span class="params">(<span class="string">"d"</span>, (d, i) =&gt;
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@_xOffset()}</span>,<span class="subst">#{@_yOffset()}</span>)"</span>)
+      .attrTween(<span class="string">"d"</span>, (d, i) =&gt;
         iInnerRadius = d3.interpolate(<span class="property">@getInnerRadius</span>(), <span class="property">@getStackedInnerRadius</span>())
         iOuterRadius = d3.interpolate(<span class="property">@getOuterRadius</span>(), <span class="property">@stackedOuterRadius</span>)
         iStartAngle = d3.interpolate(<span class="property">@_startAngle</span>(d, i, <span class="literal">true</span>), <span class="property">@_startAngle</span>(d, i, <span class="literal">false</span>))
@@ -341,10 +341,10 @@
             .endAngle(iEndAngle(t))
             .innerRadius(iInnerRadius(t))
             .outerRadius(iOuterRadius(t))()
-      )</span>
+      )
 
 
-  <span class="title">unstackTransition</span>: <span class="params">(transition, transitionSpeed)</span> =&gt;</span>
+  unstackTransition: (transition, transitionSpeed) =&gt;
     <span class="keyword">return</span> <span class="keyword">unless</span> <span class="property">@unstack</span>
     <span class="property">@unstack</span> = <span class="literal">true</span>
     xMargin = (<span class="property">@graph</span>.width() - <span class="property">@getMaxStackedOuterRadius</span>() * <span class="number">2</span>) / <span class="number">2</span>
@@ -353,10 +353,10 @@
     xOffset = xMargin + <span class="property">@getMaxStackedOuterRadius</span>() + (<span class="property">@getMaxStackedOuterRadius</span>() - <span class="property">@getMaxOuterRadius</span>()) * Math.cos((<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>(<span class="literal">false</span>) - Math.PI / <span class="number">2</span>)
     yOffset = yMargin + <span class="property">@getMaxStackedOuterRadius</span>() + (<span class="property">@getMaxStackedOuterRadius</span>() - <span class="property">@getMaxOuterRadius</span>()) * Math.sin((<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>(<span class="literal">false</span>) - Math.PI / <span class="number">2</span>)
 
-    transition.selectAll(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
       .duration(transitionSpeed / <span class="number">3</span>)
       .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{xOffset}</span>,<span class="subst">#{yOffset}</span>)"</span>)
-      .attrTween<span class="function"><span class="params">(<span class="string">"d"</span>, (d, i) =&gt;
+      .attrTween(<span class="string">"d"</span>, (d, i) =&gt;
         iInnerRadius = d3.interpolate(<span class="property">@getStackedInnerRadius</span>(), <span class="property">@getInnerRadius</span>())
         iOuterRadius = d3.interpolate(<span class="property">@getStackedOuterRadius</span>(), <span class="property">@getOuterRadius</span>())
         iStartAngle = d3.interpolate(<span class="property">@_startAngle</span>(d, i, <span class="literal">false</span>), <span class="property">@_startAngle</span>(d, i, <span class="literal">true</span>))
@@ -367,32 +367,32 @@
             .endAngle(iEndAngle(t))
             .innerRadius(iInnerRadius(t))
             .outerRadius(iOuterRadius(t))()
-      )</span>
-    <span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.donut-label"</span>)</span>
-      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">3</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, xOffset)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, yOffset)</span>
+      )
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.donut-label"</span>)
+      .duration(transitionSpeed / <span class="number">3</span>)
+      .attr(<span class="string">"x"</span>, xOffset)
+      .attr(<span class="string">"y"</span>, yOffset)
 
-    <span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.donut-label"</span>)</span>
-      .<span class="title">delay</span><span class="params">(transitionSpeed / <span class="number">3</span>)</span>
-      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">3</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"opacity"</span>, <span class="number">1</span>)</span>
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.donut-label"</span>)
+      .delay(transitionSpeed / <span class="number">3</span>)
+      .duration(transitionSpeed / <span class="number">3</span>)
+      .attr(<span class="string">"opacity"</span>, <span class="number">1</span>)
 
-    <span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> path"</span>)</span>
-      .<span class="title">delay</span><span class="params">(transitionSpeed * <span class="number">2</span> / <span class="number">3</span>)</span>
-      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">3</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{<span class="property">@_xOffset</span>()}</span>,<span class="subst">#{<span class="property">@_yOffset</span>()}</span>)"</span>)</span>
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> path"</span>)
+      .delay(transitionSpeed * <span class="number">2</span> / <span class="number">3</span>)
+      .duration(transitionSpeed / <span class="number">3</span>)
+      .attr(<span class="string">"transform"</span>, <span class="string">"translate(<span class="subst">#{@_xOffset()}</span>,<span class="subst">#{@_yOffset()}</span>)"</span>)
 
-    <span class="title">transition</span>.<span class="title">selectAll</span><span class="params">(<span class="string">".<span class="subst">#{<span class="property">@_nameToId</span>()}</span> text.donut-label"</span>)</span>
-      .<span class="title">delay</span><span class="params">(transitionSpeed * <span class="number">2</span> / <span class="number">3</span>)</span>
-      .<span class="title">duration</span><span class="params">(transitionSpeed / <span class="number">3</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"x"</span>, <span class="property">@_xOffset</span>())</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"y"</span>, <span class="property">@_yOffset</span>())</span>
+    transition.selectAll(<span class="string">".<span class="subst">#{@_nameToId()}</span> text.donut-label"</span>)
+      .delay(transitionSpeed * <span class="number">2</span> / <span class="number">3</span>)
+      .duration(transitionSpeed / <span class="number">3</span>)
+      .attr(<span class="string">"x"</span>, <span class="property">@_xOffset</span>())
+      .attr(<span class="string">"y"</span>, <span class="property">@_yOffset</span>())
 
-  <span class="title">_donutsPerLine</span>: =&gt;</span>
+  _donutsPerLine: =&gt;
     Math.floor (<span class="property">@graph</span>.width() - <span class="property">@minMargin</span>) / (<span class="property">@getMaxOuterRadius</span>() * <span class="number">2</span> + <span class="property">@minMargin</span>)
 
-  <span class="attribute">_xOffset</span>:<span class="function"> =&gt;</span>
+  _xOffset: =&gt;
     <span class="keyword">if</span> <span class="property">@unstack</span>
       xMargin = (<span class="property">@graph</span>.width() - <span class="property">@_donutsInLine</span>(<span class="property">@_lineIndex</span>()) * <span class="property">@getMaxOuterRadius</span>() * <span class="number">2</span>) / (<span class="property">@_donutsInLine</span>(<span class="property">@_lineIndex</span>()) + <span class="number">1</span>)
       xOffset = <span class="property">@_indexInLine</span>() * (xMargin + <span class="property">@getMaxOuterRadius</span>() * <span class="number">2</span>) + xMargin + <span class="property">@getMaxOuterRadius</span>()
@@ -400,7 +400,7 @@
       xMargin = (<span class="property">@graph</span>.width() - <span class="property">@getMaxStackedOuterRadius</span>() * <span class="number">2</span>) / <span class="number">2</span>
       xOffset = xMargin + <span class="property">@getMaxStackedOuterRadius</span>()
 
-  <span class="attribute">_yOffset</span>:<span class="function"> =&gt;</span>
+  _yOffset: =&gt;
     <span class="keyword">if</span> <span class="property">@unstack</span>
       yMargin = (<span class="property">@graph</span>.height() - <span class="property">@_linesCount</span>() * <span class="property">@getMaxOuterRadius</span>() * <span class="number">2</span>) / (<span class="property">@_linesCount</span>() + <span class="number">1</span>)
       yOffset = <span class="property">@_lineIndex</span>() * (yMargin + <span class="property">@getMaxOuterRadius</span>() * <span class="number">2</span>) + yMargin + <span class="property">@getMaxOuterRadius</span>()
@@ -408,77 +408,77 @@
       yMargin = (<span class="property">@graph</span>.height() - <span class="property">@getMaxStackedOuterRadius</span>() * <span class="number">2</span>) / <span class="number">2</span>
       yOffset = yMargin + <span class="property">@getMaxStackedOuterRadius</span>()
 
-  <span class="attribute">_startAngle</span>: <span class="function"><span class="params">(d, i, unstack)</span> =&gt;</span>
+  _startAngle: (d, i, unstack) =&gt;
     unstack = <span class="property">@unstack</span> <span class="keyword">if</span> unstack <span class="keyword">is</span> <span class="literal">undefined</span>
     dataAmount = <span class="number">0</span>
-    <span class="property">@series</span>.stack.forEach<span class="function"><span class="params">((d) =&gt;
+    <span class="property">@series</span>.stack.forEach((d) =&gt;
       dataAmount += d.value <span class="keyword">if</span> !isNaN(d.value) <span class="keyword">and</span> d.value?
-    )</span>
+    )
 
-    <span class="title">if</span> <span class="title">unstack</span>
-      <span class="title">scal</span> = <span class="title">d3</span>.<span class="title">scale</span>.<span class="title">linear</span><span class="params">()</span>
-        .<span class="title">domain</span><span class="params">([<span class="number">0</span>, dataAmount])</span>
-        .<span class="title">range</span><span class="params">([<span class="number">0</span>, <span class="number">2</span> * Math.PI])</span>
-      <span class="title">arcStartAngle</span> = 0
-    <span class="title">else</span>
-      <span class="title">scal</span> = <span class="title">d3</span>.<span class="title">scale</span>.<span class="title">linear</span><span class="params">()</span>
-        .<span class="title">domain</span><span class="params">([<span class="number">0</span>, dataAmount])</span>
-        .<span class="title">range</span><span class="params">([<span class="number">0</span>, <span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>() - <span class="number">0.04</span>])</span>
-      <span class="title">arcStartAngle</span> = <span class="params">(<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>())</span> * @<span class="title">_donutIndex</span><span class="params">(unstack)</span> - <span class="title">Math</span>.<span class="title">PI</span> / @<span class="title">_donutsCount</span><span class="params">()</span>
+    <span class="keyword">if</span> unstack
+      scal = d3.scale.linear()
+        .domain([<span class="number">0</span>, dataAmount])
+        .range([<span class="number">0</span>, <span class="number">2</span> * Math.PI])
+      arcStartAngle = <span class="number">0</span>
+    <span class="keyword">else</span>
+      scal = d3.scale.linear()
+        .domain([<span class="number">0</span>, dataAmount])
+        .range([<span class="number">0</span>, <span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>() - <span class="number">0.04</span>])
+      arcStartAngle = (<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>(unstack) - Math.PI / <span class="property">@_donutsCount</span>()
 
-    <span class="title">k</span> = 0
-    <span class="title">while</span> <span class="title">k</span> &lt; <span class="title">i</span>
-      <span class="title">arcStartAngle</span> += <span class="title">scal</span><span class="params">(<span class="property">@series</span>.stack[k].value)</span> <span class="title">if</span> !<span class="title">isNaN</span><span class="params">(<span class="property">@series</span>.stack[k].value)</span> <span class="title">and</span> @<span class="title">series</span>.<span class="title">stack</span>[<span class="title">k</span>].<span class="title">value</span>?
-      <span class="title">k</span>++
-    <span class="title">arcStartAngle</span>
+    k = <span class="number">0</span>
+    <span class="keyword">while</span> k &lt; i
+      arcStartAngle += scal(<span class="property">@series</span>.stack[k].value) <span class="keyword">if</span> !isNaN(<span class="property">@series</span>.stack[k].value) <span class="keyword">and</span> <span class="property">@series</span>.stack[k].value?
+      k++
+    arcStartAngle
 
-  <span class="title">_endAngle</span>: <span class="params">(d, i, unstack)</span> =&gt;</span>
+  _endAngle: (d, i, unstack) =&gt;
     unstack = <span class="property">@unstack</span> <span class="keyword">if</span> unstack <span class="keyword">is</span> <span class="literal">undefined</span>
     dataAmount = <span class="number">0</span>
-    <span class="property">@series</span>.stack.forEach<span class="function"><span class="params">((d) =&gt;
+    <span class="property">@series</span>.stack.forEach((d) =&gt;
       dataAmount += d.value <span class="keyword">if</span> !isNaN(d.value) <span class="keyword">and</span> d.value?
-    )</span>
+    )
 
-    <span class="title">if</span> <span class="title">unstack</span>
-      <span class="title">scal</span> = <span class="title">d3</span>.<span class="title">scale</span>.<span class="title">linear</span><span class="params">()</span>
-        .<span class="title">domain</span><span class="params">([<span class="number">0</span>, dataAmount])</span>
-        .<span class="title">range</span><span class="params">([<span class="number">0</span>, <span class="number">2</span> * Math.PI])</span>
-      <span class="title">arcEndAngle</span> = 0
-    <span class="title">else</span>
-      <span class="title">scal</span> = <span class="title">d3</span>.<span class="title">scale</span>.<span class="title">linear</span><span class="params">()</span>
-        .<span class="title">domain</span><span class="params">([<span class="number">0</span>, dataAmount])</span>
-        .<span class="title">range</span><span class="params">([<span class="number">0</span>, <span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>() - <span class="number">0.04</span>])</span>
-      <span class="title">arcEndAngle</span> = <span class="params">(<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>())</span> * @<span class="title">_donutIndex</span><span class="params">(unstack)</span> - <span class="title">Math</span>.<span class="title">PI</span> / @<span class="title">_donutsCount</span><span class="params">()</span>
+    <span class="keyword">if</span> unstack
+      scal = d3.scale.linear()
+        .domain([<span class="number">0</span>, dataAmount])
+        .range([<span class="number">0</span>, <span class="number">2</span> * Math.PI])
+      arcEndAngle = <span class="number">0</span>
+    <span class="keyword">else</span>
+      scal = d3.scale.linear()
+        .domain([<span class="number">0</span>, dataAmount])
+        .range([<span class="number">0</span>, <span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>() - <span class="number">0.04</span>])
+      arcEndAngle = (<span class="number">2</span> * Math.PI / <span class="property">@_donutsCount</span>()) * <span class="property">@_donutIndex</span>(unstack) - Math.PI / <span class="property">@_donutsCount</span>()
 
-    <span class="title">k</span> = 0
-    <span class="title">while</span> <span class="title">k</span> &lt;= <span class="title">i</span>
-      <span class="title">arcEndAngle</span> += <span class="title">scal</span><span class="params">(<span class="property">@series</span>.stack[k].value)</span> <span class="title">if</span> !<span class="title">isNaN</span><span class="params">(<span class="property">@series</span>.stack[k].value)</span> <span class="title">and</span> @<span class="title">series</span>.<span class="title">stack</span>[<span class="title">k</span>].<span class="title">value</span>?
-      <span class="title">k</span>++
-    <span class="title">arcEndAngle</span>
+    k = <span class="number">0</span>
+    <span class="keyword">while</span> k &lt;= i
+      arcEndAngle += scal(<span class="property">@series</span>.stack[k].value) <span class="keyword">if</span> !isNaN(<span class="property">@series</span>.stack[k].value) <span class="keyword">and</span> <span class="property">@series</span>.stack[k].value?
+      k++
+    arcEndAngle
 
-  <span class="title">_donutIndex</span>: <span class="params">(unstack)</span> =&gt;</span>
+  _donutIndex: (unstack) =&gt;
     unstack = <span class="property">@unstack</span> <span class="keyword">if</span> unstack <span class="keyword">is</span> <span class="literal">undefined</span>
     <span class="keyword">if</span> unstack || (<span class="property">@stackedIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>)
       <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> <span class="property">@rendererIndex</span> == <span class="number">0</span> || <span class="property">@rendererIndex</span> <span class="keyword">is</span> <span class="literal">undefined</span>
       renderers = <span class="property">@graph</span>.renderers.slice(<span class="number">0</span>, <span class="property">@rendererIndex</span>)
-      _.filter<span class="function"><span class="params">(renderers,(r) =&gt; r.name == <span class="property">@name</span>)</span>.<span class="title">length</span>
-    <span class="title">else</span>
-      @<span class="title">stackedIndex</span>
+      _.filter(renderers,(r) =&gt; r.name == <span class="property">@name</span>).length
+    <span class="keyword">else</span>
+      <span class="property">@stackedIndex</span>
 
 
-  <span class="title">_lineIndex</span>: =&gt;</span>
+  _lineIndex: =&gt;
     Math.floor <span class="property">@_donutIndex</span>() / <span class="property">@_donutsPerLine</span>()
 
-  <span class="attribute">_linesCount</span>:<span class="function"> =&gt;</span>
+  _linesCount: =&gt;
     Math.ceil <span class="property">@_donutsCount</span>() / <span class="property">@_donutsPerLine</span>()
 
-  <span class="attribute">_donutsCount</span>:<span class="function"> =&gt;</span>
+  _donutsCount: =&gt;
     <span class="property">@graph</span>.series.filter(
-      <span class="function"><span class="params">(d)</span> =&gt;</span>
+      (d) =&gt;
         d.renderer == <span class="property">@name</span>
     ).length()
 
-  <span class="attribute">_donutsInLine</span>: <span class="function"><span class="params">(lineIndex)</span> =&gt;</span>
+  _donutsInLine: (lineIndex) =&gt;
     lineCount = Math.ceil <span class="property">@_donutsCount</span>() / <span class="property">@_donutsPerLine</span>()
     <span class="keyword">if</span> (lineIndex &gt;= lineCount)
       <span class="number">0</span>
@@ -487,10 +487,10 @@
     <span class="keyword">else</span>
       <span class="property">@_donutsPerLine</span>()
 
-  <span class="attribute">_indexInLine</span>:<span class="function"> =&gt;</span>
+  _indexInLine: =&gt;
     Math.floor <span class="property">@_donutIndex</span>() - <span class="property">@_lineIndex</span>() * <span class="property">@_donutsPerLine</span>()
 
-  <span class="attribute">_calculateOuterRadius</span>:<span class="function"> =&gt;</span>
+  _calculateOuterRadius: =&gt;
     donutsCount = <span class="property">@_donutsCount</span>()
     width = <span class="property">@graph</span>.width()
     height = <span class="property">@graph</span>.height()
@@ -512,36 +512,36 @@
 
     lastRadius
 
-  <span class="attribute">_setOuterRadius</span>:<span class="function"> =&gt;</span>
+  _setOuterRadius: =&gt;
     <span class="keyword">if</span> isNaN(<span class="property">@outerRadius</span>) <span class="keyword">or</span> !<span class="property">@outerRadius</span>?
       <span class="property">@outerRadius</span> = <span class="property">@getMaxOuterRadius</span>()
       <span class="keyword">if</span> isNaN(<span class="property">@outerRadius</span>) <span class="keyword">or</span> !<span class="property">@outerRadius</span>?
         <span class="property">@outerRadius</span> = <span class="property">@_calculateOuterRadius</span>()
 
-  <span class="attribute">_setInnerRadius</span>:<span class="function"> =&gt;</span>
+  _setInnerRadius: =&gt;
     <span class="keyword">if</span> isNaN(<span class="property">@innerRadius</span>) <span class="keyword">or</span> !<span class="property">@innerRadius</span>?
       <span class="property">@innerRadius</span> = <span class="property">@getMaxInnerRadius</span>()
       <span class="keyword">if</span> isNaN(<span class="property">@innerRadius</span>) <span class="keyword">or</span> !<span class="property">@innerRadius</span>?
         <span class="property">@innerRadius</span> = <span class="property">@getOuterRadius</span>() * <span class="number">0.6</span>
 
-  <span class="attribute">_setStackedOuterRadius</span>:<span class="function"> =&gt;</span>
+  _setStackedOuterRadius: =&gt;
     <span class="keyword">if</span> isNaN(<span class="property">@stackedOuterRadius</span>) <span class="keyword">or</span> !<span class="property">@stackedOuterRadius</span>?
       <span class="property">@stackedOuterRadius</span> = <span class="property">@getMaxStackedOuterRadius</span>()
       <span class="keyword">if</span> isNaN(<span class="property">@getMaxStackedOuterRadius</span>()) <span class="keyword">or</span> !<span class="property">@stackedOuterRadius</span>?
         <span class="property">@stackedOuterRadius</span> = (Math.min(<span class="property">@graph</span>.width(), <span class="property">@graph</span>.height()) - <span class="property">@minMargin</span>*<span class="number">2</span>) / <span class="number">2</span>
 
-  <span class="attribute">_setStackedInnerRadius</span>:<span class="function"> =&gt;</span>
+  _setStackedInnerRadius: =&gt;
     <span class="keyword">if</span> isNaN(<span class="property">@stackedInnerRadius</span>) <span class="keyword">or</span> !<span class="property">@stackedInnerRadius</span>?
       <span class="property">@stackedInnerRadius</span> = <span class="property">@getMaxStackedInnerRadius</span>()
       <span class="keyword">if</span> isNaN(<span class="property">@stackedInnerRadius</span>) <span class="keyword">or</span> !<span class="property">@stackedInnerRadius</span>?
         <span class="property">@stackedInnerRadius</span> = <span class="property">@getStackedOuterRadius</span>() * <span class="number">0.6</span>
 
-  <span class="attribute">_checkData</span>: <span class="function"><span class="params">()</span>=&gt;</span>
+  _checkData: ()=&gt;
     data = <span class="property">@series</span>.stack
-    data.forEach<span class="function"><span class="params">((d, i) =&gt;
-      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].value"</span>)
-      <span class="property">@utils</span>.checkString(d.color, <span class="string">"<span class="subst">#{<span class="property">@name</span>}</span> renderer data[<span class="subst">#{i}</span>].color"</span>)
-    )</span></pre></div></div>
+    data.forEach((d, i) =&gt;
+      <span class="property">@utils</span>.checkNumber(d.value, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].value"</span>)
+      <span class="property">@utils</span>.checkString(d.color, <span class="string">"<span class="subst">#{@name}</span> renderer data[<span class="subst">#{i}</span>].color"</span>)
+    )</pre></div></div>
             
         </li>
         

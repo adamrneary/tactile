@@ -162,11 +162,11 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Tactile</span>.<span class="title">Grid</span></span>
-  <span class="attribute">defaultOptions</span>:
-      <span class="attribute">lineWidth</span>: <span class="number">0.5</span>
-      <span class="attribute">color</span>: <span class="string">"#000000"</span>
+  defaultOptions:
+      lineWidth: <span class="number">0.5</span>
+      color: <span class="string">"#000000"</span>
 
-  <span class="attribute">constructor</span>: <span class="function"><span class="params">(<span class="property">@options</span>)</span> -&gt;</span>
+  constructor: (<span class="property">@options</span>) -&gt;
     <span class="property">@utils</span> = <span class="keyword">new</span> Tactile.Utils()
     <span class="property">@graph</span> = options.graph
     <span class="property">@lineWidth</span> = options.lineWidth <span class="keyword">or</span> <span class="property">@defaultOptions</span>.lineWidth
@@ -174,8 +174,8 @@
     <span class="property">@data</span> = options.values <span class="keyword">or</span> []
     <span class="property">@horizontal</span> = options.grid != <span class="string">'x'</span>
 
-  <span class="attribute">render</span>: <span class="function"><span class="params">(transition, recalculateData, transitionSpeed)</span> -&gt;</span>
-    className = <span class="string">"<span class="subst">#{<span class="property">@options</span>.grid}</span>-grid"</span>
+  render: (transition, recalculateData, transitionSpeed) -&gt;
+    className = <span class="string">"<span class="subst">#{@options.grid}</span>-grid"</span>
     <span class="property">@g</span> = <span class="property">@graph</span>.vis.selectAll(<span class="string">'.'</span> + className).data([<span class="number">0</span>])
     <span class="property">@g</span>.enter().append(<span class="string">"g"</span>).attr(<span class="string">"class"</span>, className)
 
@@ -186,12 +186,12 @@
     line.exit().remove()
 
     transition.select(<span class="string">'.'</span> + className).selectAll(<span class="string">"line"</span>)
-      .attr<span class="function"><span class="params">(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.width() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="number">0</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="property">@graph</span>.height())</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"stroke"</span>, <span class="property">@color</span>)</span>
-      .<span class="title">attr</span><span class="params">(<span class="string">"stroke-width"</span>, <span class="property">@lineWidth</span>)</span></pre></div></div>
+      .attr(<span class="string">"x1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))
+      .attr(<span class="string">"x2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>.width() <span class="keyword">else</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d))
+      .attr(<span class="string">"y1"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="number">0</span>)
+      .attr(<span class="string">"y2"</span>, (d) =&gt; <span class="keyword">if</span> <span class="property">@horizontal</span> <span class="keyword">then</span> <span class="property">@graph</span>[<span class="property">@options</span>.grid](d) <span class="keyword">else</span> <span class="property">@graph</span>.height())
+      .attr(<span class="string">"stroke"</span>, <span class="property">@color</span>)
+      .attr(<span class="string">"stroke-width"</span>, <span class="property">@lineWidth</span>)</pre></div></div>
             
         </li>
         

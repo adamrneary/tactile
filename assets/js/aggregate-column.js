@@ -63,8 +63,10 @@
         };
       },
       isEditable: true,
-      afterDrag: function(d, y) {
-        return console.log("d:" + d + ", y:" + y);
+      afterDrag: function(d, newVal, draggedSeries, graph) {
+        var i;
+        i = _.indexOf(_.pluck(graph.data(), "period"), d.x);
+        return draggedSeries.stack[i].y = newVal;
       }
     }, {
       name: "y2",

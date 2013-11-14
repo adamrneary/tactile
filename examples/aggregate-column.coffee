@@ -48,8 +48,9 @@ chart.addSeries [
     x: d.period
     y: d.y1
   isEditable: true
-  afterDrag: (d, y) ->
-    console.log "d:#{d}, y:#{y}"
+  afterDrag: (d, newVal, draggedSeries, graph) ->
+    i = _.indexOf(_.pluck(graph.data(), "period"), d.x)
+    draggedSeries.stack[i].y = newVal
 ,
   name: "y2"
   renderer: "column"

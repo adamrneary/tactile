@@ -1386,7 +1386,7 @@
       });
       text = this.g.selectAll("g.x-tick").selectAll("text");
       text.attr("y", this.marginTop).text(function(d) {
-        if (d.value < domain[0]) {
+        if (domain[1] < d.value || d.value < domain[0]) {
           return "";
         } else {
           return d.label;
@@ -1394,7 +1394,11 @@
       });
       if (this.aggregated) {
         return text.append("tspan").attr("y", this.marginTop + this.fontSize).attr("x", 0).text(function(d) {
-          return d.secondary;
+          if (domain[1] < d.value || d.value < domain[0]) {
+            return "";
+          } else {
+            return d.secondary;
+          }
         });
       }
     };
@@ -2990,11 +2994,16 @@
       if (((_ref5 = this.dragged) != null ? _ref5.y : void 0) == null) {
         return;
       }
-      if (this.dragged.d.source) {
-        y = this.dragged.y / this.dragged.d.source.length;
+      console.log("_mouseUp", this.renderer);
+      if (this.renderer.aggregated) {
+        if (this.dragged.d.source) {
+          y = this.dragged.y / this.dragged.d.source.length;
+        } else {
+          y = this.dragged.y;
+        }
         _.each(this.dragged.d.source, function(d) {
           if (_this.dragged) {
-            return _this.afterDrag(d, y);
+            return _this.afterDrag(d, y, _this.series, _this.graph);
           }
         });
       } else {

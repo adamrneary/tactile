@@ -33,8 +33,9 @@ chart.addSeries [
   round: false
   color: "#c05020"
   isEditable: true
-  afterDrag: (d, y) ->
-    console.log "d:#{d}, y:#{y}"
+  afterDrag: (d, newVal, draggedSeries, graph) ->
+    i = _.indexOf(_.pluck(graph.data(), "period"), d.x)
+    draggedSeries.stack[i].y = newVal
   tooltip: (d) ->
     d.y + " y0"
   dataTransform: (d) ->
@@ -46,6 +47,9 @@ chart.addSeries [
   round: false
   color: "#6060c0"
   isEditable: true
+  afterDrag: (d, newVal, draggedSeries, graph) ->
+    i = _.indexOf(_.pluck(graph.data(), "period"), d.x)
+    draggedSeries.stack[i].y = newVal
   tooltip: (d) ->
     d.y + " y1"
   dataTransform: (d) ->
@@ -57,6 +61,9 @@ chart.addSeries [
   round: false
   color: "#6020c0"
   isEditable: true
+  afterDrag: (d, newVal, draggedSeries, graph) ->
+    i = _.indexOf(_.pluck(graph.data(), "period"), d.x)
+    draggedSeries.stack[i].y = newVal
   tooltip: (d) ->
     d.y + " y2"
   dataTransform: (d) ->

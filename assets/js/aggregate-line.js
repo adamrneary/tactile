@@ -40,8 +40,10 @@
       round: false,
       color: "#c05020",
       isEditable: true,
-      afterDrag: function(d, y) {
-        return console.log("d:" + d + ", y:" + y);
+      afterDrag: function(d, newVal, draggedSeries, graph) {
+        var i;
+        i = _.indexOf(_.pluck(graph.data(), "period"), d.x);
+        return draggedSeries.stack[i].y = newVal;
       },
       tooltip: function(d) {
         return d.y + " y0";
@@ -58,6 +60,11 @@
       round: false,
       color: "#6060c0",
       isEditable: true,
+      afterDrag: function(d, newVal, draggedSeries, graph) {
+        var i;
+        i = _.indexOf(_.pluck(graph.data(), "period"), d.x);
+        return draggedSeries.stack[i].y = newVal;
+      },
       tooltip: function(d) {
         return d.y + " y1";
       },
@@ -73,6 +80,11 @@
       round: false,
       color: "#6020c0",
       isEditable: true,
+      afterDrag: function(d, newVal, draggedSeries, graph) {
+        var i;
+        i = _.indexOf(_.pluck(graph.data(), "period"), d.x);
+        return draggedSeries.stack[i].y = newVal;
+      },
       tooltip: function(d) {
         return d.y + " y2";
       },
