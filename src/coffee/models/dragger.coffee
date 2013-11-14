@@ -112,8 +112,12 @@ class Tactile.Dragger
 
   _mouseUp: =>
     return unless @dragged?.y?
-    if @dragged.d.source
-      y = @dragged.y / @dragged.d.source.length
+    console.log "_mouseUp", @renderer
+    if @renderer.aggregated
+      if @dragged.d.source
+        y = @dragged.y / @dragged.d.source.length
+      else
+        y = @dragged.y
       _.each @dragged.d.source, (d) =>
         @afterDrag(d, y, @series, @graph) if @dragged
     else
