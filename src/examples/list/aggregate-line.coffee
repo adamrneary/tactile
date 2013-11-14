@@ -33,8 +33,9 @@ chart.addSeries [
   round: false
   color: "#c05020"
   isEditable: true
-  afterDrag: (d, y) ->
-    console.log "d:#{d}, y:#{y}"
+  afterDrag: (d, newVal, draggedSeries, graph) ->
+    i = _.indexOf(_.pluck(graph.data(), "period"), d.x)
+    draggedSeries.stack[i].y = newVal
   tooltip: (d) ->
     d.y + " y0"
   dataTransform: (d) ->

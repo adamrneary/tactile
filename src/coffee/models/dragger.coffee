@@ -115,7 +115,7 @@ class Tactile.Dragger
     if @dragged.d.source
       y = @dragged.y / @dragged.d.source.length
       _.each @dragged.d.source, (d) =>
-        @afterDrag(d, y) if @dragged
+        @afterDrag(d, y, @series, @graph) if @dragged
     else
       @afterDrag(@dragged.d, @dragged.y, @dragged.i, @series, @graph) if @dragged
 
