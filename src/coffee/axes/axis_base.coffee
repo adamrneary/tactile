@@ -95,8 +95,31 @@ class Tactile.AxisBase
 
 
 
+    _updateRange: ->
+      @x.range([0, @width()])
+      @y.range([@height(), 0])
+      @y.magnitude.range([0, @height()])
+      @y1.range([@height(), 0])
+      @y1.magnitude.range([0, @height()])
 
 
+
+
+
+
+
+
+
+    _setupDomainAndRange: ->
+      @x = d3.scale.linear()
+        .domain([NaN, NaN])
+      @y = d3.scale.linear()
+        .domain([NaN, NaN])
+      @y.magnitude = d3.scale.linear()
+      @y1 = d3.scale.linear()
+        .domain([NaN, NaN])
+      @y1.magnitude = d3.scale.linear()
+      @_updateRange()
 
 
 

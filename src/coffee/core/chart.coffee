@@ -27,8 +27,8 @@ class Tactile.Chart
     #
     # Canvas setup
     @_element = args.element or $("#tactile-container")[0]
-    @_outerHeight = args.outerHeight or 400
-    @_outerWidth = args.outerWidth or 680
+    @_outerHeight = args.outerHeight
+    @_outerWidth = args.outerWidth
     @_padding = args.padding or {top: 0, right: 0, bottom: 0, left: 0}
     @_axisPadding = args.axisPadding or {top: 0, right: 0, bottom: 0, left: 0}
 
@@ -285,20 +285,13 @@ class Tactile.Chart
   _resetCanvas: ->
 
     # Let's start by figuring out the dimensions we'll be working with.
-    margin =
-      left: @_padding.left + @_axisPadding.left
-      right: @_padding.right + @_axisPadding.right
-      top: @_padding.top + @_axisPadding.top
-      bottom: @_padding.bottom + @_axisPadding.bottom
-    @_width = @_outerWidth - margin.left
-    @_height = @_outerHeight - margin.top
-
-    # We have a convenience function for findOrAppend since _resetCanvas needs
-    # to be safely called repeatedly without creating new objects.
-    findOrAppend = Tactile.Utils.findOrAppend
+    @_setSize()
 
     # We need a constant class name for a containing div within the object's element.
-    @svg = findOrAppend(node: 'svg', element: d3.select(@_element))
+    @svg = Tactile.Utils.findOrAppend
+      node: 'svg'
+      element: d3.select(@_element)
+    @svg
       .attr('width', @_outerWidth)
       .attr('height', @_outerHeight)
 
@@ -307,63 +300,19 @@ class Tactile.Chart
     # small (e.g. circles on the top of a column rather than the column itself)
     # we can manage this with a static canvas and a draggable canvas. Much
     # easier than dealing with the z index quagmire.
-
-    # The base "vis" is the canvas for objects that cannot be dragged.
-    @vis = findOrAppend(node: 'g', element: @svg, selector: 'g.canvas')
-      .attr("transform", "translate(#{margin.left},#{margin.top})")
-      .attr("class", "canvas")
-
-    # This canvas is for draggable components
-    @draggableVis = findOrAppend(node: 'g', element: @svg, selector: 'g.draggable-canvas')
-      .attr("transform", "translate(#{margin.left},#{margin.top})")
-      .attr("class", "draggable-canvas")
-
-    # Clip paths are the used to mask objects that pass outside the clip path,
-    # leaving you with a clean chart falling right in the intended space, even
-    # as you animate laterally.
-    #
-    # The problem is that we need to give room for objects that are larger than
-    # 1 pixel (all of them).
+    @vis = @_findOrAppendCanvas(@svg, 'canvas')
+    @draggableVis = @_findOrAppendCanvas(@svg, 'draggable-canvas')
 
     # The default clip path is good for most objects. It sets a hard cutoff on
     # the left and right, but it reaches higher and lower than it otherwise
     # would in order to account for the width of lines.
-    clip = findOrAppend(node: 'clipPath', element: @vis, selector: '#clip')
-      .attr("id", "clip")
-
-    lineAllowance = 2
-    findOrAppend(node: 'rect', element: clip)
-      .attr("width", @_width)
-      # increase height to provide room vertically for line thickness
-      .attr("height", @height + 2 * lineAllowance)
-      # translate to adjust for increased height
-      .attr("transform", "translate(0,-#{lineAllowance})")
+    @_findOrAppendClip(@vis, 'clip', 0, 2)
 
     # The scatter clip path is used for scatter plots where the allowance needs
     # to be larger and in all directions. For a line that has circles on its
     # points, you can use the default clip path for the line and the scatter
     # clip path for the circles.
-    scatterClip = findOrAppend(node: 'clipPath', element: @vis, selector: '#scatter-clip')
-      .attr("id", "scatter-clip")
-
-    circleAllowance = 6
-    findOrAppend(node: 'rect', element: scatterClip)
-      # increase width to provide room vertically for circle radius
-      .attr("width", @width() + 2 * circleAllowance)
-      # increase height to provide room vertically for circle radius
-      .attr("height", @height() + 2 * circleAllowance)
-      # translate to adjust for increased width and height
-      .attr("transform", "translate(-#{circleAllowance},-#{circleAllowance})")
-
-  # As the name suggests, this method eliminates the svg from the passed
-  # element, whether because the chart is no longer valid or because the
-  # element has been changed, or whatever the case may be.
-  _destroySvgFromElement: (element) ->
-    d3.select(element).selectAll('svg').remove()
-    @_canvas_needs_reset = true
-
-
-
+    @_findOrAppendClip(@vis, 'clip', 4, 4)
 
   # Set's the size for the chart
   # please note you have to call render() or update()
@@ -372,22 +321,22 @@ class Tactile.Chart
   # outerWith, outerHeight - no paddings subtracted
   # innerWidth, innerHeight - paddings subtracted
   # width(), height() returns innerWidth as it's the most common used
-  setSize: (args = {}) ->
-    elWidth  = $(@_element).width()
-    elHeight = $(@_element).height()
+  _setSize: ->
 
-    @outerWidth = args.width || elWidth || @defaultWidth
-    @outerHeight = args.height || elHeight || @defaultHeight
+    # Check the existing element's dimensions before applying a default.
+    @outerWidth or= $(@_element).width() or 200
+    @outerHeight or= $(@_element).height() or 100
 
-    @innerWidth = @outerWidth - @padding.left - @padding.right - @axisPadding.left - @axisPadding.right
-    @innerHeight = @outerHeight - @padding.top - @padding.bottom - @axisPadding.top - @axisPadding.bottom
+    # Combine base padding and axis padding to define the margin (TODO: Hacky)
+    @margin =
+      left: @_padding.left + @_axisPadding.left
+      right: @_padding.right + @_axisPadding.right
+      top: @_padding.top + @_axisPadding.top
+      bottom: @_padding.bottom + @_axisPadding.bottom
 
-    @x?.range([0, @width()])
-    @y?.range([@height(), 0])
-    @y?.magnitude.range([0, @height()])
-    @y1?.range([@height(), 0])
-    @y1?.range([0, @height()])
-
+    # Calculate the inner width and height for charting
+    @_width = @_outerWidth - @margin.left - @margin.right
+    @_height = @_outerHeight - @margin.top - @margin.bottom
 
     @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
     @_updateRange()
@@ -395,28 +344,45 @@ class Tactile.Chart
 
     @
 
+  # The canvas (or "g" or "vis," depending on who you're talking to)
+  # is the d3 object on which other objects (series, axes, etc.) are drawn.
+  _findOrAppendCanvas: (element, class) ->
+    canvas = Tactile.Utils.findOrAppend
+      node: 'g'
+      element: element
+      selector: "g.#{class}"
+    canvas
+      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+      .attr("class", class)
+      .attr('width', @_width)
+      .attr('height', @_height)
+    canvas
 
+  # Clip paths are the used to mask objects that pass outside the clip path,
+  # leaving you with a clean chart falling right in the intended space, even
+  # as you animate laterally.
+  #
+  # The problem is that we need to give room for objects that are larger than
+  # 1 pixel (all of them).
+  _findOrAppendClip: (element, id, widthAllowance, heightAllowance) ->
+  clip = Tactile.Utils.findOrAppend
+    node: 'clipPath'
+    element: element
+    selector: "##{id}"
+  clip
+    .attr("id", id)
+  findOrAppend(node: 'rect', element: clip)
+    # increase width to provide room for circle radius
+    .attr("width", @width() + 2 * widthAllowance)
+    # increase height to provide room for circle radius
+    .attr("height", @height() + 2 * heightAllowance)
+    # translate to adjust for increased width and height
+    .attr("transform", "translate(-#{widthAllowance},-#{heightAllowance})")
+  clip
 
-  _setupDomainAndRange: ->
-    @x = d3.scale.linear()
-      .domain([NaN, NaN])
-    @y = d3.scale.linear()
-      .domain([NaN, NaN])
-    @y.magnitude = d3.scale.linear()
-    @y1 = d3.scale.linear()
-      .domain([NaN, NaN])
-    @y1.magnitude = d3.scale.linear()
-    @_updateRange()
-
-  _updateRange: ->
-    @x.range([0, @width()])
-    @y.range([@height(), 0])
-    @y.magnitude.range([0, @height()])
-    @y1.range([@height(), 0])
-    @y1.magnitude.range([0, @height()])
-
-
-
-
-
-
+  # As the name suggests, this method eliminates the svg from the passed
+  # element, whether because the chart is no longer valid or because the
+  # element has been changed, or whatever the case may be.
+  _destroySvgFromElement: (element) ->
+    d3.select(element).selectAll('svg').remove()
+    @_canvas_needs_reset = true
