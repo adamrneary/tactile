@@ -44,6 +44,17 @@ class Tactile.Utils
       else
         arguments[0]
 
+  # Looks for node in given element
+  # Returns it or appends to the element
+  # You can optionally pass the selector to be used in place of the node itself
+  findOrAppend: (options) ->
+    selector = options.selector or options.node
+    found = options.element.select(selector)
+    if found?[0][0]
+      found
+    else
+      element.append(options.node)
+
   checkString: (str, strName, d) ->
     check = true
 
@@ -218,3 +229,16 @@ class Tactile.Utils
       min = _.first(x) if _.first(x) < min
       max = _.last(x) if _.last(x) > max
     return [min, max]
+
+
+
+
+    # this trims data down to the range that is currently viewed.
+    # See range_slider for a clue how it's used
+    _slice: (d) =>
+      return true unless @_allRenderersCartesian()
+      @timeframe[0] <= d.x <= @timeframe[1]
+
+    _deg2rad: (deg) ->
+      deg * Math.PI / 180
+
