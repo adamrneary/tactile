@@ -13,29 +13,45 @@ class Tactile.SeriesSet
     'bullet': Tactile.BulletRenderer
 
 
-    initRenderers: (series) ->
-      renderersSize = @renderers.length
-      _.each series, (s, index) =>
-        name = s.renderer
-        throw "couldn't find renderer #{name}" if (!@_renderers[name])
-        rendererClass = @_renderers[name]
-        rendererOptions = _.extend {},
-          graph: @
-          transitionSpeed: @transitionSpeed
-          series: s
-          rendererIndex: index + renderersSize
-        if s.aggregate is true
-          @aggregated[name] = true
-        r = new rendererClass(rendererOptions)
-        r.animateShowHide = @animateShowHide
-        @renderers.push r
 
-  constructor: (@array = [], @graph) ->
-    # TODO: This isn't just an array. Series objects can be passed to it from the chart constructor
-    @_exposeArray()
+  constructor: (chart, series = []) ->
+    @_chart = chart
+    @_series = series
+
+  get: ->
+    @_series
+
+  set: (series, concat = false) ->
+    if concat
+      @_series.concat series
+    else
+    @_series = series
 
   isEmpty: ->
-    false
+    _.isEqual @_series, []
+
+
+
+  initRenderers: (series) ->
+    renderersSize = @renderers.length
+    _.each series, (s, index) =>
+      name = s.renderer
+      throw "couldn't find renderer #{name}" if (!@_renderers[name])
+      rendererClass = @_renderers[name]
+      rendererOptions = _.extend {},
+        graph: @
+        transitionSpeed: @transitionSpeed
+        series: s
+        rendererIndex: index + renderersSize
+      if s.aggregate is true
+        @aggregated[name] = true
+      r = new rendererClass(rendererOptions)
+      r.animateShowHide = @animateShowHide
+      @renderers.push r
+
+
+
+  plugDefault: ->
 
 
   allStackable: ->
@@ -81,6 +97,7 @@ class Tactile.SeriesSet
 
 
   # sometimes, in the chart code we want to access particular series like SeriesSet was an array
+  # TODO: Probably legacy?!
   _exposeArray: ->
     _.each @array, (val, key) =>
       @[key] = val

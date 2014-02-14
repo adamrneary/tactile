@@ -33,16 +33,16 @@ class Tactile.Chart
     @_axisPadding = args.axisPadding or {top: 0, right: 0, bottom: 0, left: 0}
 
     # Core chart functionality
-    @_data = new Tactile.Dataset(args.data or [])
-    @_series = new Tactile.SeriesSet(args.series or [], @)
+    @_data = new Tactile.Dataset(@, args.data or [])
+    @_series = new Tactile.SeriesSet(@, args.series or [])
 
     # Prettification and animation
     @_axes = {}
-    @_updateAxes args.axes or
-      x: new Tactile.AxisTime()
-      y: new Tactile.AxisLinear()
+    # @_updateAxes args.axes or
+    #   x: new Tactile.AxisTime()
+    #   y: new Tactile.AxisLinear()
     @_grids = args.axes or {}
-    @_interpolation: args.interpolation or 'monotone'
+    @_interpolation = args.interpolation or 'monotone'
     @_transitionSpeed = args.transitionSpeed or 500
 
     # ### Internal functionality
@@ -65,7 +65,7 @@ class Tactile.Chart
 
   # The value for the element is a CSS selector that should reflect a single
   # element into which we will add our DOM objects and behaviors.
-  element: (val) =>
+  element: (val) ->
     return @_element unless val
 
     # If a Tactile chart exists in the previous element, we should remove it
@@ -116,8 +116,8 @@ class Tactile.Chart
   # data itself in its simplest form. See data documentation for more
   # detailed information.
   data: (val) ->
-    return @_data unless val
-    @_data.update(val)
+    return @_data.get() unless val
+    @_data.set(val)
     @_data_has_changed = true
     @
 
@@ -125,10 +125,10 @@ class Tactile.Chart
   # This method adds series to the series set.
   # _Note:_ You may pass a single object here or an array of them
   # _Note:_ Pass {overwrite: true} to remove all previous series
-  series: (val, options = {overwrite: false}) ->
-    return @_series unless val
-    vals = [val] unless _.isArray(val)
-    @_series.add(newSeries, options.overwrite)
+  series: (val, concat = false) ->
+    return @_series.get() unless val
+    val = [val] unless _.isArray(val)
+    @_series.set(val, concat)
     # _Note:_ There is no flag to update here. All series get updated
     # automatically by render()
     @
@@ -203,10 +203,11 @@ class Tactile.Chart
   #   Pass `transitionSpeed` to override the global setting
   render: (options = {}) ->
 
-    # Data and series or bust!
-    if @_series.isEmpty or @_data.isEmpty
-      @_destroySvgFromElement(@_element)
-      return
+    # No chart, no data!
+    return @_destroySvgFromElement(@_element) if @_data.isEmpty
+
+    # But we can use a default series in a pinch.
+    @_series.plugDefault() if @_series.isEmpty
 
     # Reset the canvas as required
     @_resetCanvas() if @_canvas_needs_reset
@@ -259,7 +260,7 @@ class Tactile.Chart
 
   unstackTransition: (options = {}) =>
     options.unstack = true
-    @stackTransition: (options = {})
+    @stackTransition(options = {})
 
   # ## Internal mechanics
 
@@ -346,14 +347,14 @@ class Tactile.Chart
 
   # The canvas (or "g" or "vis," depending on who you're talking to)
   # is the d3 object on which other objects (series, axes, etc.) are drawn.
-  _findOrAppendCanvas: (element, class) ->
+  _findOrAppendCanvas: (element, identifier) ->
     canvas = Tactile.Utils.findOrAppend
       node: 'g'
       element: element
-      selector: "g.#{class}"
+      selector: "g.#{identifier}"
     canvas
       .attr("transform", "translate(#{@margin.left},#{@margin.top})")
-      .attr("class", class)
+      .attr("class", identifier)
       .attr('width', @_width)
       .attr('height', @_height)
     canvas
@@ -365,20 +366,20 @@ class Tactile.Chart
   # The problem is that we need to give room for objects that are larger than
   # 1 pixel (all of them).
   _findOrAppendClip: (element, id, widthAllowance, heightAllowance) ->
-  clip = Tactile.Utils.findOrAppend
-    node: 'clipPath'
-    element: element
-    selector: "##{id}"
-  clip
-    .attr("id", id)
-  findOrAppend(node: 'rect', element: clip)
-    # increase width to provide room for circle radius
-    .attr("width", @width() + 2 * widthAllowance)
-    # increase height to provide room for circle radius
-    .attr("height", @height() + 2 * heightAllowance)
-    # translate to adjust for increased width and height
-    .attr("transform", "translate(-#{widthAllowance},-#{heightAllowance})")
-  clip
+    clip = Tactile.Utils.findOrAppend
+      node: 'clipPath'
+      element: element
+      selector: "##{id}"
+    clip
+      .attr("id", id)
+    findOrAppend(node: 'rect', element: clip)
+      # increase width to provide room for circle radius
+      .attr("width", @width() + 2 * widthAllowance)
+      # increase height to provide room for circle radius
+      .attr("height", @height() + 2 * heightAllowance)
+      # translate to adjust for increased width and height
+      .attr("transform", "translate(-#{widthAllowance},-#{heightAllowance})")
+    clip
 
   # As the name suggests, this method eliminates the svg from the passed
   # element, whether because the chart is no longer valid or because the

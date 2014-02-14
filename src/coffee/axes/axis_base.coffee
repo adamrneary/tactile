@@ -2,16 +2,16 @@ class Tactile.AxisBase
   constructor: (@options) ->
 
     # TODO: We need to work with the manual domain concept
-    @utils = new Tactile.Utils()
-    @graph = options.graph
-    @ticksTreatment = options.ticksTreatment or "plain"
-    @fontSize  = if _.indexOf(@ticksTreatement, "small") != -1 then 10 else 12
-    @frame = options.frame
-
-    @marginForBottomTicks = 10
-
-    @handleBottomPadding()
-    @handleSidePadding()
+    # @utils = new Tactile.Utils()
+    # @graph = options.graph
+    # @ticksTreatment = options.ticksTreatment or "plain"
+    # @fontSize  = if _.indexOf(@ticksTreatement, "small") != -1 then 10 else 12
+    # @frame = options.frame
+    #
+    # @marginForBottomTicks = 10
+    #
+    # @handleBottomPadding()
+    # @handleSidePadding()
 
 
   # TODO: this are almost identical across the axis classes.
