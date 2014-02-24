@@ -35,7 +35,7 @@ class Tactile.Utils
   # In the above example, you can see that tooltip accepts a string or a
   # function. If a function, it will apply the function to the data point in
   # order to return a string.
-  ourFunctor: () ->
+  @ourFunctor: () ->
     switch typeof arguments[0]
       when undefined
         undefined
@@ -47,15 +47,15 @@ class Tactile.Utils
   # Looks for node in given element
   # Returns it or appends to the element
   # You can optionally pass the selector to be used in place of the node itself
-  findOrAppend: (options) ->
+  @findOrAppend: (options) ->
     selector = options.selector or options.node
     found = options.element.select(selector)
     if found?[0][0]
       found
     else
-      element.append(options.node)
+      options.element.append(options.node)
 
-  checkString: (str, strName, d) ->
+  @checkString: (str, strName, d) ->
     check = true
 
     if typeof str isnt "string"
@@ -68,7 +68,7 @@ class Tactile.Utils
 
     check
 
-  checkNumber: (num, numName, d) ->
+  @checkNumber: (num, numName, d) ->
     check = true
 
     if typeof num isnt "number"
@@ -78,7 +78,7 @@ class Tactile.Utils
 
     check
 
-  checkArray: (arr, arrName, d) ->
+  @checkArray: (arr, arrName, d) ->
     check = true
     if !_.isArray(arr)
       Tactile.Utils.warn("Tactile error: '#{arrName}' invalid type: #{arr}, array expected")
@@ -87,7 +87,7 @@ class Tactile.Utils
 
     check
 
-  checkFunction: (func, funcName, d) ->
+  @checkFunction: (func, funcName, d) ->
     check = true
     if !_.isFunction(func)
       Tactile.Utils.warn("Tactile error: '#{funcName}' invalid type: #{func}, function expected")
@@ -96,7 +96,7 @@ class Tactile.Utils
 
     check
 
-  checkObject: (obj, objName, d) ->
+  @checkObject: (obj, objName, d) ->
     check = true
     if typeof str isnt "object"
       Tactile.Utils.warn("Tactile error: '#{objName}' invalid type: #{obj}, object expected")
@@ -105,7 +105,7 @@ class Tactile.Utils
 
     check
 
-  aggregateData: (originData, domain) ->
+  @aggregateData: (originData, domain) ->
     xDomain = domain
     data = _.filter originData, (d)->
       d.x >= xDomain[0] and d.x <= xDomain[1]
@@ -199,7 +199,7 @@ class Tactile.Utils
 
     return aggdata
 
-  domainMonthRange: (domain) ->
+  @domainMonthRange: (domain) ->
     date = [new Date(domain[0]), new Date(domain[1])]
 
     #calculate count of month in timeFrame
@@ -211,7 +211,7 @@ class Tactile.Utils
 
     (endYear - startYear) * 12 + (endMonth - startMonth) + 1
 
-  animateTransition: (domainOld, domainNew) ->
+  @animateTransition: (domainOld, domainNew) ->
     if           @domainMonthRange(domainNew) <= 12
       animateTransition = @domainMonthRange(domainOld) > 12
     else if 12 < @domainMonthRange(domainNew) <= 36
@@ -220,7 +220,7 @@ class Tactile.Utils
       animateTransition = @domainMonthRange(domainOld) <= 36
     return animateTransition
 
-  getWholeDataTimeRange: (seriesArray) ->
+  @getWholeDataTimeRange: (seriesArray) ->
     min = Infinity
     max = -Infinity
     _.each seriesArray, (series) ->

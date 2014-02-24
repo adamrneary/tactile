@@ -30,8 +30,6 @@ class Tactile.SeriesSet
   isEmpty: ->
     _.isEqual @_series, []
 
-
-
   initRenderers: (series) ->
     renderersSize = @renderers.length
     _.each series, (s, index) =>
@@ -48,8 +46,6 @@ class Tactile.SeriesSet
       r = new rendererClass(rendererOptions)
       r.animateShowHide = @animateShowHide
       @renderers.push r
-
-
 
   plugDefault: ->
 

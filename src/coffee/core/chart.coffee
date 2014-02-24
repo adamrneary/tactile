@@ -1,3 +1,5 @@
+Tactile.debug = true
+
 # # Tactile
 # Tactile is an interactive charting library that uses d3.
 #
@@ -27,8 +29,8 @@ class Tactile.Chart
     #
     # Canvas setup
     @_element = args.element or $("#tactile-container")[0]
-    @_outerHeight = args.outerHeight
-    @_outerWidth = args.outerWidth
+    @_outerHeight = args.outerHeight or $(@_element).height() or 100
+    @_outerWidth = args.outerWidth or $(@_element).width() or 200
     @_padding = args.padding or {top: 0, right: 0, bottom: 0, left: 0}
     @_axisPadding = args.axisPadding or {top: 0, right: 0, bottom: 0, left: 0}
 
@@ -38,9 +40,9 @@ class Tactile.Chart
 
     # Prettification and animation
     @_axes = {}
-    # @_updateAxes args.axes or
-    #   x: new Tactile.AxisTime()
-    #   y: new Tactile.AxisLinear()
+    @_updateAxes args.axes or
+      x: {dimension: 'time'}
+      y: {dimension: "linear"}
     @_grids = args.axes or {}
     @_interpolation = args.interpolation or 'monotone'
     @_transitionSpeed = args.transitionSpeed or 500
@@ -74,7 +76,7 @@ class Tactile.Chart
 
     @_element = val
     @_canvas_needs_reset = true
-    @elementChangeCallbacks.forEach (callback) -> callback()
+    _.each @elementChangeCallbacks, (callback) -> callback()
     @
 
   # The outerHeight will set the outer-most height of the container to be
@@ -110,6 +112,14 @@ class Tactile.Chart
     @_axisPadding = val
     @_canvas_needs_reset = true
     @
+
+  # Inner width cannot be set. You can only set the outerWidth and paddings.
+  width: ->
+    @_outerWidth - @_margin.left - @_margin.right
+
+  # Inner height cannot be set. You can only set the outerHeight and paddings.
+  height: ->
+    @_outerHeight - @_margin.top - @_margin.bottom
 
   # The chart data to be plotted should be an array of objects. How that data
   # is managed or transformed will be configured elsewhere. This is just the
@@ -204,7 +214,7 @@ class Tactile.Chart
   render: (options = {}) ->
 
     # No chart, no data!
-    return @_destroySvgFromElement(@_element) if @_data.isEmpty
+    return @_destroySvgFromElement(@_element) if @_data.isEmpty()
 
     # But we can use a default series in a pinch.
     @_series.plugDefault() if @_series.isEmpty
@@ -220,12 +230,15 @@ class Tactile.Chart
     transition = @svg.transition().duration(speed)
 
     # Render axes, series, grids in sequence
-    _.each _.flatten([@_axes, @_series, @_grids]), (object) ->
+    console.log @
+    objectsToRender = _.flatten([@_axes.values, @_series.get(), @_grids.values])
+    console.log objectsToRender
+    _.each objectsToRender, (object) ->
       object.render transition, options
 
     # Wrap up
     @_data_has_changed = true
-    @updateCallbacks.forEach (callback) -> callback()
+    _.each @updateCallbacks, (callback) -> callback()
     @
 
   # Legacy compatibility
@@ -267,10 +280,10 @@ class Tactile.Chart
   # We use this method to ensure that we only create or update axes passed in
   # the param object. Others are left alone.
   _updateAxes: (axes) ->
-    _.each axes, (val, key) -> @_updateAxis(key, val)
+    _.each axes, (val, key) => @_updateAxis(key, val)
 
   _updateAxis: (axis, val) ->
-    @_axes[axis].destroy()
+    @_axes[axis]?.destroy()
     if val
       switch val.dimension
         when "linear"
@@ -278,15 +291,19 @@ class Tactile.Chart
         when "time"
           @_axes[axis] = new Tactile.AxisTime val
         else
-          Tactile.Utils.warn("Tactile error: Axis dimension #{args.dimension} is not currently implemented.")
+          Tactile.Utils.warn("Tactile error: Axis dimension #{val.dimension} is not currently implemented.")
 
   # Appends or updates all the chart canvas elements
   # so it respects the paddings
   # done by following this example: http://bl.ocks.org/3019563
   _resetCanvas: ->
 
-    # Let's start by figuring out the dimensions we'll be working with.
-    @_setSize()
+    # Combine base padding and axis padding to define the margin (TODO: Hacky)
+    @_margin =
+      left: @_padding.left + @_axisPadding.left
+      right: @_padding.right + @_axisPadding.right
+      top: @_padding.top + @_axisPadding.top
+      bottom: @_padding.bottom + @_axisPadding.bottom
 
     # We need a constant class name for a containing div within the object's element.
     @svg = Tactile.Utils.findOrAppend
@@ -313,37 +330,7 @@ class Tactile.Chart
     # to be larger and in all directions. For a line that has circles on its
     # points, you can use the default clip path for the line and the scatter
     # clip path for the circles.
-    @_findOrAppendClip(@vis, 'clip', 4, 4)
-
-  # Set's the size for the chart
-  # please note you have to call render() or update()
-  # for this changes to be reflected in your chart
-  #
-  # outerWith, outerHeight - no paddings subtracted
-  # innerWidth, innerHeight - paddings subtracted
-  # width(), height() returns innerWidth as it's the most common used
-  _setSize: ->
-
-    # Check the existing element's dimensions before applying a default.
-    @outerWidth or= $(@_element).width() or 200
-    @outerHeight or= $(@_element).height() or 100
-
-    # Combine base padding and axis padding to define the margin (TODO: Hacky)
-    @margin =
-      left: @_padding.left + @_axisPadding.left
-      right: @_padding.right + @_axisPadding.right
-      top: @_padding.top + @_axisPadding.top
-      bottom: @_padding.bottom + @_axisPadding.bottom
-
-    # Calculate the inner width and height for charting
-    @_width = @_outerWidth - @margin.left - @margin.right
-    @_height = @_outerHeight - @margin.top - @margin.bottom
-
-    @vis?.attr('width', @innerWidth).attr('height', @innerHeight)
-    @_updateRange()
-    @_setupCanvas()
-
-    @
+    @_findOrAppendClip(@vis, 'scatter-clip', 4, 4)
 
   # The canvas (or "g" or "vis," depending on who you're talking to)
   # is the d3 object on which other objects (series, axes, etc.) are drawn.
@@ -353,7 +340,7 @@ class Tactile.Chart
       element: element
       selector: "g.#{identifier}"
     canvas
-      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+      .attr("transform", "translate(#{@_margin.left},#{@_margin.top})")
       .attr("class", identifier)
       .attr('width', @_width)
       .attr('height', @_height)
@@ -372,7 +359,7 @@ class Tactile.Chart
       selector: "##{id}"
     clip
       .attr("id", id)
-    findOrAppend(node: 'rect', element: clip)
+    Tactile.Utils.findOrAppend(node: 'rect', element: clip)
       # increase width to provide room for circle radius
       .attr("width", @width() + 2 * widthAllowance)
       # increase height to provide room for circle radius

@@ -15,6 +15,7 @@
     "grunt-cli": "~0.1.9"
   },
   "devDependencies": {
-    "testem": "~0.3.27"
+    "testem": "~0.3.27",
+    "grunt-contrib-testem": "~0.5.15"
   }
 }
