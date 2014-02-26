@@ -230,9 +230,11 @@ class Tactile.Chart
     transition = @svg.transition().duration(speed)
 
     # Render axes, series, grids in sequence
-    console.log @
-    objectsToRender = _.flatten([@_axes.values, @_series.get(), @_grids.values])
-    console.log objectsToRender
+    objectsToRender = _.flatten [
+      _.values(@_axes)
+      @_series.get()
+      _.values(@_grids)
+    ]
     _.each objectsToRender, (object) ->
       object.render transition, options
 
