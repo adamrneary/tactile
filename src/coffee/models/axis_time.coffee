@@ -2,12 +2,10 @@ class Tactile.AxisTime extends Tactile.AxisBase
   constructor: (options) ->
     @horizontal = true
     super
-    @_checkOptions()
 
     @fixedTimeUnit = options.timeUnit
     @marginTop = options.paddingBottom or 5
     @time = new Tactile.FixturesTime()
-    @grid = options.grid
 
   appropriateTimeUnit: ->
     unit = undefined
@@ -45,58 +43,37 @@ class Tactile.AxisTime extends Tactile.AxisBase
 
     offsets
 
-  render: (transition)->
+  render: (transition) ->
     return unless @graph.x?
 
+    # @g is the x-ticks (plural) canvas that will hold each x-tick item
     @g = @graph.vis.selectAll('g.x-ticks').data([0])
     @g.enter().append('g').attr('class', 'x-ticks')
 
-
     ticks = @g.selectAll('g.x-tick')
-      .data(@tickOffsets())
-
-    ticks.enter()
-      .append('g')
-      .attr("class", ["x-tick", @ticksTreatment].join(' '))
+      .data(@tickOffsets(), (d) -> d.value)
 
     ticks
-      .attr("transform",
-        (d) =>
-          "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})")
-
+      .enter()
+        .append('g')
+        .attr("class", ["x-tick", @ticksTreatment].join(' '))
+        .attr "transform", (d, i) =>
+          "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})"
     ticks.exit().remove()
+
+    transition.selectAll(".x-tick")
+      .attr "transform", (d, i) =>
+        "translate(#{@graph.x(d.value)}, #{@graph.height() + @marginForBottomTicks})"
 
     @g.selectAll('g.x-tick').each((d, i)->
       text = d3.select(@).selectAll("text").data([d])
       text.enter()
         .append("text")
         .attr("class", "title")
-        .style("cursor", "ew-resize")
       text.exit().remove()
     )
-
-    @g.selectAll("text")
-      .on("mousedown.drag",  @_axisDrag)
-      .on("touchstart.drag", @_axisDrag)
 
     @g.selectAll("g.x-tick").selectAll("text")
       .attr("y", @marginTop)
       .text((d) ->
         d.unit.formatter(new Date(d.value)))
-
-  _checkOptions: ()=>
-    if @options.ticksTreatment?
-      @utils.checkString(@options.ticksTreatment, "AxisTime options.ticksTreatment")
-
-    if @options.timeUnit?
-      @utils.checkNumber(@options.timeUnit, "AxisTime options.timeUnit")
-
-    if @options.paddingBottom?
-      @utils.checkNumber(@options.paddingBottom, "AxisTime options.paddingBottom")
-
-    if @options.frame?
-      if @utils.checkArray(@options.frame, "AxisTime options.frame")
-        @options.frame.forEach((d, i)=>
-          @utils.checkNumber(d, "AxisTime options.frame[#{i}]") if d?
-        )
-

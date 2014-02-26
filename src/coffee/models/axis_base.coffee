@@ -4,7 +4,6 @@ class Tactile.AxisBase
     @graph = options.graph
     @ticksTreatment = options.ticksTreatment or "plain"
     @frame = options.frame
-
     @marginForBottomTicks = 10
 
     @handleBottomPadding()
@@ -29,7 +28,7 @@ class Tactile.AxisBase
       new_domain = [axis1, axis1 + extent*(@down - axis1)/(rup - axis1)]
       axis.domain(new_domain)
 
-    @graph.render(0, zooming: true)
+    @graph.render(0)
 
     d3.event.preventDefault()
     d3.event.stopPropagation()
@@ -44,7 +43,7 @@ class Tactile.AxisBase
       @graph.axisPadding.bottom = 0
       @graph.axisPadding.top = 0
     else
-      @graph.axisPadding.bottom = 20 if @graph.axisPadding.bottom < 20
+      @graph.axisPadding.bottom = 30 if @graph.axisPadding.bottom < 30
       @graph.axisPadding.right = 15 if @graph.axisPadding.right < 15
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
@@ -66,21 +65,6 @@ class Tactile.AxisBase
       @graph.axisPadding.top = 5 if (@graph.axisPadding.bottom < 5)
 
     @graph.setSize(height: @graph.outerHeight, width: @graph.outerWidth)
-
-
-  _axisDrag: =>
-    p = d3.svg.mouse(@graph.svg.node())
-    @down = if @horizontal then @graph[@options.axis].invert(p[0]) else @graph[@options.axis].invert(p[1])
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
-
-  _mouseUp: =>
-    return if isNaN(@down)
-    @down = Math.NaN;
-    @graph.manipulateCallbacks.forEach (callback) ->
-      callback()
-    d3.event.preventDefault()
-    d3.event.stopPropagation()
 
   destroy: ->
     @handleBottomPadding(true)
