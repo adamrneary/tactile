@@ -7,7 +7,6 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     round: true
     unstack: true
 
-
   initialize: (options = {}) ->
     super
     @dragger = new Tactile.Dragger(renderer: @)
@@ -15,7 +14,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @round = @series.round unless @series.round is undefined
     @unstack = @series.unstack unless @series.unstack is undefined
 
-  render: (transition)=>
+  render: (transition, transitionSpeed) =>
     @_checkData() if @checkData
 
     @transition = transition if transition
@@ -29,12 +28,17 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("mousedown", (d, i)=>
+      .on("mousedown", (d, i) =>
         @setActive(d, i) # set active element if click on it
         @hideCircles()
       )
 
-    @transition.selectAll(".#{@_nameToId()} rect")
+    selectObjects = if transition
+      transition.selectAll(".#{@_nameToId()} rect")
+    else
+      @seriesCanvas().selectAll("rect")
+
+    selectObjects
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
       .attr("y", @_barY)
@@ -44,12 +48,13 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       .attr("stroke", "white")
       .attr("rx", @_edgeRatio)
       .attr("ry", @_edgeRatio)
-      .attr("class",
-      (d, i) =>
-        ["bar",
-         ("colorless" unless @series.color),
-         ("active" if d is @active), # apply active class for active element
-         ("editable" if @utils.ourFunctor(@series.isEditable, d, i))].join(" ")) # apply editable class for editable element
+      .attr("class", (d, i) =>
+        [
+          "bar",
+          ("colorless" unless @series.color),
+          ("active" if d is @active), # apply active class for active element
+          ("editable" if @utils.ourFunctor(@series.isEditable, d, i)) # apply editable class for editable element
+        ].join(" "))
 
     nodes.exit().remove()
 
@@ -83,9 +88,12 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @dragger?.makeHandlers(newCircs)
     @dragger?.updateDraggedNode()
 
+    selectObjects = if transition
+      transition.selectAll(".#{@_nameToId()} circle")
+    else
+      @seriesCanvas().selectAll("circle")
 
-
-    @transition.selectAll(".#{@_nameToId()} circle")
+    selectObjects
       .filter((d) => @_filterNaNs(d, "x", "y"))
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
@@ -142,10 +150,8 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
         gravity: "right"
         placement: if d.y < 0 then "bottom" else "top"
 
-
   barWidth: ->
     data = @series.stack
-
     count = data.length
     barWidth = @graph.width() / count * (1 - @gapSize)
 
@@ -157,29 +163,25 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkYDomain()
     @graph._checkY1Domain()
 
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("y", @_barY)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
+    # whole time of transition saved.
+    # 2 actions: change height, change width
+    transitionCount = 2
 
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
+      .attr("y", (d) => @_barY(d))
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
+      .transition()
+      .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
-      .attr("x", @_barX)
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
+      .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
+      .transition()
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-
 
   unstackTransition: (transition, transitionSpeed)=>
     @unstack = true
@@ -189,26 +191,24 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     @graph._checkYDomain()
     @graph._checkY1Domain()
 
+    # whole time of transition saved.
+    # 2 actions: change height, change width
+    transitionCount = 2
+
     transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
-      .attr("x", @_barX)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
+      .attr("x", (d) => @_barX(d))
       .attr("width", @_seriesBarWidth())
+      .transition()
+      .attr("y", (d) => @_barY(d))
+      .attr("height", (d) => @yFunction().magnitude Math.abs(d.y))
 
     transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .duration(transitionSpeed/2)
+      .duration(transitionSpeed / transitionCount)
+      .delay((d,i) => i * transitionSpeed / transitionCount / @series.stack.length)
       .attr("cx", (d) => @_barX(d) + @_seriesBarWidth() / 2)
-
-    transition.selectAll(".#{@_nameToId()} rect")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
-      .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
-      .attr("y", @_barY)
-
-    transition.selectAll(".#{@_nameToId()} circle")
-      .filter((d) => @_filterNaNs(d, "x", "y"))
-      .delay(transitionSpeed/2)
+      .transition()
       .attr("cy", (d) => @_barY(d) + (if d.y < 0 then @yFunction().magnitude(Math.abs(d.y)) else 0))
 
   _transformMatrix: (d) =>
@@ -229,17 +229,16 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
-    else
-      width = @graph.width() / (1 + @gapSize)
-
+    count = @series.stack.length
+    gapSize = @gapSize
+    width = @graph.width() / count
     if @unstack
-      width = width / @graph.series.filter(
-        (d) =>
-          d.renderer == "column"
-      ).array.length
+      seriesCount = @graph
+        .series
+        .filter( (d) -> d.renderer is 'column' )
+        .array
+        .length
+      width = width / seriesCount
     width
 
   # when we have couple of series we want
@@ -262,7 +261,7 @@ class Tactile.ColumnRenderer extends Tactile.DraggableRenderer
     if @unstack
       initialX + (@_columnRendererIndex() * seriesBarWidth)
     else
-      return initialX
+      initialX
 
   _barY: (d) =>
     # if we want to display stacked bars y should be added y0 value

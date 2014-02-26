@@ -19,26 +19,26 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
 
   seriesPathFactory: =>
     d3.svg.area()
-    .defined((d) => @_filterNaNs(d, 'x', 'y'))
-    .x((d) => @graph.x d.x)
-    .y0((d) => @yFunction() @_y0(d))
-    .y1((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y', 'y0'))
+      .x((d) => @graph.x d.x)
+      .y0((d) => @yFunction() @_y0(d))
+      .y1((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
   seriesStrokeFactory: =>
     d3.svg.line()
-    .defined((d) => @_filterNaNs(d, 'x', 'y'))
-    .x((d) => @graph.x d.x)
-    .y((d) => @yFunction() d.y + @_y0(d))
-    .interpolate(@graph.interpolation)
-    .tension @tension
+      .defined((d) => @_filterNaNs(d, 'x', 'y'))
+      .x((d) => @graph.x d.x)
+      .y((d) => @yFunction() d.y + @_y0(d))
+      .interpolate(@graph.interpolation)
+      .tension @tension
 
-  render: (transition)->
+  render: (transition) ->
     @_checkData(@series.stack) if @checkData
 
     @transition = transition if transition
-    super(@transition)
+    super(transition)
     if (@series.disabled)
       @seriesCanvas().selectAll("path.stroke").remove()
       @seriesCanvas().selectAll('circle').remove()
@@ -54,8 +54,13 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
       .attr("stroke-width", '2')
       .attr("stroke", @series.color)
 
-    @transition.selectAll(".#{@_nameToId()} path.stroke")
-      .attr("d", @seriesStrokeFactory())
+
+    selectObjects = if transition
+      transition.selectAll(".#{@_nameToId()} path.stroke")
+    else
+      @seriesCanvas().selectAll('path.stroke')
+
+    selectObjects.attr("d", @seriesStrokeFactory())
 
     circ = @seriesDraggableCanvas().selectAll('circle')
       .data(@series.stack)
@@ -67,7 +72,13 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @dragger?.updateDraggedNode(circ)
 
     #TODO: this block of code is the same in few places
-    @transition.selectAll(".#{@_nameToId()} circle")
+
+    selectObjects = if transition
+      transition.selectAll(".#{@_nameToId()} circle")
+    else
+      @seriesCanvas().selectAll('circle')
+
+    selectObjects
       .filter((d) => @_filterNaNs(d, 'x', 'y'))
       .attr("r",
         (d) =>
@@ -99,7 +110,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
         #tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
-  stackTransition: (transition, transitionSpeed)=>
+  stackTransition: (transition) =>
     @unstack = false
     @graph.setYFrame([NaN, NaN])
     @graph.setY1Frame([NaN, NaN])
@@ -108,7 +119,7 @@ class Tactile.AreaRenderer extends Tactile.DraggableRenderer
     @graph._checkY1Domain()
     @render(transition)
 
-  unstackTransition: (transition, transitionSpeed)=>
+  unstackTransition: (transition) =>
     @unstack = true
     @graph.setYFrame([NaN, NaN])
     @graph.setY1Frame([NaN, NaN])

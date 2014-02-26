@@ -9,7 +9,7 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
   initialize: (options = {}) ->
     @gapSize = options.gapSize || @gapSize
 
-  render: (transition)=>
+  render: (transition) =>
     @_checkData() if @checkData
 
     @transition = transition if transition
@@ -23,9 +23,14 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
     nodes.enter()
       .append("svg:rect")
       .attr("clip-path", "url(#clip)")
-      .on("click", @setActive)# set active element if click on it
+      .on("mousedown", @setActive)# set active element if click on it
 
-    @transition.selectAll(".#{@_nameToId()} rect")
+    selectObject = if transition
+      transition.select("g.canvas").selectAll("g.#{@_nameToId()}").selectAll("rect")
+    else
+      @seriesCanvas().selectAll("rect")
+
+    selectObject
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("height", (d) => @graph.y.magnitude Math.abs(d.y))
       .attr("y", (d)=> @_barY(d))
@@ -40,7 +45,12 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       .append("svg:line")
       .attr("clip-path", "url(#clip)")
 
-    @transition.selectAll(".#{@_nameToId()} line")
+    selectObject = if transition
+      transition.select("g.draggable-canvas").selectAll("g.#{@_nameToId()}").selectAll("line")
+    else
+      @seriesDraggableCanvas().selectAll("line")
+
+    selectObject
       .filter((d) => @_filterNaNs(d, 'x', 'y', 'y00'))
       .attr("x1", (d) => @_barX(d) + @_seriesBarWidth() / (1 + @gapSize))
       .attr("x2", (d, i) =>
@@ -72,7 +82,6 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
         tooltipCircleContainer: @graph.vis.node()
         gravity: "right"
 
-
   barWidth: ->
     data = @series.stack
     count = data.length
@@ -86,16 +95,12 @@ class Tactile.WaterfallRenderer extends Tactile.RendererBase
       width = @graph.width() / (1 + @gapSize)
 
   _seriesBarWidth: =>
-    if @series.stack.length >= 2
-      stackWidth = @graph.x(@series.stack[1].x) - @graph.x(@series.stack[0].x)
-      width = stackWidth / (1 + @gapSize)
-    else
-      width = @graph.width() / (1 + @gapSize)
-
-    width = width / @graph.series.filter(
-      (d) =>
-        d.renderer == 'waterfall'
-    ).length()
+    count = @series.stack.length
+    width = @graph.width() / count
+    width = width / @graph.series.filter((d) =>
+      d.renderer == @name).array.length
+    width = width - (2 * @gapSize)
+    width
 
   _barXOffset: (seriesBarWidth) ->
     count = @graph.renderersByType(@name).length
