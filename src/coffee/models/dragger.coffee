@@ -39,12 +39,6 @@ class Tactile.Dragger
   # or a function that returns an integer when applied to a data point passed
   # as an argument.
   _calculateSigFigs: ->
-    # test = @series.sigfigs
-    # test =  @renderer
-    # console.log  @renderer.utils
-    # test =  @renderer.utils.ourFunctor
-    # test = @renderer.utils.ourFunctor(@series.sigfigs)
-
     sigfigs = @renderer.utils.ourFunctor(@series.sigfigs) ? 0
     Math.pow(10, sigfigs)
 
@@ -78,7 +72,7 @@ class Tactile.Dragger
     d3.event.stopPropagation()
 
   _mouseMove: =>
-    p = d3.svg.mouse(@graph.draggableVis.node())
+    p = d3.mouse(@graph.draggableVis.node())
     t = d3.event.changedTouches
 
     if @dragged
@@ -91,7 +85,7 @@ class Tactile.Dragger
             # fix for a weird behavior that d is sometimes
             # an array with all the nodes of the series
             d = if _.isArray(d) then d[i] else d
-            d is @dragged.d
+            _.isEqual d, @dragged.d
           )
           .node()
           .getBoundingClientRect()
@@ -117,10 +111,10 @@ class Tactile.Dragger
 
     @renderer.seriesDraggableCanvas().selectAll('circle.editable')
       .data(@series.stack)
-      .attr("class",
-        (d) =>
+      .attr "class", (d) =>
+          # TODO: This is either a typo or a poorly constructed idea
           d.dragged = false
-          "editable")
+          "editable"
     d3.select("body").style "cursor", "auto"
     @dragged = null
 
@@ -149,10 +143,11 @@ class Tactile.Dragger
     circs
       .attr("r", 4)
       .attr("clip-path", "url(#scatter-clip)")
-      .attr("class",
-        (d, i) =>
-          [("active" if d is renderer.active), # apply active class for active element
-          ("editable" if renderer.utils.ourFunctor(renderer.series.isEditable, d, i))].join(' ')) # apply editable class for editable element
+      .attr("class", (d, i) =>
+        [
+          ("active" if d is renderer.active), # apply active class for active element
+          ("editable" if renderer.utils.ourFunctor(renderer.series.isEditable, d, i)) # apply editable class for editable element
+        ].join(' '))
       .attr("fill", (d) => (if d.dragged or d is renderer.active then 'white' else @series.color))
       .attr("stroke", (d) => (if d.dragged or d is renderer.active then @series.color else 'white'))
       .attr("stroke-width", '2')
