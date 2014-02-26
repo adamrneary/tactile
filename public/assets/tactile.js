@@ -87,7 +87,7 @@ Tactile.RendererBase = (function() {
   };
 
   RendererBase.prototype.render = function(transition) {
-    var line,
+    var line, selectObjects,
       _this = this;
 
     if (this.checkData) {
@@ -109,7 +109,8 @@ Tactile.RendererBase = (function() {
     });
     line = this.seriesCanvas().selectAll("path.baseline").data([this.series.stack]);
     line.enter().append("svg:path").attr("clip-path", "url(#clip)").attr("fill", (this.fill ? this.series.color : "none")).attr("stroke", (this.stroke ? this.series.color : "none")).attr("stroke-width", this.strokeWidth).style('opacity', this.opacity).attr("class", "baseline " + (this.series.className || '') + "       " + (this.series.color ? '' : 'colorless'));
-    return this.transition.selectAll("." + (this._nameToId()) + " path.baseline").attr("d", this.seriesPathFactory());
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " path.baseline") : this.seriesCanvas().selectAll("path.baseline");
+    return selectObjects.attr("d", this.seriesPathFactory());
   };
 
   RendererBase.prototype.seriesCanvas = function() {
@@ -824,7 +825,7 @@ Tactile.AreaRenderer = (function(_super) {
     var _this = this;
 
     return d3.svg.area().defined(function(d) {
-      return _this._filterNaNs(d, 'x', 'y');
+      return _this._filterNaNs(d, 'x', 'y', 'y0');
     }).x(function(d) {
       return _this.graph.x(d.x);
     }).y0(function(d) {
@@ -847,7 +848,7 @@ Tactile.AreaRenderer = (function(_super) {
   };
 
   AreaRenderer.prototype.render = function(transition) {
-    var circ, newCircs, stroke, _ref1, _ref2,
+    var circ, newCircs, selectObjects, stroke, _ref1, _ref2,
       _this = this;
 
     if (this.checkData) {
@@ -856,7 +857,7 @@ Tactile.AreaRenderer = (function(_super) {
     if (transition) {
       this.transition = transition;
     }
-    AreaRenderer.__super__.render.call(this, this.transition);
+    AreaRenderer.__super__.render.call(this, transition);
     if (this.series.disabled) {
       this.seriesCanvas().selectAll("path.stroke").remove();
       this.seriesCanvas().selectAll('circle').remove();
@@ -864,7 +865,8 @@ Tactile.AreaRenderer = (function(_super) {
     }
     stroke = this.seriesCanvas().selectAll('path.stroke').data([this.series.stack]);
     stroke.enter().append("svg:path").attr("clip-path", "url(#clip)").attr('class', 'stroke').attr('fill', 'none').attr("stroke-width", '2').attr("stroke", this.series.color);
-    this.transition.selectAll("." + (this._nameToId()) + " path.stroke").attr("d", this.seriesStrokeFactory());
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " path.stroke") : this.seriesCanvas().selectAll('path.stroke');
+    selectObjects.attr("d", this.seriesStrokeFactory());
     circ = this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack);
     newCircs = circ.enter().append("svg:circle").on("mousedown", this.setActive);
     if ((_ref1 = this.dragger) != null) {
@@ -873,7 +875,8 @@ Tactile.AreaRenderer = (function(_super) {
     if ((_ref2 = this.dragger) != null) {
       _ref2.updateDraggedNode(circ);
     }
-    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " circle") : this.seriesCanvas().selectAll('circle');
+    selectObjects.filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("r", function(d) {
       if ("r" in d) {
@@ -924,7 +927,7 @@ Tactile.AreaRenderer = (function(_super) {
     }
   };
 
-  AreaRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
+  AreaRenderer.prototype.stackTransition = function(transition) {
     this.unstack = false;
     this.graph.setYFrame([NaN, NaN]);
     this.graph.setY1Frame([NaN, NaN]);
@@ -934,7 +937,7 @@ Tactile.AreaRenderer = (function(_super) {
     return this.render(transition);
   };
 
-  AreaRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
+  AreaRenderer.prototype.unstackTransition = function(transition) {
     this.unstack = true;
     this.graph.setYFrame([NaN, NaN]);
     this.graph.setY1Frame([NaN, NaN]);
@@ -956,8 +959,6 @@ Tactile.AreaRenderer = (function(_super) {
 Tactile.AxisBase = (function() {
   function AxisBase(options) {
     this.options = options;
-    this._mouseUp = __bind(this._mouseUp, this);
-    this._axisDrag = __bind(this._axisDrag, this);
     this._mouseMove = __bind(this._mouseMove, this);
     this.utils = new Tactile.Utils();
     this.graph = options.graph;
@@ -987,9 +988,7 @@ Tactile.AxisBase = (function() {
       new_domain = [axis1, axis1 + extent * (this.down - axis1) / (rup - axis1)];
       axis.domain(new_domain);
     }
-    this.graph.render(0, {
-      zooming: true
-    });
+    this.graph.render(0);
     d3.event.preventDefault();
     return d3.event.stopPropagation();
   };
@@ -1007,8 +1006,8 @@ Tactile.AxisBase = (function() {
       this.graph.axisPadding.bottom = 0;
       this.graph.axisPadding.top = 0;
     } else {
-      if (this.graph.axisPadding.bottom < 20) {
-        this.graph.axisPadding.bottom = 20;
+      if (this.graph.axisPadding.bottom < 30) {
+        this.graph.axisPadding.bottom = 30;
       }
       if (this.graph.axisPadding.right < 15) {
         this.graph.axisPadding.right = 15;
@@ -1053,27 +1052,6 @@ Tactile.AxisBase = (function() {
       height: this.graph.outerHeight,
       width: this.graph.outerWidth
     });
-  };
-
-  AxisBase.prototype._axisDrag = function() {
-    var p;
-
-    p = d3.svg.mouse(this.graph.svg.node());
-    this.down = this.horizontal ? this.graph[this.options.axis].invert(p[0]) : this.graph[this.options.axis].invert(p[1]);
-    d3.event.preventDefault();
-    return d3.event.stopPropagation();
-  };
-
-  AxisBase.prototype._mouseUp = function() {
-    if (isNaN(this.down)) {
-      return;
-    }
-    this.down = Math.NaN;
-    this.graph.manipulateCallbacks.forEach(function(callback) {
-      return callback();
-    });
-    d3.event.preventDefault();
-    return d3.event.stopPropagation();
   };
 
   AxisBase.prototype.destroy = function() {
@@ -1132,7 +1110,6 @@ Tactile.AxisLinear = (function(_super) {
     this.g.attr("transform", this.translateString);
     axis = d3.svg.axis().scale(this.graph[this.options.axis]).orient(this.orientation).tickFormat(this.tickFormat).ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize).tickValues(this.tickValues);
     transition.select('.' + className).call(axis);
-    this.g.selectAll("text").style("cursor", this.horizontal ? "ew-resize" : "ns-resize").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
     className = "" + this.options.axis + "-zero-line";
     this.g_zero = this.graph.vis.selectAll('.' + className).data([0]);
     this.g_zero.enter().append("g").attr("class", className);
@@ -1224,21 +1201,18 @@ Tactile.AxisLinear = (function(_super) {
 }).call(this);
 
 (function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Tactile.AxisTime = (function(_super) {
   __extends(AxisTime, _super);
 
   function AxisTime(options) {
-    this._checkOptions = __bind(this._checkOptions, this);    this.horizontal = true;
+    this.horizontal = true;
     AxisTime.__super__.constructor.apply(this, arguments);
-    this._checkOptions();
     this.fixedTimeUnit = options.timeUnit;
     this.marginTop = options.paddingBottom || 5;
     this.time = new Tactile.FixturesTime();
-    this.grid = options.grid;
   }
 
   AxisTime.prototype.appropriateTimeUnit = function() {
@@ -1291,46 +1265,26 @@ Tactile.AxisTime = (function(_super) {
     }
     this.g = this.graph.vis.selectAll('g.x-ticks').data([0]);
     this.g.enter().append('g').attr('class', 'x-ticks');
-    ticks = this.g.selectAll('g.x-tick').data(this.tickOffsets());
-    ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' '));
-    ticks.attr("transform", function(d) {
+    ticks = this.g.selectAll('g.x-tick').data(this.tickOffsets(), function(d) {
+      return d.value;
+    });
+    ticks.enter().append('g').attr("class", ["x-tick", this.ticksTreatment].join(' ')).attr("transform", function(d, i) {
       return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
     });
     ticks.exit().remove();
+    transition.selectAll(".x-tick").attr("transform", function(d, i) {
+      return "translate(" + (_this.graph.x(d.value)) + ", " + (_this.graph.height() + _this.marginForBottomTicks) + ")";
+    });
     this.g.selectAll('g.x-tick').each(function(d, i) {
       var text;
 
       text = d3.select(this).selectAll("text").data([d]);
-      text.enter().append("text").attr("class", "title").style("cursor", "ew-resize");
+      text.enter().append("text").attr("class", "title");
       return text.exit().remove();
     });
-    this.g.selectAll("text").on("mousedown.drag", this._axisDrag).on("touchstart.drag", this._axisDrag);
     return this.g.selectAll("g.x-tick").selectAll("text").attr("y", this.marginTop).text(function(d) {
       return d.unit.formatter(new Date(d.value));
     });
-  };
-
-  AxisTime.prototype._checkOptions = function() {
-    var _this = this;
-
-    if (this.options.ticksTreatment != null) {
-      this.utils.checkString(this.options.ticksTreatment, "AxisTime options.ticksTreatment");
-    }
-    if (this.options.timeUnit != null) {
-      this.utils.checkNumber(this.options.timeUnit, "AxisTime options.timeUnit");
-    }
-    if (this.options.paddingBottom != null) {
-      this.utils.checkNumber(this.options.paddingBottom, "AxisTime options.paddingBottom");
-    }
-    if (this.options.frame != null) {
-      if (this.utils.checkArray(this.options.frame, "AxisTime options.frame")) {
-        return this.options.frame.forEach(function(d, i) {
-          if (d != null) {
-            return _this.utils.checkNumber(d, "AxisTime options.frame[" + i + "]");
-          }
-        });
-      }
-    }
   };
 
   return AxisTime;
@@ -1732,8 +1686,8 @@ Tactile.ColumnRenderer = (function(_super) {
     }
   };
 
-  ColumnRenderer.prototype.render = function(transition) {
-    var circ, newCircs, nodes, _ref1, _ref2, _ref3,
+  ColumnRenderer.prototype.render = function(transition, transitionSpeed) {
+    var circ, newCircs, nodes, selectObjects, _ref1, _ref2, _ref3,
       _this = this;
 
     if (this.checkData) {
@@ -1755,7 +1709,8 @@ Tactile.ColumnRenderer = (function(_super) {
       _this.setActive(d, i);
       return _this.hideCircles();
     });
-    this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " rect") : this.seriesCanvas().selectAll("rect");
+    selectObjects.filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).attr("height", function(d) {
       return _this.yFunction().magnitude(Math.abs(d.y));
@@ -1804,7 +1759,8 @@ Tactile.ColumnRenderer = (function(_super) {
     if ((_ref3 = this.dragger) != null) {
       _ref3.updateDraggedNode();
     }
-    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " circle") : this.seriesCanvas().selectAll("circle");
+    selectObjects.filter(function(d) {
       return _this._filterNaNs(d, "x", "y");
     }).attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
@@ -1898,7 +1854,8 @@ Tactile.ColumnRenderer = (function(_super) {
   };
 
   ColumnRenderer.prototype.stackTransition = function(transition, transitionSpeed) {
-    var _this = this;
+    var transitionCount,
+      _this = this;
 
     this.unstack = false;
     this.graph.setYFrame([NaN, NaN]);
@@ -1906,28 +1863,28 @@ Tactile.ColumnRenderer = (function(_super) {
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
-    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).duration(transitionSpeed / 2).attr("y", this._barY).attr("height", function(d) {
-      return _this.graph.y.magnitude(Math.abs(d.y));
-    });
-    transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).duration(transitionSpeed / 2).attr("cy", function(d) {
+    transitionCount = 2;
+    transition.selectAll("." + (this._nameToId()) + " rect").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+      return i * transitionSpeed / transitionCount / _this.series.stack.length;
+    }).attr("y", function(d) {
+      return _this._barY(d);
+    }).attr("height", function(d) {
+      return _this.yFunction().magnitude(Math.abs(d.y));
+    }).transition().attr("x", function(d) {
+      return _this._barX(d);
+    }).attr("width", this._seriesBarWidth());
+    return transition.selectAll("." + (this._nameToId()) + " circle").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+      return i * transitionSpeed / transitionCount / _this.series.stack.length;
+    }).attr("cy", function(d) {
       return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
-    });
-    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).delay(transitionSpeed / 2).attr("width", this._seriesBarWidth()).attr("x", this._barX);
-    return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).delay(transitionSpeed / 2).attr("cx", function(d) {
+    }).transition().attr("cx", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / 2;
     });
   };
 
   ColumnRenderer.prototype.unstackTransition = function(transition, transitionSpeed) {
-    var _this = this;
+    var transitionCount,
+      _this = this;
 
     this.unstack = true;
     this.graph.setYFrame([NaN, NaN]);
@@ -1935,22 +1892,21 @@ Tactile.ColumnRenderer = (function(_super) {
     this.graph.discoverRange();
     this.graph._checkYDomain();
     this.graph._checkY1Domain();
-    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).duration(transitionSpeed / 2).attr("x", this._barX).attr("width", this._seriesBarWidth());
-    transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).duration(transitionSpeed / 2).attr("cx", function(d) {
-      return _this._barX(d) + _this._seriesBarWidth() / 2;
+    transitionCount = 2;
+    transition.selectAll("." + (this._nameToId()) + " rect").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+      return i * transitionSpeed / transitionCount / _this.series.stack.length;
+    }).attr("x", function(d) {
+      return _this._barX(d);
+    }).attr("width", this._seriesBarWidth()).transition().attr("y", function(d) {
+      return _this._barY(d);
+    }).attr("height", function(d) {
+      return _this.yFunction().magnitude(Math.abs(d.y));
     });
-    transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).delay(transitionSpeed / 2).attr("height", function(d) {
-      return _this.graph.y.magnitude(Math.abs(d.y));
-    }).attr("y", this._barY);
-    return transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
-      return _this._filterNaNs(d, "x", "y");
-    }).delay(transitionSpeed / 2).attr("cy", function(d) {
+    return transition.selectAll("." + (this._nameToId()) + " circle").duration(transitionSpeed / transitionCount).delay(function(d, i) {
+      return i * transitionSpeed / transitionCount / _this.series.stack.length;
+    }).attr("cx", function(d) {
+      return _this._barX(d) + _this._seriesBarWidth() / 2;
+    }).transition().attr("cy", function(d) {
       return _this._barY(d) + (d.y < 0 ? _this.yFunction().magnitude(Math.abs(d.y)) : 0);
     });
   };
@@ -1982,19 +1938,16 @@ Tactile.ColumnRenderer = (function(_super) {
   };
 
   ColumnRenderer.prototype._seriesBarWidth = function() {
-    var stackWidth, width,
-      _this = this;
+    var count, gapSize, seriesCount, width;
 
-    if (this.series.stack.length >= 2) {
-      stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
-      width = stackWidth / (1 + this.gapSize);
-    } else {
-      width = this.graph.width() / (1 + this.gapSize);
-    }
+    count = this.series.stack.length;
+    gapSize = this.gapSize;
+    width = this.graph.width() / count;
     if (this.unstack) {
-      width = width / this.graph.series.filter(function(d) {
-        return d.renderer === "column";
+      seriesCount = this.graph.series.filter(function(d) {
+        return d.renderer === 'column';
       }).array.length;
+      width = width / seriesCount;
     }
     return width;
   };
@@ -2642,14 +2595,14 @@ Tactile.Dragger = (function() {
     var hoveredNode, inverted, p, t, tip, value,
       _this = this;
 
-    p = d3.svg.mouse(this.graph.draggableVis.node());
+    p = d3.mouse(this.graph.draggableVis.node());
     t = d3.event.changedTouches;
     if (this.dragged) {
       if (this.series.tooltip) {
         tip = d3.select(this.graph._element).select('.tooltip');
         hoveredNode = this.renderer.seriesDraggableCanvas().selectAll('circle.editable').filter(function(d, i) {
           d = _.isArray(d) ? d[i] : d;
-          return d === _this.dragged.d;
+          return _.isEqual(d, _this.dragged.d);
         }).node().getBoundingClientRect();
         tip.style("top", "" + hoveredNode.top + "px");
       }
@@ -3330,7 +3283,7 @@ Tactile.LineRenderer = (function(_super) {
   };
 
   LineRenderer.prototype.render = function(transition) {
-    var circ, newCircs, _ref1, _ref2,
+    var circ, newCircs, selectObjects, _ref1, _ref2,
       _this = this;
 
     if (this.checkData) {
@@ -3339,7 +3292,7 @@ Tactile.LineRenderer = (function(_super) {
     if (transition) {
       this.transition = transition;
     }
-    LineRenderer.__super__.render.call(this, this.transition);
+    LineRenderer.__super__.render.call(this, transition);
     if (this.series.disabled) {
       this.seriesDraggableCanvas().selectAll('circle').data(this.series.stack).remove();
       return;
@@ -3352,7 +3305,8 @@ Tactile.LineRenderer = (function(_super) {
     if ((_ref2 = this.dragger) != null) {
       _ref2.updateDraggedNode();
     }
-    this.transition.selectAll("." + (this._nameToId()) + " circle").filter(function(d) {
+    selectObjects = transition ? transition.selectAll("." + (this._nameToId()) + " circle") : this.seriesDraggableCanvas().selectAll('circle');
+    selectObjects.filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y');
     }).attr("cx", function(d) {
       return _this.graph.x(d.x);
@@ -3601,7 +3555,7 @@ Tactile.WaterfallRenderer = (function(_super) {
   };
 
   WaterfallRenderer.prototype.render = function(transition) {
-    var line, nodes, _ref1,
+    var line, nodes, selectObject, _ref1,
       _this = this;
 
     if (this.checkData) {
@@ -3619,8 +3573,9 @@ Tactile.WaterfallRenderer = (function(_super) {
       return;
     }
     nodes = this.seriesCanvas().selectAll("rect").data(this.series.stack);
-    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("click", this.setActive);
-    this.transition.selectAll("." + (this._nameToId()) + " rect").filter(function(d) {
+    nodes.enter().append("svg:rect").attr("clip-path", "url(#clip)").on("mousedown", this.setActive);
+    selectObject = transition ? transition.select("g.canvas").selectAll("g." + (this._nameToId())).selectAll("rect") : this.seriesCanvas().selectAll("rect");
+    selectObject.filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("height", function(d) {
       return _this.graph.y.magnitude(Math.abs(d.y));
@@ -3630,7 +3585,8 @@ Tactile.WaterfallRenderer = (function(_super) {
     nodes.exit().remove();
     line = this.seriesDraggableCanvas().selectAll("line").data(this.series.stack);
     line.enter().append("svg:line").attr("clip-path", "url(#clip)");
-    this.transition.selectAll("." + (this._nameToId()) + " line").filter(function(d) {
+    selectObject = transition ? transition.select("g.draggable-canvas").selectAll("g." + (this._nameToId())).selectAll("line") : this.seriesDraggableCanvas().selectAll("line");
+    selectObject.filter(function(d) {
       return _this._filterNaNs(d, 'x', 'y', 'y00');
     }).attr("x1", function(d) {
       return _this._barX(d) + _this._seriesBarWidth() / (1 + _this.gapSize);
@@ -3697,18 +3653,16 @@ Tactile.WaterfallRenderer = (function(_super) {
   };
 
   WaterfallRenderer.prototype._seriesBarWidth = function() {
-    var stackWidth, width,
+    var count, width,
       _this = this;
 
-    if (this.series.stack.length >= 2) {
-      stackWidth = this.graph.x(this.series.stack[1].x) - this.graph.x(this.series.stack[0].x);
-      width = stackWidth / (1 + this.gapSize);
-    } else {
-      width = this.graph.width() / (1 + this.gapSize);
-    }
-    return width = width / this.graph.series.filter(function(d) {
-      return d.renderer === 'waterfall';
-    }).length();
+    count = this.series.stack.length;
+    width = this.graph.width() / count;
+    width = width / this.graph.series.filter(function(d) {
+      return d.renderer === _this.name;
+    }).array.length;
+    width = width - (2 * this.gapSize);
+    return width;
   };
 
   WaterfallRenderer.prototype._barXOffset = function(seriesBarWidth) {
@@ -3792,7 +3746,7 @@ Tactile.Chart = (function() {
 
   Chart.prototype.max = void 0;
 
-  Chart.prototype.transitionSpeed = 750;
+  Chart.prototype.transitionSpeed = 500;
 
   Chart.prototype.defaultHeight = 400;
 
@@ -3841,9 +3795,6 @@ Tactile.Chart = (function() {
     this._checkY1Domain = __bind(this._checkY1Domain, this);
     this._checkYDomain = __bind(this._checkYDomain, this);
     this._checkXDomain = __bind(this._checkXDomain, this);
-    this._mousemove = __bind(this._mousemove, this);
-    this._mouseup = __bind(this._mouseup, this);
-    this._plotDrag = __bind(this._plotDrag, this);
     this._slice = __bind(this._slice, this);
     this.element = __bind(this.element, this);
     this.unstackTransition = __bind(this.unstackTransition, this);
@@ -4126,7 +4077,6 @@ Tactile.Chart = (function() {
     _.each(this.gridList, function(grid) {
       return grid.render(t);
     });
-    this._setupZoom();
     this.timesRendered++;
     return this.updateCallbacks.forEach(function(callback) {
       return callback();
@@ -4353,39 +4303,6 @@ Tactile.Chart = (function() {
     return this;
   };
 
-  Chart.prototype._setupZoom = function() {
-    var zoom,
-      _this = this;
-
-    this.y.magnitude.domain([0, this.y.domain()[1] - this.y.domain()[0]]);
-    this.y1.magnitude.domain([0, this.y1.domain()[1] - this.y1.domain()[0]]);
-    zoom = d3.behavior.zoom();
-    d3.select(this._element).on("mousedown.plot-drag", this._plotDrag).on("touchstart.plot-drag", this._plotDrag).on("mousemove.drag", this._mousemove).on("touchmove.drag", this._mousemove).on("mouseup.plot-drag", this._mouseup).on("touchend.plot-drag", this._mouseup);
-    if (!this.autoScale) {
-      return d3.select(this.svg[0][0]).call(zoom.x(this.x).y(this.y).on("zoom", function() {
-        var dy, dy1;
-
-        if (_this.autoScale) {
-          return;
-        }
-        dy = d3.event.translate[1] - _this._lastYTranslate;
-        dy1 = (dy / (_this.y.domain()[1] - _this.y.domain()[0])) * (_this.y1.domain()[1] - _this.y1.domain()[0]);
-        _this.y1.domain([_this.y1.domain()[0] + dy1, _this.y1.domain()[1] + dy1]);
-        _this.y1.domain([_this.y1.domain()[0] * d3.event.scale, _this.y1.domain()[1] / d3.event.scale]);
-        _this._lastYTranslate = d3.event.translate[1];
-        _this._checkXDomain();
-        _this._checkYDomain();
-        _this._checkY1Domain();
-        _this.manipulateCallbacks.forEach(function(callback) {
-          return callback();
-        });
-        return _this.render(0, {
-          zooming: true
-        });
-      }));
-    }
-  };
-
   Chart.prototype._setupDomainAndRange = function() {
     this.x = d3.scale.linear().domain([NaN, NaN]);
     this.y = d3.scale.linear().domain([NaN, NaN]);
@@ -4473,7 +4390,6 @@ Tactile.Chart = (function() {
     _.each(this.renderersByType('donut'), function(r) {
       return r.stackTransition(t, transitionSpeed);
     });
-    this._setupZoom();
     return _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
@@ -4496,7 +4412,6 @@ Tactile.Chart = (function() {
     _.each(this.renderersByType('donut'), function(r) {
       return r.unstackTransition(t, transitionSpeed);
     });
-    this._setupZoom();
     return _.each(this.axesList, function(axis) {
       return axis.render(t);
     });
@@ -4645,57 +4560,6 @@ Tactile.Chart = (function() {
     return _.every(this.series.array, function(s) {
       return s.disabled === true;
     });
-  };
-
-  Chart.prototype._plotDrag = function() {
-    if (this.autoScale) {
-      return;
-    }
-    return d3.select("body").style("cursor", "move");
-  };
-
-  Chart.prototype._mouseup = function() {
-    var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-
-    if (this.autoScale) {
-      return;
-    }
-    d3.select("body").style("cursor", "auto");
-    if ((_ref = this.axes()) != null) {
-      if ((_ref1 = _ref.x) != null) {
-        _ref1._mouseUp();
-      }
-    }
-    if ((_ref2 = this.axes()) != null) {
-      if ((_ref3 = _ref2.y) != null) {
-        _ref3._mouseUp();
-      }
-    }
-    if ((_ref4 = this.axes()) != null) {
-      if ((_ref5 = _ref4.y1) != null) {
-        _ref5._mouseUp();
-      }
-    }
-    return this._lastYTranslate = 0;
-  };
-
-  Chart.prototype._mousemove = function() {
-    var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-
-    if (this.autoScale) {
-      return;
-    }
-    if ((_ref = this.axes()) != null) {
-      if ((_ref1 = _ref.x) != null) {
-        _ref1._mouseMove();
-      }
-    }
-    if ((_ref2 = this.axes()) != null) {
-      if ((_ref3 = _ref2.y) != null) {
-        _ref3._mouseMove();
-      }
-    }
-    return (_ref4 = this.axes()) != null ? (_ref5 = _ref4.y1) != null ? _ref5._mouseMove() : void 0 : void 0;
   };
 
   Chart.prototype._checkXDomain = function() {
